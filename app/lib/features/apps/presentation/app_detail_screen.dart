@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../shared/widgets/buttons.dart';
 import '../providers/apps_provider.dart';
 import '../../keywords/data/keywords_repository.dart';
 import '../../keywords/domain/keyword_model.dart';
@@ -285,79 +286,19 @@ class _Toolbar extends StatelessWidget {
             ),
           ),
           // Actions
-          _ToolbarButton(
+          ToolbarButton(
             icon: Icons.star_outline_rounded,
             label: 'Ratings',
             onTap: onViewRatings,
           ),
           const SizedBox(width: 10),
-          _ToolbarButton(
+          ToolbarButton(
             icon: Icons.delete_outline_rounded,
             label: 'Delete',
             isDestructive: true,
             onTap: onDelete,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ToolbarButton extends StatelessWidget {
-  final IconData? icon;
-  final String label;
-  final VoidCallback? onTap;
-  final bool isDestructive;
-  final bool isLoading;
-
-  const _ToolbarButton({
-    this.icon,
-    required this.label,
-    this.onTap,
-    this.isDestructive = false,
-    this.isLoading = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isDestructive ? AppColors.red : AppColors.textSecondary;
-
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        hoverColor: AppColors.bgHover,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.glassBorder),
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (isLoading)
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              else if (icon != null)
-                Icon(icon, size: 16, color: color),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

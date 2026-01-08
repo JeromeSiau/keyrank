@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/buttons.dart';
 import '../providers/apps_provider.dart';
 
 class AppsListScreen extends ConsumerWidget {
@@ -69,107 +70,18 @@ class _Toolbar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          _ToolbarButton(
+          ToolbarButton(
             icon: Icons.refresh_rounded,
             label: 'Refresh',
             onTap: onRefresh,
           ),
           const SizedBox(width: 10),
-          _PrimaryButton(
+          PrimaryButton(
             icon: Icons.add_rounded,
             label: 'Add App',
             onTap: onAddApp,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ToolbarButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _ToolbarButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        hoverColor: AppColors.bgHover,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.glassBorder),
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 16, color: AppColors.textSecondary),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PrimaryButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _PrimaryButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.accent,
-      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 16, color: Colors.white),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -209,9 +121,9 @@ class _AppsTable extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      _SmallButton(label: 'Filter', onTap: () {}),
+                      SmallButton(label: 'Filter', onTap: () {}),
                       const SizedBox(width: 6),
-                      _SmallButton(label: 'Sort', onTap: () {}),
+                      SmallButton(label: 'Sort', onTap: () {}),
                     ],
                   ),
                 ],
@@ -311,40 +223,6 @@ class _AppsTable extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SmallButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _SmallButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(6),
-        hoverColor: AppColors.bgHover,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.glassBorder),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textMuted,
-            ),
-          ),
         ),
       ),
     );
