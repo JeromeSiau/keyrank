@@ -54,7 +54,7 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
                       ? Image.network(
                           widget.app.iconUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(
+                          errorBuilder: (_, _, _) => const Icon(
                             Icons.apps,
                             size: 14,
                             color: AppColors.textMuted,
