@@ -35,7 +35,7 @@ class App extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_apps')
-            ->withPivot('created_at');
+            ->withPivot('is_favorite', 'favorited_at', 'created_at');
     }
 
     public function keywords(): BelongsToMany

@@ -53,7 +53,7 @@ class User extends Authenticatable
     public function apps(): BelongsToMany
     {
         return $this->belongsToMany(App::class, 'user_apps')
-            ->withPivot('created_at');
+            ->withPivot('is_favorite', 'favorited_at', 'created_at');
     }
 
     /**
