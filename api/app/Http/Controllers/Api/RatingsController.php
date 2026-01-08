@@ -43,17 +43,19 @@ class RatingsController extends Controller
         $averageRating = $totalRatings > 0 ? round($weightedSum / $totalRatings, 2) : null;
 
         return response()->json([
-            'app_id' => $app->id,
-            'platform' => $app->platform,
-            'total_ratings' => $totalRatings,
-            'average_rating' => $averageRating,
-            'ratings' => $latestRatings->map(fn($r) => [
-                'country' => $r->country,
-                'rating' => $r->rating,
-                'rating_count' => $r->rating_count,
-                'recorded_at' => $r->recorded_at->toIso8601String(),
-            ])->values(),
-            'last_updated' => $latestRatings->max('recorded_at')?->toIso8601String(),
+            'data' => [
+                'app_id' => $app->id,
+                'platform' => $app->platform,
+                'total_ratings' => $totalRatings,
+                'average_rating' => $averageRating,
+                'ratings' => $latestRatings->map(fn($r) => [
+                    'country' => $r->country,
+                    'rating' => $r->rating,
+                    'rating_count' => $r->rating_count,
+                    'recorded_at' => $r->recorded_at->toIso8601String(),
+                ])->values(),
+                'last_updated' => $latestRatings->max('recorded_at')?->toIso8601String(),
+            ],
         ]);
     }
 
@@ -198,14 +200,16 @@ class RatingsController extends Controller
             ->get();
 
         return response()->json([
-            'app_id' => $app->id,
-            'country' => $country,
-            'platform' => $app->platform,
-            'history' => $history->map(fn($r) => [
-                'rating' => $r->rating,
-                'rating_count' => $r->rating_count,
-                'recorded_at' => $r->recorded_at->toIso8601String(),
-            ]),
+            'data' => [
+                'app_id' => $app->id,
+                'country' => $country,
+                'platform' => $app->platform,
+                'history' => $history->map(fn($r) => [
+                    'rating' => $r->rating,
+                    'rating_count' => $r->rating_count,
+                    'recorded_at' => $r->recorded_at->toIso8601String(),
+                ]),
+            ],
         ]);
     }
 }

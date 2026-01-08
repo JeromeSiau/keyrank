@@ -4,12 +4,7 @@ class Keyword {
   final String storefront;
   final int? popularity;
   final int? position;
-  final int? previousPosition;
   final int? change;
-  final int? iosPosition;
-  final int? iosChange;
-  final int? androidPosition;
-  final int? androidChange;
   final DateTime? lastUpdated;
   final DateTime? trackedSince;
 
@@ -19,12 +14,7 @@ class Keyword {
     required this.storefront,
     this.popularity,
     this.position,
-    this.previousPosition,
     this.change,
-    this.iosPosition,
-    this.iosChange,
-    this.androidPosition,
-    this.androidChange,
     this.lastUpdated,
     this.trackedSince,
   });
@@ -36,12 +26,7 @@ class Keyword {
       storefront: json['storefront'] as String,
       popularity: json['popularity'] as int?,
       position: json['position'] as int?,
-      previousPosition: json['previous_position'] as int?,
       change: json['change'] as int?,
-      iosPosition: json['ios_position'] as int?,
-      iosChange: json['ios_change'] as int?,
-      androidPosition: json['android_position'] as int?,
-      androidChange: json['android_change'] as int?,
       lastUpdated: json['last_updated'] != null
           ? DateTime.parse(json['last_updated'] as String)
           : null,
@@ -51,10 +36,10 @@ class Keyword {
     );
   }
 
-  bool get isRanked => iosPosition != null || androidPosition != null;
+  bool get isRanked => position != null;
 
-  bool get hasImproved => (iosChange != null && iosChange! > 0) || (androidChange != null && androidChange! > 0);
-  bool get hasDeclined => (iosChange != null && iosChange! < 0) || (androidChange != null && androidChange! < 0);
+  bool get hasImproved => change != null && change! > 0;
+  bool get hasDeclined => change != null && change! < 0;
 }
 
 class KeywordSearchResponse {

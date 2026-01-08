@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants/api_constants.dart';
+
+final unauthorizedEventProvider = StateProvider<int>((ref) => 0);
 
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
   return const FlutterSecureStorage();
@@ -19,10 +22,12 @@ final dioProvider = Provider<Dio>((ref) {
   ));
 
   dio.interceptors.add(AuthInterceptor(ref));
-  dio.interceptors.add(LogInterceptor(
-    requestBody: true,
-    responseBody: true,
-  ));
+  if (kDebugMode) {
+    dio.interceptors.add(LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+    ));
+  }
 
   return dio;
 });
@@ -52,6 +57,7 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       final storage = ref.read(secureStorageProvider);
       await storage.delete(key: 'auth_token');
+      ref.read(unauthorizedEventProvider.notifier).state++;
     }
     handler.next(err);
   }

@@ -11,10 +11,16 @@ class EnsureUserOwnsApp
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $appId = $request->route('app') ?? $request->route('id');
+        $appParam = $request->route('app') ?? $request->route('id');
 
-        if ($appId) {
-            $app = App::find($appId);
+        if ($appParam) {
+            // In Laravel 12, route model binding resolves before middleware
+            // So $appParam might already be an App model
+            if ($appParam instanceof App) {
+                $app = $appParam;
+            } else {
+                $app = App::find($appParam);
+            }
 
             if (!$app) {
                 return response()->json(['message' => 'App not found'], 404);

@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ranking
+      MYSQL_USER: ranking
+      MYSQL_PASSWORD: ranking
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
   scraper:
     build: ./scraper
     ports:
@@ -8,3 +27,6 @@ services:
     environment:
       - PORT=3001
     restart: unless-stopped
+
+volumes:
+  mysql_data:

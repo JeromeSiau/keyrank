@@ -27,58 +27,53 @@ class RankingController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         // Check if we need to fetch fresh data
         $this->fetchRankingsIfStale($app);
 
-        // Get latest ranking for each keyword
-        $rankings = DB::table('app_rankings as r1')
-            ->join('keywords', 'keywords.id', '=', 'r1.keyword_id')
-            ->leftJoin('app_rankings as r2', function ($join) {
-                $join->on('r1.app_id', '=', 'r2.app_id')
-                    ->on('r1.keyword_id', '=', 'r2.keyword_id')
-                    ->on('r1.recorded_at', '<', 'r2.recorded_at');
-            })
-            ->whereNull('r2.id')
-            ->where('r1.app_id', $app->id)
-            ->select([
-                'r1.id',
-                'r1.keyword_id',
-                'keywords.keyword',
-                'keywords.storefront',
-                'keywords.popularity',
-                'r1.position',
-                'r1.recorded_at',
-            ])
-            ->get();
+        $keywords = $app->keywords()
+            ->get(['keywords.id', 'keywords.keyword', 'keywords.storefront', 'keywords.popularity'])
+            ->keyBy('id');
 
-        // Get previous rankings for comparison
-        $result = $rankings->map(function ($ranking) use ($app) {
-            $previous = AppRanking::where('app_id', $app->id)
-                ->where('keyword_id', $ranking->keyword_id)
-                ->where('recorded_at', '<', $ranking->recorded_at)
-                ->orderByDesc('recorded_at')
-                ->first();
+        $rankings = AppRanking::where('app_id', $app->id)
+            ->orderByDesc('recorded_at')
+            ->get(['id', 'keyword_id', 'position', 'recorded_at']);
 
-            $change = null;
-            if ($ranking->position && $previous?->position) {
-                $change = $previous->position - $ranking->position;
+        $rankingsByKeyword = [];
+        foreach ($rankings as $ranking) {
+            $list = $rankingsByKeyword[$ranking->keyword_id] ?? [];
+            if (count($list) < 2) {
+                $list[] = $ranking;
+                $rankingsByKeyword[$ranking->keyword_id] = $list;
             }
+        }
 
-            return [
-                'id' => $ranking->id,
-                'keyword_id' => $ranking->keyword_id,
-                'keyword' => $ranking->keyword,
-                'storefront' => $ranking->storefront,
-                'popularity' => $ranking->popularity,
-                'position' => $ranking->position,
+        $result = collect();
+        foreach ($rankingsByKeyword as $keywordId => $entries) {
+            $keyword = $keywords->get($keywordId);
+            $latest = $entries[0] ?? null;
+            if (!$keyword || !$latest) {
+                continue;
+            }
+            $previous = $entries[1] ?? null;
+            $change = $latest->position && $previous?->position
+                ? $previous->position - $latest->position
+                : null;
+
+            $result->push([
+                'id' => $latest->id,
+                'keyword_id' => $keywordId,
+                'keyword' => $keyword->keyword,
+                'storefront' => $keyword->storefront,
+                'popularity' => $keyword->popularity,
+                'position' => $latest->position,
                 'previous_position' => $previous?->position,
                 'change' => $change,
-                'recorded_at' => $ranking->recorded_at,
-            ];
-        });
+                'recorded_at' => $latest->recorded_at,
+            ]);
+        }
 
         return response()->json([
             'data' => $result,
@@ -154,7 +149,7 @@ class RankingController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $validated = $request->validate([
@@ -223,8 +218,10 @@ class RankingController extends Controller
         $losers = $rankings->where('change', '<', 0)->sortBy('change')->take(10)->values();
 
         return response()->json([
-            'gainers' => $gainers,
-            'losers' => $losers,
+            'data' => [
+                'gainers' => $gainers,
+                'losers' => $losers,
+            ],
         ]);
     }
 }

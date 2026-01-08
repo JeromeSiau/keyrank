@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1');
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 });
 
 // Public utility routes
@@ -39,10 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Apps
-    Route::prefix('apps')->group(function () {
+    Route::prefix('apps')->middleware('owns.app')->group(function () {
         Route::get('/', [AppController::class, 'index']);
-        Route::get('search', [AppController::class, 'search']);
-        Route::get('search/android', [AppController::class, 'searchAndroid']);
+        Route::get('search', [AppController::class, 'search'])->middleware('throttle:60,1');
+        Route::get('search/android', [AppController::class, 'searchAndroid'])->middleware('throttle:60,1');
         Route::post('/', [AppController::class, 'store']);
         Route::get('{app}', [AppController::class, 'show']);
         Route::delete('{app}', [AppController::class, 'destroy']);
@@ -68,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Keywords (global search)
     Route::prefix('keywords')->group(function () {
-        Route::get('search', [KeywordController::class, 'search']);
+        Route::get('search', [KeywordController::class, 'search'])->middleware('throttle:60,1');
         Route::get('{keyword}/history', [KeywordController::class, 'history']);
     });
 

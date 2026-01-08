@@ -124,6 +124,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
   Widget build(BuildContext context) {
     final selectedCountry = ref.watch(selectedCountryProvider);
     final selectedPlatform = ref.watch(_selectedPlatformProvider);
+    final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
       decoration: BoxDecoration(
@@ -186,7 +187,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                     side: const BorderSide(color: AppColors.glassBorder),
                   ),
                   color: AppColors.glassPanel,
-                  itemBuilder: (context) => availableCountries
+                  itemBuilder: (context) => countries
                       .map((country) => PopupMenuItem<Country>(
                             value: country,
                             height: 44,

@@ -529,6 +529,7 @@ class _AddKeywordSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCountry = ref.watch(selectedCountryProvider);
+    final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -569,7 +570,7 @@ class _AddKeywordSection extends ConsumerWidget {
               side: const BorderSide(color: AppColors.glassBorder),
             ),
             color: AppColors.glassPanel,
-            itemBuilder: (context) => availableCountries
+            itemBuilder: (context) => countries
                 .map((country) => PopupMenuItem<Country>(
                       value: country,
                       height: 44,
@@ -881,8 +882,6 @@ class _KeywordsTable extends StatelessWidget {
                   keyword: keyword,
                   onDelete: () => onDelete(keyword),
                   onTap: () => onKeywordTap(keyword),
-                  hasIos: hasIos,
-                  hasAndroid: hasAndroid,
                 )).toList(),
               );
             },
@@ -897,21 +896,16 @@ class _KeywordRow extends StatelessWidget {
   final Keyword keyword;
   final VoidCallback onDelete;
   final VoidCallback onTap;
-  final bool hasIos;
-  final bool hasAndroid;
 
   const _KeywordRow({
     required this.keyword,
     required this.onDelete,
     required this.onTap,
-    required this.hasIos,
-    required this.hasAndroid,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isIosTopRank = keyword.iosPosition != null && keyword.iosPosition! <= 10;
-    final isAndroidTopRank = keyword.androidPosition != null && keyword.androidPosition! <= 10;
+    final isTopRank = keyword.position != null && keyword.position! <= 10;
 
     return Material(
       color: Colors.transparent,
@@ -944,31 +938,17 @@ class _KeywordRow extends StatelessWidget {
                   ),
                 ),
               ),
-              // iOS Position
-              if (hasIos)
-                SizedBox(
-                  width: 80,
-                  child: keyword.iosPosition != null
-                      ? _PositionBadge(
-                          position: keyword.iosPosition!,
-                          change: keyword.iosChange,
-                          isTopRank: isIosTopRank,
-                        )
-                      : const _NotRankedBadge(),
-                ),
-              if (hasIos && hasAndroid) const SizedBox(width: 12),
-              // Android Position
-              if (hasAndroid)
-                SizedBox(
-                  width: 80,
-                  child: keyword.androidPosition != null
-                      ? _PositionBadge(
-                          position: keyword.androidPosition!,
-                          change: keyword.androidChange,
-                          isTopRank: isAndroidTopRank,
-                        )
-                      : const _NotRankedBadge(),
-                ),
+              // Position (single platform per app now)
+              SizedBox(
+                width: 80,
+                child: keyword.position != null
+                    ? _PositionBadge(
+                        position: keyword.position!,
+                        change: keyword.change,
+                        isTopRank: isTopRank,
+                      )
+                    : const _NotRankedBadge(),
+              ),
               // Delete button
               SizedBox(
                 width: 48,

@@ -80,7 +80,7 @@ class AuthRepository {
 
     try {
       final response = await dio.get(ApiConstants.me);
-      return User.fromJson(response.data['user']);
+      return User.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException {
       return null;
     }

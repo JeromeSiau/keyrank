@@ -31,38 +31,31 @@ class DashboardController extends Controller
         $declines = 0;
 
         if ($appIds->isNotEmpty()) {
-            $todayRankings = \DB::table('app_rankings')
-                ->whereIn('app_id', $appIds)
-                ->where('recorded_at', $today)
-                ->get()
-                ->keyBy(fn($r) => "{$r->app_id}_{$r->keyword_id}");
+            $stats = \DB::table('app_rankings as today')
+                ->join('app_rankings as yesterday', function ($join) use ($yesterday) {
+                    $join->on('today.app_id', '=', 'yesterday.app_id')
+                        ->on('today.keyword_id', '=', 'yesterday.keyword_id')
+                        ->where('yesterday.recorded_at', '=', $yesterday);
+                })
+                ->whereIn('today.app_id', $appIds)
+                ->where('today.recorded_at', $today)
+                ->whereNotNull('today.position')
+                ->whereNotNull('yesterday.position')
+                ->selectRaw('SUM(CASE WHEN (yesterday.position - today.position) > 0 THEN 1 ELSE 0 END) as improvements')
+                ->selectRaw('SUM(CASE WHEN (yesterday.position - today.position) < 0 THEN 1 ELSE 0 END) as declines')
+                ->first();
 
-            $yesterdayRankings = \DB::table('app_rankings')
-                ->whereIn('app_id', $appIds)
-                ->where('recorded_at', $yesterday)
-                ->get()
-                ->keyBy(fn($r) => "{$r->app_id}_{$r->keyword_id}");
-
-            foreach ($todayRankings as $key => $todayRank) {
-                if (isset($yesterdayRankings[$key])) {
-                    $yesterdayRank = $yesterdayRankings[$key];
-                    if ($todayRank->position && $yesterdayRank->position) {
-                        $change = $yesterdayRank->position - $todayRank->position;
-                        if ($change > 0) {
-                            $improvements++;
-                        } elseif ($change < 0) {
-                            $declines++;
-                        }
-                    }
-                }
-            }
+            $improvements = (int) ($stats->improvements ?? 0);
+            $declines = (int) ($stats->declines ?? 0);
         }
 
         return response()->json([
-            'apps_count' => $appsCount,
-            'keywords_count' => $keywordsCount,
-            'improvements_today' => $improvements,
-            'declines_today' => $declines,
+            'data' => [
+                'apps_count' => $appsCount,
+                'keywords_count' => $keywordsCount,
+                'improvements_today' => $improvements,
+                'declines_today' => $declines,
+            ],
         ]);
     }
 

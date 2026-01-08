@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../api/api_client.dart';
+import '../constants/api_constants.dart';
 
 class Country {
   final String code;
@@ -31,20 +33,54 @@ final selectedCountryProvider = StateProvider<Country>((ref) {
   return availableCountries.firstWhere((c) => c.code == 'us');
 });
 
+final countriesProvider = FutureProvider<List<Country>>((ref) async {
+  final dio = ref.watch(dioProvider);
+  try {
+    final response = await dio.get(ApiConstants.countries);
+    final data = response.data['data'] as Map<String, dynamic>;
+    return data.entries
+        .map((entry) => Country(
+              code: entry.key.toLowerCase(),
+              name: entry.value as String,
+              flag: _flagFromCountryCode(entry.key),
+            ))
+        .toList();
+  } catch (_) {
+    return availableCountries;
+  }
+});
+
 String getFlagForStorefront(String storefront) {
   final code = storefront.toLowerCase();
   final country = availableCountries.cast<Country?>().firstWhere(
     (c) => c?.code == code,
     orElse: () => null,
   );
-  return country?.flag ?? storefront.toUpperCase();
+  return country?.flag ?? _flagFromCountryCode(code);
 }
 
 Country? getCountryByCode(String? code) {
   if (code == null) return null;
   final lowerCode = code.toLowerCase();
-  return availableCountries.cast<Country?>().firstWhere(
+  final match = availableCountries.cast<Country?>().firstWhere(
     (c) => c?.code == lowerCode,
     orElse: () => null,
   );
+  if (match != null) return match;
+
+  return Country(
+    code: lowerCode,
+    name: code.toUpperCase(),
+    flag: _flagFromCountryCode(lowerCode),
+  );
+}
+
+String _flagFromCountryCode(String code) {
+  if (code.length != 2) {
+    return code.toUpperCase();
+  }
+  final upper = code.toUpperCase();
+  final first = upper.codeUnitAt(0) - 0x41 + 0x1F1E6;
+  final second = upper.codeUnitAt(1) - 0x41 + 0x1F1E6;
+  return String.fromCharCodes([first, second]);
 }

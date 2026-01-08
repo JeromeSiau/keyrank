@@ -73,19 +73,21 @@ class ReviewsController extends Controller
         }
 
         return response()->json([
-            'app_id' => $app->id,
-            'platform' => $platform,
-            'country' => $country,
-            'reviews' => $reviews->map(fn($r) => [
-                'id' => $r->id,
-                'author' => $r->author,
-                'title' => $r->title,
-                'content' => $r->content,
-                'rating' => $r->rating,
-                'version' => $r->version,
-                'reviewed_at' => $r->reviewed_at->toIso8601String(),
-            ]),
-            'total' => $reviews->count(),
+            'data' => [
+                'app_id' => $app->id,
+                'platform' => $platform,
+                'country' => $country,
+                'reviews' => $reviews->map(fn($r) => [
+                    'id' => $r->id,
+                    'author' => $r->author,
+                    'title' => $r->title,
+                    'content' => $r->content,
+                    'rating' => $r->rating,
+                    'version' => $r->version,
+                    'reviewed_at' => $r->reviewed_at->toIso8601String(),
+                ]),
+                'total' => $reviews->count(),
+            ],
         ]);
     }
 
@@ -135,11 +137,20 @@ class ReviewsController extends Controller
                 $reviews = $response->json('reviews', []);
 
                 foreach ($reviews as $review) {
+                    $reviewId = $review['review_id'] ?? sha1(implode('|', [
+                        $app->store_id,
+                        $countryLower,
+                        $review['author'] ?? '',
+                        $review['rating'] ?? '',
+                        $review['reviewed_at'] ?? '',
+                        $review['content'] ?? '',
+                    ]));
+
                     AppReview::updateOrCreate(
                         [
                             'app_id' => $app->id,
                             'country' => strtoupper($country),
-                            'review_id' => $review['review_id'] ?? uniqid(),
+                            'review_id' => $reviewId,
                         ],
                         [
                             'author' => $review['author'] ?? 'Anonymous',
@@ -180,14 +191,16 @@ class ReviewsController extends Controller
             ->get();
 
         return response()->json([
-            'app_id' => $app->id,
-            'platform' => $platform,
-            'countries' => $summary->map(fn($s) => [
-                'country' => $s->country,
-                'review_count' => (int) $s->review_count,
-                'avg_rating' => round((float) $s->avg_rating, 2),
-                'latest_review' => $s->latest_review,
-            ]),
+            'data' => [
+                'app_id' => $app->id,
+                'platform' => $platform,
+                'countries' => $summary->map(fn($s) => [
+                    'country' => $s->country,
+                    'review_count' => (int) $s->review_count,
+                    'avg_rating' => round((float) $s->avg_rating, 2),
+                    'latest_review' => $s->latest_review,
+                ]),
+            ],
         ]);
     }
 }

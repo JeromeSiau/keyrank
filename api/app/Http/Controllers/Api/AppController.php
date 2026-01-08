@@ -148,7 +148,7 @@ class AppController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $app->load(['trackedKeywords.keyword']);
@@ -166,7 +166,7 @@ class AppController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $app->delete();
@@ -183,7 +183,7 @@ class AppController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         // Fetch details from appropriate store based on platform

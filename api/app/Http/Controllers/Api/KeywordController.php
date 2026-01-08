@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\App;
+use App\Models\AppRanking;
 use App\Models\Keyword;
 use App\Models\TrackedKeyword;
 use App\Services\iTunesService;
@@ -46,15 +47,17 @@ class KeywordController extends Controller
         $keywordModel = Keyword::findOrCreateKeyword($keyword, $country);
 
         return response()->json([
-            'keyword' => [
-                'id' => $keywordModel->id,
-                'keyword' => $keywordModel->keyword,
-                'storefront' => $keywordModel->storefront,
-                'popularity' => $keywordModel->popularity,
+            'data' => [
+                'keyword' => [
+                    'id' => $keywordModel->id,
+                    'keyword' => $keywordModel->keyword,
+                    'storefront' => $keywordModel->storefront,
+                    'popularity' => $keywordModel->popularity,
+                ],
+                'results' => $apps,
+                'total_results' => count($apps),
+                'platform' => $platform,
             ],
-            'results' => $apps,
-            'total_results' => count($apps),
-            'platform' => $platform,
         ]);
     }
 
@@ -65,43 +68,45 @@ class KeywordController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $keywords = $app->keywords()
             ->withPivot('created_at')
-            ->get()
-            ->map(function ($keyword) use ($app) {
-                // Get latest ranking for this keyword
-                $latestRanking = $app->rankings()
-                    ->where('keyword_id', $keyword->id)
-                    ->orderByDesc('recorded_at')
-                    ->first();
+            ->get();
 
-                // Get previous ranking for change calculation
-                $previousRanking = $latestRanking
-                    ? $app->rankings()
-                        ->where('keyword_id', $keyword->id)
-                        ->where('recorded_at', '<', $latestRanking->recorded_at)
-                        ->orderByDesc('recorded_at')
-                        ->first()
-                    : null;
+        $rankings = AppRanking::where('app_id', $app->id)
+            ->orderByDesc('recorded_at')
+            ->get(['keyword_id', 'position', 'recorded_at']);
 
-                $change = $latestRanking && $previousRanking && $latestRanking->position && $previousRanking->position
-                    ? $previousRanking->position - $latestRanking->position
-                    : null;
+        $rankingsByKeyword = [];
+        foreach ($rankings as $ranking) {
+            $list = $rankingsByKeyword[$ranking->keyword_id] ?? [];
+            if (count($list) < 2) {
+                $list[] = $ranking;
+                $rankingsByKeyword[$ranking->keyword_id] = $list;
+            }
+        }
 
-                return [
-                    'id' => $keyword->id,
-                    'keyword' => $keyword->keyword,
-                    'storefront' => $keyword->storefront,
-                    'popularity' => $keyword->popularity,
-                    'tracked_since' => $keyword->pivot->created_at,
-                    'position' => $latestRanking?->position,
-                    'change' => $change,
-                    'last_updated' => $latestRanking?->recorded_at,
-                ];
-            });
+        $keywords = $keywords->map(function ($keyword) use ($rankingsByKeyword) {
+            $entries = $rankingsByKeyword[$keyword->id] ?? [];
+            $latest = $entries[0] ?? null;
+            $previous = $entries[1] ?? null;
+            $change = $latest && $previous && $latest->position && $previous->position
+                ? $previous->position - $latest->position
+                : null;
+
+            return [
+                'id' => $keyword->id,
+                'keyword' => $keyword->keyword,
+                'storefront' => $keyword->storefront,
+                'popularity' => $keyword->popularity,
+                'tracked_since' => $keyword->pivot->created_at,
+                'position' => $latest?->position,
+                'change' => $change,
+                'last_updated' => $latest?->recorded_at,
+            ];
+        });
 
         return response()->json([
             'data' => $keywords,
@@ -115,7 +120,7 @@ class KeywordController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $validated = $request->validate([
@@ -184,7 +189,7 @@ class KeywordController extends Controller
     {
         // Ensure user owns this app
         if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         // Delete tracking
@@ -213,13 +218,15 @@ class KeywordController extends Controller
             ->get(['popularity', 'recorded_at']);
 
         return response()->json([
-            'keyword' => [
-                'id' => $keyword->id,
-                'keyword' => $keyword->keyword,
-                'storefront' => $keyword->storefront,
-                'current_popularity' => $keyword->popularity,
+            'data' => [
+                'keyword' => [
+                    'id' => $keyword->id,
+                    'keyword' => $keyword->keyword,
+                    'storefront' => $keyword->storefront,
+                    'current_popularity' => $keyword->popularity,
+                ],
+                'history' => $history,
             ],
-            'history' => $history,
         ]);
     }
 }

@@ -17,7 +17,7 @@ class ReviewsRepository {
   Future<ReviewsResponse> getReviewsForCountry(int appId, String country) async {
     try {
       final response = await dio.get('${ApiConstants.apps}/$appId/reviews/$country');
-      return ReviewsResponse.fromJson(response.data as Map<String, dynamic>);
+      return ReviewsResponse.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -26,7 +26,8 @@ class ReviewsRepository {
   Future<List<CountryReviewSummary>> getReviewsSummary(int appId) async {
     try {
       final response = await dio.get('${ApiConstants.apps}/$appId/reviews/summary');
-      final countries = response.data['countries'] as List<dynamic>? ?? [];
+      final data = response.data['data'] as Map<String, dynamic>? ?? {};
+      final countries = data['countries'] as List<dynamic>? ?? [];
       return countries
           .map((e) => CountryReviewSummary.fromJson(e as Map<String, dynamic>))
           .toList();

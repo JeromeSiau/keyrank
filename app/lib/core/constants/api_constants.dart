@@ -5,8 +5,12 @@ class ApiConstants {
   // Dev local (Valet/Herd): http://ranking.test/api
   // Dev localhost: http://localhost:8000/api
   // Production: https://api.yourapp.com/api
+  // Override: flutter run --dart-define=API_BASE_URL=https://api.example.com/api
   // ============================================
-  static const String baseUrl = 'http://ranking.test/api';
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://ranking.test/api',
+  );
 
   // Auth endpoints
   static const String login = '/auth/login';

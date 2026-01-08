@@ -1,9 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/api/api_client.dart';
 import '../data/auth_repository.dart';
 import '../domain/user_model.dart';
 
 final authStateProvider = StateNotifierProvider<AuthNotifier, AsyncValue<User?>>((ref) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
+  final notifier = AuthNotifier(ref.watch(authRepositoryProvider));
+  ref.listen(unauthorizedEventProvider, (_, next) {
+    if (next > 0) {
+      notifier.clearSession();
+    }
+  });
+  return notifier;
 });
 
 final isAuthenticatedProvider = Provider<bool>((ref) {
@@ -64,6 +71,10 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
 
   Future<void> logout() async {
     await _repository.logout();
+    state = const AsyncValue.data(null);
+  }
+
+  void clearSession() {
     state = const AsyncValue.data(null);
   }
 }

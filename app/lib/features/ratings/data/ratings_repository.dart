@@ -17,7 +17,7 @@ class RatingsRepository {
   Future<AppRatingsResponse> getRatingsForApp(int appId) async {
     try {
       final response = await dio.get('${ApiConstants.apps}/$appId/ratings');
-      return AppRatingsResponse.fromJson(response.data);
+      return AppRatingsResponse.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -36,7 +36,8 @@ class RatingsRepository {
           'days': days,
         },
       );
-      final history = response.data['history'] as List<dynamic>? ?? [];
+      final data = response.data['data'] as Map<String, dynamic>? ?? {};
+      final history = data['history'] as List<dynamic>? ?? [];
       return history
           .map((e) => CountryRating.fromJson(e as Map<String, dynamic>))
           .toList();

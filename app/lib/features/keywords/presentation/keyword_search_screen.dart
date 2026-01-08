@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/api/api_client.dart';
-import '../../../core/providers/country_provider.dart' show Country, availableCountries, selectedCountryProvider;
+import '../../../core/providers/country_provider.dart' show Country, availableCountries, countriesProvider, selectedCountryProvider;
 import '../../../shared/widgets/states.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../data/keywords_repository.dart';
@@ -42,6 +42,7 @@ class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
     final searchResults = ref.watch(_keywordSearchResultsProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
     final selectedPlatform = ref.watch(_selectedPlatformProvider);
+    final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
       decoration: BoxDecoration(
@@ -60,6 +61,7 @@ class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
             onPlatformSelected: (platform) {
               ref.read(_selectedPlatformProvider.notifier).state = platform;
             },
+            countries: countries,
           ),
           // Search bar
           _SearchBar(
@@ -102,12 +104,14 @@ class _Toolbar extends StatelessWidget {
   final ValueChanged<Country> onCountrySelected;
   final String selectedPlatform;
   final ValueChanged<String> onPlatformSelected;
+  final List<Country> countries;
 
   const _Toolbar({
     required this.selectedCountry,
     required this.onCountrySelected,
     required this.selectedPlatform,
     required this.onPlatformSelected,
+    required this.countries,
   });
 
   @override
@@ -163,7 +167,7 @@ class _Toolbar extends StatelessWidget {
               side: const BorderSide(color: AppColors.glassBorder),
             ),
             color: AppColors.glassPanel,
-            itemBuilder: (context) => availableCountries
+            itemBuilder: (context) => countries
                 .map((country) => PopupMenuItem<Country>(
                       value: country,
                       height: 44,
@@ -761,4 +765,3 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
     );
   }
 }
-

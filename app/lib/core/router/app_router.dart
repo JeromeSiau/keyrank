@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,16 +17,26 @@ import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authStateProvider);
+  final authNotifier = ref.read(authStateProvider.notifier);
+
   return GoRouter(
     initialLocation: '/login',
+    refreshListenable: GoRouterRefreshStream(authNotifier.stream),
     redirect: (context, state) {
-      final authState = ref.read(authStateProvider);
       final isAuthenticated = authState.valueOrNull != null;
       final isAuthRoute = state.matchedLocation == '/login' ||
           state.matchedLocation == '/register';
 
+      if (authState.isLoading) {
+        return null;
+      }
+
       if (!isAuthenticated && !isAuthRoute) {
         return '/login';
+      }
+      if (isAuthenticated && isAuthRoute) {
+        return '/dashboard';
       }
       return null;
     },
@@ -435,4 +446,18 @@ class _NavItemData {
     required this.index,
     this.badge,
   });
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    _subscription = stream.listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }
