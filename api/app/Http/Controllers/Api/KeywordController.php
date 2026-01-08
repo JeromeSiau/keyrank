@@ -62,20 +62,24 @@ class KeywordController extends Controller
     }
 
     /**
-     * Get keywords tracked for a specific app
+     * Get keywords tracked for a specific app (scoped to current user)
      */
     public function forApp(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $user = $request->user();
 
-        $keywords = $app->keywords()
-            ->withPivot('created_at')
+        // Get only keywords tracked by this user for this app
+        $trackedKeywords = TrackedKeyword::where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->with('keyword')
             ->get();
 
+        $keywordIds = $trackedKeywords->pluck('keyword_id');
+        $keywords = $trackedKeywords->map(fn($tk) => $tk->keyword);
+
+        // Get rankings for user's tracked keywords only
         $rankings = AppRanking::where('app_id', $app->id)
+            ->whereIn('keyword_id', $keywordIds)
             ->orderByDesc('recorded_at')
             ->get(['keyword_id', 'position', 'recorded_at']);
 
@@ -88,7 +92,10 @@ class KeywordController extends Controller
             }
         }
 
-        $keywords = $keywords->map(function ($keyword) use ($rankingsByKeyword) {
+        // Map keyword_id to tracked_since date
+        $trackedSince = $trackedKeywords->pluck('created_at', 'keyword_id');
+
+        $result = $keywords->map(function ($keyword) use ($rankingsByKeyword, $trackedSince) {
             $entries = $rankingsByKeyword[$keyword->id] ?? [];
             $latest = $entries[0] ?? null;
             $previous = $entries[1] ?? null;
@@ -101,7 +108,7 @@ class KeywordController extends Controller
                 'keyword' => $keyword->keyword,
                 'storefront' => $keyword->storefront,
                 'popularity' => $keyword->popularity,
-                'tracked_since' => $keyword->pivot->created_at,
+                'tracked_since' => $trackedSince[$keyword->id] ?? null,
                 'position' => $latest?->position,
                 'change' => $change,
                 'last_updated' => $latest?->recorded_at,
@@ -109,7 +116,7 @@ class KeywordController extends Controller
         });
 
         return response()->json([
-            'data' => $keywords,
+            'data' => $result,
         ]);
     }
 
@@ -118,10 +125,7 @@ class KeywordController extends Controller
      */
     public function addToApp(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $user = $request->user();
 
         $validated = $request->validate([
             'keyword' => 'required|string|min:2|max:100',
@@ -134,8 +138,9 @@ class KeywordController extends Controller
         // Find or create keyword
         $keyword = Keyword::findOrCreateKeyword($keywordText, $storefront);
 
-        // Check if already tracking
-        $existing = TrackedKeyword::where('app_id', $app->id)
+        // Check if this user is already tracking this keyword for this app
+        $existing = TrackedKeyword::where('user_id', $user->id)
+            ->where('app_id', $app->id)
             ->where('keyword_id', $keyword->id)
             ->first();
 
@@ -145,9 +150,9 @@ class KeywordController extends Controller
             ], 409);
         }
 
-        // Create tracking
+        // Create tracking for this user
         TrackedKeyword::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'app_id' => $app->id,
             'keyword_id' => $keyword->id,
             'created_at' => now(),
@@ -155,21 +160,30 @@ class KeywordController extends Controller
 
         $country = strtolower($storefront);
 
-        // Fetch ranking based on app's platform
-        $service = $app->platform === 'ios' ? $this->iTunesService : $this->googlePlayService;
-        $position = $service->getAppRankForKeyword(
-            $app->store_id,
-            $keywordText,
-            $country
-        );
+        // Check if ranking already exists for today (from another user)
+        $existingRanking = $app->rankings()
+            ->where('keyword_id', $keyword->id)
+            ->where('recorded_at', today())
+            ->first();
 
-        $app->rankings()->updateOrCreate(
-            [
+        if ($existingRanking) {
+            // Ranking already exists (shared), use it
+            $position = $existingRanking->position;
+        } else {
+            // Fetch ranking based on app's platform
+            $service = $app->platform === 'ios' ? $this->iTunesService : $this->googlePlayService;
+            $position = $service->getAppRankForKeyword(
+                $app->store_id,
+                $keywordText,
+                $country
+            );
+
+            $app->rankings()->create([
                 'keyword_id' => $keyword->id,
                 'recorded_at' => today(),
-            ],
-            ['position' => $position]
-        );
+                'position' => $position,
+            ]);
+        }
 
         return response()->json([
             'message' => 'Keyword added successfully',
@@ -183,24 +197,19 @@ class KeywordController extends Controller
     }
 
     /**
-     * Remove a keyword from tracking
+     * Remove a keyword from tracking (for current user only)
      */
     public function removeFromApp(Request $request, App $app, Keyword $keyword): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $user = $request->user();
 
-        // Delete tracking
-        TrackedKeyword::where('app_id', $app->id)
+        // Delete tracking only for this user
+        TrackedKeyword::where('user_id', $user->id)
+            ->where('app_id', $app->id)
             ->where('keyword_id', $keyword->id)
             ->delete();
 
-        // Delete associated rankings
-        $app->rankings()
-            ->where('keyword_id', $keyword->id)
-            ->delete();
+        // Do NOT delete rankings - they are shared between users
 
         return response()->json([
             'message' => 'Keyword removed successfully',

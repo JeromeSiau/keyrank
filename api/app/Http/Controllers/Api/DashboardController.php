@@ -16,10 +16,8 @@ class DashboardController extends Controller
         $user = $request->user();
 
         $appsCount = $user->apps()->count();
-        $keywordsCount = $user->apps()
-            ->withCount('trackedKeywords')
-            ->get()
-            ->sum('tracked_keywords_count');
+        // Count only keywords tracked by this user (not all users)
+        $keywordsCount = $user->trackedKeywords()->count();
 
         // Get rankings with improvements today
         $today = today();

@@ -25,11 +25,6 @@ class RankingController extends Controller
      */
     public function index(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         // Check if we need to fetch fresh data
         $this->fetchRankingsIfStale($app);
 
@@ -147,11 +142,6 @@ class RankingController extends Controller
      */
     public function history(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $validated = $request->validate([
             'keyword_id' => 'required|integer|exists:keywords,id',
             'days' => 'nullable|integer|min:7|max:365',

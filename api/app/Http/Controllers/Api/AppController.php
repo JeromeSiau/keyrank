@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\App;
+use App\Models\TrackedKeyword;
 use App\Services\iTunesService;
 use App\Services\GooglePlayService;
 use Illuminate\Http\JsonResponse;
@@ -92,20 +93,35 @@ class AppController extends Controller
         $storeId = $validated['store_id'];
         $country = $validated['country'] ?? 'us';
 
-        // Check for duplicate
-        $existing = $user->apps()
+        // Check if user already follows this app
+        $existingForUser = $user->apps()
             ->where('platform', $platform)
             ->where('store_id', $storeId)
             ->first();
 
-        if ($existing) {
+        if ($existingForUser) {
             return response()->json([
                 'message' => 'You are already tracking this app',
-                'data' => $existing,
+                'data' => $existingForUser,
             ], 409);
         }
 
-        // Fetch details from appropriate store
+        // Check if app exists globally (shared)
+        $app = App::where('platform', $platform)
+            ->where('store_id', $storeId)
+            ->first();
+
+        if ($app) {
+            // App exists, just attach user to it
+            $app->users()->attach($user->id);
+
+            return response()->json([
+                'message' => 'App added successfully',
+                'data' => $app,
+            ], 201);
+        }
+
+        // App doesn't exist, fetch details and create it
         if ($platform === 'ios') {
             $details = $this->iTunesService->getAppDetails($storeId, $country);
             if (!$details) {
@@ -123,7 +139,6 @@ class AppController extends Controller
         }
 
         $app = App::create([
-            'user_id' => $user->id,
             'platform' => $platform,
             'store_id' => $storeId,
             'name' => $details['name'] ?? 'Unknown',
@@ -134,6 +149,9 @@ class AppController extends Controller
             'rating_count' => $details['rating_count'] ?? 0,
             'storefront' => strtoupper($country),
         ]);
+
+        // Attach user to newly created app
+        $app->users()->attach($user->id);
 
         return response()->json([
             'message' => 'App added successfully',
@@ -146,13 +164,12 @@ class AppController extends Controller
      */
     public function show(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        $app->load(['trackedKeywords.keyword']);
-        $app->loadCount('trackedKeywords');
+        // Load only this user's tracked keywords for this app
+        $user = $request->user();
+        $app->load(['trackedKeywords' => function ($query) use ($user) {
+            $query->where('user_id', $user->id)->with('keyword');
+        }]);
+        $app->tracked_keywords_count = $app->trackedKeywords->count();
 
         return response()->json([
             'data' => $app,
@@ -160,16 +177,24 @@ class AppController extends Controller
     }
 
     /**
-     * Delete a tracked app
+     * Stop tracking an app (detach user)
      */
     public function destroy(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $user = $request->user();
 
-        $app->delete();
+        // Detach user from app
+        $app->users()->detach($user->id);
+
+        // Remove user's tracked keywords for this app
+        TrackedKeyword::where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->delete();
+
+        // If no users left tracking this app, delete it entirely
+        if ($app->users()->count() === 0) {
+            $app->delete();
+        }
 
         return response()->json([
             'message' => 'App removed successfully',
@@ -181,11 +206,6 @@ class AppController extends Controller
      */
     public function refresh(Request $request, App $app): JsonResponse
     {
-        // Ensure user owns this app
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         // Fetch details from appropriate store based on platform
         if ($app->platform === 'ios') {
             $details = $this->iTunesService->getAppDetails($app->store_id, strtolower($app->storefront ?? 'us'));

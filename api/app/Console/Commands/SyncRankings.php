@@ -22,26 +22,31 @@ class SyncRankings extends Command
 
     public function handle(): int
     {
-        $query = TrackedKeyword::with(['app', 'keyword']);
+        // Get distinct (app_id, keyword_id) pairs to avoid fetching same ranking multiple times
+        // when multiple users track the same keyword for the same app
+        $query = TrackedKeyword::query()
+            ->select('app_id', 'keyword_id')
+            ->with(['app', 'keyword'])
+            ->distinct();
 
         if ($appId = $this->option('app')) {
             $query->where('app_id', $appId);
         }
 
-        $tracked = $query->get();
+        $pairs = $query->get();
 
-        if ($tracked->isEmpty()) {
+        if ($pairs->isEmpty()) {
             $this->info('No keywords to sync.');
             return 0;
         }
 
-        $this->info("Syncing rankings for {$tracked->count()} tracked keywords...");
-        $bar = $this->output->createProgressBar($tracked->count());
+        $this->info("Syncing rankings for {$pairs->count()} unique app-keyword pairs...");
+        $bar = $this->output->createProgressBar($pairs->count());
 
         $synced = 0;
         $errors = 0;
 
-        foreach ($tracked as $item) {
+        foreach ($pairs as $item) {
             $country = strtolower($item->keyword->storefront);
             $platform = $item->app->platform;
 

@@ -24,11 +24,6 @@ class RatingsController extends Controller
      */
     public function forApp(Request $request, App $app): JsonResponse
     {
-        // Check ownership
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         // Auto-fetch if stale
         $this->fetchRatingsIfStale($app);
 
@@ -180,11 +175,6 @@ class RatingsController extends Controller
      */
     public function history(Request $request, App $app): JsonResponse
     {
-        // Check ownership
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $validated = $request->validate([
             'country' => 'required|string|size:2',
             'days' => 'nullable|integer|min:1|max:365',

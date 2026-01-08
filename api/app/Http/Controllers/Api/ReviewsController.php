@@ -22,11 +22,6 @@ class ReviewsController extends Controller
      */
     public function forCountry(Request $request, App $app, string $country): JsonResponse
     {
-        // Check ownership
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $country = strtoupper($country);
         $platform = $app->platform;
 
@@ -35,8 +30,18 @@ class ReviewsController extends Controller
         }
 
         // Get stored reviews for this country
-        $reviews = $app->reviews()
-            ->where('country', $country)
+        $reviewsQuery = $app->reviews()
+            ->select([
+                'id',
+                'author',
+                'title',
+                'content',
+                'rating',
+                'version',
+                'reviewed_at',
+            ])
+            ->where('country', $country);
+        $reviews = $reviewsQuery
             ->orderByDesc('reviewed_at')
             ->limit(100)
             ->get();
@@ -44,7 +49,7 @@ class ReviewsController extends Controller
         // Check if data is stale
         $lastFetch = $app->reviews_fetched_at;
         $isStale = !$lastFetch || $lastFetch->lt(now()->subHours(24));
-        $hasAnyReviews = $app->reviews()->exists();
+        $hasAnyReviews = $reviews->isNotEmpty() || $app->reviews()->exists();
         $hasReviewsForCountry = $reviews->isNotEmpty();
 
         // Fetch if:
@@ -65,8 +70,7 @@ class ReviewsController extends Controller
             }
 
             // Re-fetch reviews after storing
-            $reviews = $app->reviews()
-                ->where('country', $country)
+            $reviews = $reviewsQuery
                 ->orderByDesc('reviewed_at')
                 ->limit(100)
                 ->get();
@@ -99,23 +103,32 @@ class ReviewsController extends Controller
         $countryLower = strtolower($country);
         $reviews = $this->iTunesService->getAllAppReviews($app->store_id, $countryLower, 5);
 
-        foreach ($reviews as $review) {
-            AppReview::updateOrCreate(
-                [
-                    'app_id' => $app->id,
-                    'country' => strtoupper($country),
-                    'review_id' => $review['review_id'],
-                ],
-                [
-                    'author' => $review['author'],
-                    'title' => $review['title'],
-                    'content' => $review['content'],
-                    'rating' => $review['rating'],
-                    'version' => $review['version'],
-                    'reviewed_at' => $review['reviewed_at'],
-                ]
-            );
+        if (!$reviews) {
+            return;
         }
+
+        $now = now();
+        $rows = array_map(function ($review) use ($app, $country, $now) {
+            return [
+                'app_id' => $app->id,
+                'country' => strtoupper($country),
+                'review_id' => $review['review_id'],
+                'author' => $review['author'],
+                'title' => $review['title'],
+                'content' => $review['content'],
+                'rating' => $review['rating'],
+                'version' => $review['version'],
+                'reviewed_at' => $review['reviewed_at'],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }, $reviews);
+
+        AppReview::upsert(
+            $rows,
+            ['app_id', 'country', 'review_id'],
+            ['author', 'title', 'content', 'rating', 'version', 'reviewed_at', 'updated_at']
+        );
     }
 
     /**
@@ -136,6 +149,12 @@ class ReviewsController extends Controller
             if ($response->successful()) {
                 $reviews = $response->json('reviews', []);
 
+                if (!$reviews) {
+                    return;
+                }
+
+                $now = now();
+                $rows = [];
                 foreach ($reviews as $review) {
                     $reviewId = $review['review_id'] ?? sha1(implode('|', [
                         $app->store_id,
@@ -146,22 +165,26 @@ class ReviewsController extends Controller
                         $review['content'] ?? '',
                     ]));
 
-                    AppReview::updateOrCreate(
-                        [
-                            'app_id' => $app->id,
-                            'country' => strtoupper($country),
-                            'review_id' => $reviewId,
-                        ],
-                        [
-                            'author' => $review['author'] ?? 'Anonymous',
-                            'title' => $review['title'] ?? null,
-                            'content' => $review['content'] ?? '',
-                            'rating' => $review['rating'] ?? 0,
-                            'version' => $review['version'] ?? null,
-                            'reviewed_at' => isset($review['reviewed_at']) ? \Carbon\Carbon::parse($review['reviewed_at']) : now(),
-                        ]
-                    );
+                    $rows[] = [
+                        'app_id' => $app->id,
+                        'country' => strtoupper($country),
+                        'review_id' => $reviewId,
+                        'author' => $review['author'] ?? 'Anonymous',
+                        'title' => $review['title'] ?? null,
+                        'content' => $review['content'] ?? '',
+                        'rating' => $review['rating'] ?? 0,
+                        'version' => $review['version'] ?? null,
+                        'reviewed_at' => isset($review['reviewed_at']) ? \Carbon\Carbon::parse($review['reviewed_at']) : $now,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
                 }
+
+                AppReview::upsert(
+                    $rows,
+                    ['app_id', 'country', 'review_id'],
+                    ['author', 'title', 'content', 'rating', 'version', 'reviewed_at', 'updated_at']
+                );
             }
         } catch (\Exception $e) {
             \Log::warning("Failed to fetch Android reviews for app {$app->id}: " . $e->getMessage());
@@ -173,11 +196,6 @@ class ReviewsController extends Controller
      */
     public function summary(Request $request, App $app): JsonResponse
     {
-        // Check ownership
-        if ($app->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $platform = $app->platform;
 
         if (!$platform) {
