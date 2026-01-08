@@ -43,27 +43,11 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  SegmentedButton<ThemeMode>(
-                    segments: const [
-                      ButtonSegment(
-                        value: ThemeMode.system,
-                        label: Text('Système'),
-                        icon: Icon(Icons.brightness_auto),
-                      ),
-                      ButtonSegment(
-                        value: ThemeMode.dark,
-                        label: Text('Sombre'),
-                        icon: Icon(Icons.dark_mode),
-                      ),
-                      ButtonSegment(
-                        value: ThemeMode.light,
-                        label: Text('Clair'),
-                        icon: Icon(Icons.light_mode),
-                      ),
-                    ],
-                    selected: {themeMode},
-                    onSelectionChanged: (selection) {
-                      ref.read(themeModeProvider.notifier).setThemeMode(selection.first);
+                  _ThemeSelector(
+                    isDark: isDark,
+                    selectedMode: themeMode,
+                    onChanged: (mode) {
+                      ref.read(themeModeProvider.notifier).setThemeMode(mode);
                     },
                   ),
                 ],
@@ -204,6 +188,123 @@ class _InfoRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ThemeSelector extends StatelessWidget {
+  final bool isDark;
+  final ThemeMode selectedMode;
+  final ValueChanged<ThemeMode> onChanged;
+
+  const _ThemeSelector({
+    required this.isDark,
+    required this.selectedMode,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        border: Border.all(
+          color: isDark ? AppColors.border : AppColorsLight.border,
+        ),
+      ),
+      child: Row(
+        children: [
+          _ThemeOption(
+            isDark: isDark,
+            icon: Icons.brightness_auto,
+            label: 'Système',
+            isSelected: selectedMode == ThemeMode.system,
+            onTap: () => onChanged(ThemeMode.system),
+            isFirst: true,
+          ),
+          _ThemeOption(
+            isDark: isDark,
+            icon: Icons.dark_mode,
+            label: 'Sombre',
+            isSelected: selectedMode == ThemeMode.dark,
+            onTap: () => onChanged(ThemeMode.dark),
+          ),
+          _ThemeOption(
+            isDark: isDark,
+            icon: Icons.light_mode,
+            label: 'Clair',
+            isSelected: selectedMode == ThemeMode.light,
+            onTap: () => onChanged(ThemeMode.light),
+            isLast: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThemeOption extends StatelessWidget {
+  final bool isDark;
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final bool isFirst;
+  final bool isLast;
+
+  const _ThemeOption({
+    required this.isDark,
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    this.isFirst = false,
+    this.isLast = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = isDark ? AppColors.accent : AppColorsLight.accent;
+    final textPrimary = isDark ? AppColors.textPrimary : AppColorsLight.textPrimary;
+    final textMuted = isDark ? AppColors.textMuted : AppColorsLight.textMuted;
+
+    return Expanded(
+      child: Material(
+        color: isSelected ? accent.withAlpha(25) : Colors.transparent,
+        borderRadius: BorderRadius.horizontal(
+          left: isFirst ? const Radius.circular(AppColors.radiusSmall - 1) : Radius.zero,
+          right: isLast ? const Radius.circular(AppColors.radiusSmall - 1) : Radius.zero,
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.horizontal(
+            left: isFirst ? const Radius.circular(AppColors.radiusSmall - 1) : Radius.zero,
+            right: isLast ? const Radius.circular(AppColors.radiusSmall - 1) : Radius.zero,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            child: Column(
+              children: [
+                Icon(
+                  icon,
+                  size: 20,
+                  color: isSelected ? accent : textMuted,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected ? textPrimary : textMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
