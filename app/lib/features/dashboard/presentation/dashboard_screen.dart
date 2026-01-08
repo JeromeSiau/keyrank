@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/buttons.dart';
+import '../../../shared/widgets/states.dart';
 import '../../apps/providers/apps_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -30,7 +31,7 @@ class DashboardScreen extends ConsumerWidget {
               loading: () => const Center(
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              error: (e, _) => _ErrorView(
+              error: (e, _) => ErrorView(
                 message: e.toString(),
                 onRetry: () => ref.read(appsNotifierProvider.notifier).load(),
               ),
@@ -777,62 +778,3 @@ class _QuickActionItem extends StatelessWidget {
   }
 }
 
-class _ErrorView extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ErrorView({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.redMuted,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(
-              Icons.error_outline_rounded,
-              size: 32,
-              color: AppColors.red,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Error: $message',
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Material(
-            color: AppColors.accent,
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            child: InkWell(
-              onTap: onRetry,
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Text(
-                  'Retry',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

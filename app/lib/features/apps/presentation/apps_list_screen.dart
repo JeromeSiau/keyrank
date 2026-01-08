@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/buttons.dart';
+import '../../../shared/widgets/states.dart';
 import '../providers/apps_provider.dart';
 
 class AppsListScreen extends ConsumerWidget {
@@ -30,12 +31,19 @@ class AppsListScreen extends ConsumerWidget {
               loading: () => const Center(
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              error: (e, _) => _ErrorView(
+              error: (e, _) => ErrorView(
                 message: e.toString(),
                 onRetry: () => ref.read(appsNotifierProvider.notifier).load(),
               ),
               data: (apps) => apps.isEmpty
-                  ? _EmptyState(onAddApp: () => context.go('/apps/add'))
+                  ? EmptyStateView(
+                      icon: Icons.app_shortcut_outlined,
+                      title: 'No apps tracked yet',
+                      subtitle: 'Add an app to start tracking its rankings',
+                      actionLabel: 'Add App',
+                      actionIcon: Icons.add_rounded,
+                      onAction: () => context.go('/apps/add'),
+                    )
                   : _AppsTable(apps: apps),
             ),
           ),
@@ -407,136 +415,3 @@ class _AppRow extends StatelessWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  final VoidCallback onAddApp;
-
-  const _EmptyState({required this.onAddApp});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppColors.bgActive,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Icon(
-              Icons.app_shortcut_outlined,
-              size: 40,
-              color: AppColors.textMuted,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'No apps tracked yet',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Add an app to start tracking its rankings',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textMuted,
-            ),
-          ),
-          const SizedBox(height: 28),
-          Material(
-            color: AppColors.accent,
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            child: InkWell(
-              onTap: onAddApp,
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add_rounded, size: 18, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(
-                      'Add App',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ErrorView({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.redMuted,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(
-              Icons.error_outline_rounded,
-              size: 32,
-              color: AppColors.red,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Error: $message',
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Material(
-            color: AppColors.accent,
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            child: InkWell(
-              onTap: onRetry,
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Text(
-                  'Retry',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

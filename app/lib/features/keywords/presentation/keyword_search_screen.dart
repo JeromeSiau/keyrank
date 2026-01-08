@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/country_provider.dart' show Country, availableCountries, selectedCountryProvider;
+import '../../../shared/widgets/states.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../data/keywords_repository.dart';
 import '../domain/keyword_model.dart';
@@ -77,10 +78,14 @@ class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
               loading: () => const Center(
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              error: (e, _) => _ErrorView(message: e.toString()),
+              error: (e, _) => ErrorView(message: e.toString()),
               data: (response) {
                 if (response == null) {
-                  return const _EmptyState();
+                  return const EmptyStateView(
+                    icon: Icons.search_rounded,
+                    title: 'Search for a keyword',
+                    subtitle: 'Discover which apps rank for any keyword',
+                  );
                 }
                 return _ResultsView(response: response);
               },
@@ -303,51 +308,6 @@ class _SearchBar extends StatelessWidget {
                   const SizedBox(width: 8),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppColors.bgActive,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Icon(
-              Icons.search_rounded,
-              size: 40,
-              color: AppColors.textMuted,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Search for a keyword',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Discover which apps rank for any keyword',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textMuted,
             ),
           ),
         ],
@@ -796,41 +756,3 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
   }
 }
 
-class _ErrorView extends StatelessWidget {
-  final String message;
-
-  const _ErrorView({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.redMuted,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(
-              Icons.error_outline_rounded,
-              size: 32,
-              color: AppColors.red,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Error: $message',
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}
