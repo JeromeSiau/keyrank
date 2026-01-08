@@ -13,7 +13,6 @@ class AppRanking extends Model
         'app_id',
         'keyword_id',
         'position',
-        'platform',
         'recorded_at',
     ];
 
