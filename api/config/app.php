@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | ASO Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Priority countries for fetching ratings and rankings data.
+    |
+    */
+
+    'priority_countries' => ['us', 'gb', 'fr', 'de', 'jp', 'cn', 'kr', 'au', 'br', 'mx'],
+
 ];

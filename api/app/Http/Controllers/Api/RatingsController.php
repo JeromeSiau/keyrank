@@ -99,14 +99,8 @@ class RatingsController extends Controller
      */
     private function fetchAndStoreIosRatings(App $app): void
     {
-        // Priority countries (most important markets)
-        $priorityCountries = [
-            'us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'kr', 'cn', 'in',
-            'br', 'mx', 'es', 'it', 'nl', 'se', 'ch', 'at', 'be', 'dk',
-            'no', 'fi', 'sg', 'hk', 'tw', 'th', 'id', 'my', 'ph', 'vn',
-            'nz', 'ru', 'pl', 'tr', 'sa', 'ae', 'eg', 'za', 'ar', 'cl',
-            'co', 'pe', 'il', 'pt',
-        ];
+        // Priority countries from config
+        $priorityCountries = config('app.priority_countries');
 
         $now = now();
         $appleId = $app->apple_id;
@@ -154,14 +148,8 @@ class RatingsController extends Controller
      */
     private function fetchAndStoreAndroidRatings(App $app): void
     {
-        // Priority countries for Google Play
-        $priorityCountries = [
-            'us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'kr', 'in',
-            'br', 'mx', 'es', 'it', 'nl', 'se', 'ch', 'at', 'be', 'dk',
-            'no', 'fi', 'sg', 'hk', 'tw', 'th', 'id', 'my', 'ph', 'vn',
-            'nz', 'ru', 'pl', 'tr', 'sa', 'ae', 'eg', 'za', 'ar', 'cl',
-            'co', 'pe', 'il', 'pt',
-        ];
+        // Priority countries from config
+        $priorityCountries = config('app.priority_countries');
 
         $now = now();
         $googlePlayId = $app->google_play_id;
