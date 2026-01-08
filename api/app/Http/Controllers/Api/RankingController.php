@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppRanking;
+use App\Services\GooglePlayService;
 use App\Services\iTunesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 class RankingController extends Controller
 {
     public function __construct(
-        private iTunesService $iTunesService
+        private iTunesService $iTunesService,
+        private GooglePlayService $googlePlayService
     ) {}
 
     /**
@@ -84,7 +86,7 @@ class RankingController extends Controller
     }
 
     /**
-     * Fetch rankings from iTunes if data is stale (> 12h)
+     * Fetch rankings from store if data is stale (> 12h)
      */
     private function fetchRankingsIfStale(App $app): void
     {
@@ -113,13 +115,21 @@ class RankingController extends Controller
             return;
         }
 
-        // Fetch fresh rankings
+        // Fetch fresh rankings using appropriate service based on platform
         foreach ($trackedKeywords as $keyword) {
-            $position = $this->iTunesService->getAppRankForKeyword(
-                $app->apple_id,
-                $keyword->keyword,
-                strtolower($keyword->storefront)
-            );
+            if ($app->platform === 'ios') {
+                $position = $this->iTunesService->getAppRankForKeyword(
+                    $app->store_id,
+                    $keyword->keyword,
+                    strtolower($keyword->storefront)
+                );
+            } else {
+                $position = $this->googlePlayService->getAppRankForKeyword(
+                    $app->store_id,
+                    $keyword->keyword,
+                    strtolower($keyword->storefront)
+                );
+            }
 
             $app->rankings()->updateOrCreate(
                 [
