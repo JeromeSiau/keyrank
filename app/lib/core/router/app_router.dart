@@ -15,6 +15,7 @@ import '../../features/apps/presentation/add_app_screen.dart';
 import '../../features/keywords/presentation/keyword_search_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
+import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -118,6 +119,7 @@ class MainShell extends ConsumerWidget {
             // Glass sidebar
             _GlassSidebar(
               selectedIndex: _getSelectedIndex(context),
+              selectedAppId: _getSelectedAppId(context),
               onDestinationSelected: (index) => _onDestinationSelected(context, index),
               userName: user?.name ?? 'User',
               onLogout: () => ref.read(authStateProvider.notifier).logout(),
@@ -143,6 +145,15 @@ class MainShell extends ConsumerWidget {
     return 0;
   }
 
+  int? _getSelectedAppId(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
+    final match = RegExp(r'^/apps/(\d+)').firstMatch(location);
+    if (match != null) {
+      return int.tryParse(match.group(1)!);
+    }
+    return null;
+  }
+
   void _onDestinationSelected(BuildContext context, int index) {
     switch (index) {
       case 0:
@@ -160,12 +171,14 @@ class MainShell extends ConsumerWidget {
 
 class _GlassSidebar extends StatelessWidget {
   final int selectedIndex;
+  final int? selectedAppId;
   final ValueChanged<int> onDestinationSelected;
   final String userName;
   final VoidCallback onLogout;
 
   const _GlassSidebar({
     required this.selectedIndex,
+    required this.selectedAppId,
     required this.onDestinationSelected,
     required this.userName,
     required this.onLogout,
@@ -221,6 +234,8 @@ class _GlassSidebar extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 16),
+                      SidebarAppsList(selectedAppId: selectedAppId),
                       const SizedBox(height: 20),
                       _buildNavSection(
                         context,
