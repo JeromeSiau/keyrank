@@ -1,0 +1,86 @@
+name: aso_app
+description: "Keyrank - Track your App Store rankings"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # HTTP & API
+  dio: ^5.7.0
+
+  # Routing
+  go_router: ^14.6.2
+
+  # Storage
+  shared_preferences: ^2.3.3
+  flutter_secure_storage: ^9.2.2
+
+  # UI
+  fl_chart: ^0.69.2
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  flutter_svg: ^2.0.10+1
+
+  # Utils
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.9.0
+  riverpod_generator: ^2.6.2
+  flutter_native_splash: ^2.4.3
+  flutter_launcher_icons: ^0.14.2
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+
+# Splash screen configuration
+flutter_native_splash:
+  color: "#09090b"
+  image: assets/images/splash_logo.png
+  color_dark: "#09090b"
+  image_dark: assets/images/splash_logo.png
+  android_12:
+    color: "#09090b"
+    image: assets/images/splash_icon.png
+    color_dark: "#09090b"
+    image_dark: assets/images/splash_icon.png
+
+# App icon configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#18181b"
+  adaptive_icon_foreground: "assets/images/app_icon_foreground.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+    background_color: "#18181b"
+    theme_color: "#6366f1"
+  windows:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+  macos:
+    generate: true
+    image_path: "assets/images/app_icon.png"

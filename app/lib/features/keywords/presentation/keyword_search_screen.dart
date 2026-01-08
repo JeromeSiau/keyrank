@@ -1,0 +1,836 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/providers/country_provider.dart' show Country, availableCountries, selectedCountryProvider;
+import '../../apps/providers/apps_provider.dart';
+import '../data/keywords_repository.dart';
+import '../domain/keyword_model.dart';
+
+final _keywordSearchQueryProvider = StateProvider<String>((ref) => '');
+final _selectedPlatformProvider = StateProvider<String>((ref) => 'ios');
+
+final _keywordSearchResultsProvider = FutureProvider<KeywordSearchResponse?>((ref) async {
+  final query = ref.watch(_keywordSearchQueryProvider);
+  final country = ref.watch(selectedCountryProvider);
+  final platform = ref.watch(_selectedPlatformProvider);
+  if (query.length < 2) return null;
+
+  final repository = ref.watch(keywordsRepositoryProvider);
+  return repository.searchKeyword(query: query, country: country.code, platform: platform);
+});
+
+class KeywordSearchScreen extends ConsumerStatefulWidget {
+  const KeywordSearchScreen({super.key});
+
+  @override
+  ConsumerState<KeywordSearchScreen> createState() => _KeywordSearchScreenState();
+}
+
+class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final searchResults = ref.watch(_keywordSearchResultsProvider);
+    final selectedCountry = ref.watch(selectedCountryProvider);
+    final selectedPlatform = ref.watch(_selectedPlatformProvider);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.glassPanel,
+        borderRadius: BorderRadius.circular(AppColors.radiusLarge),
+      ),
+      child: Column(
+        children: [
+          // Toolbar
+          _Toolbar(
+            selectedCountry: selectedCountry,
+            onCountrySelected: (country) {
+              ref.read(selectedCountryProvider.notifier).state = country;
+            },
+            selectedPlatform: selectedPlatform,
+            onPlatformSelected: (platform) {
+              ref.read(_selectedPlatformProvider.notifier).state = platform;
+            },
+          ),
+          // Search bar
+          _SearchBar(
+            controller: _searchController,
+            onChanged: (value) {
+              ref.read(_keywordSearchQueryProvider.notifier).state = value;
+            },
+            onClear: () {
+              _searchController.clear();
+              ref.read(_keywordSearchQueryProvider.notifier).state = '';
+            },
+          ),
+          // Results
+          Expanded(
+            child: searchResults.when(
+              loading: () => const Center(
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              error: (e, _) => _ErrorView(message: e.toString()),
+              data: (response) {
+                if (response == null) {
+                  return const _EmptyState();
+                }
+                return _ResultsView(response: response);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Toolbar extends StatelessWidget {
+  final Country selectedCountry;
+  final ValueChanged<Country> onCountrySelected;
+  final String selectedPlatform;
+  final ValueChanged<String> onPlatformSelected;
+
+  const _Toolbar({
+    required this.selectedCountry,
+    required this.onCountrySelected,
+    required this.selectedPlatform,
+    required this.onPlatformSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 56,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      ),
+      child: Row(
+        children: [
+          const Text(
+            'Keyword Research',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Platform toggle
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.bgActive,
+              border: Border.all(color: AppColors.glassBorder),
+              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+            ),
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _PlatformToggleButton(
+                  label: '🍎 iOS',
+                  isSelected: selectedPlatform == 'ios',
+                  onTap: () => onPlatformSelected('ios'),
+                ),
+                _PlatformToggleButton(
+                  label: '🤖 Android',
+                  isSelected: selectedPlatform == 'android',
+                  onTap: () => onPlatformSelected('android'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Country selector
+          PopupMenuButton<Country>(
+            onSelected: onCountrySelected,
+            offset: const Offset(0, 44),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+              side: const BorderSide(color: AppColors.glassBorder),
+            ),
+            color: AppColors.glassPanel,
+            itemBuilder: (context) => availableCountries
+                .map((country) => PopupMenuItem<Country>(
+                      value: country,
+                      height: 44,
+                      child: Row(
+                        children: [
+                          Text(country.flag, style: const TextStyle(fontSize: 18)),
+                          const SizedBox(width: 10),
+                          Text(
+                            country.name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.bgActive,
+                border: Border.all(color: AppColors.glassBorder),
+                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(selectedCountry.flag, style: const TextStyle(fontSize: 16)),
+                  const SizedBox(width: 8),
+                  Text(
+                    selectedCountry.name,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: AppColors.textMuted),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PlatformToggleButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _PlatformToggleButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.glassPanel : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            color: isSelected ? AppColors.textPrimary : AppColors.textMuted,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onClear;
+
+  const _SearchBar({
+    required this.controller,
+    required this.onChanged,
+    required this.onClear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.bgBase,
+                border: Border.all(color: AppColors.glassBorder),
+                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+              ),
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(Icons.search_rounded, size: 20, color: AppColors.textMuted),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      onChanged: onChanged,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: 'Search keywords...',
+                        hintStyle: TextStyle(color: AppColors.textMuted),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+                  if (controller.text.isNotEmpty)
+                    IconButton(
+                      icon: const Icon(Icons.clear_rounded, size: 18),
+                      color: AppColors.textMuted,
+                      onPressed: onClear,
+                      padding: const EdgeInsets.all(8),
+                      constraints: const BoxConstraints(),
+                    ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: AppColors.bgActive,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Icon(
+              Icons.search_rounded,
+              size: 40,
+              color: AppColors.textMuted,
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Search for a keyword',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Discover which apps rank for any keyword',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textMuted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultsView extends StatelessWidget {
+  final KeywordSearchResponse response;
+
+  const _ResultsView({required this.response});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Keyword info card
+          _KeywordInfoCard(
+            keyword: response.keyword.keyword,
+            popularity: response.keyword.popularity,
+            totalResults: response.totalResults,
+          ),
+          const SizedBox(height: 16),
+          // Results table
+          _ResultsTable(results: response.results),
+        ],
+      ),
+    );
+  }
+}
+
+class _KeywordInfoCard extends StatelessWidget {
+  final String keyword;
+  final int? popularity;
+  final int totalResults;
+
+  const _KeywordInfoCard({
+    required this.keyword,
+    required this.popularity,
+    required this.totalResults,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.bgActive.withAlpha(50),
+        border: Border.all(color: AppColors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  keyword,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '$totalResults apps ranked',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (popularity != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: _getPopularityColor(popularity!).withAlpha(25),
+                borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    '$popularity',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: _getPopularityColor(popularity!),
+                    ),
+                  ),
+                  Text(
+                    'Popularity',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: _getPopularityColor(popularity!),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Color _getPopularityColor(int popularity) {
+    if (popularity >= 70) return AppColors.green;
+    if (popularity >= 40) return AppColors.yellow;
+    return AppColors.red;
+  }
+}
+
+class _ResultsTable extends ConsumerWidget {
+  final List<KeywordSearchResult> results;
+
+  const _ResultsTable({required this.results});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedPlatform = ref.watch(_selectedPlatformProvider);
+    final selectedCountry = ref.watch(selectedCountryProvider);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.bgActive.withAlpha(50),
+        border: Border.all(color: AppColors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      child: Column(
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${results.length} results',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Table header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.bgActive.withAlpha(80),
+              border: const Border(
+                top: BorderSide(color: AppColors.glassBorder),
+                bottom: BorderSide(color: AppColors.glassBorder),
+              ),
+            ),
+            child: const Row(
+              children: [
+                SizedBox(
+                  width: 60,
+                  child: Text(
+                    'RANK',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 52),
+                Expanded(
+                  child: Text(
+                    'APP',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 70,
+                  child: Text(
+                    'RATING',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12),
+                SizedBox(
+                  width: 48,
+                  child: Text(
+                    'TRACK',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                      color: AppColors.textMuted,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Results
+          ...results.map((app) => _ResultRow(
+            app: app,
+            platform: selectedPlatform,
+            country: selectedCountry.code,
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultRow extends ConsumerStatefulWidget {
+  final KeywordSearchResult app;
+  final String platform;
+  final String country;
+
+  const _ResultRow({
+    required this.app,
+    required this.platform,
+    required this.country,
+  });
+
+  @override
+  ConsumerState<_ResultRow> createState() => _ResultRowState();
+}
+
+class _ResultRowState extends ConsumerState<_ResultRow> {
+  bool _isLoading = false;
+  bool _isAdded = false;
+  String? _error;
+
+  Future<void> _trackApp() async {
+    if (_isLoading || _isAdded) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final notifier = ref.read(appsNotifierProvider.notifier);
+      if (widget.platform == 'android' && widget.app.googlePlayId != null) {
+        await notifier.addAndroidApp(widget.app.googlePlayId!, country: widget.country);
+      } else if (widget.app.appleId != null) {
+        await notifier.addApp(widget.app.appleId!, country: widget.country);
+      }
+      setState(() {
+        _isAdded = true;
+        _isLoading = false;
+      });
+    } on ApiException catch (e) {
+      setState(() {
+        _error = e.message;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isTopRank = widget.app.position <= 3;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      ),
+      child: Row(
+        children: [
+          // Position
+          SizedBox(
+            width: 60,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: isTopRank ? AppColors.greenMuted : AppColors.bgActive,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '#${widget.app.position}',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: isTopRank ? AppColors.green : AppColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Icon
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              gradient: AppColors.getGradient(widget.app.position),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: widget.app.iconUrl != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      widget.app.iconUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const Center(
+                        child: Icon(Icons.apps, size: 20, color: Colors.white),
+                      ),
+                    ),
+                  )
+                : const Center(
+                    child: Icon(Icons.apps, size: 20, color: Colors.white),
+                  ),
+          ),
+          const SizedBox(width: 12),
+          // App info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.app.name,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (widget.app.developer != null)
+                  Text(
+                    widget.app.developer!,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textMuted,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
+            ),
+          ),
+          // Rating
+          SizedBox(
+            width: 70,
+            child: widget.app.rating != null
+                ? Row(
+                    children: [
+                      const Icon(Icons.star_rounded, size: 16, color: AppColors.yellow),
+                      const SizedBox(width: 4),
+                      Text(
+                        widget.app.rating!.toStringAsFixed(1),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  )
+                : const Text(
+                    '--',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+          ),
+          const SizedBox(width: 12),
+          // Track button
+          SizedBox(
+            width: 48,
+            child: _buildTrackButton(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrackButton() {
+    if (_isAdded) {
+      return const Icon(
+        Icons.check_circle_rounded,
+        size: 22,
+        color: AppColors.green,
+      );
+    }
+
+    if (_isLoading) {
+      return const SizedBox(
+        width: 22,
+        height: 22,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: AppColors.textMuted,
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Tooltip(
+        message: _error!,
+        child: IconButton(
+          icon: const Icon(Icons.error_outline_rounded, size: 22),
+          color: AppColors.red,
+          onPressed: _trackApp,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
+      );
+    }
+
+    return IconButton(
+      icon: const Icon(Icons.add_circle_outline_rounded, size: 22),
+      color: AppColors.textMuted,
+      hoverColor: AppColors.green.withAlpha(30),
+      onPressed: _trackApp,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
+      tooltip: 'Track this app',
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  final String message;
+
+  const _ErrorView({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.redMuted,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(
+              Icons.error_outline_rounded,
+              size: 32,
+              color: AppColors.red,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Error: $message',
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}

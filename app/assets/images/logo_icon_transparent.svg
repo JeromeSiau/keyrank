@@ -1,0 +1,9 @@
+<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bars - no background for transparent icon -->
+  <rect x="10" y="34" width="10" height="14" rx="2" fill="#4f46e5"/>
+  <rect x="23" y="26" width="10" height="22" rx="2" fill="#6366f1"/>
+  <rect x="36" y="16" width="10" height="32" rx="2" fill="#818cf8"/>
+  <!-- Up arrow accent -->
+  <path d="M46 8L46 14" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <path d="M43 11L46 8L49 11" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
