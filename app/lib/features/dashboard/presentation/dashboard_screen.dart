@@ -467,11 +467,11 @@ class _AppRow extends StatelessWidget {
                   gradient: AppColors.getGradient(gradientIndex),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: app.displayIconUrl != null
+                child: app.iconUrl != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                          app.displayIconUrl!,
+                          app.iconUrl!,
                           fit: BoxFit.cover,
                           errorBuilder: (_, _, _) => const Center(
                             child: Icon(Icons.apps, size: 20, color: Colors.white),
