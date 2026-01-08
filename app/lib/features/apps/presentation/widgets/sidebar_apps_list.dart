@@ -104,6 +104,7 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
                   isSelected: app.id == widget.selectedAppId,
                   onTap: () => context.go('/apps/${app.id}'),
                   onToggleFavorite: () => _toggleFavorite(app.id),
+                  showPlatformBadge: true,
                 );
               }).toList(),
             ),
