@@ -570,10 +570,16 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
 
     try {
       final notifier = ref.read(appsNotifierProvider.notifier);
-      if (widget.platform == 'android' && widget.app.googlePlayId != null) {
-        await notifier.addAndroidApp(widget.app.googlePlayId!, country: widget.country);
-      } else if (widget.app.appleId != null) {
-        await notifier.addApp(widget.app.appleId!, country: widget.country);
+      final storeId = widget.platform == 'android'
+          ? widget.app.googlePlayId
+          : widget.app.appleId;
+
+      if (storeId != null) {
+        await notifier.addApp(
+          platform: widget.platform,
+          storeId: storeId,
+          country: widget.country,
+        );
       }
       setState(() {
         _isAdded = true;

@@ -404,7 +404,7 @@ class SmallButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const SmallButton({required this.label, required this.onTap});
+  const SmallButton({super.key, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
