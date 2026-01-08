@@ -109,4 +109,15 @@ class AppsRepository {
       throw ApiException.fromDioError(e);
     }
   }
+
+  Future<void> toggleFavorite(int appId, bool isFavorite) async {
+    try {
+      await dio.patch(
+        '${ApiConstants.apps}/$appId/favorite',
+        data: {'is_favorite': isFavorite},
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
 }
