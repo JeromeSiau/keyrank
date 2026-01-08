@@ -14,52 +14,25 @@ class App extends Model
 
     protected $fillable = [
         'user_id',
-        'apple_id',
-        'google_play_id',
+        'platform',
+        'store_id',
         'bundle_id',
         'name',
         'icon_url',
-        'google_icon_url',
         'developer',
         'rating',
         'rating_count',
-        'google_rating',
-        'google_rating_count',
         'storefront',
         'ratings_fetched_at',
         'reviews_fetched_at',
-        'google_ratings_fetched_at',
-        'google_reviews_fetched_at',
     ];
 
     protected $casts = [
         'rating' => 'decimal:1',
         'rating_count' => 'integer',
-        'google_rating' => 'decimal:1',
-        'google_rating_count' => 'integer',
         'ratings_fetched_at' => 'datetime',
         'reviews_fetched_at' => 'datetime',
-        'google_ratings_fetched_at' => 'datetime',
-        'google_reviews_fetched_at' => 'datetime',
     ];
-
-    public function hasIos(): bool
-    {
-        return !empty($this->apple_id);
-    }
-
-    public function hasAndroid(): bool
-    {
-        return !empty($this->google_play_id);
-    }
-
-    public function platforms(): array
-    {
-        $platforms = [];
-        if ($this->hasIos()) $platforms[] = 'ios';
-        if ($this->hasAndroid()) $platforms[] = 'android';
-        return $platforms;
-    }
 
     public function user(): BelongsTo
     {
@@ -100,7 +73,7 @@ class App extends Model
                 $query->selectRaw('MAX(id)')
                     ->from('app_ratings')
                     ->where('app_id', $this->id)
-                    ->groupBy('country', 'platform');
+                    ->groupBy('country');
             });
     }
 
