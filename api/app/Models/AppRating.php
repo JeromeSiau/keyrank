@@ -11,7 +11,6 @@ class AppRating extends Model
 
     protected $fillable = [
         'app_id',
-        'platform',
         'country',
         'rating',
         'rating_count',
@@ -29,8 +28,4 @@ class AppRating extends Model
         return $this->belongsTo(App::class);
     }
 
-    public function scopeForPlatform($query, string $platform)
-    {
-        return $query->where('platform', $platform);
-    }
 }
