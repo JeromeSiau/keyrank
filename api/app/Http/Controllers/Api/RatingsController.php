@@ -29,23 +29,11 @@ class RatingsController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $validated = $request->validate([
-            'platform' => 'nullable|string|in:ios,android',
-        ]);
-
-        // Determine platform: use param, or default to what the app has
-        $platform = $validated['platform'] ?? ($app->apple_id ? 'ios' : ($app->google_play_id ? 'android' : null));
-
-        if (!$platform) {
-            return response()->json(['message' => 'App has no platform'], 400);
-        }
-
         // Auto-fetch if stale
-        $this->fetchRatingsIfStale($app, $platform);
+        $this->fetchRatingsIfStale($app);
 
-        // Get latest ratings from database for this platform
+        // Get latest ratings from database
         $latestRatings = $app->latestRatings()
-            ->where('platform', $platform)
             ->orderByDesc('rating_count')
             ->get();
 
@@ -56,7 +44,7 @@ class RatingsController extends Controller
 
         return response()->json([
             'app_id' => $app->id,
-            'platform' => $platform,
+            'platform' => $app->platform,
             'total_ratings' => $totalRatings,
             'average_rating' => $averageRating,
             'ratings' => $latestRatings->map(fn($r) => [
@@ -72,26 +60,22 @@ class RatingsController extends Controller
     /**
      * Fetch ratings if data is stale (> 24h)
      */
-    private function fetchRatingsIfStale(App $app, string $platform): void
+    private function fetchRatingsIfStale(App $app): void
     {
-        // Use platform-specific timestamp field
-        $timestampField = $platform === 'ios' ? 'ratings_fetched_at' : 'google_ratings_fetched_at';
-        $lastFetch = $app->$timestampField;
-
         // Check if we've fetched within the last 24 hours
-        if ($lastFetch && $lastFetch->gt(now()->subHours(24))) {
+        if ($app->ratings_fetched_at && $app->ratings_fetched_at->gt(now()->subHours(24))) {
             return;
         }
 
-        // Fetch fresh ratings
-        if ($platform === 'ios') {
+        // Fetch fresh ratings based on app's platform
+        if ($app->platform === 'ios') {
             $this->fetchAndStoreIosRatings($app);
         } else {
             $this->fetchAndStoreAndroidRatings($app);
         }
 
         // Update fetch timestamp
-        $app->update([$timestampField => now()]);
+        $app->update(['ratings_fetched_at' => now()]);
     }
 
     /**
@@ -103,7 +87,7 @@ class RatingsController extends Controller
         $priorityCountries = config('app.priority_countries');
 
         $now = now();
-        $appleId = $app->apple_id;
+        $storeId = $app->store_id;
 
         // Fetch all countries in parallel using Http::pool
         $responses = Http::pool(fn ($pool) =>
@@ -111,7 +95,7 @@ class RatingsController extends Controller
                 $pool->as($country)
                     ->timeout(5)
                     ->get('https://itunes.apple.com/lookup', [
-                        'id' => $appleId,
+                        'id' => $storeId,
                         'country' => $country,
                     ])
             )->toArray()
@@ -131,7 +115,6 @@ class RatingsController extends Controller
                     if ($ratingCount > 0) {
                         AppRating::create([
                             'app_id' => $app->id,
-                            'platform' => 'ios',
                             'country' => strtoupper($country),
                             'rating' => $appData['averageUserRating'] ?? null,
                             'rating_count' => $ratingCount,
@@ -152,7 +135,7 @@ class RatingsController extends Controller
         $priorityCountries = config('app.priority_countries');
 
         $now = now();
-        $googlePlayId = $app->google_play_id;
+        $storeId = $app->store_id;
         $scraperUrl = config('services.gplay_scraper.url', 'http://localhost:3001');
 
         // Fetch all countries in parallel using Http::pool
@@ -160,7 +143,7 @@ class RatingsController extends Controller
             collect($priorityCountries)->map(fn ($country) =>
                 $pool->as($country)
                     ->timeout(10)
-                    ->get("{$scraperUrl}/app/{$googlePlayId}", [
+                    ->get("{$scraperUrl}/app/{$storeId}", [
                         'country' => $country,
                     ])
             )->toArray()
@@ -179,7 +162,6 @@ class RatingsController extends Controller
                     if ($ratingCount > 0) {
                         AppRating::create([
                             'app_id' => $app->id,
-                            'platform' => 'android',
                             'country' => strtoupper($country),
                             'rating' => $appData['rating'] ?? null,
                             'rating_count' => $ratingCount,
@@ -203,17 +185,14 @@ class RatingsController extends Controller
 
         $validated = $request->validate([
             'country' => 'required|string|size:2',
-            'platform' => 'nullable|string|in:ios,android',
             'days' => 'nullable|integer|min:1|max:365',
         ]);
 
         $country = strtoupper($validated['country']);
-        $platform = $validated['platform'] ?? ($app->apple_id ? 'ios' : 'android');
         $days = $validated['days'] ?? 30;
 
         $history = $app->ratings()
             ->where('country', $country)
-            ->where('platform', $platform)
             ->where('recorded_at', '>=', now()->subDays($days))
             ->orderBy('recorded_at')
             ->get();
@@ -221,7 +200,7 @@ class RatingsController extends Controller
         return response()->json([
             'app_id' => $app->id,
             'country' => $country,
-            'platform' => $platform,
+            'platform' => $app->platform,
             'history' => $history->map(fn($r) => [
                 'rating' => $r->rating,
                 'rating_count' => $r->rating_count,
