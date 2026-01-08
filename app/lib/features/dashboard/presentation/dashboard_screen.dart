@@ -535,10 +535,9 @@ class _AppRow extends StatelessWidget {
                 width: 110,
                 child: Row(
                   children: [
-                    if (app.appleId != null)
+                    if (app.isIos)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        margin: const EdgeInsets.only(right: 6),
                         decoration: BoxDecoration(
                           color: AppColors.textMuted.withAlpha(30),
                           borderRadius: BorderRadius.circular(6),
@@ -552,7 +551,7 @@ class _AppRow extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (app.googlePlayId != null)
+                    if (app.isAndroid)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
