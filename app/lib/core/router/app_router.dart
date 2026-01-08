@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_colors.dart';
 import '../widgets/keyrank_logo.dart';
+import '../widgets/user_menu.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
@@ -109,9 +110,10 @@ class MainShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).valueOrNull;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.bgBase,
+      backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -122,6 +124,7 @@ class MainShell extends ConsumerWidget {
               selectedAppId: _getSelectedAppId(context),
               onDestinationSelected: (index) => _onDestinationSelected(context, index),
               userName: user?.name ?? 'User',
+              userEmail: user?.email ?? '',
               onLogout: () => ref.read(authStateProvider.notifier).logout(),
             ),
             const SizedBox(width: 12),
@@ -174,6 +177,7 @@ class _GlassSidebar extends StatelessWidget {
   final int? selectedAppId;
   final ValueChanged<int> onDestinationSelected;
   final String userName;
+  final String userEmail;
   final VoidCallback onLogout;
 
   const _GlassSidebar({
@@ -181,22 +185,25 @@ class _GlassSidebar extends StatelessWidget {
     required this.selectedAppId,
     required this.onDestinationSelected,
     required this.userName,
+    required this.userEmail,
     required this.onLogout,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: 220,
       decoration: BoxDecoration(
-        color: AppColors.glassPanelAlpha,
+        color: isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-        border: Border.all(color: AppColors.glassBorder),
-        boxShadow: const [
+        border: Border.all(color: isDark ? AppColors.glassBorder : AppColorsLight.glassBorder),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x20000000),
+            color: isDark ? const Color(0x20000000) : const Color(0x10000000),
             blurRadius: 20,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -207,7 +214,7 @@ class _GlassSidebar extends StatelessWidget {
           child: Column(
             children: [
               // Header with logo
-              _buildHeader(context),
+              _buildHeader(context, isDark),
 
               // Navigation
               Expanded(
@@ -218,6 +225,7 @@ class _GlassSidebar extends StatelessWidget {
                     children: [
                       _buildNavSection(
                         context,
+                        isDark: isDark,
                         label: 'OVERVIEW',
                         items: [
                           _NavItemData(
@@ -239,6 +247,7 @@ class _GlassSidebar extends StatelessWidget {
                       const SizedBox(height: 20),
                       _buildNavSection(
                         context,
+                        isDark: isDark,
                         label: 'RESEARCH',
                         items: [
                           _NavItemData(
@@ -263,19 +272,19 @@ class _GlassSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isDark) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           const KeyrankLogoIcon(size: 36),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'keyrank',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
               letterSpacing: -0.3,
             ),
           ),
@@ -286,6 +295,7 @@ class _GlassSidebar extends StatelessWidget {
 
   Widget _buildNavSection(
     BuildContext context, {
+    required bool isDark,
     required String label,
     required List<_NavItemData> items,
   }) {
@@ -296,31 +306,33 @@ class _GlassSidebar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
-              color: AppColors.textMuted,
+              color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
             ),
           ),
         ),
-        ...items.map((item) => _buildNavItem(context, item)),
+        ...items.map((item) => _buildNavItem(context, item, isDark)),
       ],
     );
   }
 
-  Widget _buildNavItem(BuildContext context, _NavItemData item) {
+  Widget _buildNavItem(BuildContext context, _NavItemData item, bool isDark) {
     final isSelected = selectedIndex == item.index;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Material(
-        color: isSelected ? AppColors.accent.withAlpha(30) : Colors.transparent,
+        color: isSelected
+            ? (isDark ? AppColors.accent : AppColorsLight.accent).withAlpha(30)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         child: InkWell(
           onTap: () => onDestinationSelected(item.index),
           borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-          hoverColor: AppColors.bgHover,
+          hoverColor: isDark ? AppColors.bgHover : AppColorsLight.bgHover,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
@@ -328,7 +340,9 @@ class _GlassSidebar extends StatelessWidget {
                 Icon(
                   isSelected ? item.selectedIcon : item.icon,
                   size: 20,
-                  color: isSelected ? AppColors.accent : AppColors.textMuted,
+                  color: isSelected
+                      ? (isDark ? AppColors.accent : AppColorsLight.accent)
+                      : (isDark ? AppColors.textMuted : AppColorsLight.textMuted),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -336,7 +350,9 @@ class _GlassSidebar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                    color: isSelected
+                        ? (isDark ? AppColors.textPrimary : AppColorsLight.textPrimary)
+                        : (isDark ? AppColors.textSecondary : AppColorsLight.textSecondary),
                   ),
                 ),
                 if (item.badge != null) ...[
@@ -344,15 +360,15 @@ class _GlassSidebar extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.bgActive,
+                      color: isDark ? AppColors.bgActive : AppColorsLight.bgActive,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
                       item.badge!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textMuted,
+                        color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
                       ),
                     ),
                   ),
@@ -366,83 +382,10 @@ class _GlassSidebar extends StatelessWidget {
   }
 
   Widget _buildUserFooter(BuildContext context) {
-    final initials = userName.isNotEmpty
-        ? userName.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase()
-        : 'U';
-
-    return Container(
-      margin: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(100),
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        child: InkWell(
-          onTap: onLogout,
-          borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-          hoverColor: AppColors.bgHover,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userName,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const Text(
-                        'Sign out',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  Icons.logout_rounded,
-                  size: 18,
-                  color: AppColors.textMuted,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return UserMenu(
+      userName: userName,
+      userEmail: userEmail,
+      onLogout: onLogout,
     );
   }
 }
