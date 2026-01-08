@@ -58,6 +58,33 @@ class AppsNotifier extends StateNotifier<AsyncValue<List<AppModel>>> {
       rethrow;
     }
   }
+
+  Future<void> toggleFavorite(int appId) async {
+    final currentApps = state.valueOrNull;
+    if (currentApps == null) return;
+
+    final appIndex = currentApps.indexWhere((a) => a.id == appId);
+    if (appIndex == -1) return;
+
+    final app = currentApps[appIndex];
+    final newFavorite = !app.isFavorite;
+
+    // Optimistic update
+    final updatedApps = List<AppModel>.from(currentApps);
+    updatedApps[appIndex] = app.copyWith(
+      isFavorite: newFavorite,
+      favoritedAt: newFavorite ? DateTime.now() : null,
+    );
+    state = AsyncValue.data(updatedApps);
+
+    try {
+      await _repository.toggleFavorite(appId, newFavorite);
+    } catch (e) {
+      // Rollback on error
+      state = AsyncValue.data(currentApps);
+      rethrow;
+    }
+  }
 }
 
 final appsNotifierProvider = StateNotifierProvider<AppsNotifier, AsyncValue<List<AppModel>>>((ref) {
