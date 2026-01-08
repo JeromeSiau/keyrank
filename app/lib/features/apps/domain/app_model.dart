@@ -1,6 +1,5 @@
 class AppModel {
   final int id;
-  final int userId;
   final String platform; // 'ios' or 'android'
   final String storeId; // Apple ID or Google Play ID depending on platform
   final String? bundleId;
@@ -15,7 +14,6 @@ class AppModel {
 
   AppModel({
     required this.id,
-    required this.userId,
     required this.platform,
     required this.storeId,
     this.bundleId,
@@ -38,7 +36,6 @@ class AppModel {
   factory AppModel.fromJson(Map<String, dynamic> json) {
     return AppModel(
       id: json['id'] as int,
-      userId: json['user_id'] as int,
       platform: json['platform'] as String,
       storeId: json['store_id'] as String,
       bundleId: json['bundle_id'] as String?,
