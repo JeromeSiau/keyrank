@@ -43,62 +43,38 @@ class SyncRankings extends Command
 
         foreach ($tracked as $item) {
             $country = strtolower($item->keyword->storefront);
+            $platform = $item->app->platform;
 
-            // Sync iOS ranking if app has iOS
-            if ($item->app->apple_id) {
-                try {
-                    $position = $this->iTunesService->getAppRankForKeyword(
-                        $item->app->apple_id,
+            try {
+                // Use the appropriate service based on app's platform
+                $position = $platform === 'ios'
+                    ? $this->iTunesService->getAppRankForKeyword(
+                        $item->app->store_id,
+                        $item->keyword->keyword,
+                        $country
+                    )
+                    : $this->googlePlayService->getAppRankForKeyword(
+                        $item->app->store_id,
                         $item->keyword->keyword,
                         $country
                     );
 
-                    AppRanking::updateOrCreate(
-                        [
-                            'app_id' => $item->app_id,
-                            'keyword_id' => $item->keyword_id,
-                            'platform' => 'ios',
-                            'recorded_at' => today(),
-                        ],
-                        ['position' => $position]
-                    );
+                AppRanking::updateOrCreate(
+                    [
+                        'app_id' => $item->app_id,
+                        'keyword_id' => $item->keyword_id,
+                        'recorded_at' => today(),
+                    ],
+                    ['position' => $position]
+                );
 
-                    $synced++;
-                } catch (\Exception $e) {
-                    $this->error("\nError syncing iOS {$item->keyword->keyword}: {$e->getMessage()}");
-                    $errors++;
-                }
-
-                usleep(300000); // Rate limiting
+                $synced++;
+            } catch (\Exception $e) {
+                $this->error("\nError syncing {$platform} {$item->keyword->keyword}: {$e->getMessage()}");
+                $errors++;
             }
 
-            // Sync Android ranking if app has Android
-            if ($item->app->google_play_id) {
-                try {
-                    $position = $this->googlePlayService->getAppRankForKeyword(
-                        $item->app->google_play_id,
-                        $item->keyword->keyword,
-                        $country
-                    );
-
-                    AppRanking::updateOrCreate(
-                        [
-                            'app_id' => $item->app_id,
-                            'keyword_id' => $item->keyword_id,
-                            'platform' => 'android',
-                            'recorded_at' => today(),
-                        ],
-                        ['position' => $position]
-                    );
-
-                    $synced++;
-                } catch (\Exception $e) {
-                    $this->error("\nError syncing Android {$item->keyword->keyword}: {$e->getMessage()}");
-                    $errors++;
-                }
-
-                usleep(300000); // Rate limiting
-            }
+            usleep(300000); // Rate limiting
 
             $bar->advance();
         }
