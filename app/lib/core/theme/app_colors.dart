@@ -133,17 +133,22 @@ class GlassDecoration extends BoxDecoration {
     double radius = AppColors.radiusMedium,
     bool showBorder = true,
     Color? backgroundColor,
+    bool isDark = true,
   }) : super(
-          color: backgroundColor ?? AppColors.glassPanelAlpha,
+          color: backgroundColor ??
+              (isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha),
           borderRadius: BorderRadius.circular(radius),
           border: showBorder
-              ? Border.all(color: AppColors.glassBorder, width: 1)
+              ? Border.all(
+                  color: isDark ? AppColors.glassBorder : AppColorsLight.glassBorder,
+                  width: 1,
+                )
               : null,
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Color(0x20000000),
+              color: isDark ? const Color(0x20000000) : const Color(0x10000000),
               blurRadius: 20,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         );
@@ -174,6 +179,8 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: width,
       height: height,
@@ -182,6 +189,7 @@ class GlassContainer extends StatelessWidget {
         radius: radius,
         showBorder: showBorder,
         backgroundColor: backgroundColor,
+        isDark: isDark,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
@@ -194,7 +202,7 @@ class GlassContainer extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.glassHighlight,
+                  isDark ? AppColors.glassHighlight : AppColorsLight.glassHighlight,
                   Colors.transparent,
                 ],
               ),
