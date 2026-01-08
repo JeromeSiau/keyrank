@@ -17,6 +17,7 @@ import '../../features/keywords/presentation/keyword_search_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
 import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
+import '../../features/settings/presentation/settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -95,6 +96,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/keywords',
             builder: (context, state) => const KeywordSearchScreen(),
+          ),
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsScreen(),
           ),
         ],
       ),
