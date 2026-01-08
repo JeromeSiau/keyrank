@@ -8,6 +8,7 @@ router.get('/:appId', async (req: Request, res: Response) => {
   try {
     const { appId } = req.params;
     const { country = 'us', lang = 'en', sort = 'newest', num = 100 } = req.query;
+    const cappedNum = Math.min(Number(num), 500);
 
     const sortMap: Record<string, any> = {
       newest: gplay.sort.NEWEST,
@@ -20,7 +21,7 @@ router.get('/:appId', async (req: Request, res: Response) => {
       country: country as string,
       lang: lang as string,
       sort: sortMap[sort as string] || gplay.sort.NEWEST,
-      num: Math.min(Number(num), 500),
+      num: cappedNum,
     });
 
     // Handle both array and object with data property

@@ -7,7 +7,6 @@ router.get('/:appId', async (req: Request, res: Response) => {
   try {
     const { appId } = req.params;
     const { country = 'us', lang = 'en' } = req.query;
-
     let appData: any = null;
 
     // Try direct app lookup first

@@ -10,6 +10,16 @@ interface SearchQuery {
   num?: number;
 }
 
+async function getSearchResults(term: string, country: string, lang: string, num: number) {
+  const cappedNum = Math.min(num, 250);
+  return gplay.search({
+    term,
+    country,
+    lang,
+    num: cappedNum,
+  });
+}
+
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { term, country = 'us', lang = 'en', num = 50 } = req.query as unknown as SearchQuery;
@@ -19,12 +29,7 @@ router.get('/', async (req: Request, res: Response) => {
       return;
     }
 
-    const results = await gplay.search({
-      term,
-      country,
-      lang,
-      num: Math.min(Number(num), 250),
-    });
+    const results = await getSearchResults(term, country, lang, Number(num));
 
     const formatted = results.map((app, index) => ({
       position: index + 1,
@@ -59,12 +64,7 @@ router.post('/rankings', async (req: Request, res: Response) => {
 
     for (const keyword of keywords) {
       try {
-        const results = await gplay.search({
-          term: keyword,
-          country,
-          lang,
-          num: 250,
-        });
+        const results = await getSearchResults(keyword, country, lang, 250);
 
         const position = results.findIndex((app) => app.appId === app_id);
         rankings[keyword] = position >= 0 ? position + 1 : null;
