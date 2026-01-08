@@ -43,60 +43,42 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Row(
               children: [
-                // App icon with optional platform badge
-                SizedBox(
+                // App icon
+                Container(
                   width: 24,
                   height: 24,
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: AppColors.bgActive,
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: widget.app.iconUrl != null
-                            ? Image.network(
-                                widget.app.iconUrl!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, _, _) => const Icon(
-                                  Icons.apps,
-                                  size: 14,
-                                  color: AppColors.textMuted,
-                                ),
-                              )
-                            : const Icon(
-                                Icons.apps,
-                                size: 14,
-                                color: AppColors.textMuted,
-                              ),
-                      ),
-                      if (widget.showPlatformBadge)
-                        Positioned(
-                          right: -2,
-                          bottom: -2,
-                          child: Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: AppColors.bgBase,
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Icon(
-                              widget.app.isIos
-                                  ? Icons.apple
-                                  : Icons.android,
-                              size: 10,
-                              color: AppColors.textMuted,
-                            ),
-                          ),
-                        ),
-                    ],
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: AppColors.bgActive,
                   ),
+                  clipBehavior: Clip.antiAlias,
+                  child: widget.app.iconUrl != null
+                      ? Image.network(
+                          widget.app.iconUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => const Icon(
+                            Icons.apps,
+                            size: 14,
+                            color: AppColors.textMuted,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.apps,
+                          size: 14,
+                          color: AppColors.textMuted,
+                        ),
                 ),
                 const SizedBox(width: 8),
+                // Platform icon (inline before name)
+                if (widget.showPlatformBadge)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Icon(
+                      widget.app.isIos ? Icons.apple : Icons.android,
+                      size: 14,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
                 // App name
                 Expanded(
                   child: Text(
