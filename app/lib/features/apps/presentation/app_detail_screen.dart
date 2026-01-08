@@ -167,7 +167,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                 // Toolbar
                 _Toolbar(
                 appName: app.name,
+                isFavorite: app.isFavorite,
                 onBack: () => context.go('/apps'),
+                onToggleFavorite: () => ref.read(appsNotifierProvider.notifier).toggleFavorite(widget.appId),
                 onDelete: _deleteApp,
                 onViewRatings: () => context.push(
                   '/apps/${widget.appId}/ratings?name=${Uri.encodeComponent(app.name)}',
@@ -237,13 +239,17 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
 class _Toolbar extends StatelessWidget {
   final String appName;
+  final bool isFavorite;
   final VoidCallback onBack;
+  final VoidCallback onToggleFavorite;
   final VoidCallback onDelete;
   final VoidCallback onViewRatings;
 
   const _Toolbar({
     required this.appName,
+    required this.isFavorite,
     required this.onBack,
+    required this.onToggleFavorite,
     required this.onDelete,
     required this.onViewRatings,
   });
@@ -287,7 +293,14 @@ class _Toolbar extends StatelessWidget {
           ),
           // Actions
           ToolbarButton(
-            icon: Icons.star_outline_rounded,
+            icon: isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
+            label: 'Favorite',
+            iconColor: isFavorite ? AppColors.yellow : null,
+            onTap: onToggleFavorite,
+          ),
+          const SizedBox(width: 10),
+          ToolbarButton(
+            icon: Icons.bar_chart_rounded,
             label: 'Ratings',
             onTap: onViewRatings,
           ),

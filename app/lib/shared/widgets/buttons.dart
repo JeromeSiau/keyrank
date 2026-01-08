@@ -9,6 +9,7 @@ class ToolbarButton extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isDestructive;
   final bool isLoading;
+  final Color? iconColor;
 
   const ToolbarButton({
     super.key,
@@ -17,6 +18,7 @@ class ToolbarButton extends StatelessWidget {
     this.onTap,
     this.isDestructive = false,
     this.isLoading = false,
+    this.iconColor,
   });
 
   @override
@@ -46,7 +48,7 @@ class ToolbarButton extends StatelessWidget {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               else if (icon != null)
-                Icon(icon, size: 16, color: color),
+                Icon(icon, size: 16, color: iconColor ?? color),
               if (icon != null || isLoading) const SizedBox(width: 8),
               Text(
                 label,
