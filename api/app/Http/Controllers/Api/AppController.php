@@ -25,8 +25,18 @@ class AppController extends Controller
         $apps = $request->user()
             ->apps()
             ->withCount('trackedKeywords')
-            ->latest()
-            ->get();
+            ->get()
+            ->map(function ($app) {
+                $app->is_favorite = (bool) $app->pivot->is_favorite;
+                $app->favorited_at = $app->pivot->favorited_at;
+                return $app;
+            })
+            ->sortBy([
+                ['is_favorite', 'desc'],
+                ['favorited_at', 'desc'],
+                ['name', 'asc'],
+            ])
+            ->values();
 
         return response()->json([
             'data' => $apps,
