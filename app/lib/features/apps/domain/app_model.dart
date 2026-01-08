@@ -1,7 +1,7 @@
 class AppModel {
   final int id;
-  final String platform; // 'ios' or 'android'
-  final String storeId; // Apple ID or Google Play ID depending on platform
+  final String platform;
+  final String storeId;
   final String? bundleId;
   final String name;
   final String? iconUrl;
@@ -11,6 +11,8 @@ class AppModel {
   final String? storefront;
   final int? trackedKeywordsCount;
   final DateTime createdAt;
+  final bool isFavorite;
+  final DateTime? favoritedAt;
 
   AppModel({
     required this.id,
@@ -25,13 +27,46 @@ class AppModel {
     this.storefront,
     this.trackedKeywordsCount,
     required this.createdAt,
+    this.isFavorite = false,
+    this.favoritedAt,
   });
 
-  /// Returns true if this app is for iOS
   bool get isIos => platform == 'ios';
-
-  /// Returns true if this app is for Android
   bool get isAndroid => platform == 'android';
+
+  AppModel copyWith({
+    int? id,
+    String? platform,
+    String? storeId,
+    String? bundleId,
+    String? name,
+    String? iconUrl,
+    String? developer,
+    double? rating,
+    int? ratingCount,
+    String? storefront,
+    int? trackedKeywordsCount,
+    DateTime? createdAt,
+    bool? isFavorite,
+    DateTime? favoritedAt,
+  }) {
+    return AppModel(
+      id: id ?? this.id,
+      platform: platform ?? this.platform,
+      storeId: storeId ?? this.storeId,
+      bundleId: bundleId ?? this.bundleId,
+      name: name ?? this.name,
+      iconUrl: iconUrl ?? this.iconUrl,
+      developer: developer ?? this.developer,
+      rating: rating ?? this.rating,
+      ratingCount: ratingCount ?? this.ratingCount,
+      storefront: storefront ?? this.storefront,
+      trackedKeywordsCount: trackedKeywordsCount ?? this.trackedKeywordsCount,
+      createdAt: createdAt ?? this.createdAt,
+      isFavorite: isFavorite ?? this.isFavorite,
+      favoritedAt: favoritedAt ?? this.favoritedAt,
+    );
+  }
 
   factory AppModel.fromJson(Map<String, dynamic> json) {
     return AppModel(
@@ -47,6 +82,10 @@ class AppModel {
       storefront: json['storefront'] as String?,
       trackedKeywordsCount: _parseInt(json['tracked_keywords_count']),
       createdAt: DateTime.parse(json['created_at'] as String),
+      isFavorite: json['is_favorite'] as bool? ?? false,
+      favoritedAt: json['favorited_at'] != null
+          ? DateTime.parse(json['favorited_at'] as String)
+          : null,
     );
   }
 
