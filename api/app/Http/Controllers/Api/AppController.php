@@ -238,4 +238,26 @@ class AppController extends Controller
             'data' => $app->fresh(),
         ]);
     }
+
+    /**
+     * Toggle app favorite status
+     */
+    public function toggleFavorite(Request $request, App $app): JsonResponse
+    {
+        $validated = $request->validate([
+            'is_favorite' => 'required|boolean',
+        ]);
+
+        $isFavorite = $validated['is_favorite'];
+
+        $request->user()->apps()->updateExistingPivot($app->id, [
+            'is_favorite' => $isFavorite,
+            'favorited_at' => $isFavorite ? now() : null,
+        ]);
+
+        return response()->json([
+            'is_favorite' => $isFavorite,
+            'favorited_at' => $isFavorite ? now()->toIso8601String() : null,
+        ]);
+    }
 }

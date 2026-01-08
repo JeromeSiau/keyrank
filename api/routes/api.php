@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{app}', [AppController::class, 'show']);
         Route::delete('{app}', [AppController::class, 'destroy']);
         Route::post('{app}/refresh', [AppController::class, 'refresh']);
+        Route::patch('{app}/favorite', [AppController::class, 'toggleFavorite']);
 
         // Keywords for app
         Route::get('{app}/keywords', [KeywordController::class, 'forApp']);
