@@ -270,11 +270,11 @@ class _AppRow extends StatelessWidget {
                   gradient: AppColors.getGradient(gradientIndex),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: app.displayIconUrl != null
+                child: app.iconUrl != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                          app.displayIconUrl!,
+                          app.iconUrl!,
                           fit: BoxFit.cover,
                           errorBuilder: (_, _, _) => const Center(
                             child: Icon(Icons.apps, size: 20, color: Colors.white),
@@ -332,12 +332,12 @@ class _AppRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              // Platform badges
+              // Platform badge
               SizedBox(
                 width: 110,
                 child: Row(
                   children: [
-                    if (app.appleId != null)
+                    if (app.isIos)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         margin: const EdgeInsets.only(right: 6),
@@ -354,7 +354,7 @@ class _AppRow extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (app.googlePlayId != null)
+                    if (app.isAndroid)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(

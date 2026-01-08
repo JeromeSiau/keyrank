@@ -53,7 +53,11 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
     final country = ref.read(selectedCountryProvider);
 
     try {
-      await ref.read(appsNotifierProvider.notifier).addApp(app.appleId, country: country.code);
+      await ref.read(appsNotifierProvider.notifier).addApp(
+        platform: 'ios',
+        storeId: app.appleId,
+        country: country.code,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +89,11 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
     final country = ref.read(selectedCountryProvider);
 
     try {
-      await ref.read(appsNotifierProvider.notifier).addAndroidApp(app.googlePlayId, country: country.code);
+      await ref.read(appsNotifierProvider.notifier).addApp(
+        platform: 'android',
+        storeId: app.googlePlayId,
+        country: country.code,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

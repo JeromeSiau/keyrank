@@ -205,8 +205,8 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                           ref.invalidate(appsNotifierProvider);
                         },
                         onKeywordTap: _showKeywordHistory,
-                        hasIos: app.hasIos,
-                        hasAndroid: app.hasAndroid,
+                        hasIos: app.isIos,
+                        hasAndroid: app.isAndroid,
                       ),
                     ],
                   ),
@@ -329,11 +329,11 @@ class _AppInfoCard extends StatelessWidget {
               gradient: AppColors.getGradient(0),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: app.displayIconUrl != null
+            child: app.iconUrl != null
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.network(
-                      app.displayIconUrl!,
+                      app.iconUrl!,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => const Center(
                         child: Icon(Icons.apps, size: 32, color: Colors.white),
@@ -369,10 +369,10 @@ class _AppInfoCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 8),
-                // Platform badges
+                // Platform badge
                 Row(
                   children: [
-                    if (app.hasIos)
+                    if (app.isIos)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         margin: const EdgeInsets.only(right: 6),
@@ -396,7 +396,7 @@ class _AppInfoCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                    if (app.hasAndroid)
+                    if (app.isAndroid)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
@@ -430,7 +430,7 @@ class _AppInfoCard extends StatelessWidget {
               icon: Icons.star_rounded,
               iconColor: AppColors.yellow,
               value: app.rating!.toStringAsFixed(1),
-              label: '${app.ratingCount ?? 0} reviews',
+              label: '${app.ratingCount} reviews',
               onTap: onViewRatings,
             ),
           const SizedBox(width: 12),

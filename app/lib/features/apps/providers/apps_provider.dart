@@ -32,19 +32,17 @@ class AppsNotifier extends StateNotifier<AsyncValue<List<AppModel>>> {
     }
   }
 
-  Future<AppModel> addApp(String appleId, {String country = 'us'}) async {
+  Future<AppModel> addApp({
+    required String platform,
+    required String storeId,
+    String country = 'us',
+  }) async {
     try {
-      final app = await _repository.addApp(appleId: appleId, country: country);
-      await load();
-      return app;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<AppModel> addAndroidApp(String googlePlayId, {String country = 'us'}) async {
-    try {
-      final app = await _repository.addApp(googlePlayId: googlePlayId, country: country);
+      final app = await _repository.addApp(
+        platform: platform,
+        storeId: storeId,
+        country: country,
+      );
       await load();
       return app;
     } catch (e) {

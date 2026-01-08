@@ -1,17 +1,14 @@
 class AppModel {
   final int id;
   final int userId;
-  final String? appleId;
-  final String? googlePlayId;
+  final String platform; // 'ios' or 'android'
+  final String storeId; // Apple ID or Google Play ID depending on platform
   final String? bundleId;
   final String name;
   final String? iconUrl;
-  final String? googleIconUrl;
   final String? developer;
   final double? rating;
   final int ratingCount;
-  final double? googleRating;
-  final int googleRatingCount;
   final String? storefront;
   final int? trackedKeywordsCount;
   final DateTime createdAt;
@@ -19,55 +16,37 @@ class AppModel {
   AppModel({
     required this.id,
     required this.userId,
-    this.appleId,
-    this.googlePlayId,
+    required this.platform,
+    required this.storeId,
     this.bundleId,
     required this.name,
     this.iconUrl,
-    this.googleIconUrl,
     this.developer,
     this.rating,
     required this.ratingCount,
-    this.googleRating,
-    required this.googleRatingCount,
     this.storefront,
     this.trackedKeywordsCount,
     required this.createdAt,
   });
 
-  bool get hasIos => appleId != null && appleId!.isNotEmpty;
-  bool get hasAndroid => googlePlayId != null && googlePlayId!.isNotEmpty;
+  /// Returns true if this app is for iOS
+  bool get isIos => platform == 'ios';
 
-  /// Returns the best icon URL based on available platforms
-  /// Prioritizes iOS icon if available, falls back to Android icon
-  String? get displayIconUrl {
-    if (hasIos && iconUrl != null) return iconUrl;
-    if (hasAndroid && googleIconUrl != null) return googleIconUrl;
-    return iconUrl ?? googleIconUrl;
-  }
-
-  List<String> get platforms {
-    final list = <String>[];
-    if (hasIos) list.add('ios');
-    if (hasAndroid) list.add('android');
-    return list;
-  }
+  /// Returns true if this app is for Android
+  bool get isAndroid => platform == 'android';
 
   factory AppModel.fromJson(Map<String, dynamic> json) {
     return AppModel(
       id: json['id'] as int,
       userId: json['user_id'] as int,
-      appleId: json['apple_id'] as String?,
-      googlePlayId: json['google_play_id'] as String?,
+      platform: json['platform'] as String,
+      storeId: json['store_id'] as String,
       bundleId: json['bundle_id'] as String?,
       name: json['name'] as String,
       iconUrl: json['icon_url'] as String?,
-      googleIconUrl: json['google_icon_url'] as String?,
       developer: json['developer'] as String?,
       rating: _parseDouble(json['rating']),
       ratingCount: _parseInt(json['rating_count']) ?? 0,
-      googleRating: _parseDouble(json['google_rating']),
-      googleRatingCount: _parseInt(json['google_rating_count']) ?? 0,
       storefront: json['storefront'] as String?,
       trackedKeywordsCount: _parseInt(json['tracked_keywords_count']),
       createdAt: DateTime.parse(json['created_at'] as String),

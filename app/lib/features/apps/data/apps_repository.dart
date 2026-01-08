@@ -66,35 +66,16 @@ class AppsRepository {
   }
 
   Future<AppModel> addApp({
-    String? appleId,
-    String? googlePlayId,
+    required String platform,
+    required String storeId,
     String country = 'us',
   }) async {
     try {
       final response = await dio.post(
         ApiConstants.apps,
         data: {
-          if (appleId != null) 'apple_id': appleId,
-          if (googlePlayId != null) 'google_play_id': googlePlayId,
-          'country': country,
-        },
-      );
-      return AppModel.fromJson(response.data['data'] as Map<String, dynamic>);
-    } on DioException catch (e) {
-      throw ApiException.fromDioError(e);
-    }
-  }
-
-  Future<AppModel> linkAndroid({
-    required int appId,
-    required String googlePlayId,
-    String country = 'us',
-  }) async {
-    try {
-      final response = await dio.post(
-        '${ApiConstants.apps}/$appId/link-android',
-        data: {
-          'google_play_id': googlePlayId,
+          'platform': platform,
+          'store_id': storeId,
           'country': country,
         },
       );
