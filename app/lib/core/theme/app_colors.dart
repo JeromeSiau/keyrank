@@ -79,6 +79,54 @@ class AppColors {
   }
 }
 
+/// Design system colors for liquid glass light theme
+class AppColorsLight {
+  // Base backgrounds - light for contrast with glass panels
+  static const bgBase = Color(0xFFf5f5f7);
+  static const bgSurface = Color(0xFFffffff);
+
+  // Glass effect backgrounds (semi-transparent white)
+  static const glassPanel = Color(0xFFffffff);
+  static const glassPanelAlpha = Color(0xCCffffff); // 80% opacity
+  static const glassBorder = Color(0xFFe0e0e0);
+  static const glassHighlight = Color(0x08000000); // subtle dark highlight
+
+  // Legacy support
+  static const bgPanel = glassPanel;
+  static const bgHover = Color(0xFFf0f0f0);
+  static const bgActive = Color(0xFFe8e8e8);
+
+  // Borders
+  static const border = Color(0xFFe5e5e5);
+  static const borderLight = Color(0xFFd4d4d4);
+
+  // Text
+  static const textPrimary = Color(0xFF1a1a1a);
+  static const textSecondary = Color(0xFF6b6b6b);
+  static const textMuted = Color(0xFF9a9a9a);
+
+  // Accent - slightly darker blue for contrast
+  static const accent = Color(0xFF2563eb);
+  static const accentHover = Color(0xFF1d4ed8);
+  static const accentMuted = Color(0x262563eb);
+
+  // Semantic colors remain vibrant
+  static const green = Color(0xFF16a34a);
+  static const greenBright = Color(0xFF22c55e);
+  static const greenDim = Color(0xFF166534);
+  static const greenMuted = Color(0x2616a34a);
+
+  static const red = Color(0xFFdc2626);
+  static const redBright = Color(0xFFef4444);
+  static const redDim = Color(0xFF991b1b);
+  static const redMuted = Color(0x26dc2626);
+
+  static const yellow = Color(0xFFca8a04);
+  static const yellowBright = Color(0xFFeab308);
+  static const orange = Color(0xFFea580c);
+  static const purple = Color(0xFF9333ea);
+}
+
 /// Glass panel decoration with frosted effect
 class GlassDecoration extends BoxDecoration {
   GlassDecoration({
