@@ -60,7 +60,12 @@ class AppColors {
   static const gradient3 = [Color(0xFFf97316), Color(0xFFfb923c)];
   static const gradient4 = [Color(0xFFec4899), Color(0xFFf472b6)];
 
-  static List<List<Color>> get gradients => [gradient1, gradient2, gradient3, gradient4];
+  static List<List<Color>> get gradients => [
+    gradient1,
+    gradient2,
+    gradient3,
+    gradient4,
+  ];
 
   static LinearGradient getGradient(int index) {
     final colors = gradients[index % gradients.length];
@@ -135,23 +140,28 @@ class GlassDecoration extends BoxDecoration {
     Color? backgroundColor,
     bool isDark = true,
   }) : super(
-          color: backgroundColor ??
-              (isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha),
-          borderRadius: BorderRadius.circular(radius),
-          border: showBorder
-              ? Border.all(
-                  color: isDark ? AppColors.glassBorder : AppColorsLight.glassBorder,
-                  width: 1,
-                )
-              : null,
-          boxShadow: [
-            BoxShadow(
-              color: isDark ? const Color(0x20000000) : const Color(0x10000000),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        );
+         color:
+             backgroundColor ??
+             (isDark
+                 ? AppColors.glassPanelAlpha
+                 : AppColorsLight.glassPanelAlpha),
+         borderRadius: BorderRadius.circular(radius),
+         border: showBorder
+             ? Border.all(
+                 color: isDark
+                     ? AppColors.glassBorder
+                     : AppColorsLight.glassBorder,
+                 width: 1,
+               )
+             : null,
+         boxShadow: [
+           BoxShadow(
+             color: isDark ? const Color(0x20000000) : const Color(0x10000000),
+             blurRadius: 20,
+             offset: const Offset(0, 4),
+           ),
+         ],
+       );
 }
 
 /// Glass container widget with optional blur
@@ -202,7 +212,9 @@ class GlassContainer extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  isDark ? AppColors.glassHighlight : AppColorsLight.glassHighlight,
+                  isDark
+                      ? AppColors.glassHighlight
+                      : AppColorsLight.glassHighlight,
                   Colors.transparent,
                 ],
               ),
