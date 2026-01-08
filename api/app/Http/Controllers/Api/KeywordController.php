@@ -72,68 +72,35 @@ class KeywordController extends Controller
             ->withPivot('created_at')
             ->get()
             ->map(function ($keyword) use ($app) {
-                $result = [
+                // Get latest ranking for this keyword
+                $latestRanking = $app->rankings()
+                    ->where('keyword_id', $keyword->id)
+                    ->orderByDesc('recorded_at')
+                    ->first();
+
+                // Get previous ranking for change calculation
+                $previousRanking = $latestRanking
+                    ? $app->rankings()
+                        ->where('keyword_id', $keyword->id)
+                        ->where('recorded_at', '<', $latestRanking->recorded_at)
+                        ->orderByDesc('recorded_at')
+                        ->first()
+                    : null;
+
+                $change = $latestRanking && $previousRanking && $latestRanking->position && $previousRanking->position
+                    ? $previousRanking->position - $latestRanking->position
+                    : null;
+
+                return [
                     'id' => $keyword->id,
                     'keyword' => $keyword->keyword,
                     'storefront' => $keyword->storefront,
                     'popularity' => $keyword->popularity,
                     'tracked_since' => $keyword->pivot->created_at,
+                    'position' => $latestRanking?->position,
+                    'change' => $change,
+                    'last_updated' => $latestRanking?->recorded_at,
                 ];
-
-                // Get iOS rankings if app has iOS
-                if ($app->apple_id) {
-                    $latestIos = $app->rankings()
-                        ->where('keyword_id', $keyword->id)
-                        ->where('platform', 'ios')
-                        ->orderByDesc('recorded_at')
-                        ->first();
-
-                    $previousIos = $latestIos
-                        ? $app->rankings()
-                            ->where('keyword_id', $keyword->id)
-                            ->where('platform', 'ios')
-                            ->where('recorded_at', '<', $latestIos->recorded_at)
-                            ->orderByDesc('recorded_at')
-                            ->first()
-                        : null;
-
-                    $result['ios_position'] = $latestIos?->position;
-                    $result['ios_change'] = $latestIos && $previousIos && $latestIos->position && $previousIos->position
-                        ? $previousIos->position - $latestIos->position
-                        : null;
-                }
-
-                // Get Android rankings if app has Android
-                if ($app->google_play_id) {
-                    $latestAndroid = $app->rankings()
-                        ->where('keyword_id', $keyword->id)
-                        ->where('platform', 'android')
-                        ->orderByDesc('recorded_at')
-                        ->first();
-
-                    $previousAndroid = $latestAndroid
-                        ? $app->rankings()
-                            ->where('keyword_id', $keyword->id)
-                            ->where('platform', 'android')
-                            ->where('recorded_at', '<', $latestAndroid->recorded_at)
-                            ->orderByDesc('recorded_at')
-                            ->first()
-                        : null;
-
-                    $result['android_position'] = $latestAndroid?->position;
-                    $result['android_change'] = $latestAndroid && $previousAndroid && $latestAndroid->position && $previousAndroid->position
-                        ? $previousAndroid->position - $latestAndroid->position
-                        : null;
-                }
-
-                // Get latest overall ranking for last_updated
-                $latestRanking = $app->rankings()
-                    ->where('keyword_id', $keyword->id)
-                    ->orderByDesc('recorded_at')
-                    ->first();
-                $result['last_updated'] = $latestRanking?->recorded_at;
-
-                return $result;
             });
 
         return response()->json([
@@ -182,44 +149,22 @@ class KeywordController extends Controller
         ]);
 
         $country = strtolower($storefront);
-        $iosPosition = null;
-        $androidPosition = null;
 
-        // Fetch iOS ranking if app has iOS
-        if ($app->apple_id) {
-            $iosPosition = $this->iTunesService->getAppRankForKeyword(
-                $app->apple_id,
-                $keywordText,
-                $country
-            );
+        // Fetch ranking based on app's platform
+        $service = $app->platform === 'ios' ? $this->iTunesService : $this->googlePlayService;
+        $position = $service->getAppRankForKeyword(
+            $app->store_id,
+            $keywordText,
+            $country
+        );
 
-            $app->rankings()->updateOrCreate(
-                [
-                    'keyword_id' => $keyword->id,
-                    'platform' => 'ios',
-                    'recorded_at' => today(),
-                ],
-                ['position' => $iosPosition]
-            );
-        }
-
-        // Fetch Android ranking if app has Android
-        if ($app->google_play_id) {
-            $androidPosition = $this->googlePlayService->getAppRankForKeyword(
-                $app->google_play_id,
-                $keywordText,
-                $country
-            );
-
-            $app->rankings()->updateOrCreate(
-                [
-                    'keyword_id' => $keyword->id,
-                    'platform' => 'android',
-                    'recorded_at' => today(),
-                ],
-                ['position' => $androidPosition]
-            );
-        }
+        $app->rankings()->updateOrCreate(
+            [
+                'keyword_id' => $keyword->id,
+                'recorded_at' => today(),
+            ],
+            ['position' => $position]
+        );
 
         return response()->json([
             'message' => 'Keyword added successfully',
@@ -227,8 +172,7 @@ class KeywordController extends Controller
                 'id' => $keyword->id,
                 'keyword' => $keyword->keyword,
                 'storefront' => $keyword->storefront,
-                'ios_position' => $iosPosition,
-                'android_position' => $androidPosition,
+                'position' => $position,
             ],
         ], 201);
     }
