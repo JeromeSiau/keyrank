@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,11 +48,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get user's tracked apps
+     * Get user's followed apps
      */
-    public function apps(): HasMany
+    public function apps(): BelongsToMany
     {
-        return $this->hasMany(App::class);
+        return $this->belongsToMany(App::class, 'user_apps')
+            ->withPivot('created_at');
     }
 
     /**

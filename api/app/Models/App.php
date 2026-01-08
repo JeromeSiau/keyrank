@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -13,7 +12,6 @@ class App extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'platform',
         'store_id',
         'bundle_id',
@@ -34,9 +32,10 @@ class App extends Model
         'reviews_fetched_at' => 'datetime',
     ];
 
-    public function user(): BelongsTo
+    public function users(): BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'user_apps')
+            ->withPivot('created_at');
     }
 
     public function keywords(): BelongsToMany
