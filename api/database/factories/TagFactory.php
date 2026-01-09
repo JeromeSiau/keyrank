@@ -11,7 +11,7 @@ class TagFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => fake()->word(),
+            'name' => fake()->unique()->word(),
             'color' => fake()->hexColor(),
         ];
     }
