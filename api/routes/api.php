@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AppController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\InsightsController;
 use App\Http\Controllers\Api\KeywordController;
 use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\RatingsController;
@@ -66,6 +67,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Reviews for app (auto-fetches if stale)
         Route::get('{app}/reviews/summary', [ReviewsController::class, 'summary']);
         Route::get('{app}/reviews/{country}', [ReviewsController::class, 'forCountry']);
+
+        // Insights for app
+        Route::get('{app}/insights', [InsightsController::class, 'show']);
+        Route::post('{app}/insights/generate', [InsightsController::class, 'generate']);
     });
 
     // Keywords (global search)
@@ -76,4 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rankings
     Route::get('rankings/movers', [RankingController::class, 'movers']);
+
+    // Insights comparison
+    Route::get('insights/compare', [InsightsController::class, 'compare']);
 });
