@@ -122,4 +122,42 @@ class KeywordDiscoveryService
 
         return array_values($words);
     }
+
+    /**
+     * Calculate keyword difficulty score (0-100)
+     */
+    public function calculateDifficulty(array $searchResults): array
+    {
+        $resultCount = count($searchResults);
+
+        if ($resultCount === 0) {
+            return ['score' => 0, 'label' => 'easy'];
+        }
+
+        // Score based on number of results (0-40)
+        $resultScore = min(40, $resultCount / 5);
+
+        // Score based on top 10 strength (0-60)
+        $top10 = array_slice($searchResults, 0, 10);
+        $strengthScore = 0;
+
+        foreach ($top10 as $app) {
+            $rating = $app['rating'] ?? 0;
+            $reviews = $app['rating_count'] ?? 1;
+            $strengthScore += $rating * log10(max(1, $reviews));
+        }
+        $strengthScore = min(60, ($strengthScore / 10) * 6);
+
+        $score = (int) round($resultScore + $strengthScore);
+        $score = max(0, min(100, $score));
+
+        $label = match (true) {
+            $score <= 25 => 'easy',
+            $score <= 50 => 'medium',
+            $score <= 75 => 'hard',
+            default => 'very_hard',
+        };
+
+        return ['score' => $score, 'label' => $label];
+    }
 }
