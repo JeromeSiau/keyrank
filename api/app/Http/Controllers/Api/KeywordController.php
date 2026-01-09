@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppRanking;
 use App\Models\Keyword;
+use App\Models\Tag;
 use App\Models\TrackedKeyword;
 use App\Services\iTunesService;
 use App\Services\GooglePlayService;
@@ -318,6 +319,99 @@ class KeywordController extends Controller
                 'country' => $country,
                 'total' => count($suggestions),
                 'generated_at' => now()->toIso8601String(),
+            ],
+        ]);
+    }
+
+    /**
+     * Bulk delete tracked keywords
+     */
+    public function bulkDelete(Request $request, App $app): JsonResponse
+    {
+        $validated = $request->validate([
+            'tracked_keyword_ids' => 'required|array|min:1',
+            'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
+        ]);
+
+        $user = $request->user();
+
+        $deletedCount = TrackedKeyword::whereIn('id', $validated['tracked_keyword_ids'])
+            ->where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->delete();
+
+        return response()->json([
+            'data' => [
+                'deleted_count' => $deletedCount,
+            ],
+        ]);
+    }
+
+    /**
+     * Bulk add tags to tracked keywords
+     */
+    public function bulkAddTags(Request $request, App $app): JsonResponse
+    {
+        $validated = $request->validate([
+            'tracked_keyword_ids' => 'required|array|min:1',
+            'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
+            'tag_ids' => 'required|array|min:1',
+            'tag_ids.*' => 'integer|exists:tags,id',
+        ]);
+
+        $user = $request->user();
+
+        // Verify all tags belong to user
+        $userTagIds = Tag::where('user_id', $user->id)
+            ->whereIn('id', $validated['tag_ids'])
+            ->pluck('id')
+            ->toArray();
+
+        if (count($userTagIds) !== count($validated['tag_ids'])) {
+            abort(403, 'Some tags do not belong to you');
+        }
+
+        $trackedKeywords = TrackedKeyword::whereIn('id', $validated['tracked_keyword_ids'])
+            ->where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->get();
+
+        foreach ($trackedKeywords as $tracked) {
+            $tracked->tags()->syncWithoutDetaching($userTagIds);
+        }
+
+        return response()->json([
+            'data' => [
+                'updated_count' => $trackedKeywords->count(),
+            ],
+        ]);
+    }
+
+    /**
+     * Bulk toggle favorite status for tracked keywords
+     */
+    public function bulkFavorite(Request $request, App $app): JsonResponse
+    {
+        $validated = $request->validate([
+            'tracked_keyword_ids' => 'required|array|min:1',
+            'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
+            'is_favorite' => 'required|boolean',
+        ]);
+
+        $user = $request->user();
+        $isFavorite = $validated['is_favorite'];
+
+        $updatedCount = TrackedKeyword::whereIn('id', $validated['tracked_keyword_ids'])
+            ->where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->update([
+                'is_favorite' => $isFavorite,
+                'favorited_at' => $isFavorite ? now() : null,
+            ]);
+
+        return response()->json([
+            'data' => [
+                'updated_count' => $updatedCount,
             ],
         ]);
     }

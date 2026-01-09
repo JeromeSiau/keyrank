@@ -57,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('{app}/keywords/{keyword}', [KeywordController::class, 'removeFromApp']);
         Route::patch('{app}/keywords/{keyword}/favorite', [KeywordController::class, 'toggleFavorite']);
         Route::get('{app}/keywords/suggestions', [KeywordController::class, 'suggestions']);
+        Route::post('{app}/keywords/bulk-delete', [KeywordController::class, 'bulkDelete']);
+        Route::post('{app}/keywords/bulk-add-tags', [KeywordController::class, 'bulkAddTags']);
+        Route::post('{app}/keywords/bulk-favorite', [KeywordController::class, 'bulkFavorite']);
 
         // Rankings for app (auto-fetches if stale)
         Route::get('{app}/rankings', [RankingController::class, 'index']);
