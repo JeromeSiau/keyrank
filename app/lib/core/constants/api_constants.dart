@@ -33,4 +33,7 @@ class ApiConstants {
 
   // Countries
   static const String countries = '/countries';
+
+  // Insights endpoints
+  static const String insightsCompare = '/insights/compare';
 }
