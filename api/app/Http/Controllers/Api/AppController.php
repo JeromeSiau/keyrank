@@ -22,13 +22,27 @@ class AppController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $apps = $request->user()
+        $user = $request->user();
+
+        $apps = $user
             ->apps()
             ->withCount('trackedKeywords')
             ->get()
-            ->map(function ($app) {
+            ->map(function ($app) use ($user) {
                 $app->is_favorite = (bool) $app->pivot->is_favorite;
                 $app->favorited_at = $app->pivot->favorited_at;
+
+                // Get best rank (lowest position) from today's rankings for user's tracked keywords
+                $userKeywordIds = $app->trackedKeywords()
+                    ->where('user_id', $user->id)
+                    ->pluck('keyword_id');
+
+                $app->best_rank = $app->rankings()
+                    ->whereIn('keyword_id', $userKeywordIds)
+                    ->whereDate('recorded_at', today())
+                    ->whereNotNull('position')
+                    ->min('position');
+
                 return $app;
             })
             ->sortBy([

@@ -571,21 +571,21 @@ class _AppRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              // Rank
+              // Best Rank
               SizedBox(
                 width: 80,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.greenMuted,
+                    color: app.bestRank != null ? AppColors.greenMuted : AppColors.bgActive,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
-                    '--',
+                  child: Text(
+                    app.bestRank?.toString() ?? '--',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.green,
+                      color: app.bestRank != null ? AppColors.green : AppColors.textMuted,
                     ),
                     textAlign: TextAlign.center,
                   ),

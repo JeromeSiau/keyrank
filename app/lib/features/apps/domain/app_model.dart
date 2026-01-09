@@ -10,6 +10,7 @@ class AppModel {
   final int ratingCount;
   final String? storefront;
   final int? trackedKeywordsCount;
+  final int? bestRank;
   final DateTime createdAt;
   final bool isFavorite;
   final DateTime? favoritedAt;
@@ -26,6 +27,7 @@ class AppModel {
     required this.ratingCount,
     this.storefront,
     this.trackedKeywordsCount,
+    this.bestRank,
     required this.createdAt,
     this.isFavorite = false,
     this.favoritedAt,
@@ -46,6 +48,7 @@ class AppModel {
     int? ratingCount,
     String? storefront,
     int? trackedKeywordsCount,
+    int? bestRank,
     DateTime? createdAt,
     bool? isFavorite,
     DateTime? favoritedAt,
@@ -62,6 +65,7 @@ class AppModel {
       ratingCount: ratingCount ?? this.ratingCount,
       storefront: storefront ?? this.storefront,
       trackedKeywordsCount: trackedKeywordsCount ?? this.trackedKeywordsCount,
+      bestRank: bestRank ?? this.bestRank,
       createdAt: createdAt ?? this.createdAt,
       isFavorite: isFavorite ?? this.isFavorite,
       favoritedAt: favoritedAt ?? this.favoritedAt,
@@ -81,6 +85,7 @@ class AppModel {
       ratingCount: _parseInt(json['rating_count']) ?? 0,
       storefront: json['storefront'] as String?,
       trackedKeywordsCount: _parseInt(json['tracked_keywords_count']),
+      bestRank: _parseInt(json['best_rank']),
       createdAt: DateTime.parse(json['created_at'] as String),
       isFavorite: json['is_favorite'] as bool? ?? false,
       favoritedAt: json['favorited_at'] != null
