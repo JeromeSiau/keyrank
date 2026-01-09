@@ -100,6 +100,9 @@ class KeywordsRepository {
           'country': country.toUpperCase(),
           'limit': limit,
         },
+        options: Options(
+          receiveTimeout: const Duration(minutes: 3),
+        ),
       );
       return KeywordSuggestionsResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
