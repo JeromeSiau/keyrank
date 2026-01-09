@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\KeywordController;
 use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\RatingsController;
 use App\Http\Controllers\Api\ReviewsController;
+use App\Http\Controllers\Api\TagsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,4 +86,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Insights comparison
     Route::get('insights/compare', [InsightsController::class, 'compare']);
+
+    // Tags
+    Route::prefix('tags')->group(function () {
+        Route::get('/', [TagsController::class, 'index']);
+        Route::post('/', [TagsController::class, 'store']);
+        Route::delete('{tag}', [TagsController::class, 'destroy']);
+    });
 });

@@ -57,4 +57,57 @@ class TagsTest extends TestCase
         $this->assertCount(1, $tracked->tags);
         $this->assertEquals('Important', $tracked->tags->first()->name);
     }
+
+    public function test_user_can_list_their_tags(): void
+    {
+        $user = User::factory()->create();
+        Tag::factory()->count(3)->create(['user_id' => $user->id]);
+        Tag::factory()->create(); // Another user's tag
+
+        $response = $this->actingAs($user)->getJson('/api/tags');
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+    }
+
+    public function test_user_can_create_tag(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/tags', [
+            'name' => 'High Priority',
+            'color' => '#ef4444',
+        ]);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.name', 'High Priority');
+        $this->assertDatabaseHas('tags', [
+            'user_id' => $user->id,
+            'name' => 'High Priority',
+        ]);
+    }
+
+    public function test_user_cannot_create_duplicate_tag_name(): void
+    {
+        $user = User::factory()->create();
+        Tag::create(['user_id' => $user->id, 'name' => 'Important', 'color' => '#000']);
+
+        $response = $this->actingAs($user)->postJson('/api/tags', [
+            'name' => 'Important',
+            'color' => '#ef4444',
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_user_can_delete_their_tag(): void
+    {
+        $user = User::factory()->create();
+        $tag = Tag::create(['user_id' => $user->id, 'name' => 'ToDelete', 'color' => '#000']);
+
+        $response = $this->actingAs($user)->deleteJson("/api/tags/{$tag->id}");
+
+        $response->assertNoContent();
+        $this->assertDatabaseMissing('tags', ['id' => $tag->id]);
+    }
 }
