@@ -28,6 +28,8 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   bool _isGenerating = false;
   AppInsight? _insight;
   String? _error;
+  bool _isEditingNote = false;
+  late TextEditingController _noteController;
 
   bool get _isInsightRecent {
     if (_insight == null) return false;
@@ -37,7 +39,14 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   @override
   void initState() {
     super.initState();
+    _noteController = TextEditingController();
     _loadExistingInsight();
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadExistingInsight() async {
@@ -45,7 +54,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       final repository = ref.read(insightsRepositoryProvider);
       final insight = await repository.getInsight(widget.appId);
       if (mounted) {
-        setState(() => _insight = insight);
+        setState(() {
+          _insight = insight;
+          _noteController.text = insight?.note ?? '';
+        });
       }
     } catch (e) {
       // No existing insight
@@ -75,6 +87,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       if (mounted) {
         setState(() {
           _insight = insight;
+          _noteController.text = insight.note ?? '';
           _isGenerating = false;
         });
       }
@@ -321,6 +334,9 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       children: [
         // Metadata
         _buildMetadata(insight),
+        const SizedBox(height: 16),
+        // Notes
+        _buildNoteSection(insight),
         const SizedBox(height: 20),
         // Strengths & Weaknesses
         Row(
@@ -376,6 +392,170 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
             style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNoteSection(AppInsight insight) {
+    Future<void> saveNote() async {
+      final content = _noteController.text.trim();
+      try {
+        final repository = ref.read(insightsRepositoryProvider);
+        await repository.saveNote(insight.id, content);
+        if (mounted) {
+          setState(() {
+            _insight = insight.copyWith(note: content.isEmpty ? null : content);
+            _isEditingNote = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Note saved'),
+              backgroundColor: AppColors.green,
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.red),
+          );
+        }
+      }
+    }
+
+    if (_isEditingNote) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.bgActive.withAlpha(50),
+          border: Border.all(color: AppColors.accent),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.edit_note_rounded, size: 16, color: AppColors.accent),
+                const SizedBox(width: 8),
+                const Text(
+                  'Your Notes',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const Spacer(),
+                Material(
+                  color: AppColors.accent,
+                  borderRadius: BorderRadius.circular(6),
+                  child: InkWell(
+                    onTap: saveNote,
+                    borderRadius: BorderRadius.circular(6),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: Text(
+                        'Save',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                  child: InkWell(
+                    onTap: () {
+                      _noteController.text = insight.note ?? '';
+                      setState(() => _isEditingNote = false);
+                    },
+                    borderRadius: BorderRadius.circular(6),
+                    child: const Padding(
+                      padding: EdgeInsets.all(6),
+                      child: Icon(Icons.close_rounded, size: 16, color: AppColors.textMuted),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.bgBase,
+                border: Border.all(color: AppColors.glassBorder),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: TextField(
+                controller: _noteController,
+                maxLines: 3,
+                style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                decoration: const InputDecoration(
+                  hintText: 'Add your notes about this insight analysis...',
+                  hintStyle: TextStyle(color: AppColors.textMuted),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Display mode
+    final hasNote = insight.note != null && insight.note!.isNotEmpty;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => setState(() => _isEditingNote = true),
+        borderRadius: BorderRadius.circular(8),
+        hoverColor: AppColors.bgHover,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.bgActive.withAlpha(30),
+            border: Border.all(color: AppColors.glassBorder),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                hasNote ? Icons.sticky_note_2_rounded : Icons.edit_note_rounded,
+                size: 16,
+                color: hasNote ? AppColors.accent : AppColors.textMuted,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: hasNote
+                    ? Text(
+                        insight.note!,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      )
+                    : Text(
+                        'Click to add notes...',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textMuted.withAlpha(150),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+              ),
+              Icon(
+                Icons.edit_rounded,
+                size: 14,
+                color: AppColors.textMuted.withAlpha(100),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

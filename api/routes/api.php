@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{app}/keywords/bulk-delete', [KeywordController::class, 'bulkDelete']);
         Route::post('{app}/keywords/bulk-add-tags', [KeywordController::class, 'bulkAddTags']);
         Route::post('{app}/keywords/bulk-favorite', [KeywordController::class, 'bulkFavorite']);
+        Route::post('{app}/keywords/import', [KeywordController::class, 'import']);
 
         // Rankings for app (auto-fetches if stale)
         Route::get('{app}/rankings', [RankingController::class, 'index']);

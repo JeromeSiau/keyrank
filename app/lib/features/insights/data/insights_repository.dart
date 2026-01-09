@@ -63,4 +63,19 @@ class InsightsRepository {
       throw ApiException.fromDioError(e);
     }
   }
+
+  /// Save a note for an insight
+  Future<void> saveNote(int insightId, String content) async {
+    try {
+      await dio.post(
+        '${ApiConstants.baseUrl}/notes',
+        data: {
+          'app_insight_id': insightId,
+          'content': content,
+        },
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
 }

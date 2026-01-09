@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppInsight;
+use App\Models\Note;
 use App\Services\InsightsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class InsightsController extends Controller
     /**
      * Get the latest insight for an app
      */
-    public function show(App $app): JsonResponse
+    public function show(Request $request, App $app): JsonResponse
     {
         $insight = $app->latestInsight;
 
@@ -29,7 +30,7 @@ class InsightsController extends Controller
         }
 
         return response()->json([
-            'data' => $this->formatInsight($insight),
+            'data' => $this->formatInsight($insight, $request->user()->id),
         ]);
     }
 
@@ -53,9 +54,11 @@ class InsightsController extends Controller
             ->whereJsonContains('countries', $countries[0])
             ->first();
 
+        $userId = $request->user()->id;
+
         if ($recentInsight && !$request->boolean('force')) {
             return response()->json([
-                'data' => $this->formatInsight($recentInsight),
+                'data' => $this->formatInsight($recentInsight, $userId),
                 'cached' => true,
             ]);
         }
@@ -69,7 +72,7 @@ class InsightsController extends Controller
         }
 
         return response()->json([
-            'data' => $this->formatInsight($insight),
+            'data' => $this->formatInsight($insight, $userId),
             'cached' => false,
         ]);
     }
@@ -96,6 +99,8 @@ class InsightsController extends Controller
             ], 404);
         }
 
+        $userId = $request->user()->id;
+
         $insights = [];
         foreach ($apps as $app) {
             $insight = $app->latestInsight;
@@ -106,7 +111,7 @@ class InsightsController extends Controller
                     'icon_url' => $app->icon_url,
                     'platform' => $app->platform,
                 ],
-                'insight' => $insight ? $this->formatInsight($insight) : null,
+                'insight' => $insight ? $this->formatInsight($insight, $userId) : null,
             ];
         }
 
@@ -115,8 +120,12 @@ class InsightsController extends Controller
         ]);
     }
 
-    private function formatInsight(AppInsight $insight): array
+    private function formatInsight(AppInsight $insight, int $userId): array
     {
+        $note = Note::where('user_id', $userId)
+            ->where('app_insight_id', $insight->id)
+            ->first();
+
         return [
             'id' => $insight->id,
             'reviews_count' => $insight->reviews_count,
@@ -130,6 +139,7 @@ class InsightsController extends Controller
             'overall_weaknesses' => $insight->overall_weaknesses,
             'opportunities' => $insight->opportunities,
             'analyzed_at' => $insight->created_at->toIso8601String(),
+            'note' => $note?->content,
         ];
     }
 }

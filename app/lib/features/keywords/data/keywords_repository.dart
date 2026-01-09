@@ -109,6 +109,136 @@ class KeywordsRepository {
       throw ApiException.fromDioError(e);
     }
   }
+
+  Future<Map<String, dynamic>> toggleFavorite(int appId, int keywordId) async {
+    try {
+      final response = await dio.patch(
+        '${ApiConstants.apps}/$appId/keywords/$keywordId/favorite',
+      );
+      return response.data['data'] as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  Future<void> saveNote(int trackedKeywordId, String content) async {
+    try {
+      await dio.post(
+        '${ApiConstants.baseUrl}/notes',
+        data: {
+          'tracked_keyword_id': trackedKeywordId,
+          'content': content,
+        },
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  Future<void> deleteNote(int noteId) async {
+    try {
+      await dio.delete('${ApiConstants.baseUrl}/notes/$noteId');
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Bulk delete tracked keywords
+  Future<int> bulkDelete(int appId, List<int> trackedKeywordIds) async {
+    try {
+      final response = await dio.post(
+        '${ApiConstants.apps}/$appId/keywords/bulk-delete',
+        data: {'tracked_keyword_ids': trackedKeywordIds},
+      );
+      return response.data['data']['deleted_count'] as int;
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Bulk add tags to tracked keywords
+  Future<int> bulkAddTags(int appId, List<int> trackedKeywordIds, List<int> tagIds) async {
+    try {
+      final response = await dio.post(
+        '${ApiConstants.apps}/$appId/keywords/bulk-add-tags',
+        data: {
+          'tracked_keyword_ids': trackedKeywordIds,
+          'tag_ids': tagIds,
+        },
+      );
+      return response.data['data']['updated_count'] as int;
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Bulk set favorite status for tracked keywords
+  Future<int> bulkFavorite(int appId, List<int> trackedKeywordIds, bool isFavorite) async {
+    try {
+      final response = await dio.post(
+        '${ApiConstants.apps}/$appId/keywords/bulk-favorite',
+        data: {
+          'tracked_keyword_ids': trackedKeywordIds,
+          'is_favorite': isFavorite,
+        },
+      );
+      return response.data['data']['updated_count'] as int;
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Export rankings as CSV
+  Future<String> exportRankingsCsv(int appId) async {
+    try {
+      final response = await dio.get(
+        '${ApiConstants.apps}/$appId/export/rankings',
+        options: Options(responseType: ResponseType.plain),
+      );
+      return response.data as String;
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Import keywords from text (one per line)
+  Future<ImportResult> importKeywords(int appId, String keywords, {String storefront = 'US'}) async {
+    try {
+      final response = await dio.post(
+        '${ApiConstants.apps}/$appId/keywords/import',
+        data: {
+          'keywords': keywords,
+          'storefront': storefront,
+        },
+      );
+      return ImportResult.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+}
+
+class ImportResult {
+  final int imported;
+  final int skipped;
+  final int errors;
+  final int total;
+
+  ImportResult({
+    required this.imported,
+    required this.skipped,
+    required this.errors,
+    required this.total,
+  });
+
+  factory ImportResult.fromJson(Map<String, dynamic> json) {
+    return ImportResult(
+      imported: json['imported'] as int,
+      skipped: json['skipped'] as int,
+      errors: json['errors'] as int,
+      total: json['total'] as int,
+    );
+  }
 }
 
 class RankingHistoryPoint {

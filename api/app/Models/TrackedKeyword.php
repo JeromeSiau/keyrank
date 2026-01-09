@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class TrackedKeyword extends Model
 {
@@ -17,12 +18,19 @@ class TrackedKeyword extends Model
         'is_favorite',
         'favorited_at',
         'created_at',
+        'difficulty',
+        'difficulty_label',
+        'competition',
+        'top_competitors',
     ];
 
     protected $casts = [
         'is_favorite' => 'boolean',
         'favorited_at' => 'datetime',
         'created_at' => 'datetime',
+        'difficulty' => 'integer',
+        'competition' => 'integer',
+        'top_competitors' => 'array',
     ];
 
     public function user(): BelongsTo
@@ -44,5 +52,10 @@ class TrackedKeyword extends Model
     {
         return $this->belongsToMany(Tag::class, 'tag_keyword')
             ->withTimestamps();
+    }
+
+    public function note(): HasOne
+    {
+        return $this->hasOne(Note::class);
     }
 }

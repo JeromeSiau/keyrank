@@ -1,5 +1,8 @@
+import '../../../features/tags/domain/tag_model.dart';
+
 class Keyword {
   final int id;
+  final int? trackedKeywordId;
   final String keyword;
   final String storefront;
   final int? popularity;
@@ -7,9 +10,18 @@ class Keyword {
   final int? change;
   final DateTime? lastUpdated;
   final DateTime? trackedSince;
+  final bool isFavorite;
+  final DateTime? favoritedAt;
+  final List<TagModel> tags;
+  final String? note;
+  final int? difficulty;
+  final String? difficultyLabel;
+  final int? competition;
+  final List<TopCompetitor>? topCompetitors;
 
   Keyword({
     required this.id,
+    this.trackedKeywordId,
     required this.keyword,
     required this.storefront,
     this.popularity,
@@ -17,11 +29,20 @@ class Keyword {
     this.change,
     this.lastUpdated,
     this.trackedSince,
+    this.isFavorite = false,
+    this.favoritedAt,
+    this.tags = const [],
+    this.note,
+    this.difficulty,
+    this.difficultyLabel,
+    this.competition,
+    this.topCompetitors,
   });
 
   factory Keyword.fromJson(Map<String, dynamic> json) {
     return Keyword(
       id: json['id'] as int,
+      trackedKeywordId: json['tracked_keyword_id'] as int?,
       keyword: json['keyword'] as String,
       storefront: json['storefront'] as String,
       popularity: json['popularity'] as int?,
@@ -33,6 +54,61 @@ class Keyword {
       trackedSince: json['tracked_since'] != null
           ? DateTime.parse(json['tracked_since'] as String)
           : null,
+      isFavorite: json['is_favorite'] as bool? ?? false,
+      favoritedAt: json['favorited_at'] != null
+          ? DateTime.parse(json['favorited_at'] as String)
+          : null,
+      tags: (json['tags'] as List<dynamic>?)
+              ?.map((e) => TagModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      note: json['note'] as String?,
+      difficulty: json['difficulty'] as int?,
+      difficultyLabel: json['difficulty_label'] as String?,
+      competition: json['competition'] as int?,
+      topCompetitors: (json['top_competitors'] as List<dynamic>?)
+          ?.map((e) => TopCompetitor.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Keyword copyWith({
+    int? id,
+    int? trackedKeywordId,
+    String? keyword,
+    String? storefront,
+    int? popularity,
+    int? position,
+    int? change,
+    DateTime? lastUpdated,
+    DateTime? trackedSince,
+    bool? isFavorite,
+    DateTime? favoritedAt,
+    List<TagModel>? tags,
+    String? note,
+    int? difficulty,
+    String? difficultyLabel,
+    int? competition,
+    List<TopCompetitor>? topCompetitors,
+  }) {
+    return Keyword(
+      id: id ?? this.id,
+      trackedKeywordId: trackedKeywordId ?? this.trackedKeywordId,
+      keyword: keyword ?? this.keyword,
+      storefront: storefront ?? this.storefront,
+      popularity: popularity ?? this.popularity,
+      position: position ?? this.position,
+      change: change ?? this.change,
+      lastUpdated: lastUpdated ?? this.lastUpdated,
+      trackedSince: trackedSince ?? this.trackedSince,
+      isFavorite: isFavorite ?? this.isFavorite,
+      favoritedAt: favoritedAt ?? this.favoritedAt,
+      tags: tags ?? this.tags,
+      note: note ?? this.note,
+      difficulty: difficulty ?? this.difficulty,
+      difficultyLabel: difficultyLabel ?? this.difficultyLabel,
+      competition: competition ?? this.competition,
+      topCompetitors: topCompetitors ?? this.topCompetitors,
     );
   }
 
@@ -166,11 +242,13 @@ class TopCompetitor {
   final String name;
   final int position;
   final double? rating;
+  final String? iconUrl;
 
   TopCompetitor({
     required this.name,
     required this.position,
     this.rating,
+    this.iconUrl,
   });
 
   factory TopCompetitor.fromJson(Map<String, dynamic> json) {
@@ -178,6 +256,7 @@ class TopCompetitor {
       name: json['name'] as String,
       position: json['position'] as int,
       rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
+      iconUrl: json['icon_url'] as String?,
     );
   }
 }

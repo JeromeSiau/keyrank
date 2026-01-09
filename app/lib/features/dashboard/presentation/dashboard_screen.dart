@@ -4,7 +4,11 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
+import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
+
+enum AppFilter { all, ios, android, favorites }
+enum AppSort { nameAsc, nameDesc, keywordsDesc, bestRank, recentlyAdded }
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -23,7 +27,6 @@ class DashboardScreen extends ConsumerWidget {
           // Toolbar
           _Toolbar(
             onAddApp: () => context.go('/apps/add'),
-            onRefresh: () => ref.read(appsNotifierProvider.notifier).load(),
           ),
           // Content
           Expanded(
@@ -46,9 +49,8 @@ class DashboardScreen extends ConsumerWidget {
 
 class _Toolbar extends StatelessWidget {
   final VoidCallback onAddApp;
-  final VoidCallback onRefresh;
 
-  const _Toolbar({required this.onAddApp, required this.onRefresh});
+  const _Toolbar({required this.onAddApp});
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +71,6 @@ class _Toolbar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          ToolbarButton(
-            icon: Icons.refresh_rounded,
-            label: 'Refresh',
-            onTap: onRefresh,
-          ),
-          const SizedBox(width: 10),
           PrimaryButton(
             icon: Icons.add_rounded,
             label: 'Add App',
@@ -87,7 +83,7 @@ class _Toolbar extends StatelessWidget {
 }
 
 class _DashboardContent extends StatelessWidget {
-  final List apps;
+  final List<AppModel> apps;
 
   const _DashboardContent({required this.apps});
 
@@ -95,7 +91,7 @@ class _DashboardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalKeywords = apps.fold<int>(
       0,
-      (sum, app) => sum + ((app.trackedKeywordsCount ?? 0) as int),
+      (sum, app) => sum + (app.trackedKeywordsCount ?? 0),
     );
 
     return SingleChildScrollView(
@@ -280,13 +276,172 @@ class _StatItem extends StatelessWidget {
   }
 }
 
-class _AppsPanel extends StatelessWidget {
-  final List apps;
+class _AppsPanel extends StatefulWidget {
+  final List<AppModel> apps;
 
   const _AppsPanel({required this.apps});
 
   @override
+  State<_AppsPanel> createState() => _AppsPanelState();
+}
+
+class _AppsPanelState extends State<_AppsPanel> {
+  AppFilter _filter = AppFilter.all;
+  AppSort _sort = AppSort.recentlyAdded;
+
+  List<AppModel> get _filteredAndSortedApps {
+    // Apply filter
+    var filtered = widget.apps.where((app) {
+      switch (_filter) {
+        case AppFilter.all:
+          return true;
+        case AppFilter.ios:
+          return app.isIos;
+        case AppFilter.android:
+          return app.isAndroid;
+        case AppFilter.favorites:
+          return app.isFavorite;
+      }
+    }).toList();
+
+    // Apply sort
+    filtered.sort((a, b) {
+      switch (_sort) {
+        case AppSort.nameAsc:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        case AppSort.nameDesc:
+          return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+        case AppSort.keywordsDesc:
+          return (b.trackedKeywordsCount ?? 0).compareTo(a.trackedKeywordsCount ?? 0);
+        case AppSort.bestRank:
+          // Apps with rank come first, sorted ascending (1 is best)
+          if (a.bestRank == null && b.bestRank == null) return 0;
+          if (a.bestRank == null) return 1;
+          if (b.bestRank == null) return -1;
+          return a.bestRank!.compareTo(b.bestRank!);
+        case AppSort.recentlyAdded:
+          return b.createdAt.compareTo(a.createdAt);
+      }
+    });
+
+    return filtered;
+  }
+
+  String get _filterLabel {
+    switch (_filter) {
+      case AppFilter.all:
+        return 'All';
+      case AppFilter.ios:
+        return 'iOS';
+      case AppFilter.android:
+        return 'Android';
+      case AppFilter.favorites:
+        return 'Favorites';
+    }
+  }
+
+  String get _sortLabel {
+    switch (_sort) {
+      case AppSort.nameAsc:
+        return 'Name A-Z';
+      case AppSort.nameDesc:
+        return 'Name Z-A';
+      case AppSort.keywordsDesc:
+        return 'Keywords';
+      case AppSort.bestRank:
+        return 'Best Rank';
+      case AppSort.recentlyAdded:
+        return 'Recent';
+    }
+  }
+
+  void _showFilterMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final offset = button.localToGlobal(Offset.zero);
+
+    showMenu<AppFilter>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy + button.size.height,
+        offset.dx + button.size.width,
+        offset.dy + button.size.height + 200,
+      ),
+      items: [
+        _buildFilterMenuItem(AppFilter.all, 'All Apps'),
+        _buildFilterMenuItem(AppFilter.ios, 'iOS Only'),
+        _buildFilterMenuItem(AppFilter.android, 'Android Only'),
+        _buildFilterMenuItem(AppFilter.favorites, 'Favorites'),
+      ],
+    ).then((value) {
+      if (value != null) {
+        setState(() => _filter = value);
+      }
+    });
+  }
+
+  PopupMenuItem<AppFilter> _buildFilterMenuItem(AppFilter filter, String label) {
+    return PopupMenuItem<AppFilter>(
+      value: filter,
+      child: Row(
+        children: [
+          if (_filter == filter)
+            const Icon(Icons.check, size: 16, color: AppColors.accent)
+          else
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  void _showSortMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final offset = button.localToGlobal(Offset.zero);
+
+    showMenu<AppSort>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy + button.size.height,
+        offset.dx + button.size.width,
+        offset.dy + button.size.height + 250,
+      ),
+      items: [
+        _buildSortMenuItem(AppSort.recentlyAdded, 'Recently Added'),
+        _buildSortMenuItem(AppSort.nameAsc, 'Name A-Z'),
+        _buildSortMenuItem(AppSort.nameDesc, 'Name Z-A'),
+        _buildSortMenuItem(AppSort.keywordsDesc, 'Most Keywords'),
+        _buildSortMenuItem(AppSort.bestRank, 'Best Rank'),
+      ],
+    ).then((value) {
+      if (value != null) {
+        setState(() => _sort = value);
+      }
+    });
+  }
+
+  PopupMenuItem<AppSort> _buildSortMenuItem(AppSort sort, String label) {
+    return PopupMenuItem<AppSort>(
+      value: sort,
+      child: Row(
+        children: [
+          if (_sort == sort)
+            const Icon(Icons.check, size: 16, color: AppColors.accent)
+          else
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final displayedApps = _filteredAndSortedApps;
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.bgActive.withAlpha(50),
@@ -302,9 +457,9 @@ class _AppsPanel extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Tracked Apps',
-                  style: TextStyle(
+                Text(
+                  'Tracked Apps${_filter != AppFilter.all ? ' ($_filterLabel)' : ''}',
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
@@ -312,9 +467,23 @@ class _AppsPanel extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    SmallButton(label: 'Filter', onTap: () {}),
+                    Builder(
+                      builder: (context) => _FilterSortButton(
+                        label: _filterLabel,
+                        icon: Icons.filter_list_rounded,
+                        isActive: _filter != AppFilter.all,
+                        onTap: () => _showFilterMenu(context),
+                      ),
+                    ),
                     const SizedBox(width: 6),
-                    SmallButton(label: 'Sort', onTap: () {}),
+                    Builder(
+                      builder: (context) => _FilterSortButton(
+                        label: _sortLabel,
+                        icon: Icons.sort_rounded,
+                        isActive: _sort != AppSort.recentlyAdded,
+                        onTap: () => _showSortMenu(context),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -386,15 +555,70 @@ class _AppsPanel extends StatelessWidget {
             ),
           ),
           // Apps list
-          if (apps.isEmpty)
-            _EmptyAppsState()
+          if (displayedApps.isEmpty)
+            _EmptyAppsState(hasFilter: _filter != AppFilter.all)
           else
-            ...apps.asMap().entries.map((entry) => _AppRow(
+            ...displayedApps.asMap().entries.map((entry) => _AppRow(
                   app: entry.value,
                   gradientIndex: entry.key,
                   onTap: () => context.go('/apps/${entry.value.id}'),
                 )),
         ],
+      ),
+    );
+  }
+}
+
+class _FilterSortButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _FilterSortButton({
+    required this.label,
+    required this.icon,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        hoverColor: AppColors.bgHover,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.accentMuted : Colors.transparent,
+            border: Border.all(
+              color: isActive ? AppColors.accent.withAlpha(100) : AppColors.glassBorder,
+            ),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 14,
+                color: isActive ? AppColors.accent : AppColors.textMuted,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isActive ? AppColors.accent : AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -600,6 +824,10 @@ class _AppRow extends StatelessWidget {
 }
 
 class _EmptyAppsState extends StatelessWidget {
+  final bool hasFilter;
+
+  const _EmptyAppsState({this.hasFilter = false});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -613,56 +841,58 @@ class _EmptyAppsState extends StatelessWidget {
               color: AppColors.bgActive,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(
-              Icons.app_shortcut_outlined,
+            child: Icon(
+              hasFilter ? Icons.filter_list_off_rounded : Icons.app_shortcut_outlined,
               size: 32,
               color: AppColors.textMuted,
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'No apps tracked yet',
-            style: TextStyle(
+          Text(
+            hasFilter ? 'No apps match filter' : 'No apps tracked yet',
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'Add an app to start tracking keywords',
-            style: TextStyle(
+          Text(
+            hasFilter ? 'Try changing the filter criteria' : 'Add an app to start tracking keywords',
+            style: const TextStyle(
               fontSize: 13,
               color: AppColors.textMuted,
             ),
           ),
-          const SizedBox(height: 20),
-          Material(
-            color: AppColors.accent,
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            child: InkWell(
-              onTap: () => context.go('/apps/add'),
+          if (!hasFilter) ...[
+            const SizedBox(height: 20),
+            Material(
+              color: AppColors.accent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add_rounded, size: 18, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(
-                      'Add App',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+              child: InkWell(
+                onTap: () => context.go('/apps/add'),
+                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add_rounded, size: 18, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        'Add App',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

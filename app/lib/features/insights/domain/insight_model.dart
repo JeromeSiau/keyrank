@@ -56,6 +56,7 @@ class AppInsight {
   final List<String> overallWeaknesses;
   final List<String> opportunities;
   final DateTime analyzedAt;
+  final String? note;
 
   AppInsight({
     required this.id,
@@ -69,7 +70,25 @@ class AppInsight {
     required this.overallWeaknesses,
     required this.opportunities,
     required this.analyzedAt,
+    this.note,
   });
+
+  AppInsight copyWith({String? note}) {
+    return AppInsight(
+      id: id,
+      reviewsCount: reviewsCount,
+      countries: countries,
+      periodStart: periodStart,
+      periodEnd: periodEnd,
+      categoryScores: categoryScores,
+      emergentThemes: emergentThemes,
+      overallStrengths: overallStrengths,
+      overallWeaknesses: overallWeaknesses,
+      opportunities: opportunities,
+      analyzedAt: analyzedAt,
+      note: note ?? this.note,
+    );
+  }
 
   factory AppInsight.fromJson(Map<String, dynamic> json) {
     final scoresJson = json['category_scores'] as Map<String, dynamic>? ?? {};
@@ -107,6 +126,7 @@ class AppInsight {
               .toList() ??
           [],
       analyzedAt: DateTime.parse(json['analyzed_at'] as String),
+      note: json['note'] as String?,
     );
   }
 }

@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
@@ -10,12 +12,14 @@ import '../../../shared/widgets/buttons.dart';
 import '../providers/apps_provider.dart';
 import '../../keywords/data/keywords_repository.dart';
 import '../../keywords/domain/keyword_model.dart';
+import '../../keywords/providers/keywords_provider.dart';
 import '../../keywords/presentation/keyword_suggestions_modal.dart';
+import '../../tags/domain/tag_model.dart';
+import '../../tags/providers/tags_provider.dart';
+import '../../tags/data/tags_repository.dart';
 
-final appKeywordsProvider = FutureProvider.family<List<Keyword>, int>((ref, appId) async {
-  final repository = ref.watch(keywordsRepositoryProvider);
-  return repository.getKeywordsForApp(appId);
-});
+enum KeywordFilter { all, favorites, hasTags, hasNotes, ios, android }
+enum KeywordSort { nameAsc, nameDesc, positionBest, popularity, recentlyTracked }
 
 class AppDetailScreen extends ConsumerStatefulWidget {
   final int appId;
@@ -68,7 +72,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       final country = ref.read(selectedCountryProvider);
       await repository.addKeywordToApp(widget.appId, keyword, storefront: country.code.toUpperCase());
       _keywordController.clear();
-      ref.invalidate(appKeywordsProvider(widget.appId));
+      ref.read(keywordsNotifierProvider(widget.appId).notifier).load();
       ref.invalidate(appsNotifierProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -87,6 +91,66 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     } finally {
       if (mounted) {
         setState(() => _isAddingKeyword = false);
+      }
+    }
+  }
+
+  Future<void> _showTagsModal(Keyword keyword) async {
+    if (keyword.trackedKeywordId == null) return;
+
+    final result = await showDialog<List<TagModel>>(
+      context: context,
+      builder: (context) => _TagsManagementDialog(
+        keyword: keyword,
+        appId: widget.appId,
+      ),
+    );
+
+    if (result != null) {
+      ref.read(keywordsNotifierProvider(widget.appId).notifier).updateKeywordTags(keyword.id, result);
+    }
+  }
+
+  Future<void> _showBulkTagsDialog(List<int> trackedKeywordIds) async {
+    final tagsAsync = ref.read(tagsProvider);
+    final tags = tagsAsync.valueOrNull ?? [];
+
+    if (tags.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No tags available. Create tags first.'),
+          backgroundColor: AppColors.yellow,
+        ),
+      );
+      return;
+    }
+
+    final selectedTagIds = await showDialog<List<int>>(
+      context: context,
+      builder: (context) => _BulkTagsDialog(tags: tags),
+    );
+
+    if (selectedTagIds != null && selectedTagIds.isNotEmpty) {
+      try {
+        await ref.read(keywordsNotifierProvider(widget.appId).notifier)
+            .bulkAddTags(trackedKeywordIds, selectedTagIds);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Tags added to ${trackedKeywordIds.length} keywords'),
+              backgroundColor: AppColors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: AppColors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -116,7 +180,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     );
 
     if (result == true) {
-      ref.invalidate(appKeywordsProvider(widget.appId));
+      ref.read(keywordsNotifierProvider(widget.appId).notifier).load();
       ref.invalidate(appsNotifierProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -168,10 +232,90 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     }
   }
 
+  Future<void> _exportRankings(String appName) async {
+    try {
+      // Show loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Exporting rankings...'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+
+      // Get CSV data from API
+      final csvData = await ref.read(keywordsRepositoryProvider).exportRankingsCsv(widget.appId);
+
+      // Use path_provider to get a writable directory
+      final fileName = 'rankings-${appName.replaceAll(RegExp(r'[^\w\s-]'), '')}-${DateTime.now().toIso8601String().split('T')[0]}.csv';
+
+      // Try downloads directory, fall back to documents
+      Directory? saveDir = await getDownloadsDirectory();
+      saveDir ??= await getApplicationDocumentsDirectory();
+
+      final savePath = '${saveDir.path}/$fileName';
+      final file = File(savePath);
+      await file.writeAsString(csvData);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Saved: $fileName'),
+            backgroundColor: AppColors.green,
+            duration: const Duration(seconds: 4),
+            action: Platform.isMacOS ? SnackBarAction(
+              label: 'Show in Finder',
+              textColor: Colors.white,
+              onPressed: () {
+                Process.run('open', ['-R', savePath]);
+              },
+            ) : null,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Export failed: ${e.toString()}'),
+            backgroundColor: AppColors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showImportDialog() async {
+    final result = await showDialog<ImportResult>(
+      context: context,
+      builder: (context) => _ImportKeywordsDialog(
+        appId: widget.appId,
+        onImport: (keywords, storefront) async {
+          return await ref.read(keywordsRepositoryProvider).importKeywords(
+            widget.appId,
+            keywords,
+            storefront: storefront,
+          );
+        },
+      ),
+    );
+
+    if (result != null && mounted) {
+      // Refresh keywords list
+      ref.invalidate(keywordsNotifierProvider(widget.appId));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Imported ${result.imported} keywords (${result.skipped} skipped)'),
+          backgroundColor: AppColors.green,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final appsAsync = ref.watch(appsNotifierProvider);
-    final keywordsAsync = ref.watch(appKeywordsProvider(widget.appId));
+    final keywordsState = ref.watch(keywordsNotifierProvider(widget.appId));
 
     final app = appsAsync.valueOrNull?.firstWhere(
       (a) => a.id == widget.appId,
@@ -216,6 +360,8 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                 onViewInsights: () => context.push(
                   '/apps/${widget.appId}/insights?name=${Uri.encodeComponent(app.name)}',
                 ),
+                onExport: () => _exportRankings(app.name),
+                onImport: _showImportDialog,
               ),
               // Content
               Expanded(
@@ -241,17 +387,32 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                       const SizedBox(height: 16),
                       // Keywords table
                       _KeywordsTable(
-                        keywordsAsync: keywordsAsync,
+                        keywordsState: keywordsState,
                         onDelete: (keyword) async {
-                          final repository = ref.read(keywordsRepositoryProvider);
-                          await repository.removeKeywordFromApp(widget.appId, keyword.id);
-                          ref.invalidate(appKeywordsProvider(widget.appId));
+                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).deleteKeyword(keyword);
                           ref.invalidate(appsNotifierProvider);
                         },
                         onKeywordTap: _showKeywordHistory,
-                        onSuggestions: () => _showSuggestionsModal(app, keywordsAsync.valueOrNull ?? []),
+                        onToggleFavorite: (keyword) async {
+                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).toggleFavorite(keyword);
+                        },
+                        onUpdateNote: (keyword, content) async {
+                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).updateNote(keyword, content);
+                        },
+                        onManageTags: (keyword) => _showTagsModal(keyword),
+                        onSuggestions: () => _showSuggestionsModal(app, keywordsState.keywords),
                         hasIos: app.isIos,
                         hasAndroid: app.isAndroid,
+                        onBulkDelete: (ids) async {
+                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkDelete(ids);
+                          ref.invalidate(appsNotifierProvider);
+                        },
+                        onBulkFavorite: (ids, isFavorite) async {
+                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkFavorite(ids, isFavorite);
+                        },
+                        onBulkAddTags: (ids) async {
+                          await _showBulkTagsDialog(ids);
+                        },
                       ),
                     ],
                   ),
@@ -288,6 +449,8 @@ class _Toolbar extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onViewRatings;
   final VoidCallback onViewInsights;
+  final VoidCallback onExport;
+  final VoidCallback onImport;
 
   const _Toolbar({
     required this.appName,
@@ -297,6 +460,8 @@ class _Toolbar extends StatelessWidget {
     required this.onDelete,
     required this.onViewRatings,
     required this.onViewInsights,
+    required this.onExport,
+    required this.onImport,
   });
 
   @override
@@ -354,6 +519,18 @@ class _Toolbar extends StatelessWidget {
             icon: Icons.insights_rounded,
             label: 'Insights',
             onTap: onViewInsights,
+          ),
+          const SizedBox(width: 10),
+          ToolbarButton(
+            icon: Icons.upload_rounded,
+            label: 'Import',
+            onTap: onImport,
+          ),
+          const SizedBox(width: 10),
+          ToolbarButton(
+            icon: Icons.download_rounded,
+            label: 'Export',
+            onTap: onExport,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
@@ -740,25 +917,257 @@ class _AddKeywordSection extends ConsumerWidget {
   }
 }
 
-class _KeywordsTable extends StatelessWidget {
-  final AsyncValue<List<Keyword>> keywordsAsync;
+class _KeywordsTable extends StatefulWidget {
+  final KeywordsState keywordsState;
   final Future<void> Function(Keyword) onDelete;
   final void Function(Keyword) onKeywordTap;
+  final Future<void> Function(Keyword) onToggleFavorite;
+  final Future<void> Function(Keyword, String) onUpdateNote;
+  final void Function(Keyword) onManageTags;
   final VoidCallback? onSuggestions;
   final bool hasIos;
   final bool hasAndroid;
+  final Future<void> Function(List<int>) onBulkDelete;
+  final Future<void> Function(List<int>, bool) onBulkFavorite;
+  final Future<void> Function(List<int>) onBulkAddTags;
 
   const _KeywordsTable({
-    required this.keywordsAsync,
+    required this.keywordsState,
     required this.onDelete,
     required this.onKeywordTap,
+    required this.onToggleFavorite,
+    required this.onUpdateNote,
+    required this.onManageTags,
     this.onSuggestions,
     required this.hasIos,
     required this.hasAndroid,
+    required this.onBulkDelete,
+    required this.onBulkFavorite,
+    required this.onBulkAddTags,
   });
 
   @override
+  State<_KeywordsTable> createState() => _KeywordsTableState();
+}
+
+class _KeywordsTableState extends State<_KeywordsTable> {
+  KeywordFilter _filter = KeywordFilter.all;
+  KeywordSort _sort = KeywordSort.nameAsc;
+  bool _isSelectionMode = false;
+  final Set<int> _selectedIds = {};
+
+  List<Keyword> get _filteredAndSortedKeywords {
+    var filtered = widget.keywordsState.keywords.where((k) {
+      switch (_filter) {
+        case KeywordFilter.all:
+          return true;
+        case KeywordFilter.favorites:
+          return k.isFavorite;
+        case KeywordFilter.hasTags:
+          return k.tags.isNotEmpty;
+        case KeywordFilter.hasNotes:
+          return k.note != null && k.note!.isNotEmpty;
+        case KeywordFilter.ios:
+          return k.storefront.toLowerCase() != 'android';
+        case KeywordFilter.android:
+          return k.storefront.toLowerCase() == 'android';
+      }
+    }).toList();
+
+    filtered.sort((a, b) {
+      switch (_sort) {
+        case KeywordSort.nameAsc:
+          return a.keyword.toLowerCase().compareTo(b.keyword.toLowerCase());
+        case KeywordSort.nameDesc:
+          return b.keyword.toLowerCase().compareTo(a.keyword.toLowerCase());
+        case KeywordSort.positionBest:
+          if (a.position == null && b.position == null) return 0;
+          if (a.position == null) return 1;
+          if (b.position == null) return -1;
+          return a.position!.compareTo(b.position!);
+        case KeywordSort.popularity:
+          return (b.popularity ?? 0).compareTo(a.popularity ?? 0);
+        case KeywordSort.recentlyTracked:
+          if (a.trackedSince == null && b.trackedSince == null) return 0;
+          if (a.trackedSince == null) return 1;
+          if (b.trackedSince == null) return -1;
+          return b.trackedSince!.compareTo(a.trackedSince!);
+      }
+    });
+
+    return filtered;
+  }
+
+  String get _filterLabel {
+    switch (_filter) {
+      case KeywordFilter.all:
+        return 'All';
+      case KeywordFilter.favorites:
+        return 'Favorites';
+      case KeywordFilter.hasTags:
+        return 'Tagged';
+      case KeywordFilter.hasNotes:
+        return 'With Notes';
+      case KeywordFilter.ios:
+        return 'iOS';
+      case KeywordFilter.android:
+        return 'Android';
+    }
+  }
+
+  String get _sortLabel {
+    switch (_sort) {
+      case KeywordSort.nameAsc:
+        return 'A-Z';
+      case KeywordSort.nameDesc:
+        return 'Z-A';
+      case KeywordSort.positionBest:
+        return 'Position';
+      case KeywordSort.popularity:
+        return 'Popularity';
+      case KeywordSort.recentlyTracked:
+        return 'Recent';
+    }
+  }
+
+  void _showFilterMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final offset = button.localToGlobal(Offset.zero);
+
+    showMenu<KeywordFilter>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy + button.size.height,
+        offset.dx + button.size.width,
+        offset.dy + button.size.height + 300,
+      ),
+      items: [
+        _buildFilterItem(KeywordFilter.all, 'All Keywords'),
+        _buildFilterItem(KeywordFilter.favorites, 'Favorites'),
+        _buildFilterItem(KeywordFilter.hasTags, 'Has Tags'),
+        _buildFilterItem(KeywordFilter.hasNotes, 'Has Notes'),
+        if (widget.hasIos) _buildFilterItem(KeywordFilter.ios, 'iOS Only'),
+        if (widget.hasAndroid) _buildFilterItem(KeywordFilter.android, 'Android Only'),
+      ],
+    ).then((value) {
+      if (value != null) setState(() => _filter = value);
+    });
+  }
+
+  PopupMenuItem<KeywordFilter> _buildFilterItem(KeywordFilter filter, String label) {
+    return PopupMenuItem<KeywordFilter>(
+      value: filter,
+      child: Row(
+        children: [
+          if (_filter == filter)
+            const Icon(Icons.check, size: 16, color: AppColors.accent)
+          else
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  void _showSortMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final offset = button.localToGlobal(Offset.zero);
+
+    showMenu<KeywordSort>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy + button.size.height,
+        offset.dx + button.size.width,
+        offset.dy + button.size.height + 250,
+      ),
+      items: [
+        _buildSortItem(KeywordSort.nameAsc, 'Name A-Z'),
+        _buildSortItem(KeywordSort.nameDesc, 'Name Z-A'),
+        _buildSortItem(KeywordSort.positionBest, 'Best Position'),
+        _buildSortItem(KeywordSort.popularity, 'Popularity'),
+        _buildSortItem(KeywordSort.recentlyTracked, 'Recently Tracked'),
+      ],
+    ).then((value) {
+      if (value != null) setState(() => _sort = value);
+    });
+  }
+
+  PopupMenuItem<KeywordSort> _buildSortItem(KeywordSort sort, String label) {
+    return PopupMenuItem<KeywordSort>(
+      value: sort,
+      child: Row(
+        children: [
+          if (_sort == sort)
+            const Icon(Icons.check, size: 16, color: AppColors.accent)
+          else
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  void _toggleSelection(int trackedKeywordId) {
+    setState(() {
+      if (_selectedIds.contains(trackedKeywordId)) {
+        _selectedIds.remove(trackedKeywordId);
+      } else {
+        _selectedIds.add(trackedKeywordId);
+      }
+    });
+  }
+
+  void _selectAll() {
+    setState(() {
+      for (final k in _filteredAndSortedKeywords) {
+        if (k.trackedKeywordId != null) {
+          _selectedIds.add(k.trackedKeywordId!);
+        }
+      }
+    });
+  }
+
+  void _clearSelection() {
+    setState(() {
+      _selectedIds.clear();
+      _isSelectionMode = false;
+    });
+  }
+
+  Future<void> _handleBulkDelete() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Keywords'),
+        content: Text('Are you sure you want to delete ${_selectedIds.length} keywords?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.red),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await widget.onBulkDelete(_selectedIds.toList());
+      _clearSelection();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final displayedKeywords = _filteredAndSortedKeywords;
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.bgActive.withAlpha(50),
@@ -772,63 +1181,149 @@ class _KeywordsTable extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
-                const Text(
-                  'Tracked Keywords',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                if (_isSelectionMode) ...[
+                  // Selection mode header
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: _clearSelection,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                    color: AppColors.textSecondary,
                   ),
-                ),
-                const SizedBox(width: 12),
-                if (keywordsAsync.hasValue)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.accentMuted,
-                      borderRadius: BorderRadius.circular(8),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${_selectedIds.length} selected',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
                     ),
-                    child: Text(
-                      '${keywordsAsync.value!.length}',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.accent,
+                  ),
+                  const Spacer(),
+                  // Bulk action buttons
+                  _BulkActionButton(
+                    icon: Icons.select_all_rounded,
+                    label: 'All',
+                    onTap: _selectAll,
+                  ),
+                  const SizedBox(width: 6),
+                  _BulkActionButton(
+                    icon: Icons.star_outline_rounded,
+                    label: 'Favorite',
+                    onTap: _selectedIds.isEmpty
+                        ? null
+                        : () async {
+                            await widget.onBulkFavorite(_selectedIds.toList(), true);
+                            _clearSelection();
+                          },
+                  ),
+                  const SizedBox(width: 6),
+                  _BulkActionButton(
+                    icon: Icons.label_outline_rounded,
+                    label: 'Tag',
+                    onTap: _selectedIds.isEmpty
+                        ? null
+                        : () async {
+                            await widget.onBulkAddTags(_selectedIds.toList());
+                            _clearSelection();
+                          },
+                  ),
+                  const SizedBox(width: 6),
+                  _BulkActionButton(
+                    icon: Icons.delete_outline_rounded,
+                    label: 'Delete',
+                    isDestructive: true,
+                    onTap: _selectedIds.isEmpty ? null : _handleBulkDelete,
+                  ),
+                ] else ...[
+                  // Normal mode header
+                  Text(
+                    'Tracked Keywords${_filter != KeywordFilter.all ? ' ($_filterLabel)' : ''}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  if (!widget.keywordsState.isLoading)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.accentMuted,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-                  ),
-                const Spacer(),
-                if (onSuggestions != null)
-                  Material(
-                    color: AppColors.greenMuted,
-                    borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    child: InkWell(
-                      onTap: onSuggestions,
-                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.lightbulb_outline_rounded,
-                              size: 16,
-                              color: AppColors.green,
-                            ),
-                            const SizedBox(width: 6),
-                            const Text(
-                              'Suggestions',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.green,
-                              ),
-                            ),
-                          ],
+                      child: Text(
+                        '${displayedKeywords.length}${_filter != KeywordFilter.all ? '/${widget.keywordsState.keywords.length}' : ''}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.accent,
                         ),
                       ),
                     ),
+                  const Spacer(),
+                  // Select button
+                  if (displayedKeywords.isNotEmpty) ...[
+                    _KeywordFilterSortButton(
+                      label: 'Select',
+                      icon: Icons.check_box_outline_blank_rounded,
+                      isActive: false,
+                      onTap: () => setState(() => _isSelectionMode = true),
+                    ),
+                    const SizedBox(width: 6),
+                  ],
+                  Builder(
+                    builder: (context) => _KeywordFilterSortButton(
+                      label: _filterLabel,
+                      icon: Icons.filter_list_rounded,
+                      isActive: _filter != KeywordFilter.all,
+                      onTap: () => _showFilterMenu(context),
+                    ),
                   ),
+                  const SizedBox(width: 6),
+                  Builder(
+                    builder: (context) => _KeywordFilterSortButton(
+                      label: _sortLabel,
+                      icon: Icons.sort_rounded,
+                      isActive: _sort != KeywordSort.nameAsc,
+                      onTap: () => _showSortMenu(context),
+                    ),
+                  ),
+                  if (widget.onSuggestions != null) ...[
+                    const SizedBox(width: 10),
+                    Material(
+                      color: AppColors.greenMuted,
+                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                      child: InkWell(
+                        onTap: widget.onSuggestions,
+                        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.lightbulb_outline_rounded,
+                                size: 16,
+                                color: AppColors.green,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                'Suggestions',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ],
             ),
           ),
@@ -867,7 +1362,7 @@ class _KeywordsTable extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (hasIos)
+                if (widget.hasIos)
                   const SizedBox(
                     width: 80,
                     child: Text(
@@ -881,8 +1376,8 @@ class _KeywordsTable extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                if (hasIos && hasAndroid) const SizedBox(width: 12),
-                if (hasAndroid)
+                if (widget.hasIos && widget.hasAndroid) const SizedBox(width: 12),
+                if (widget.hasAndroid)
                   const SizedBox(
                     width: 80,
                     child: Text(
@@ -901,144 +1396,399 @@ class _KeywordsTable extends StatelessWidget {
             ),
           ),
           // Content
-          keywordsAsync.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.all(40),
-              child: Center(
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-            error: (e, _) => Padding(
-              padding: const EdgeInsets.all(40),
-              child: Center(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: AppColors.redMuted,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.error_outline_rounded,
-                        size: 28,
-                        color: AppColors.red,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Error: $e',
-                      style: const TextStyle(color: AppColors.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            data: (keywords) {
-              if (keywords.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: AppColors.bgActive,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Icon(Icons.key_off_rounded, size: 28, color: AppColors.textMuted),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'No keywords tracked',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Add a keyword above to start tracking',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textMuted,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              return Column(
-                children: keywords.map((keyword) => _KeywordRow(
-                  keyword: keyword,
-                  onDelete: () => onDelete(keyword),
-                  onTap: () => onKeywordTap(keyword),
-                )).toList(),
-              );
-            },
-          ),
+          _buildContent(),
         ],
       ),
     );
   }
+
+  Widget _buildContent() {
+    if (widget.keywordsState.isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(40),
+        child: Center(
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    }
+
+    if (widget.keywordsState.error != null) {
+      return Padding(
+        padding: const EdgeInsets.all(40),
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.redMuted,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.error_outline_rounded,
+                  size: 28,
+                  color: AppColors.red,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Error: ${widget.keywordsState.error}',
+                style: const TextStyle(color: AppColors.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final displayedKeywords = _filteredAndSortedKeywords;
+
+    if (widget.keywordsState.keywords.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(40),
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.bgActive,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(Icons.key_off_rounded, size: 28, color: AppColors.textMuted),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'No keywords tracked',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Add a keyword above to start tracking',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (displayedKeywords.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(40),
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.bgActive,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(Icons.filter_list_off_rounded, size: 28, color: AppColors.textMuted),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'No keywords match filter',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Try changing the filter criteria',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: displayedKeywords.map((keyword) => _KeywordRow(
+        keyword: keyword,
+        onDelete: () => widget.onDelete(keyword),
+        onTap: () => widget.onKeywordTap(keyword),
+        onToggleFavorite: () => widget.onToggleFavorite(keyword),
+        onUpdateNote: (content) => widget.onUpdateNote(keyword, content),
+        onManageTags: () => widget.onManageTags(keyword),
+        isSelectionMode: _isSelectionMode,
+        isSelected: keyword.trackedKeywordId != null && _selectedIds.contains(keyword.trackedKeywordId),
+        onToggleSelection: keyword.trackedKeywordId != null
+            ? () => _toggleSelection(keyword.trackedKeywordId!)
+            : null,
+      )).toList(),
+    );
+  }
 }
 
-class _KeywordRow extends StatelessWidget {
-  final Keyword keyword;
-  final VoidCallback onDelete;
+class _KeywordFilterSortButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isActive;
   final VoidCallback onTap;
 
-  const _KeywordRow({
-    required this.keyword,
-    required this.onDelete,
+  const _KeywordFilterSortButton({
+    required this.label,
+    required this.icon,
+    required this.isActive,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isTopRank = keyword.position != null && keyword.position! <= 10;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        hoverColor: AppColors.bgHover,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.accentMuted : Colors.transparent,
+            border: Border.all(
+              color: isActive ? AppColors.accent.withAlpha(100) : AppColors.glassBorder,
+            ),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 14,
+                color: isActive ? AppColors.accent : AppColors.textMuted,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isActive ? AppColors.accent : AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BulkActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  final bool isDestructive;
+
+  const _BulkActionButton({
+    required this.icon,
+    required this.label,
+    this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDisabled = onTap == null;
+    final color = isDestructive ? AppColors.red : AppColors.accent;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        hoverColor: isDisabled ? null : AppColors.bgHover,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: isDisabled
+                ? Colors.transparent
+                : (isDestructive ? AppColors.redMuted : AppColors.accentMuted),
+            border: Border.all(
+              color: isDisabled ? AppColors.glassBorder : color.withAlpha(100),
+            ),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 14,
+                color: isDisabled ? AppColors.textMuted : color,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isDisabled ? AppColors.textMuted : color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _KeywordRow extends StatefulWidget {
+  final Keyword keyword;
+  final VoidCallback onDelete;
+  final VoidCallback onTap;
+  final VoidCallback onToggleFavorite;
+  final void Function(String) onUpdateNote;
+  final VoidCallback onManageTags;
+  final bool isSelectionMode;
+  final bool isSelected;
+  final VoidCallback? onToggleSelection;
+
+  const _KeywordRow({
+    required this.keyword,
+    required this.onDelete,
+    required this.onTap,
+    required this.onToggleFavorite,
+    required this.onUpdateNote,
+    required this.onManageTags,
+    this.isSelectionMode = false,
+    this.isSelected = false,
+    this.onToggleSelection,
+  });
+
+  @override
+  State<_KeywordRow> createState() => _KeywordRowState();
+}
+
+class _KeywordRowState extends State<_KeywordRow> {
+  bool _isEditingNote = false;
+  late TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _noteController = TextEditingController(text: widget.keyword.note ?? '');
+  }
+
+  @override
+  void didUpdateWidget(_KeywordRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.keyword.note != widget.keyword.note && !_isEditingNote) {
+      _noteController.text = widget.keyword.note ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  void _saveNote() {
+    widget.onUpdateNote(_noteController.text.trim());
+    setState(() => _isEditingNote = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final keyword = widget.keyword;
+    final isTopRank = keyword.position != null && keyword.position! <= 10;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: widget.onTap,
         hoverColor: AppColors.bgHover,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
           ),
           child: Row(
             children: [
-              // Storefront flag
-              SizedBox(
-                width: 50,
-                child: Text(
-                  getFlagForStorefront(keyword.storefront),
-                  style: const TextStyle(fontSize: 20),
+              // Selection checkbox (only in selection mode)
+              if (widget.isSelectionMode) ...[
+                SizedBox(
+                  width: 36,
+                  child: Checkbox(
+                    value: widget.isSelected,
+                    onChanged: widget.onToggleSelection != null
+                        ? (_) => widget.onToggleSelection!()
+                        : null,
+                    activeColor: AppColors.accent,
+                    side: const BorderSide(color: AppColors.textMuted),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
                 ),
-              ),
-              // Keyword
-              Expanded(
-                child: Text(
-                  keyword.keyword,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+              ],
+              // Favorite star
+              SizedBox(
+                width: 32,
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                  child: InkWell(
+                    onTap: widget.onToggleFavorite,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Icon(
+                        keyword.isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
+                        size: 18,
+                        color: keyword.isFavorite ? AppColors.yellow : AppColors.textMuted,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              // Position (single platform per app now)
+              // Storefront flag
               SizedBox(
-                width: 80,
+                width: 36,
+                child: Text(
+                  getFlagForStorefront(keyword.storefront),
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+              // Keyword
+              SizedBox(
+                width: 160,
+                child: Text(
+                  keyword.keyword,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Position
+              SizedBox(
+                width: 70,
                 child: keyword.position != null
                     ? _PositionBadge(
                         position: keyword.position!,
@@ -1047,25 +1797,215 @@ class _KeywordRow extends StatelessWidget {
                       )
                     : const _NotRankedBadge(),
               ),
+              const SizedBox(width: 8),
+              // Difficulty badge
+              SizedBox(
+                width: 50,
+                child: keyword.difficulty != null
+                    ? _DifficultyBadge(score: keyword.difficulty!)
+                    : const Text('--', style: TextStyle(color: AppColors.textMuted, fontSize: 12), textAlign: TextAlign.center),
+              ),
+              const SizedBox(width: 8),
+              // Top competitors
+              SizedBox(
+                width: 90,
+                child: keyword.topCompetitors != null && keyword.topCompetitors!.isNotEmpty
+                    ? _TopCompetitorsRow(competitors: keyword.topCompetitors!)
+                    : const Text('--', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+              ),
+              const SizedBox(width: 8),
+              // Tags
+              Expanded(
+                flex: 2,
+                child: _buildTagsSection(keyword),
+              ),
+              const SizedBox(width: 8),
+              // Note
+              Expanded(
+                flex: 3,
+                child: _buildNoteSection(keyword),
+              ),
               // Delete button
               SizedBox(
-                width: 48,
+                width: 36,
                 child: Material(
                   color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                   child: InkWell(
-                    onTap: onDelete,
-                    borderRadius: BorderRadius.circular(8),
+                    onTap: widget.onDelete,
+                    borderRadius: BorderRadius.circular(6),
                     hoverColor: AppColors.redMuted,
                     child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Icons.close_rounded, size: 18, color: AppColors.textMuted),
+                      padding: EdgeInsets.all(6),
+                      child: Icon(Icons.close_rounded, size: 16, color: AppColors.textMuted),
                     ),
                   ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTagsSection(Keyword keyword) {
+    if (keyword.tags.isEmpty) {
+      return Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(6),
+        child: InkWell(
+          onTap: widget.onManageTags,
+          borderRadius: BorderRadius.circular(6),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add_rounded, size: 14, color: AppColors.textMuted.withAlpha(150)),
+                const SizedBox(width: 4),
+                Text(
+                  'Add tag',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted.withAlpha(150),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: widget.onManageTags,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: keyword.tags.map((tag) => Container(
+            margin: const EdgeInsets.only(right: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: tag.colorValue.withAlpha(40),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              tag.name,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: tag.colorValue,
+              ),
+            ),
+          )).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoteSection(Keyword keyword) {
+    if (_isEditingNote) {
+      return Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 28,
+              decoration: BoxDecoration(
+                color: AppColors.bgBase,
+                border: Border.all(color: AppColors.accent),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: TextField(
+                controller: _noteController,
+                autofocus: true,
+                style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  isDense: true,
+                ),
+                onSubmitted: (_) => _saveNote(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Material(
+            color: AppColors.accent,
+            borderRadius: BorderRadius.circular(4),
+            child: InkWell(
+              onTap: _saveNote,
+              borderRadius: BorderRadius.circular(4),
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(Icons.check_rounded, size: 14, color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(width: 2),
+          Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(4),
+            child: InkWell(
+              onTap: () {
+                _noteController.text = keyword.note ?? '';
+                setState(() => _isEditingNote = false);
+              },
+              borderRadius: BorderRadius.circular(4),
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(Icons.close_rounded, size: 14, color: AppColors.textMuted),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (keyword.note == null || keyword.note!.isEmpty) {
+      return Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(6),
+        child: InkWell(
+          onTap: () => setState(() => _isEditingNote = true),
+          borderRadius: BorderRadius.circular(6),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.edit_note_rounded, size: 14, color: AppColors.textMuted.withAlpha(150)),
+                const SizedBox(width: 4),
+                Text(
+                  'Add note',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted.withAlpha(150),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => setState(() => _isEditingNote = true),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: AppColors.bgActive.withAlpha(80),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          keyword.note!,
+          style: const TextStyle(
+            fontSize: 11,
+            color: AppColors.textSecondary,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
@@ -1111,6 +2051,79 @@ class _PositionBadge extends StatelessWidget {
             color: change! > 0 ? AppColors.green : AppColors.red,
           ),
         ],
+      ],
+    );
+  }
+}
+
+class _DifficultyBadge extends StatelessWidget {
+  final int score;
+
+  const _DifficultyBadge({required this.score});
+
+  Color get _color {
+    if (score <= 25) return AppColors.green;
+    if (score <= 50) return AppColors.yellow;
+    if (score <= 75) return AppColors.orange;
+    return AppColors.red;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _color.withAlpha(25),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        '$score',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: _color,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class _TopCompetitorsRow extends StatelessWidget {
+  final List<TopCompetitor> competitors;
+
+  const _TopCompetitorsRow({required this.competitors});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ...competitors.take(3).map((c) => Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Tooltip(
+                message: '${c.name} (#${c.position})',
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppColors.bgActive,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: AppColors.glassBorder),
+                  ),
+                  child: c.iconUrl != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image.network(
+                            c.iconUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.apps, size: 14, color: AppColors.textMuted),
+                          ),
+                        )
+                      : const Icon(Icons.apps, size: 14, color: AppColors.textMuted),
+                ),
+              ),
+            )),
       ],
     );
   }
@@ -1677,6 +2690,585 @@ class _PeriodChip extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _TagsManagementDialog extends ConsumerStatefulWidget {
+  final Keyword keyword;
+  final int appId;
+
+  const _TagsManagementDialog({
+    required this.keyword,
+    required this.appId,
+  });
+
+  @override
+  ConsumerState<_TagsManagementDialog> createState() => _TagsManagementDialogState();
+}
+
+class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
+  late List<TagModel> _selectedTags;
+  final _newTagController = TextEditingController();
+  bool _isCreatingTag = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTags = List.from(widget.keyword.tags);
+  }
+
+  @override
+  void dispose() {
+    _newTagController.dispose();
+    super.dispose();
+  }
+
+  String _generateRandomColor() {
+    const colors = [
+      '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
+      '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
+      '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef',
+      '#ec4899', '#f43f5e',
+    ];
+    return colors[(DateTime.now().millisecondsSinceEpoch % colors.length)];
+  }
+
+  Future<void> _createTag() async {
+    final name = _newTagController.text.trim();
+    if (name.isEmpty) return;
+
+    setState(() => _isCreatingTag = true);
+
+    try {
+      final repository = ref.read(tagsRepositoryProvider);
+      final newTag = await repository.createTag(name: name, color: _generateRandomColor());
+      _newTagController.clear();
+
+      // Add to selected tags and refresh tags list
+      setState(() {
+        _selectedTags.add(newTag);
+      });
+      ref.invalidate(tagsNotifierProvider);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isCreatingTag = false);
+      }
+    }
+  }
+
+  void _toggleTag(TagModel tag) {
+    setState(() {
+      final index = _selectedTags.indexWhere((t) => t.id == tag.id);
+      if (index >= 0) {
+        _selectedTags.removeAt(index);
+      } else {
+        _selectedTags.add(tag);
+      }
+    });
+  }
+
+  Future<void> _save() async {
+    final repository = ref.read(tagsRepositoryProvider);
+
+    // Get current tags on keyword
+    final currentTagIds = widget.keyword.tags.map((t) => t.id).toSet();
+    final selectedTagIds = _selectedTags.map((t) => t.id).toSet();
+
+    // Tags to add
+    for (final tagId in selectedTagIds.difference(currentTagIds)) {
+      await repository.addTagToKeyword(tagId: tagId, trackedKeywordId: widget.keyword.trackedKeywordId!);
+    }
+
+    // Tags to remove
+    for (final tagId in currentTagIds.difference(selectedTagIds)) {
+      await repository.removeTagFromKeyword(tagId: tagId, trackedKeywordId: widget.keyword.trackedKeywordId!);
+    }
+
+    if (mounted) {
+      Navigator.pop(context, _selectedTags);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tagsState = ref.watch(tagsNotifierProvider);
+
+    return AlertDialog(
+      backgroundColor: AppColors.glassPanel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        side: const BorderSide(color: AppColors.glassBorder),
+      ),
+      title: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.accent.withAlpha(30),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.label_rounded, size: 18, color: AppColors.accent),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Manage Tags',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  widget.keyword.keyword,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textMuted,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Create new tag
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.bgBase,
+                      border: Border.all(color: AppColors.glassBorder),
+                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                    ),
+                    child: TextField(
+                      controller: _newTagController,
+                      style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                      decoration: const InputDecoration(
+                        hintText: 'New tag name...',
+                        hintStyle: TextStyle(color: AppColors.textMuted),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      ),
+                      onSubmitted: (_) => _createTag(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Material(
+                  color: AppColors.accent,
+                  borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                  child: InkWell(
+                    onTap: _isCreatingTag ? null : _createTag,
+                    borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      child: _isCreatingTag
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Icon(Icons.add_rounded, size: 18, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Existing tags
+            const Text(
+              'Available Tags',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textMuted,
+              ),
+            ),
+            const SizedBox(height: 8),
+            tagsState.when(
+              loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              error: (e, _) => Text('Error: $e', style: const TextStyle(color: AppColors.red)),
+              data: (tags) {
+                if (tags.isEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const Center(
+                      child: Text(
+                        'No tags yet. Create one above.',
+                        style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                      ),
+                    ),
+                  );
+                }
+
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: tags.map((tag) {
+                    final isSelected = _selectedTags.any((t) => t.id == tag.id);
+                    return Material(
+                      color: isSelected ? tag.colorValue.withAlpha(60) : AppColors.bgActive,
+                      borderRadius: BorderRadius.circular(6),
+                      child: InkWell(
+                        onTap: () => _toggleTag(tag),
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isSelected ? tag.colorValue : Colors.transparent,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: tag.colorValue,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                tag.name,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: isSelected ? tag.colorValue : AppColors.textSecondary,
+                                ),
+                              ),
+                              if (isSelected) ...[
+                                const SizedBox(width: 4),
+                                Icon(Icons.check_rounded, size: 14, color: tag.colorValue),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _save,
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+
+class _BulkTagsDialog extends StatefulWidget {
+  final List<TagModel> tags;
+
+  const _BulkTagsDialog({required this.tags});
+
+  @override
+  State<_BulkTagsDialog> createState() => _BulkTagsDialogState();
+}
+
+class _BulkTagsDialogState extends State<_BulkTagsDialog> {
+  final Set<int> _selectedTagIds = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add Tags'),
+      content: SizedBox(
+        width: 300,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Select tags to add to selected keywords:',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: widget.tags.map((tag) {
+                final isSelected = _selectedTagIds.contains(tag.id);
+                return Material(
+                  color: isSelected ? tag.colorValue.withAlpha(60) : AppColors.bgActive,
+                  borderRadius: BorderRadius.circular(6),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (isSelected) {
+                          _selectedTagIds.remove(tag.id);
+                        } else {
+                          _selectedTagIds.add(tag.id);
+                        }
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isSelected ? tag.colorValue : Colors.transparent,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: tag.colorValue,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            tag.name,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected ? tag.colorValue : AppColors.textSecondary,
+                            ),
+                          ),
+                          if (isSelected) ...[
+                            const SizedBox(width: 4),
+                            Icon(Icons.check_rounded, size: 14, color: tag.colorValue),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _selectedTagIds.isEmpty
+              ? null
+              : () => Navigator.pop(context, _selectedTagIds.toList()),
+          child: Text('Add ${_selectedTagIds.length} Tag${_selectedTagIds.length != 1 ? 's' : ''}'),
+        ),
+      ],
+    );
+  }
+}
+
+class _ImportKeywordsDialog extends StatefulWidget {
+  final int appId;
+  final Future<ImportResult> Function(String keywords, String storefront) onImport;
+
+  const _ImportKeywordsDialog({
+    required this.appId,
+    required this.onImport,
+  });
+
+  @override
+  State<_ImportKeywordsDialog> createState() => _ImportKeywordsDialogState();
+}
+
+class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
+  final _controller = TextEditingController();
+  String _storefront = 'US';
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _import() async {
+    if (_controller.text.trim().isEmpty) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final result = await widget.onImport(_controller.text, _storefront);
+      if (mounted) {
+        Navigator.pop(context, result);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Import failed: ${e.toString()}'),
+            backgroundColor: AppColors.red,
+          ),
+        );
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  int get _keywordCount {
+    return _controller.text
+        .split('\n')
+        .where((line) => line.trim().length >= 2)
+        .length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppColors.glassPanel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        side: const BorderSide(color: AppColors.glassBorder),
+      ),
+      title: const Text(
+        'Import Keywords',
+        style: TextStyle(color: AppColors.textPrimary),
+      ),
+      content: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Paste keywords below, one per line:',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _controller,
+              maxLines: 10,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textPrimary,
+                fontFamily: 'monospace',
+              ),
+              decoration: InputDecoration(
+                hintText: 'keyword one\nkeyword two\nkeyword three',
+                hintStyle: TextStyle(
+                  color: AppColors.textMuted.withAlpha(100),
+                ),
+                filled: true,
+                fillColor: AppColors.bgActive,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: AppColors.glassBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: AppColors.glassBorder),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: AppColors.accent),
+                ),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const Text(
+                  'Storefront:',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                DropdownButton<String>(
+                  value: _storefront,
+                  dropdownColor: AppColors.glassPanel,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                  ),
+                  items: const [
+                    DropdownMenuItem(value: 'US', child: Text('🇺🇸 US')),
+                    DropdownMenuItem(value: 'GB', child: Text('🇬🇧 UK')),
+                    DropdownMenuItem(value: 'FR', child: Text('🇫🇷 FR')),
+                    DropdownMenuItem(value: 'DE', child: Text('🇩🇪 DE')),
+                    DropdownMenuItem(value: 'CA', child: Text('🇨🇦 CA')),
+                    DropdownMenuItem(value: 'AU', child: Text('🇦🇺 AU')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _storefront = value);
+                    }
+                  },
+                ),
+                const Spacer(),
+                Text(
+                  '$_keywordCount keywords',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _isLoading || _keywordCount == 0 ? null : _import,
+          child: _isLoading
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                )
+              : Text('Import $_keywordCount Keywords'),
+        ),
+      ],
     );
   }
 }

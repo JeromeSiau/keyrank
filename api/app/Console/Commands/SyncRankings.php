@@ -6,6 +6,7 @@ use App\Models\AppRanking;
 use App\Models\TrackedKeyword;
 use App\Services\GooglePlayService;
 use App\Services\iTunesService;
+use App\Services\KeywordDiscoveryService;
 use Illuminate\Console\Command;
 
 class SyncRankings extends Command
@@ -15,7 +16,8 @@ class SyncRankings extends Command
 
     public function __construct(
         private iTunesService $iTunesService,
-        private GooglePlayService $googlePlayService
+        private GooglePlayService $googlePlayService,
+        private KeywordDiscoveryService $keywordDiscoveryService
     ) {
         parent::__construct();
     }
@@ -51,19 +53,33 @@ class SyncRankings extends Command
             $platform = $item->app->platform;
 
             try {
-                // Use the appropriate service based on app's platform
-                $position = $platform === 'ios'
-                    ? $this->iTunesService->getAppRankForKeyword(
-                        $item->app->store_id,
-                        $item->keyword->keyword,
-                        $country
-                    )
-                    : $this->googlePlayService->getAppRankForKeyword(
-                        $item->app->store_id,
-                        $item->keyword->keyword,
-                        $country
-                    );
+                // Get search results (we need them for both position and metrics)
+                $service = $platform === 'ios' ? $this->iTunesService : $this->googlePlayService;
+                $searchResults = $service->searchApps($item->keyword->keyword, $country, 50);
 
+                // Find position
+                $position = null;
+                $appStoreId = $item->app->store_id;
+                $idField = $platform === 'ios' ? 'apple_id' : 'google_play_id';
+
+                foreach ($searchResults as $result) {
+                    if (($result[$idField] ?? null) === $appStoreId) {
+                        $position = $result['position'];
+                        break;
+                    }
+                }
+
+                // Calculate difficulty
+                $difficulty = $this->keywordDiscoveryService->calculateDifficulty($searchResults);
+
+                // Get top 3 competitors
+                $topCompetitors = array_slice(array_map(fn($r) => [
+                    'name' => $r['name'],
+                    'position' => $r['position'],
+                    'icon_url' => $r['icon_url'] ?? null,
+                ], $searchResults), 0, 3);
+
+                // Save ranking
                 AppRanking::updateOrCreate(
                     [
                         'app_id' => $item->app_id,
@@ -72,6 +88,16 @@ class SyncRankings extends Command
                     ],
                     ['position' => $position]
                 );
+
+                // Update tracked_keywords metrics for all users tracking this keyword/app pair
+                TrackedKeyword::where('app_id', $item->app_id)
+                    ->where('keyword_id', $item->keyword_id)
+                    ->update([
+                        'difficulty' => $difficulty['score'],
+                        'difficulty_label' => $difficulty['label'],
+                        'competition' => count($searchResults),
+                        'top_competitors' => $topCompetitors,
+                    ]);
 
                 $synced++;
             } catch (\Exception $e) {

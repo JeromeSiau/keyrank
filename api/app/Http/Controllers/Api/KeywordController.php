@@ -71,14 +71,13 @@ class KeywordController extends Controller
     {
         $user = $request->user();
 
-        // Get only keywords tracked by this user for this app
+        // Get only keywords tracked by this user for this app with tags and note
         $trackedKeywords = TrackedKeyword::where('user_id', $user->id)
             ->where('app_id', $app->id)
-            ->with('keyword')
+            ->with(['keyword', 'tags', 'note'])
             ->get();
 
         $keywordIds = $trackedKeywords->pluck('keyword_id');
-        $keywords = $trackedKeywords->map(fn($tk) => $tk->keyword);
 
         // Get rankings for user's tracked keywords only
         $rankings = AppRanking::where('app_id', $app->id)
@@ -95,10 +94,8 @@ class KeywordController extends Controller
             }
         }
 
-        // Map keyword_id to tracked_since date
-        $trackedSince = $trackedKeywords->pluck('created_at', 'keyword_id');
-
-        $result = $keywords->map(function ($keyword) use ($rankingsByKeyword, $trackedSince) {
+        $result = $trackedKeywords->map(function ($tracked) use ($rankingsByKeyword) {
+            $keyword = $tracked->keyword;
             $entries = $rankingsByKeyword[$keyword->id] ?? [];
             $latest = $entries[0] ?? null;
             $previous = $entries[1] ?? null;
@@ -108,13 +105,26 @@ class KeywordController extends Controller
 
             return [
                 'id' => $keyword->id,
+                'tracked_keyword_id' => $tracked->id,
                 'keyword' => $keyword->keyword,
                 'storefront' => $keyword->storefront,
                 'popularity' => $keyword->popularity,
-                'tracked_since' => $trackedSince[$keyword->id] ?? null,
+                'tracked_since' => $tracked->created_at,
                 'position' => $latest?->position,
                 'change' => $change,
                 'last_updated' => $latest?->recorded_at,
+                'is_favorite' => $tracked->is_favorite,
+                'favorited_at' => $tracked->favorited_at?->toISOString(),
+                'tags' => $tracked->tags->map(fn($tag) => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'color' => $tag->color,
+                ]),
+                'note' => $tracked->note?->content,
+                'difficulty' => $tracked->difficulty,
+                'difficulty_label' => $tracked->difficulty_label,
+                'competition' => $tracked->competition,
+                'top_competitors' => $tracked->top_competitors,
             ];
         });
 
@@ -412,6 +422,71 @@ class KeywordController extends Controller
         return response()->json([
             'data' => [
                 'updated_count' => $updatedCount,
+            ],
+        ]);
+    }
+
+    /**
+     * Import keywords from text (one keyword per line)
+     */
+    public function import(Request $request, App $app): JsonResponse
+    {
+        $validated = $request->validate([
+            'keywords' => 'required|string',
+            'storefront' => 'nullable|string|size:2',
+        ]);
+
+        $user = $request->user();
+        $storefront = strtoupper($validated['storefront'] ?? 'US');
+
+        // Parse keywords (one per line, trim whitespace, remove empty lines)
+        $lines = array_filter(
+            array_map('trim', explode("\n", $validated['keywords'])),
+            fn($line) => strlen($line) >= 2 && strlen($line) <= 100
+        );
+
+        $imported = 0;
+        $skipped = 0;
+        $errors = [];
+
+        foreach ($lines as $keywordText) {
+            $keywordText = strtolower($keywordText);
+
+            try {
+                // Find or create keyword
+                $keyword = Keyword::findOrCreateKeyword($keywordText, $storefront);
+
+                // Check if already tracked
+                $existing = TrackedKeyword::where('user_id', $user->id)
+                    ->where('app_id', $app->id)
+                    ->where('keyword_id', $keyword->id)
+                    ->first();
+
+                if ($existing) {
+                    $skipped++;
+                    continue;
+                }
+
+                // Create tracking
+                TrackedKeyword::create([
+                    'user_id' => $user->id,
+                    'app_id' => $app->id,
+                    'keyword_id' => $keyword->id,
+                    'created_at' => now(),
+                ]);
+
+                $imported++;
+            } catch (\Exception $e) {
+                $errors[] = $keywordText;
+            }
+        }
+
+        return response()->json([
+            'data' => [
+                'imported' => $imported,
+                'skipped' => $skipped,
+                'errors' => count($errors),
+                'total' => count($lines),
             ],
         ]);
     }
