@@ -16,6 +16,7 @@ import '../../features/apps/presentation/add_app_screen.dart';
 import '../../features/keywords/presentation/keyword_search_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
+import '../../features/insights/presentation/app_insights_screen.dart';
 import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 
@@ -89,6 +90,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final country = state.pathParameters['country']!;
                   final appName = state.uri.queryParameters['name'] ?? 'App';
                   return CountryReviewsScreen(appId: id, appName: appName, country: country);
+                },
+              ),
+              GoRoute(
+                path: ':id/insights',
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  final appName = state.uri.queryParameters['name'] ?? 'App';
+                  return AppInsightsScreen(appId: id, appName: appName);
                 },
               ),
             ],

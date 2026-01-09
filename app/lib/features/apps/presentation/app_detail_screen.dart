@@ -174,6 +174,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                 onViewRatings: () => context.push(
                   '/apps/${widget.appId}/ratings?name=${Uri.encodeComponent(app.name)}',
                 ),
+                onViewInsights: () => context.push(
+                  '/apps/${widget.appId}/insights?name=${Uri.encodeComponent(app.name)}',
+                ),
               ),
               // Content
               Expanded(
@@ -244,6 +247,7 @@ class _Toolbar extends StatelessWidget {
   final VoidCallback onToggleFavorite;
   final VoidCallback onDelete;
   final VoidCallback onViewRatings;
+  final VoidCallback onViewInsights;
 
   const _Toolbar({
     required this.appName,
@@ -252,6 +256,7 @@ class _Toolbar extends StatelessWidget {
     required this.onToggleFavorite,
     required this.onDelete,
     required this.onViewRatings,
+    required this.onViewInsights,
   });
 
   @override
@@ -303,6 +308,12 @@ class _Toolbar extends StatelessWidget {
             icon: Icons.bar_chart_rounded,
             label: 'Ratings',
             onTap: onViewRatings,
+          ),
+          const SizedBox(width: 10),
+          ToolbarButton(
+            icon: Icons.insights_rounded,
+            label: 'Insights',
+            onTap: onViewInsights,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
