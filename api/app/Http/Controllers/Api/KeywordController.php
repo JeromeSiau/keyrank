@@ -242,6 +242,33 @@ class KeywordController extends Controller
     }
 
     /**
+     * Toggle favorite status for a tracked keyword
+     */
+    public function toggleFavorite(Request $request, App $app, Keyword $keyword): JsonResponse
+    {
+        $user = $request->user();
+
+        $tracked = TrackedKeyword::where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->where('keyword_id', $keyword->id)
+            ->firstOrFail();
+
+        $newFavorite = !$tracked->is_favorite;
+
+        $tracked->update([
+            'is_favorite' => $newFavorite,
+            'favorited_at' => $newFavorite ? now() : null,
+        ]);
+
+        return response()->json([
+            'data' => [
+                'is_favorite' => $tracked->is_favorite,
+                'favorited_at' => $tracked->favorited_at?->toISOString(),
+            ],
+        ]);
+    }
+
+    /**
      * Get keyword suggestions for an app
      */
     public function suggestions(Request $request, App $app): JsonResponse

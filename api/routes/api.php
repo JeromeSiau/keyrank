@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{app}/keywords', [KeywordController::class, 'forApp']);
         Route::post('{app}/keywords', [KeywordController::class, 'addToApp']);
         Route::delete('{app}/keywords/{keyword}', [KeywordController::class, 'removeFromApp']);
+        Route::patch('{app}/keywords/{keyword}/favorite', [KeywordController::class, 'toggleFavorite']);
         Route::get('{app}/keywords/suggestions', [KeywordController::class, 'suggestions']);
 
         // Rankings for app (auto-fetches if stale)
