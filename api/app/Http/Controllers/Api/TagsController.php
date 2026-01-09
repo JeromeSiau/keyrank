@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
+use App\Models\TrackedKeyword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -50,5 +51,51 @@ class TagsController extends Controller
         $tag->delete();
 
         return response()->noContent();
+    }
+
+    public function addToKeyword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'tag_id' => 'required|exists:tags,id',
+            'tracked_keyword_id' => 'required|exists:tracked_keywords,id',
+        ]);
+
+        $user = $request->user();
+        $tag = Tag::findOrFail($validated['tag_id']);
+        $tracked = TrackedKeyword::findOrFail($validated['tracked_keyword_id']);
+
+        // Verify ownership
+        if ($tag->user_id !== $user->id || $tracked->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $tracked->tags()->syncWithoutDetaching([$tag->id]);
+
+        return response()->json([
+            'data' => $tracked->load('tags'),
+        ]);
+    }
+
+    public function removeFromKeyword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'tag_id' => 'required|exists:tags,id',
+            'tracked_keyword_id' => 'required|exists:tracked_keywords,id',
+        ]);
+
+        $user = $request->user();
+        $tag = Tag::findOrFail($validated['tag_id']);
+        $tracked = TrackedKeyword::findOrFail($validated['tracked_keyword_id']);
+
+        // Verify ownership
+        if ($tag->user_id !== $user->id || $tracked->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $tracked->tags()->detach($tag->id);
+
+        return response()->json([
+            'data' => $tracked->load('tags'),
+        ]);
     }
 }

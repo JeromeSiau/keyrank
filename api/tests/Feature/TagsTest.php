@@ -122,4 +122,49 @@ class TagsTest extends TestCase
         $response->assertForbidden();
         $this->assertDatabaseHas('tags', ['id' => $tag->id]);
     }
+
+    public function test_user_can_add_tag_to_keyword(): void
+    {
+        $user = User::factory()->create();
+        $app = App::factory()->create();
+        $app->users()->attach($user->id);
+        $keyword = Keyword::factory()->create();
+        $tracked = TrackedKeyword::create([
+            'user_id' => $user->id,
+            'app_id' => $app->id,
+            'keyword_id' => $keyword->id,
+        ]);
+        $tag = Tag::create(['user_id' => $user->id, 'name' => 'Test', 'color' => '#000']);
+
+        $response = $this->actingAs($user)->postJson('/api/tags/add-to-keyword', [
+            'tag_id' => $tag->id,
+            'tracked_keyword_id' => $tracked->id,
+        ]);
+
+        $response->assertOk();
+        $this->assertTrue($tracked->tags->contains($tag));
+    }
+
+    public function test_user_can_remove_tag_from_keyword(): void
+    {
+        $user = User::factory()->create();
+        $app = App::factory()->create();
+        $app->users()->attach($user->id);
+        $keyword = Keyword::factory()->create();
+        $tracked = TrackedKeyword::create([
+            'user_id' => $user->id,
+            'app_id' => $app->id,
+            'keyword_id' => $keyword->id,
+        ]);
+        $tag = Tag::create(['user_id' => $user->id, 'name' => 'Test', 'color' => '#000']);
+        $tracked->tags()->attach($tag->id);
+
+        $response = $this->actingAs($user)->postJson('/api/tags/remove-from-keyword', [
+            'tag_id' => $tag->id,
+            'tracked_keyword_id' => $tracked->id,
+        ]);
+
+        $response->assertOk();
+        $this->assertFalse($tracked->fresh()->tags->contains($tag));
+    }
 }

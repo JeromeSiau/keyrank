@@ -92,5 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [TagsController::class, 'index']);
         Route::post('/', [TagsController::class, 'store']);
         Route::delete('{tag}', [TagsController::class, 'destroy']);
+        Route::post('add-to-keyword', [TagsController::class, 'addToKeyword']);
+        Route::post('remove-from-keyword', [TagsController::class, 'removeFromKeyword']);
     });
 });
