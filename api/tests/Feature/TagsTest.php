@@ -24,5 +24,9 @@ class TagsTest extends TestCase
         $this->assertEquals($user->id, $tag->user_id);
         $this->assertEquals('Important', $tag->name);
         $this->assertEquals('#ef4444', $tag->color);
+
+        // Verify Eloquent relationship
+        $this->assertInstanceOf(User::class, $tag->user);
+        $this->assertTrue($tag->user->is($user));
     }
 }

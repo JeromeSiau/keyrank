@@ -63,4 +63,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(TrackedKeyword::class);
     }
+
+    /**
+     * Get user's tags
+     */
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
 }
