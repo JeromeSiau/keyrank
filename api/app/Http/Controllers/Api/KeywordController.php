@@ -9,7 +9,7 @@ use App\Models\Keyword;
 use App\Models\TrackedKeyword;
 use App\Services\iTunesService;
 use App\Services\GooglePlayService;
-use App\Services\AppleSearchAdsService;
+use App\Services\KeywordDiscoveryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,7 +18,7 @@ class KeywordController extends Controller
     public function __construct(
         private iTunesService $iTunesService,
         private GooglePlayService $googlePlayService,
-        private AppleSearchAdsService $appleSearchAdsService
+        private KeywordDiscoveryService $keywordDiscoveryService
     ) {}
 
     /**
@@ -242,7 +242,7 @@ class KeywordController extends Controller
     }
 
     /**
-     * Get keyword suggestions for an app from Apple Search Ads
+     * Get keyword suggestions for an app
      */
     public function suggestions(Request $request, App $app): JsonResponse
     {
@@ -253,22 +253,15 @@ class KeywordController extends Controller
             ]);
         }
 
-        if (!$this->appleSearchAdsService->isConfigured()) {
-            return response()->json([
-                'message' => 'Apple Search Ads is not configured',
-                'data' => [],
-            ], 503);
-        }
-
         $validated = $request->validate([
             'country' => 'nullable|string|size:2',
             'limit' => 'nullable|integer|min:1|max:50',
         ]);
 
         $country = strtoupper($validated['country'] ?? 'US');
-        $limit = $validated['limit'] ?? 50;
+        $limit = $validated['limit'] ?? 30;
 
-        $suggestions = $this->appleSearchAdsService->getKeywordSuggestions(
+        $suggestions = $this->keywordDiscoveryService->getSuggestionsForApp(
             $app->store_id,
             $country,
             $limit
@@ -280,6 +273,7 @@ class KeywordController extends Controller
                 'app_id' => $app->store_id,
                 'country' => $country,
                 'total' => count($suggestions),
+                'generated_at' => now()->toIso8601String(),
             ],
         ]);
     }
