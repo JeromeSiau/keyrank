@@ -142,6 +142,7 @@ Règles:
 - Maximum 5 items par liste (strengths, weaknesses, opportunities)
 - Sois concis et factuel
 - Réponds en français si les reviews sont majoritairement en français, sinon en anglais
+- IMPORTANT pour example_quotes: cite EXACTEMENT le texte des reviews (verbatim, copier-coller). Chaque citation doit venir d'une review DIFFÉRENTE. Si un thème n'a qu'une seule review, ne mets qu'une seule citation.
 PROMPT;
     }
 
