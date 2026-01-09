@@ -160,4 +160,102 @@ class KeywordDiscoveryService
 
         return ['score' => $score, 'label' => $label];
     }
+
+    /**
+     * Get keyword suggestions for an app
+     */
+    public function getSuggestionsForApp(string $appId, string $country = 'US', int $limit = 50): array
+    {
+        $country = strtoupper($country);
+        $countryLower = strtolower($country);
+
+        // Get app details
+        $appDetails = $this->iTunesService->getAppDetails($appId, $countryLower);
+        if (!$appDetails) {
+            return [];
+        }
+
+        // Extract seed terms
+        $seeds = $this->extractSeedTerms($appDetails);
+
+        // Get hints for each seed (parallel)
+        $allHints = [];
+        $responses = Http::pool(fn ($pool) =>
+            collect($seeds)->map(fn ($seed) =>
+                $pool->as($seed)
+                    ->timeout(10)
+                    ->withHeaders(['X-Apple-Store-Front' => (self::STORE_IDS[$country] ?? self::STORE_IDS['US']) . '-1,29'])
+                    ->get(self::HINTS_URL, ['clientApplication' => 'Software', 'term' => $seed])
+            )->toArray()
+        );
+
+        foreach ($seeds as $seed) {
+            $response = $responses[$seed] ?? null;
+            if ($response && $response->successful()) {
+                preg_match_all('/<key>term<\/key>\s*<string>([^<]+)<\/string>/', $response->body(), $matches);
+                foreach ($matches[1] ?? [] as $hint) {
+                    $source = in_array($seed, $this->tokenize($appDetails['name'] ?? '')) ? 'app_name' : 'app_description';
+                    $allHints[$hint] = $source;
+                }
+            }
+            usleep(50000); // 50ms delay
+        }
+
+        // Build suggestions with metrics
+        $suggestions = [];
+        $processed = 0;
+
+        foreach ($allHints as $keyword => $source) {
+            if ($processed >= $limit) break;
+
+            // Get search results for this keyword
+            $results = $this->iTunesService->searchApps($keyword, $countryLower, 50);
+
+            // Find app position
+            $position = null;
+            foreach ($results as $result) {
+                if ($result['apple_id'] === $appId) {
+                    $position = $result['position'];
+                    break;
+                }
+            }
+
+            // Calculate difficulty
+            $difficulty = $this->calculateDifficulty($results);
+
+            // Get top 3 competitors
+            $topCompetitors = array_slice(array_map(fn($r) => [
+                'name' => $r['name'],
+                'position' => $r['position'],
+                'rating' => $r['rating'],
+            ], $results), 0, 3);
+
+            $suggestions[] = [
+                'keyword' => $keyword,
+                'source' => $source,
+                'metrics' => [
+                    'position' => $position,
+                    'competition' => count($results),
+                    'difficulty' => $difficulty['score'],
+                    'difficulty_label' => $difficulty['label'],
+                ],
+                'top_competitors' => $topCompetitors,
+            ];
+
+            $processed++;
+            usleep(100000); // 100ms delay between searches
+        }
+
+        // Sort by opportunity (has position or low difficulty)
+        usort($suggestions, function ($a, $b) {
+            // Prioritize where app already ranks
+            if ($a['metrics']['position'] !== null && $b['metrics']['position'] === null) return -1;
+            if ($a['metrics']['position'] === null && $b['metrics']['position'] !== null) return 1;
+
+            // Then by difficulty (easier first)
+            return $a['metrics']['difficulty'] <=> $b['metrics']['difficulty'];
+        });
+
+        return $suggestions;
+    }
 }
