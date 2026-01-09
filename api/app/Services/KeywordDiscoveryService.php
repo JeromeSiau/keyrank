@@ -168,6 +168,9 @@ class KeywordDiscoveryService
     {
         $country = strtoupper($country);
         $countryLower = strtolower($country);
+        $cacheKey = "suggestions_{$appId}_{$country}";
+
+        return Cache::remember($cacheKey, now()->addHours(12), function () use ($appId, $country, $countryLower, $limit) {
 
         // Get app details
         $appDetails = $this->iTunesService->getAppDetails($appId, $countryLower);
@@ -257,5 +260,6 @@ class KeywordDiscoveryService
         });
 
         return $suggestions;
+        });
     }
 }

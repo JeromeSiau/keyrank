@@ -246,13 +246,6 @@ class KeywordController extends Controller
      */
     public function suggestions(Request $request, App $app): JsonResponse
     {
-        if ($app->platform !== 'ios') {
-            return response()->json([
-                'message' => 'Keyword suggestions are only available for iOS apps',
-                'data' => [],
-            ]);
-        }
-
         $validated = $request->validate([
             'country' => 'nullable|string|size:2',
             'limit' => 'nullable|integer|min:1|max:50',
@@ -261,6 +254,30 @@ class KeywordController extends Controller
         $country = strtoupper($validated['country'] ?? 'US');
         $limit = $validated['limit'] ?? 30;
 
+        if ($app->platform === 'android') {
+            $response = $this->googlePlayService->getSuggestionsForApp(
+                $app->store_id,
+                $country,
+                $limit
+            );
+
+            // Response already has correct format from scraper
+            if (empty($response)) {
+                return response()->json([
+                    'data' => [],
+                    'meta' => [
+                        'app_id' => $app->store_id,
+                        'country' => $country,
+                        'total' => 0,
+                        'generated_at' => now()->toIso8601String(),
+                    ],
+                ]);
+            }
+
+            return response()->json($response);
+        }
+
+        // iOS - use KeywordDiscoveryService
         $suggestions = $this->keywordDiscoveryService->getSuggestionsForApp(
             $app->store_id,
             $country,

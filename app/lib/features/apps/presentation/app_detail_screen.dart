@@ -249,9 +249,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                           ref.invalidate(appsNotifierProvider);
                         },
                         onKeywordTap: _showKeywordHistory,
-                        onSuggestions: app.isIos
-                            ? () => _showSuggestionsModal(app, keywordsAsync.valueOrNull ?? [])
-                            : null,
+                        onSuggestions: () => _showSuggestionsModal(app, keywordsAsync.valueOrNull ?? []),
                         hasIos: app.isIos,
                         hasAndroid: app.isAndroid,
                       ),

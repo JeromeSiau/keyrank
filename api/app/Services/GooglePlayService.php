@@ -106,6 +106,28 @@ class GooglePlayService
     }
 
     /**
+     * Get keyword suggestions for an app
+     */
+    public function getSuggestionsForApp(string $appId, string $country = 'US', int $limit = 50): array
+    {
+        $country = strtoupper($country);
+        $cacheKey = "gplay_suggestions_{$appId}_{$country}";
+
+        return Cache::remember($cacheKey, now()->addHours(12), function () use ($appId, $country, $limit) {
+            $response = Http::timeout(180)->get("{$this->scraperUrl}/suggestions/app/{$appId}", [
+                'country' => strtolower($country),
+                'limit' => min($limit, 100),
+            ]);
+
+            if (!$response->successful()) {
+                return [];
+            }
+
+            return $response->json();
+        });
+    }
+
+    /**
      * Check if scraper is healthy
      */
     public function isHealthy(): bool
