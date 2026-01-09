@@ -39,4 +39,18 @@ return [
         'url' => env('GPLAY_SCRAPER_URL', 'http://localhost:3001'),
     ],
 
+    'apple_search_ads' => [
+        'client_id' => env('APPLE_SEARCH_ADS_CLIENT_ID'),
+        'team_id' => env('APPLE_SEARCH_ADS_TEAM_ID'),
+        'key_id' => env('APPLE_SEARCH_ADS_KEY_ID'),
+        'private_key_path' => env('APPLE_SEARCH_ADS_PRIVATE_KEY_PATH'),
+        'private_key' => env('APPLE_SEARCH_ADS_PRIVATE_KEY'),
+    ],
+
+    'openrouter' => [
+        'api_key' => env('OPENROUTER_API_KEY'),
+        'base_url' => env('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1'),
+        'model' => env('OPENROUTER_MODEL', 'openai/gpt-4o-mini'),
+    ],
+
 ];
