@@ -66,6 +66,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
         appId: widget.appId,
         countries: _selectedCountries,
         periodMonths: _periodMonths,
+        force: _insight != null,
       );
       if (mounted) {
         setState(() {
@@ -259,14 +260,14 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : const Row(
+                        : Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.auto_awesome, size: 16, color: Colors.white),
-                              SizedBox(width: 8),
+                              Icon(_insight != null ? Icons.refresh : Icons.auto_awesome, size: 16, color: Colors.white),
+                              const SizedBox(width: 8),
                               Text(
-                                'Analyze',
-                                style: TextStyle(
+                                _insight != null ? 'Refresh' : 'Analyze',
+                                style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
