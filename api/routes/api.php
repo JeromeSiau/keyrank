@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\KeywordController;
 use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\RatingsController;
 use App\Http\Controllers\Api\ReviewsController;
+use App\Http\Controllers\Api\NotesController;
 use App\Http\Controllers\Api\TagsController;
 use Illuminate\Support\Facades\Route;
 
@@ -101,5 +102,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('{tag}', [TagsController::class, 'destroy']);
         Route::post('add-to-keyword', [TagsController::class, 'addToKeyword']);
         Route::post('remove-from-keyword', [TagsController::class, 'removeFromKeyword']);
+    });
+
+    // Notes
+    Route::prefix('notes')->group(function () {
+        Route::get('keyword', [NotesController::class, 'forKeyword']);
+        Route::get('insight', [NotesController::class, 'forInsight']);
+        Route::post('/', [NotesController::class, 'store']);
+        Route::delete('{note}', [NotesController::class, 'destroy']);
     });
 });
