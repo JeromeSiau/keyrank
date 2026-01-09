@@ -29,6 +29,11 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   AppInsight? _insight;
   String? _error;
 
+  bool get _isInsightRecent {
+    if (_insight == null) return false;
+    return DateTime.now().difference(_insight!.analyzedAt).inHours < 24;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +71,6 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
         appId: widget.appId,
         countries: _selectedCountries,
         periodMonths: _periodMonths,
-        force: _insight != null,
       );
       if (mounted) {
         setState(() {
@@ -245,39 +249,40 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               const SizedBox(width: 8),
               _PeriodChip(label: '12 months', value: 12, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 12)),
               const Spacer(),
-              // Generate button
-              Material(
-                color: AppColors.accent,
-                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                child: InkWell(
-                  onTap: _isGenerating ? null : _generateInsights,
+              // Generate button - hidden if insight < 24h
+              if (!_isInsightRecent)
+                Material(
+                  color: AppColors.accent,
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: _isGenerating
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(_insight != null ? Icons.refresh : Icons.auto_awesome, size: 16, color: Colors.white),
-                              const SizedBox(width: 8),
-                              Text(
-                                _insight != null ? 'Refresh' : 'Analyze',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                  child: InkWell(
+                    onTap: _isGenerating ? null : _generateInsights,
+                    borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      child: _isGenerating
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.auto_awesome, size: 16, color: Colors.white),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Analyze',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ],
