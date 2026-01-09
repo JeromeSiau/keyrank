@@ -110,4 +110,16 @@ class TagsTest extends TestCase
         $response->assertNoContent();
         $this->assertDatabaseMissing('tags', ['id' => $tag->id]);
     }
+
+    public function test_user_cannot_delete_another_users_tag(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $tag = Tag::create(['user_id' => $otherUser->id, 'name' => 'OtherTag', 'color' => '#000']);
+
+        $response = $this->actingAs($user)->deleteJson("/api/tags/{$tag->id}");
+
+        $response->assertForbidden();
+        $this->assertDatabaseHas('tags', ['id' => $tag->id]);
+    }
 }
