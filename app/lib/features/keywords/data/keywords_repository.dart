@@ -87,6 +87,25 @@ class KeywordsRepository {
       throw ApiException.fromDioError(e);
     }
   }
+
+  Future<KeywordSuggestionsResponse> getKeywordSuggestions(
+    int appId, {
+    String country = 'US',
+    int limit = 30,
+  }) async {
+    try {
+      final response = await dio.get(
+        '${ApiConstants.apps}/$appId/keywords/suggestions',
+        queryParameters: {
+          'country': country.toUpperCase(),
+          'limit': limit,
+        },
+      );
+      return KeywordSuggestionsResponse.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
 }
 
 class RankingHistoryPoint {

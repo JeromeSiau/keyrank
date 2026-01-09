@@ -10,6 +10,7 @@ import '../../../shared/widgets/buttons.dart';
 import '../providers/apps_provider.dart';
 import '../../keywords/data/keywords_repository.dart';
 import '../../keywords/domain/keyword_model.dart';
+import '../../keywords/presentation/keyword_suggestions_modal.dart';
 
 final appKeywordsProvider = FutureProvider.family<List<Keyword>, int>((ref, appId) async {
   final repository = ref.watch(keywordsRepositoryProvider);
@@ -86,6 +87,44 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     } finally {
       if (mounted) {
         setState(() => _isAddingKeyword = false);
+      }
+    }
+  }
+
+  Future<void> _showSuggestionsModal(dynamic app, List<Keyword> keywords) async {
+    final country = ref.read(selectedCountryProvider);
+    final existingKeywords = keywords.map((k) => k.keyword.toLowerCase()).toList();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => KeywordSuggestionsModal(
+        appId: widget.appId,
+        appName: app.name,
+        country: country.code.toUpperCase(),
+        existingKeywords: existingKeywords,
+        onAddKeywords: (selectedKeywords) async {
+          final repository = ref.read(keywordsRepositoryProvider);
+          for (final keyword in selectedKeywords) {
+            await repository.addKeywordToApp(
+              widget.appId,
+              keyword,
+              storefront: country.code.toUpperCase(),
+            );
+          }
+        },
+      ),
+    );
+
+    if (result == true) {
+      ref.invalidate(appKeywordsProvider(widget.appId));
+      ref.invalidate(appsNotifierProvider);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Keywords added successfully'),
+            backgroundColor: AppColors.green,
+          ),
+        );
       }
     }
   }
@@ -210,6 +249,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                           ref.invalidate(appsNotifierProvider);
                         },
                         onKeywordTap: _showKeywordHistory,
+                        onSuggestions: app.isIos
+                            ? () => _showSuggestionsModal(app, keywordsAsync.valueOrNull ?? [])
+                            : null,
                         hasIos: app.isIos,
                         hasAndroid: app.isAndroid,
                       ),
@@ -704,6 +746,7 @@ class _KeywordsTable extends StatelessWidget {
   final AsyncValue<List<Keyword>> keywordsAsync;
   final Future<void> Function(Keyword) onDelete;
   final void Function(Keyword) onKeywordTap;
+  final VoidCallback? onSuggestions;
   final bool hasIos;
   final bool hasAndroid;
 
@@ -711,6 +754,7 @@ class _KeywordsTable extends StatelessWidget {
     required this.keywordsAsync,
     required this.onDelete,
     required this.onKeywordTap,
+    this.onSuggestions,
     required this.hasIos,
     required this.hasAndroid,
   });
@@ -738,7 +782,7 @@ class _KeywordsTable extends StatelessWidget {
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 12),
                 if (keywordsAsync.hasValue)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -752,6 +796,38 @@ class _KeywordsTable extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: AppColors.accent,
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                if (onSuggestions != null)
+                  Material(
+                    color: AppColors.greenMuted,
+                    borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                    child: InkWell(
+                      onTap: onSuggestions,
+                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.lightbulb_outline_rounded,
+                              size: 16,
+                              color: AppColors.green,
+                            ),
+                            const SizedBox(width: 6),
+                            const Text(
+                              'Suggestions',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.green,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

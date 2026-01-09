@@ -125,3 +125,88 @@ class KeywordSearchResult {
     );
   }
 }
+
+class KeywordSuggestion {
+  final String keyword;
+  final String source;
+  final int? position;
+  final int competition;
+  final int difficulty;
+  final String difficultyLabel;
+  final List<TopCompetitor> topCompetitors;
+
+  KeywordSuggestion({
+    required this.keyword,
+    required this.source,
+    this.position,
+    required this.competition,
+    required this.difficulty,
+    required this.difficultyLabel,
+    required this.topCompetitors,
+  });
+
+  factory KeywordSuggestion.fromJson(Map<String, dynamic> json) {
+    final metrics = json['metrics'] as Map<String, dynamic>;
+    return KeywordSuggestion(
+      keyword: json['keyword'] as String,
+      source: json['source'] as String,
+      position: metrics['position'] as int?,
+      competition: metrics['competition'] as int? ?? 0,
+      difficulty: metrics['difficulty'] as int? ?? 0,
+      difficultyLabel: metrics['difficulty_label'] as String? ?? 'easy',
+      topCompetitors: (json['top_competitors'] as List?)
+              ?.map((e) => TopCompetitor.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class TopCompetitor {
+  final String name;
+  final int position;
+  final double? rating;
+
+  TopCompetitor({
+    required this.name,
+    required this.position,
+    this.rating,
+  });
+
+  factory TopCompetitor.fromJson(Map<String, dynamic> json) {
+    return TopCompetitor(
+      name: json['name'] as String,
+      position: json['position'] as int,
+      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
+    );
+  }
+}
+
+class KeywordSuggestionsResponse {
+  final List<KeywordSuggestion> suggestions;
+  final String appId;
+  final String country;
+  final int total;
+  final DateTime generatedAt;
+
+  KeywordSuggestionsResponse({
+    required this.suggestions,
+    required this.appId,
+    required this.country,
+    required this.total,
+    required this.generatedAt,
+  });
+
+  factory KeywordSuggestionsResponse.fromJson(Map<String, dynamic> json) {
+    final meta = json['meta'] as Map<String, dynamic>;
+    return KeywordSuggestionsResponse(
+      suggestions: (json['data'] as List)
+          .map((e) => KeywordSuggestion.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      appId: meta['app_id'] as String,
+      country: meta['country'] as String,
+      total: meta['total'] as int,
+      generatedAt: DateTime.parse(meta['generated_at'] as String),
+    );
+  }
+}
