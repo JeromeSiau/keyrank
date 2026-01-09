@@ -13,10 +13,14 @@ class TrackedKeyword extends Model
         'user_id',
         'app_id',
         'keyword_id',
+        'is_favorite',
+        'favorited_at',
         'created_at',
     ];
 
     protected $casts = [
+        'is_favorite' => 'boolean',
+        'favorited_at' => 'datetime',
         'created_at' => 'datetime',
     ];
 
