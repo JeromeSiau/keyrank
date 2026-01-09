@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AppController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\InsightsController;
 use App\Http\Controllers\Api\KeywordController;
 use App\Http\Controllers\Api\RankingController;
@@ -76,6 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Insights for app
         Route::get('{app}/insights', [InsightsController::class, 'show']);
         Route::post('{app}/insights/generate', [InsightsController::class, 'generate']);
+
+        // Export
+        Route::get('{app}/export/rankings', [ExportController::class, 'rankings']);
     });
 
     // Keywords (global search)
