@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('preferences', [UserPreferencesController::class, 'show']);
         Route::put('preferences', [UserPreferencesController::class, 'update']);
+        Route::put('fcm-token', [UserPreferencesController::class, 'updateFcmToken']);
     });
 
     // Dashboard
