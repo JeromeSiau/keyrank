@@ -469,13 +469,15 @@ class GlassContainer extends StatelessWidget {
   }
 }
 
-/// Colored progress bar widget
-class ProgressBar extends StatelessWidget {
+/// Colored progress bar widget with animated fill
+class ProgressBar extends StatefulWidget {
   final int value; // 0-100
   final double height;
   final double width;
   final Color? color;
   final Color backgroundColor;
+  final bool animate;
+  final Duration animationDuration;
 
   const ProgressBar({
     super.key,
@@ -484,37 +486,107 @@ class ProgressBar extends StatelessWidget {
     this.width = 80,
     this.color,
     this.backgroundColor = const Color(0xFF2a2a2a),
+    this.animate = true,
+    this.animationDuration = const Duration(milliseconds: 600),
   });
 
   @override
-  Widget build(BuildContext context) {
-    final progressColor = color ?? AppColors.getProgressColor(value);
-    final clampedValue = value.clamp(0, 100);
+  State<ProgressBar> createState() => _ProgressBarState();
+}
 
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(height / 2),
-      ),
-      child: FractionallySizedBox(
-        alignment: Alignment.centerLeft,
-        widthFactor: clampedValue / 100,
-        child: Container(
+class _ProgressBarState extends State<ProgressBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fillAnimation;
+  late Animation<double> _glowAnimation;
+  int _previousValue = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousValue = widget.animate ? 0 : widget.value;
+
+    _controller = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
+
+    _setupAnimations();
+
+    if (widget.animate) {
+      _controller.forward();
+    }
+  }
+
+  void _setupAnimations() {
+    _fillAnimation = Tween<double>(
+      begin: _previousValue / 100,
+      end: widget.value.clamp(0, 100) / 100,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    ));
+
+    // Glow pulses at the end of the animation
+    _glowAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 70),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.5), weight: 15),
+      TweenSequenceItem(tween: Tween(begin: 1.5, end: 1.0), weight: 15),
+    ]).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void didUpdateWidget(ProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _previousValue = oldWidget.value;
+      _setupAnimations();
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final progressColor = widget.color ?? AppColors.getProgressColor(widget.value);
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Container(
+          width: widget.width,
+          height: widget.height,
           decoration: BoxDecoration(
-            color: progressColor,
-            borderRadius: BorderRadius.circular(height / 2),
-            boxShadow: [
-              BoxShadow(
-                color: progressColor.withAlpha(100),
-                blurRadius: 6,
-                offset: const Offset(0, 0),
-              ),
-            ],
+            color: widget.backgroundColor,
+            borderRadius: BorderRadius.circular(widget.height / 2),
           ),
-        ),
-      ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: _fillAnimation.value,
+            child: Container(
+              decoration: BoxDecoration(
+                color: progressColor,
+                borderRadius: BorderRadius.circular(widget.height / 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: progressColor.withAlpha((100 * _glowAnimation.value).round()),
+                    blurRadius: 6 * _glowAnimation.value,
+                    spreadRadius: (_glowAnimation.value - 1) * 2,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -5,6 +5,7 @@ import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../core/widgets/platform_tabs.dart';
 import '../../../shared/widgets/country_picker.dart';
 import '../data/apps_repository.dart';
 import '../domain/app_model.dart';
@@ -188,28 +189,16 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                   },
                 ),
                 const SizedBox(width: 12),
-                // Platform toggle
-                Container(
-                  decoration: BoxDecoration(
-                    color: colors.bgActive,
-                    borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    border: Border.all(color: colors.glassBorder),
-                  ),
-                  padding: const EdgeInsets.all(4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _PlatformTab(
-                        label: '🍎 iOS',
-                        isSelected: selectedPlatform == AppPlatform.ios,
-                        onTap: () => ref.read(_selectedPlatformProvider.notifier).state = AppPlatform.ios,
-                      ),
-                      _PlatformTab(
-                        label: '🤖 Android',
-                        isSelected: selectedPlatform == AppPlatform.android,
-                        onTap: () => ref.read(_selectedPlatformProvider.notifier).state = AppPlatform.android,
-                      ),
-                    ],
+                // Platform toggle (animated)
+                SizedBox(
+                  width: 240,
+                  child: PlatformTabs(
+                    selectedPlatform: selectedPlatform == AppPlatform.ios ? 'ios' : 'android',
+                    availablePlatforms: const ['ios', 'android'],
+                    onPlatformChanged: (platform) {
+                      ref.read(_selectedPlatformProvider.notifier).state =
+                          platform == 'ios' ? AppPlatform.ios : AppPlatform.android;
+                    },
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -415,41 +404,6 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             textAlign: TextAlign.center,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PlatformTab extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _PlatformTab({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? colors.glassPanel : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? colors.textPrimary : colors.textMuted,
-          ),
-        ),
       ),
     );
   }

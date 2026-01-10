@@ -11,23 +11,133 @@ class KeyrankColors {
 }
 
 /// KeyRank Logo icon widget - renders the 1B contained logo
-class KeyrankLogoIcon extends StatelessWidget {
+/// Set [animate] to true to enable staggered bar animation on mount
+class KeyrankLogoIcon extends StatefulWidget {
   final double size;
   final bool showBackground;
+  final bool animate;
+  final bool pulseArrow;
 
   const KeyrankLogoIcon({
     super.key,
     this.size = 56,
     this.showBackground = true,
+    this.animate = false,
+    this.pulseArrow = false,
   });
+
+  @override
+  State<KeyrankLogoIcon> createState() => _KeyrankLogoIconState();
+}
+
+class _KeyrankLogoIconState extends State<KeyrankLogoIcon>
+    with TickerProviderStateMixin {
+  late AnimationController _barController;
+  late AnimationController _arrowController;
+  late Animation<double> _bar1Height;
+  late Animation<double> _bar2Height;
+  late Animation<double> _bar3Height;
+  late Animation<double> _arrowOpacity;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Staggered bar animation
+    _barController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    // Bar 1: smallest, animates first (0.0 - 0.4)
+    _bar1Height = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _barController,
+        curve: const Interval(0.0, 0.4, curve: Curves.easeOutBack),
+      ),
+    );
+
+    // Bar 2: medium, animates second (0.15 - 0.55)
+    _bar2Height = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _barController,
+        curve: const Interval(0.15, 0.55, curve: Curves.easeOutBack),
+      ),
+    );
+
+    // Bar 3: tallest, animates last (0.3 - 0.7)
+    _bar3Height = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _barController,
+        curve: const Interval(0.3, 0.7, curve: Curves.easeOutBack),
+      ),
+    );
+
+    // Arrow pulse animation
+    _arrowController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _arrowOpacity = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _arrowController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    if (widget.animate) {
+      _barController.forward();
+    } else {
+      _barController.value = 1.0;
+    }
+
+    if (widget.pulseArrow) {
+      _arrowController.repeat(reverse: true);
+    } else {
+      _arrowController.value = 1.0;
+    }
+  }
+
+  @override
+  void didUpdateWidget(KeyrankLogoIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.animate && !oldWidget.animate) {
+      _barController.forward(from: 0);
+    }
+    if (widget.pulseArrow && !oldWidget.pulseArrow) {
+      _arrowController.repeat(reverse: true);
+    } else if (!widget.pulseArrow && oldWidget.pulseArrow) {
+      _arrowController.stop();
+      _arrowController.value = 1.0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _barController.dispose();
+    _arrowController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: _KeyrankLogoPainter(showBackground: showBackground),
+      width: widget.size,
+      height: widget.size,
+      child: AnimatedBuilder(
+        animation: Listenable.merge([_barController, _arrowController]),
+        builder: (context, child) {
+          return CustomPaint(
+            painter: _KeyrankLogoPainter(
+              showBackground: widget.showBackground,
+              bar1Progress: _bar1Height.value,
+              bar2Progress: _bar2Height.value,
+              bar3Progress: _bar3Height.value,
+              arrowOpacity: _arrowOpacity.value,
+            ),
+          );
+        },
       ),
     );
   }
@@ -150,8 +260,18 @@ class KeyrankLogoStacked extends StatelessWidget {
 
 class _KeyrankLogoPainter extends CustomPainter {
   final bool showBackground;
+  final double bar1Progress;
+  final double bar2Progress;
+  final double bar3Progress;
+  final double arrowOpacity;
 
-  _KeyrankLogoPainter({this.showBackground = true});
+  _KeyrankLogoPainter({
+    this.showBackground = true,
+    this.bar1Progress = 1.0,
+    this.bar2Progress = 1.0,
+    this.bar3Progress = 1.0,
+    this.arrowOpacity = 1.0,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -179,30 +299,40 @@ class _KeyrankLogoPainter extends CustomPainter {
       canvas.drawRRect(bgRect, borderPaint);
     }
 
-    // Bar 1 (smallest)
-    final bar1Rect = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(10, 34, 10, 14),
-      const Radius.circular(2),
-    );
-    canvas.drawRRect(bar1Rect, Paint()..color = KeyrankColors.bar1);
+    // Bar 1 (smallest) - height: 14, bottom: 48
+    final bar1Height = 14 * bar1Progress;
+    if (bar1Height > 0) {
+      final bar1Rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(10, 48 - bar1Height, 10, bar1Height),
+        const Radius.circular(2),
+      );
+      canvas.drawRRect(bar1Rect, Paint()..color = KeyrankColors.bar1);
+    }
 
-    // Bar 2 (medium)
-    final bar2Rect = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(23, 26, 10, 22),
-      const Radius.circular(2),
-    );
-    canvas.drawRRect(bar2Rect, Paint()..color = KeyrankColors.bar2);
+    // Bar 2 (medium) - height: 22, bottom: 48
+    final bar2Height = 22 * bar2Progress;
+    if (bar2Height > 0) {
+      final bar2Rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(23, 48 - bar2Height, 10, bar2Height),
+        const Radius.circular(2),
+      );
+      canvas.drawRRect(bar2Rect, Paint()..color = KeyrankColors.bar2);
+    }
 
-    // Bar 3 (tallest)
-    final bar3Rect = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(36, 16, 10, 32),
-      const Radius.circular(2),
-    );
-    canvas.drawRRect(bar3Rect, Paint()..color = KeyrankColors.bar3);
+    // Bar 3 (tallest) - height: 32, bottom: 48
+    final bar3Height = 32 * bar3Progress;
+    if (bar3Height > 0) {
+      final bar3Rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(36, 48 - bar3Height, 10, bar3Height),
+        const Radius.circular(2),
+      );
+      canvas.drawRRect(bar3Rect, Paint()..color = KeyrankColors.bar3);
+    }
 
     // Arrow - vertical line
+    final arrowColor = KeyrankColors.arrow.withAlpha((255 * arrowOpacity).round());
     final arrowPaint = Paint()
-      ..color = KeyrankColors.arrow
+      ..color = arrowColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
@@ -216,7 +346,7 @@ class _KeyrankLogoPainter extends CustomPainter {
       ..lineTo(49, 11);
 
     final arrowHeadPaint = Paint()
-      ..color = KeyrankColors.arrow
+      ..color = arrowColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round
@@ -226,5 +356,11 @@ class _KeyrankLogoPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _KeyrankLogoPainter oldDelegate) {
+    return oldDelegate.bar1Progress != bar1Progress ||
+        oldDelegate.bar2Progress != bar2Progress ||
+        oldDelegate.bar3Progress != bar3Progress ||
+        oldDelegate.arrowOpacity != arrowOpacity ||
+        oldDelegate.showBackground != showBackground;
+  }
 }

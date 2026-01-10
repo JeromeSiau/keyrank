@@ -525,23 +525,63 @@ class _Toolbar extends StatelessWidget {
             onTap: onViewInsights,
           ),
           const SizedBox(width: 10),
-          ToolbarButton(
-            icon: Icons.upload_rounded,
-            label: context.l10n.appDetail_import,
-            onTap: onImport,
-          ),
-          const SizedBox(width: 10),
-          ToolbarButton(
-            icon: Icons.download_rounded,
-            label: context.l10n.appDetail_export,
-            onTap: onExport,
-          ),
-          const SizedBox(width: 10),
-          ToolbarButton(
-            icon: Icons.delete_outline_rounded,
-            label: context.l10n.appDetail_delete,
-            isDestructive: true,
-            onTap: onDelete,
+          // Overflow menu for secondary actions
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert_rounded, color: colors.textMuted, size: 20),
+            tooltip: '',
+            splashRadius: 18,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+            ),
+            color: colors.glassPanel,
+            surfaceTintColor: Colors.transparent,
+            offset: const Offset(0, 40),
+            onSelected: (value) {
+              switch (value) {
+                case 'import':
+                  onImport();
+                  break;
+                case 'export':
+                  onExport();
+                  break;
+                case 'delete':
+                  onDelete();
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'import',
+                child: Row(
+                  children: [
+                    Icon(Icons.upload_rounded, size: 18, color: colors.textSecondary),
+                    const SizedBox(width: 12),
+                    Text(context.l10n.appDetail_import, style: TextStyle(color: colors.textPrimary)),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'export',
+                child: Row(
+                  children: [
+                    Icon(Icons.download_rounded, size: 18, color: colors.textSecondary),
+                    const SizedBox(width: 12),
+                    Text(context.l10n.appDetail_export, style: TextStyle(color: colors.textPrimary)),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete_outline_rounded, size: 18, color: colors.red),
+                    const SizedBox(width: 12),
+                    Text(context.l10n.appDetail_delete, style: TextStyle(color: colors.red)),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

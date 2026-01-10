@@ -22,12 +22,64 @@ class SidebarAppTile extends StatefulWidget {
   State<SidebarAppTile> createState() => _SidebarAppTileState();
 }
 
-class _SidebarAppTileState extends State<SidebarAppTile> {
+class _SidebarAppTileState extends State<SidebarAppTile>
+    with SingleTickerProviderStateMixin {
   bool _isHovering = false;
+  late AnimationController _starController;
+  late Animation<double> _starScale;
+  late Animation<double> _starRotation;
+
+  @override
+  void initState() {
+    super.initState();
+    _starController = AnimationController(
+      duration: const Duration(milliseconds: 350),
+      vsync: this,
+    );
+
+    _starScale = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.35), weight: 35),
+      TweenSequenceItem(tween: Tween(begin: 1.35, end: 0.9), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 0.9, end: 1.0), weight: 40),
+    ]).animate(CurvedAnimation(
+      parent: _starController,
+      curve: Curves.easeOutBack,
+    ));
+
+    _starRotation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: -0.15), weight: 30),
+      TweenSequenceItem(tween: Tween(begin: -0.15, end: 0.1), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 0.1, end: 0.0), weight: 30),
+    ]).animate(CurvedAnimation(
+      parent: _starController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void didUpdateWidget(SidebarAppTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.app.isFavorite != widget.app.isFavorite) {
+      _starController.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _starController.dispose();
+    super.dispose();
+  }
+
+  void _handleFavoriteTap() {
+    _starController.forward(from: 0);
+    widget.onToggleFavorite();
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final showStar = _isHovering || widget.app.isFavorite;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovering = true),
       onExit: (_) => setState(() => _isHovering = false),
@@ -95,23 +147,52 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                // Favorite star (visible on hover or if favorite)
-                if (_isHovering || widget.app.isFavorite)
-                  GestureDetector(
-                    onTap: widget.onToggleFavorite,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: Icon(
-                        widget.app.isFavorite
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        size: 16,
-                        color: widget.app.isFavorite
-                            ? colors.yellow
-                            : colors.textMuted,
+                // Animated favorite star
+                AnimatedOpacity(
+                  opacity: showStar ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 150),
+                  child: AnimatedScale(
+                    scale: showStar ? 1.0 : 0.5,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOutBack,
+                    child: GestureDetector(
+                      onTap: _handleFavoriteTap,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: AnimatedBuilder(
+                          animation: _starController,
+                          builder: (context, child) {
+                            return Transform.scale(
+                              scale: _starScale.value,
+                              child: Transform.rotate(
+                                angle: _starRotation.value,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 200),
+                                  transitionBuilder: (child, animation) {
+                                    return ScaleTransition(
+                                      scale: animation,
+                                      child: child,
+                                    );
+                                  },
+                                  child: Icon(
+                                    widget.app.isFavorite
+                                        ? Icons.star_rounded
+                                        : Icons.star_outline_rounded,
+                                    key: ValueKey(widget.app.isFavorite),
+                                    size: 16,
+                                    color: widget.app.isFavorite
+                                        ? colors.yellow
+                                        : colors.textMuted,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
+                ),
               ],
             ),
           ),

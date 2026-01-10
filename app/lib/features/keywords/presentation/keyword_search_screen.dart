@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/widgets/platform_tabs.dart';
 import '../../../shared/widgets/country_picker.dart';
 import '../../../core/providers/country_provider.dart' show Country, availableCountries, countriesProvider, selectedCountryProvider;
 import '../../../shared/widgets/states.dart';
@@ -138,27 +139,12 @@ class _Toolbar extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           // Platform toggle
-          Container(
-            decoration: BoxDecoration(
-              color: colors.bgActive,
-              border: Border.all(color: colors.glassBorder),
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            ),
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _PlatformToggleButton(
-                  label: '🍎 ${context.l10n.filter_ios}',
-                  isSelected: selectedPlatform == 'ios',
-                  onTap: () => onPlatformSelected('ios'),
-                ),
-                _PlatformToggleButton(
-                  label: '🤖 ${context.l10n.filter_android}',
-                  isSelected: selectedPlatform == 'android',
-                  onTap: () => onPlatformSelected('android'),
-                ),
-              ],
+          SizedBox(
+            width: 240,
+            child: PlatformTabs(
+              selectedPlatform: selectedPlatform,
+              availablePlatforms: const ['ios', 'android'],
+              onPlatformChanged: onPlatformSelected,
             ),
           ),
           const SizedBox(width: 12),
@@ -169,41 +155,6 @@ class _Toolbar extends StatelessWidget {
             onCountryChanged: onCountrySelected,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PlatformToggleButton extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _PlatformToggleButton({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? colors.glassPanel : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? colors.textPrimary : colors.textMuted,
-          ),
-        ),
       ),
     );
   }

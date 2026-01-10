@@ -97,36 +97,52 @@ class _DashboardContent extends StatelessWidget {
       (sum, app) => sum + (app.trackedKeywordsCount ?? 0),
     );
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Stats bar
-          _StatsBar(
-            appsCount: apps.length,
-            keywordsCount: totalKeywords,
-          ),
-          const SizedBox(height: 16),
-          // Main content
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Use vertical layout for narrow screens
+        final isNarrow = constraints.maxWidth < 900;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Apps panel
-              Expanded(
-                flex: 2,
-                child: _AppsPanel(apps: apps),
+              // Stats bar
+              _StatsBar(
+                appsCount: apps.length,
+                keywordsCount: totalKeywords,
+                isCompact: isNarrow,
               ),
-              const SizedBox(width: 16),
-              // Quick actions panel
-              SizedBox(
-                width: 300,
-                child: _QuickActionsPanel(),
-              ),
+              const SizedBox(height: 16),
+              // Main content
+              if (isNarrow)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _AppsPanel(apps: apps, isCompact: true),
+                    const SizedBox(height: 16),
+                    _QuickActionsPanel(),
+                  ],
+                )
+              else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: _AppsPanel(apps: apps, isCompact: false),
+                    ),
+                    const SizedBox(width: 16),
+                    SizedBox(
+                      width: 300,
+                      child: _QuickActionsPanel(),
+                    ),
+                  ],
+                ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -134,70 +150,97 @@ class _DashboardContent extends StatelessWidget {
 class _StatsBar extends StatelessWidget {
   final int appsCount;
   final int keywordsCount;
+  final bool isCompact;
 
   const _StatsBar({
     required this.appsCount,
     required this.keywordsCount,
+    this.isCompact = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+
+    final stats = [
+      _StatItem(
+        label: context.l10n.dashboard_appsTracked,
+        value: appsCount.toString(),
+        icon: Icons.apps_rounded,
+        color: colors.accent,
+        trend: appsCount > 0 ? '+1' : '',
+        isPositive: true,
+        isCompact: isCompact,
+      ),
+      _StatItem(
+        label: context.l10n.dashboard_keywords,
+        value: keywordsCount.toString(),
+        icon: Icons.key_rounded,
+        color: colors.purple,
+        trend: keywordsCount > 0 ? '+5' : '',
+        isPositive: true,
+        isCompact: isCompact,
+      ),
+      _StatItem(
+        label: context.l10n.dashboard_avgPosition,
+        value: '--',
+        icon: Icons.trending_up_rounded,
+        color: colors.green,
+        trend: '',
+        isPositive: true,
+        isCompact: isCompact,
+      ),
+      _StatItem(
+        label: context.l10n.dashboard_top10,
+        value: '--',
+        icon: Icons.emoji_events_rounded,
+        color: colors.yellow,
+        trend: '',
+        isPositive: true,
+        isCompact: isCompact,
+      ),
+    ];
+
     return Container(
       decoration: BoxDecoration(
         color: colors.bgActive.withAlpha(50),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
         border: Border.all(color: colors.glassBorder),
       ),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            Expanded(
-              child: _StatItem(
-                label: context.l10n.dashboard_appsTracked,
-                value: appsCount.toString(),
-                icon: Icons.apps_rounded,
-                color: colors.accent,
-                trend: appsCount > 0 ? '+1' : '',
-                isPositive: true,
+      child: isCompact
+          ? Wrap(
+              children: stats.asMap().entries.map((entry) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: entry.key < stats.length - 1
+                      ? DecoratedBox(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: colors.glassBorder),
+                            ),
+                          ),
+                          child: entry.value,
+                        )
+                      : entry.value,
+                );
+              }).toList(),
+            )
+          : IntrinsicHeight(
+              child: Row(
+                children: stats.asMap().entries.map((entry) {
+                  return Expanded(
+                    child: entry.key < stats.length - 1
+                        ? Row(
+                            children: [
+                              Expanded(child: entry.value),
+                              Container(width: 1, color: colors.glassBorder),
+                            ],
+                          )
+                        : entry.value,
+                  );
+                }).toList(),
               ),
             ),
-            Container(width: 1, color: colors.glassBorder),
-            Expanded(
-              child: _StatItem(
-                label: context.l10n.dashboard_keywords,
-                value: keywordsCount.toString(),
-                icon: Icons.key_rounded,
-                color: colors.purple,
-                trend: keywordsCount > 0 ? '+5' : '',
-                isPositive: true,
-              ),
-            ),
-            Container(width: 1, color: colors.glassBorder),
-            Expanded(
-              child: _StatItem(
-                label: context.l10n.dashboard_avgPosition,
-                value: '--',
-                icon: Icons.trending_up_rounded,
-                color: colors.green,
-                trend: '',
-                isPositive: true,
-              ),
-            ),
-            Container(width: 1, color: colors.glassBorder),
-            Expanded(
-              child: _StatItem(
-                label: context.l10n.dashboard_top10,
-                value: '--',
-                icon: Icons.emoji_events_rounded,
-                color: colors.yellow,
-                trend: '',
-                isPositive: true,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -209,6 +252,7 @@ class _StatItem extends StatelessWidget {
   final Color color;
   final String trend;
   final bool isPositive;
+  final bool isCompact;
 
   const _StatItem({
     required this.label,
@@ -217,11 +261,74 @@ class _StatItem extends StatelessWidget {
     required this.color,
     required this.trend,
     required this.isPositive,
+    this.isCompact = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+
+    if (isCompact) {
+      // Horizontal compact layout
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: color.withAlpha(30),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 16, color: color),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: colors.textMuted,
+                    ),
+                  ),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (trend.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (isPositive ? colors.green : colors.red).withAlpha(20),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  trend,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: isPositive ? colors.green : colors.red,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    // Default vertical layout
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -283,8 +390,9 @@ class _StatItem extends StatelessWidget {
 
 class _AppsPanel extends StatefulWidget {
   final List<AppModel> apps;
+  final bool isCompact;
 
-  const _AppsPanel({required this.apps});
+  const _AppsPanel({required this.apps, this.isCompact = false});
 
   @override
   State<_AppsPanel> createState() => _AppsPanelState();
@@ -534,32 +642,34 @@ class _AppsPanelState extends State<_AppsPanel> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
-                SizedBox(
-                  width: 110,
-                  child: Text(
-                    context.l10n.apps_tablePlatform,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
+                if (!widget.isCompact) ...[
+                  const SizedBox(width: 16),
+                  SizedBox(
+                    width: 110,
+                    child: Text(
+                      context.l10n.apps_tablePlatform,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                        color: colors.textMuted,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                SizedBox(
-                  width: 80,
-                  child: Text(
-                    context.l10n.apps_tableBestRank,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
+                  const SizedBox(width: 16),
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      context.l10n.apps_tableBestRank,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                        color: colors.textMuted,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
@@ -571,6 +681,7 @@ class _AppsPanelState extends State<_AppsPanel> {
                   app: entry.value,
                   gradientIndex: entry.key,
                   onTap: () => context.go('/apps/${entry.value.id}'),
+                  isCompact: widget.isCompact,
                 )),
         ],
       ),
@@ -673,11 +784,13 @@ class _AppRow extends StatelessWidget {
   final dynamic app;
   final int gradientIndex;
   final VoidCallback onTap;
+  final bool isCompact;
 
   const _AppRow({
     required this.app,
     required this.gradientIndex,
     required this.onTap,
+    this.isCompact = false,
   });
 
   @override
@@ -765,68 +878,70 @@ class _AppRow extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              // Platform badges
-              SizedBox(
-                width: 110,
-                child: Row(
-                  children: [
-                    if (app.isIos)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: colors.textMuted.withAlpha(30),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          'iOS',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: colors.textSecondary,
+              if (!isCompact) ...[
+                const SizedBox(width: 16),
+                // Platform badges
+                SizedBox(
+                  width: 110,
+                  child: Row(
+                    children: [
+                      if (app.isIos)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: colors.textMuted.withAlpha(30),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'iOS',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: colors.textSecondary,
+                            ),
                           ),
                         ),
-                      ),
-                    if (app.isAndroid)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: colors.green.withAlpha(30),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          'Android',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: colors.green,
+                      if (app.isAndroid)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: colors.green.withAlpha(30),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'Android',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: colors.green,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              // Best Rank
-              SizedBox(
-                width: 80,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: app.bestRank != null ? colors.greenMuted : colors.bgActive,
-                    borderRadius: BorderRadius.circular(8),
+                    ],
                   ),
-                  child: Text(
-                    app.bestRank?.toString() ?? '--',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: app.bestRank != null ? colors.green : colors.textMuted,
+                ),
+                const SizedBox(width: 16),
+                // Best Rank
+                SizedBox(
+                  width: 80,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: app.bestRank != null ? colors.greenMuted : colors.bgActive,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    textAlign: TextAlign.center,
+                    child: Text(
+                      app.bestRank?.toString() ?? '--',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: app.bestRank != null ? colors.green : colors.textMuted,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
