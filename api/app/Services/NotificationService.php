@@ -6,6 +6,9 @@ use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
 
 class NotificationService
 {
@@ -86,9 +89,43 @@ class NotificationService
 
     public function sendFcm(User $user, Notification $notification): void
     {
-        // FCM implementation will be added in Phase 5
-        // For now, just mark as sent
-        $notification->update(['sent_at' => now()]);
+        if (!$user->fcm_token) {
+            return;
+        }
+
+        // Skip if no credentials configured
+        if (!config('fcm.credentials') || !file_exists(config('fcm.credentials'))) {
+            Log::debug('FCM credentials not configured, skipping push notification');
+            return;
+        }
+
+        try {
+            $factory = (new Factory)->withServiceAccount(config('fcm.credentials'));
+            $messaging = $factory->createMessaging();
+
+            $message = CloudMessage::withTarget('token', $user->fcm_token)
+                ->withNotification([
+                    'title' => $notification->title,
+                    'body' => $notification->body,
+                ])
+                ->withData([
+                    'notification_id' => (string) $notification->id,
+                    'type' => $notification->type,
+                    'data' => json_encode($notification->data),
+                ]);
+
+            $messaging->send($message);
+
+            $notification->update(['sent_at' => now()]);
+
+            Log::info('FCM notification sent', ['user_id' => $user->id, 'notification_id' => $notification->id]);
+        } catch (\Exception $e) {
+            Log::error('FCM send failed', [
+                'user_id' => $user->id,
+                'notification_id' => $notification->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function getAggregatedTitle(string $type, int $count): string
