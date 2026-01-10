@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AlertRulesController;
 use App\Http\Controllers\Api\AppController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
@@ -125,5 +126,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('insight', [NotesController::class, 'forInsight']);
         Route::post('/', [NotesController::class, 'store']);
         Route::delete('{note}', [NotesController::class, 'destroy']);
+    });
+
+    // Alert Rules
+    Route::prefix('alerts')->group(function () {
+        Route::get('templates', [AlertRulesController::class, 'templates']);
+        Route::get('rules', [AlertRulesController::class, 'index']);
+        Route::post('rules', [AlertRulesController::class, 'store']);
+        Route::put('rules/{rule}', [AlertRulesController::class, 'update']);
+        Route::delete('rules/{rule}', [AlertRulesController::class, 'destroy']);
+        Route::patch('rules/{rule}/toggle', [AlertRulesController::class, 'toggle']);
     });
 });
