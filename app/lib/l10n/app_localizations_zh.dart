@@ -104,6 +104,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get common_settings => '设置';
 
   @override
+  String get common_search => '搜索...';
+
+  @override
+  String get common_noResults => '无结果';
+
+  @override
   String get dashboard_title => '仪表盘';
 
   @override

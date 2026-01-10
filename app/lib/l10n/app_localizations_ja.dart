@@ -104,6 +104,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get common_settings => '設定';
 
   @override
+  String get common_search => '検索...';
+
+  @override
+  String get common_noResults => '結果がありません';
+
+  @override
   String get dashboard_title => 'ダッシュボード';
 
   @override

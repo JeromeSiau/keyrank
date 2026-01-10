@@ -34,6 +34,8 @@
   "common_sort": "Sortieren",
   "common_refresh": "Aktualisieren",
   "common_settings": "Einstellungen",
+  "common_search": "Suchen...",
+  "common_noResults": "Keine Ergebnisse gefunden",
 
   "dashboard_title": "Dashboard",
   "dashboard_addApp": "App hinzufügen",

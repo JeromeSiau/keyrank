@@ -5,6 +5,7 @@ import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../shared/widgets/country_picker.dart';
 import '../data/apps_repository.dart';
 import '../domain/app_model.dart';
 import '../providers/apps_provider.dart';
@@ -179,51 +180,12 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             child: Row(
               children: [
                 // Country selector
-                PopupMenuButton<Country>(
-                  onSelected: (country) {
+                CountryPickerButton(
+                  selectedCountry: selectedCountry,
+                  countries: countries,
+                  onCountryChanged: (country) {
                     ref.read(selectedCountryProvider.notifier).state = country;
                   },
-                  offset: const Offset(0, 44),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-                    side: BorderSide(color: colors.glassBorder),
-                  ),
-                  color: colors.glassPanel,
-                  itemBuilder: (context) => countries
-                      .map((country) => PopupMenuItem<Country>(
-                            value: country,
-                            height: 44,
-                            child: Row(
-                              children: [
-                                Text(country.flag, style: const TextStyle(fontSize: 18)),
-                                const SizedBox(width: 10),
-                                Text(
-                                  country.name,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: colors.textPrimary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: colors.bgActive,
-                      border: Border.all(color: colors.glassBorder),
-                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(selectedCountry.flag, style: const TextStyle(fontSize: 18)),
-                        const SizedBox(width: 6),
-                        Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: colors.textMuted),
-                      ],
-                    ),
-                  ),
                 ),
                 const SizedBox(width: 12),
                 // Platform toggle

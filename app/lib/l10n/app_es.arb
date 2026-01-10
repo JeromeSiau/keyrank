@@ -34,6 +34,8 @@
   "common_sort": "Ordenar",
   "common_refresh": "Actualizar",
   "common_settings": "Configuración",
+  "common_search": "Buscar...",
+  "common_noResults": "Sin resultados",
 
   "dashboard_title": "Panel de control",
   "dashboard_addApp": "Agregar app",

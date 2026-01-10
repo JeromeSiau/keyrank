@@ -105,6 +105,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get common_settings => 'Ayarlar';
 
   @override
+  String get common_search => 'Ara...';
+
+  @override
+  String get common_noResults => 'Sonuç bulunamadı';
+
+  @override
   String get dashboard_title => 'Kontrol Paneli';
 
   @override

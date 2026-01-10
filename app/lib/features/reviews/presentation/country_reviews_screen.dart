@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../core/utils/country_names.dart';
 import '../data/reviews_repository.dart';
 import '../domain/review_model.dart';
 
@@ -29,7 +30,7 @@ class CountryReviewsScreen extends ConsumerWidget {
     final colors = context.colors;
     final reviewsAsync = ref.watch(countryReviewsProvider((appId: appId, country: country)));
     final flag = getFlagForStorefront(country);
-    final countryName = _getCountryName(country);
+    final countryName = getLocalizedCountryName(context, country);
 
     return Container(
       decoration: BoxDecoration(
@@ -221,55 +222,6 @@ class CountryReviewsScreen extends ConsumerWidget {
     );
   }
 
-  String _getCountryName(String code) {
-    final names = {
-      'US': 'United States',
-      'GB': 'United Kingdom',
-      'FR': 'France',
-      'DE': 'Germany',
-      'JP': 'Japan',
-      'CN': 'China',
-      'KR': 'South Korea',
-      'AU': 'Australia',
-      'CA': 'Canada',
-      'IT': 'Italy',
-      'ES': 'Spain',
-      'NL': 'Netherlands',
-      'BR': 'Brazil',
-      'MX': 'Mexico',
-      'RU': 'Russia',
-      'IN': 'India',
-      'SE': 'Sweden',
-      'NO': 'Norway',
-      'DK': 'Denmark',
-      'FI': 'Finland',
-      'CH': 'Switzerland',
-      'AT': 'Austria',
-      'BE': 'Belgium',
-      'PT': 'Portugal',
-      'PL': 'Poland',
-      'SG': 'Singapore',
-      'HK': 'Hong Kong',
-      'TW': 'Taiwan',
-      'TH': 'Thailand',
-      'ID': 'Indonesia',
-      'MY': 'Malaysia',
-      'PH': 'Philippines',
-      'VN': 'Vietnam',
-      'ZA': 'South Africa',
-      'AE': 'United Arab Emirates',
-      'SA': 'Saudi Arabia',
-      'TR': 'Turkey',
-      'IL': 'Israel',
-      'EG': 'Egypt',
-      'AR': 'Argentina',
-      'CL': 'Chile',
-      'CO': 'Colombia',
-      'PE': 'Peru',
-      'NZ': 'New Zealand',
-    };
-    return names[code.toUpperCase()] ?? code;
-  }
 }
 
 class _ReviewCard extends StatelessWidget {

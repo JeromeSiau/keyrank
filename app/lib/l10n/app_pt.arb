@@ -34,6 +34,8 @@
   "common_sort": "Ordenar",
   "common_refresh": "Atualizar",
   "common_settings": "Configurações",
+  "common_search": "Pesquisar...",
+  "common_noResults": "Nenhum resultado",
 
   "dashboard_title": "Painel",
   "dashboard_addApp": "Adicionar app",

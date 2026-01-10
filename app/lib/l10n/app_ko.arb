@@ -34,6 +34,8 @@
   "common_sort": "정렬",
   "common_refresh": "새로고침",
   "common_settings": "설정",
+  "common_search": "검색...",
+  "common_noResults": "결과 없음",
 
   "dashboard_title": "대시보드",
   "dashboard_addApp": "앱 추가",

@@ -105,6 +105,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get common_settings => 'Configurações';
 
   @override
+  String get common_search => 'Pesquisar...';
+
+  @override
+  String get common_noResults => 'Nenhum resultado';
+
+  @override
   String get dashboard_title => 'Painel';
 
   @override

@@ -106,6 +106,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get common_settings => 'Einstellungen';
 
   @override
+  String get common_search => 'Suchen...';
+
+  @override
+  String get common_noResults => 'Keine Ergebnisse gefunden';
+
+  @override
   String get dashboard_title => 'Dashboard';
 
   @override

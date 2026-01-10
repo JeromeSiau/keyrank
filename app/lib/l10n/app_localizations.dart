@@ -300,6 +300,18 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get common_settings;
 
+  /// No description provided for @common_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get common_search;
+
+  /// No description provided for @common_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get common_noResults;
+
   /// No description provided for @dashboard_title.
   ///
   /// In en, this message translates to:

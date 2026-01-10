@@ -34,6 +34,8 @@
   "common_sort": "排序",
   "common_refresh": "刷新",
   "common_settings": "设置",
+  "common_search": "搜索...",
+  "common_noResults": "无结果",
 
   "dashboard_title": "仪表盘",
   "dashboard_addApp": "添加应用",

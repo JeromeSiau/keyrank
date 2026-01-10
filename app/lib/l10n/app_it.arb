@@ -34,6 +34,8 @@
   "common_sort": "Ordina",
   "common_refresh": "Aggiorna",
   "common_settings": "Impostazioni",
+  "common_search": "Cerca...",
+  "common_noResults": "Nessun risultato",
 
   "dashboard_title": "Dashboard",
   "dashboard_addApp": "Aggiungi app",

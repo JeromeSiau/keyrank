@@ -104,6 +104,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get common_settings => '설정';
 
   @override
+  String get common_search => '검색...';
+
+  @override
+  String get common_noResults => '결과 없음';
+
+  @override
   String get dashboard_title => '대시보드';
 
   @override

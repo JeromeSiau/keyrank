@@ -34,6 +34,8 @@
   "common_sort": "Sırala",
   "common_refresh": "Yenile",
   "common_settings": "Ayarlar",
+  "common_search": "Ara...",
+  "common_noResults": "Sonuç bulunamadı",
 
   "dashboard_title": "Kontrol Paneli",
   "dashboard_addApp": "Uygulama ekle",

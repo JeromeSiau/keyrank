@@ -105,6 +105,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get common_settings => 'Configuración';
 
   @override
+  String get common_search => 'Buscar...';
+
+  @override
+  String get common_noResults => 'Sin resultados';
+
+  @override
   String get dashboard_title => 'Panel de control';
 
   @override

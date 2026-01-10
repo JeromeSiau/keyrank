@@ -34,6 +34,8 @@
   "common_sort": "Trier",
   "common_refresh": "Actualiser",
   "common_settings": "Paramètres",
+  "common_search": "Rechercher...",
+  "common_noResults": "Aucun résultat",
 
   "dashboard_title": "Tableau de bord",
   "dashboard_addApp": "Ajouter une app",

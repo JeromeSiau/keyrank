@@ -105,6 +105,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get common_settings => 'Paramètres';
 
   @override
+  String get common_search => 'Rechercher...';
+
+  @override
+  String get common_noResults => 'Aucun résultat';
+
+  @override
   String get dashboard_title => 'Tableau de bord';
 
   @override

@@ -10,6 +10,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
+import '../../../shared/widgets/country_picker.dart';
 import '../providers/apps_provider.dart';
 import '../../keywords/data/keywords_repository.dart';
 import '../../keywords/domain/keyword_model.dart';
@@ -807,60 +808,12 @@ class _AddKeywordSection extends ConsumerWidget {
           ),
           const SizedBox(width: 16),
           // Country selector
-          PopupMenuButton<Country>(
-            onSelected: (country) {
+          CountryPickerButton(
+            selectedCountry: selectedCountry,
+            countries: countries,
+            onCountryChanged: (country) {
               ref.read(selectedCountryProvider.notifier).state = country;
             },
-            offset: const Offset(0, 44),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-              side: BorderSide(color: colors.glassBorder),
-            ),
-            color: colors.glassPanel,
-            itemBuilder: (context) => countries
-                .map((country) => PopupMenuItem<Country>(
-                      value: country,
-                      height: 44,
-                      child: Row(
-                        children: [
-                          Text(country.flag, style: const TextStyle(fontSize: 18)),
-                          const SizedBox(width: 10),
-                          Text(
-                            country.name,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ))
-                .toList(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: colors.bgActive,
-                border: Border.all(color: colors.glassBorder),
-                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(selectedCountry.flag, style: const TextStyle(fontSize: 16)),
-                  const SizedBox(width: 8),
-                  Text(
-                    selectedCountry.name,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: colors.textMuted),
-                ],
-              ),
-            ),
           ),
           const SizedBox(width: 12),
           // Text field

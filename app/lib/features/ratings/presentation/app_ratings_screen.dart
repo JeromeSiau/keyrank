@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../core/utils/country_names.dart';
 import '../data/ratings_repository.dart';
 import '../domain/rating_model.dart';
 
@@ -495,7 +496,7 @@ class _RatingRow extends StatelessWidget {
                     Text(flag, style: const TextStyle(fontSize: 20)),
                     const SizedBox(width: 10),
                     Text(
-                      _getCountryName(rating.country),
+                      getLocalizedCountryName(context, rating.country),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -570,53 +571,4 @@ class _RatingRow extends StatelessWidget {
     return colors.red;
   }
 
-  String _getCountryName(String code) {
-    final names = {
-      'US': 'United States',
-      'GB': 'United Kingdom',
-      'FR': 'France',
-      'DE': 'Germany',
-      'JP': 'Japan',
-      'CN': 'China',
-      'KR': 'South Korea',
-      'AU': 'Australia',
-      'CA': 'Canada',
-      'IT': 'Italy',
-      'ES': 'Spain',
-      'NL': 'Netherlands',
-      'BR': 'Brazil',
-      'MX': 'Mexico',
-      'RU': 'Russia',
-      'IN': 'India',
-      'SE': 'Sweden',
-      'NO': 'Norway',
-      'DK': 'Denmark',
-      'FI': 'Finland',
-      'CH': 'Switzerland',
-      'AT': 'Austria',
-      'BE': 'Belgium',
-      'PT': 'Portugal',
-      'PL': 'Poland',
-      'SG': 'Singapore',
-      'HK': 'Hong Kong',
-      'TW': 'Taiwan',
-      'TH': 'Thailand',
-      'ID': 'Indonesia',
-      'MY': 'Malaysia',
-      'PH': 'Philippines',
-      'VN': 'Vietnam',
-      'ZA': 'South Africa',
-      'AE': 'United Arab Emirates',
-      'SA': 'Saudi Arabia',
-      'TR': 'Turkey',
-      'IL': 'Israel',
-      'EG': 'Egypt',
-      'AR': 'Argentina',
-      'CL': 'Chile',
-      'CO': 'Colombia',
-      'PE': 'Peru',
-      'NZ': 'New Zealand',
-    };
-    return names[code.toUpperCase()] ?? code;
-  }
 }
