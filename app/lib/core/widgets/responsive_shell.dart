@@ -41,17 +41,25 @@ class ResponsiveShell extends ConsumerWidget {
   Widget _buildMobileLayout(BuildContext context, WidgetRef ref, AppColorsExtension colors) {
     return Column(
       children: [
-        // Content
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-            child: child,
+        // Safe area for status bar
+        Container(
+          color: colors.bgBase,
+          child: SafeArea(
+            bottom: false,
+            child: Container(),
           ),
         ),
+        // Content
+        Expanded(
+          child: child,
+        ),
         // Bottom navigation
-        GlassBottomNavBar(
-          selectedIndex: _getSelectedIndex(context),
-          onDestinationSelected: (index) => _onDestinationSelected(context, ref, index),
+        SafeArea(
+          top: false,
+          child: GlassBottomNavBar(
+            selectedIndex: _getSelectedIndex(context),
+            onDestinationSelected: (index) => _onDestinationSelected(context, ref, index),
+          ),
         ),
       ],
     );
