@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\AlertRule;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +25,10 @@ class User extends Authenticatable
         'email',
         'password',
         'locale',
+        'timezone',
+        'fcm_token',
+        'quiet_hours_start',
+        'quiet_hours_end',
     ];
 
     /**
@@ -45,6 +51,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'quiet_hours_start' => 'datetime:H:i:s',
+            'quiet_hours_end' => 'datetime:H:i:s',
         ];
     }
 
@@ -71,5 +79,29 @@ class User extends Authenticatable
     public function tags(): HasMany
     {
         return $this->hasMany(Tag::class);
+    }
+
+    /**
+     * Get user's alert rules
+     */
+    public function alertRules(): HasMany
+    {
+        return $this->hasMany(AlertRule::class);
+    }
+
+    /**
+     * Get user's notifications
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Get count of unread notifications
+     */
+    public function unreadNotificationsCount(): int
+    {
+        return $this->notifications()->unread()->count();
     }
 }
