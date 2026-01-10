@@ -2129,6 +2129,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Added'**
   String get appPreview_added;
+
+  /// No description provided for @appPreview_showMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get appPreview_showMore;
+
+  /// No description provided for @appPreview_showLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get appPreview_showLess;
+
+  /// No description provided for @notifications_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications_title;
+
+  /// No description provided for @notifications_markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notifications_markAllRead;
+
+  /// No description provided for @notifications_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notifications_empty;
+
+  /// No description provided for @alerts_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert Rules'**
+  String get alerts_title;
+
+  /// No description provided for @alerts_templatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Templates'**
+  String get alerts_templatesTitle;
+
+  /// No description provided for @alerts_templatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate common alerts with one tap'**
+  String get alerts_templatesSubtitle;
+
+  /// No description provided for @alerts_myRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Rules'**
+  String get alerts_myRulesTitle;
+
+  /// No description provided for @alerts_createRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create rule'**
+  String get alerts_createRule;
+
+  /// No description provided for @alerts_editRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit rule'**
+  String get alerts_editRule;
+
+  /// No description provided for @alerts_noRulesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet'**
+  String get alerts_noRulesYet;
+
+  /// No description provided for @alerts_deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete rule?'**
+  String get alerts_deleteConfirm;
+
+  /// No description provided for @settings_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'NOTIFICATIONS'**
+  String get settings_notifications;
+
+  /// No description provided for @settings_manageAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Alert Rules'**
+  String get settings_manageAlerts;
+
+  /// No description provided for @settings_manageAlertsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure what alerts you receive'**
+  String get settings_manageAlertsDesc;
 }
 
 class _AppLocalizationsDelegate

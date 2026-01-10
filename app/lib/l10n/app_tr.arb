@@ -445,5 +445,22 @@
   "appDetail_period30d": "30g",
   "appDetail_period90d": "90g",
 
-  "reviews_version": "v{version}"
+  "reviews_version": "v{version}",
+
+  "notifications_title": "Bildirimler",
+  "notifications_markAllRead": "Tumunu okundu olarak isaretle",
+  "notifications_empty": "Henuz bildirim yok",
+
+  "alerts_title": "Uyari Kurallari",
+  "alerts_templatesTitle": "Hizli Sablonlar",
+  "alerts_templatesSubtitle": "Yaygin uyarilari tek dokunusla etkinlestirin",
+  "alerts_myRulesTitle": "Kurallarim",
+  "alerts_createRule": "Kural olustur",
+  "alerts_editRule": "Kurali duzenle",
+  "alerts_noRulesYet": "Henuz kural yok",
+  "alerts_deleteConfirm": "Kural silinsin mi?",
+
+  "settings_notifications": "BILDIRIMLER",
+  "settings_manageAlerts": "Uyari kurallarini yonet",
+  "settings_manageAlertsDesc": "Hangi uyarilari alacaginizi yapilandirin"
 }

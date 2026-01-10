@@ -1097,4 +1097,52 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => '通知';
+
+  @override
+  String get notifications_markAllRead => 'すべて既読にする';
+
+  @override
+  String get notifications_empty => 'まだ通知がありません';
+
+  @override
+  String get alerts_title => 'アラートルール';
+
+  @override
+  String get alerts_templatesTitle => 'クイックテンプレート';
+
+  @override
+  String get alerts_templatesSubtitle => 'ワンタップで一般的なアラートを有効化';
+
+  @override
+  String get alerts_myRulesTitle => 'マイルール';
+
+  @override
+  String get alerts_createRule => 'ルールを作成';
+
+  @override
+  String get alerts_editRule => 'ルールを編集';
+
+  @override
+  String get alerts_noRulesYet => 'まだルールがありません';
+
+  @override
+  String get alerts_deleteConfirm => 'ルールを削除しますか？';
+
+  @override
+  String get settings_notifications => '通知';
+
+  @override
+  String get settings_manageAlerts => 'アラートルールを管理';
+
+  @override
+  String get settings_manageAlertsDesc => '受け取るアラートを設定';
 }

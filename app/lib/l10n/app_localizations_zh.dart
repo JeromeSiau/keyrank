@@ -1097,4 +1097,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => '通知';
+
+  @override
+  String get notifications_markAllRead => '全部标为已读';
+
+  @override
+  String get notifications_empty => '暂无通知';
+
+  @override
+  String get alerts_title => '警报规则';
+
+  @override
+  String get alerts_templatesTitle => '快速模板';
+
+  @override
+  String get alerts_templatesSubtitle => '一键激活常用警报';
+
+  @override
+  String get alerts_myRulesTitle => '我的规则';
+
+  @override
+  String get alerts_createRule => '创建规则';
+
+  @override
+  String get alerts_editRule => '编辑规则';
+
+  @override
+  String get alerts_noRulesYet => '暂无规则';
+
+  @override
+  String get alerts_deleteConfirm => '删除规则？';
+
+  @override
+  String get settings_notifications => '通知';
+
+  @override
+  String get settings_manageAlerts => '管理警报规则';
+
+  @override
+  String get settings_manageAlertsDesc => '配置您收到的警报';
 }

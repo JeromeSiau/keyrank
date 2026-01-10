@@ -571,5 +571,24 @@
   "appPreview_free": "Free",
   "appPreview_openInStore": "Open in Store",
   "appPreview_addToMyApps": "Add to My Apps",
-  "appPreview_added": "Added"
+  "appPreview_added": "Added",
+  "appPreview_showMore": "Show more",
+  "appPreview_showLess": "Show less",
+
+  "notifications_title": "Notifications",
+  "notifications_markAllRead": "Mark all read",
+  "notifications_empty": "No notifications yet",
+
+  "alerts_title": "Alert Rules",
+  "alerts_templatesTitle": "Quick Templates",
+  "alerts_templatesSubtitle": "Activate common alerts with one tap",
+  "alerts_myRulesTitle": "My Rules",
+  "alerts_createRule": "Create rule",
+  "alerts_editRule": "Edit rule",
+  "alerts_noRulesYet": "No rules yet",
+  "alerts_deleteConfirm": "Delete rule?",
+
+  "settings_notifications": "NOTIFICATIONS",
+  "settings_manageAlerts": "Manage Alert Rules",
+  "settings_manageAlertsDesc": "Configure what alerts you receive"
 }

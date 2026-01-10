@@ -445,5 +445,22 @@
   "appDetail_period30d": "30日",
   "appDetail_period90d": "90日",
 
-  "reviews_version": "v{version}"
+  "reviews_version": "v{version}",
+
+  "notifications_title": "通知",
+  "notifications_markAllRead": "すべて既読にする",
+  "notifications_empty": "まだ通知がありません",
+
+  "alerts_title": "アラートルール",
+  "alerts_templatesTitle": "クイックテンプレート",
+  "alerts_templatesSubtitle": "ワンタップで一般的なアラートを有効化",
+  "alerts_myRulesTitle": "マイルール",
+  "alerts_createRule": "ルールを作成",
+  "alerts_editRule": "ルールを編集",
+  "alerts_noRulesYet": "まだルールがありません",
+  "alerts_deleteConfirm": "ルールを削除しますか？",
+
+  "settings_notifications": "通知",
+  "settings_manageAlerts": "アラートルールを管理",
+  "settings_manageAlertsDesc": "受け取るアラートを設定"
 }

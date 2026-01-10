@@ -1115,4 +1115,54 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => 'Bildirimler';
+
+  @override
+  String get notifications_markAllRead => 'Tumunu okundu olarak isaretle';
+
+  @override
+  String get notifications_empty => 'Henuz bildirim yok';
+
+  @override
+  String get alerts_title => 'Uyari Kurallari';
+
+  @override
+  String get alerts_templatesTitle => 'Hizli Sablonlar';
+
+  @override
+  String get alerts_templatesSubtitle =>
+      'Yaygin uyarilari tek dokunusla etkinlestirin';
+
+  @override
+  String get alerts_myRulesTitle => 'Kurallarim';
+
+  @override
+  String get alerts_createRule => 'Kural olustur';
+
+  @override
+  String get alerts_editRule => 'Kurali duzenle';
+
+  @override
+  String get alerts_noRulesYet => 'Henuz kural yok';
+
+  @override
+  String get alerts_deleteConfirm => 'Kural silinsin mi?';
+
+  @override
+  String get settings_notifications => 'BILDIRIMLER';
+
+  @override
+  String get settings_manageAlerts => 'Uyari kurallarini yonet';
+
+  @override
+  String get settings_manageAlertsDesc =>
+      'Hangi uyarilari alacaginizi yapilandirin';
 }

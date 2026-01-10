@@ -1120,4 +1120,54 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Ajouté';
+
+  @override
+  String get appPreview_showMore => 'Voir plus';
+
+  @override
+  String get appPreview_showLess => 'Voir moins';
+
+  @override
+  String get notifications_title => 'Notifications';
+
+  @override
+  String get notifications_markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get notifications_empty => 'Aucune notification pour le moment';
+
+  @override
+  String get alerts_title => 'Regles d\'alerte';
+
+  @override
+  String get alerts_templatesTitle => 'Modeles rapides';
+
+  @override
+  String get alerts_templatesSubtitle =>
+      'Activez les alertes courantes en un clic';
+
+  @override
+  String get alerts_myRulesTitle => 'Mes regles';
+
+  @override
+  String get alerts_createRule => 'Creer une regle';
+
+  @override
+  String get alerts_editRule => 'Modifier la regle';
+
+  @override
+  String get alerts_noRulesYet => 'Aucune regle pour le moment';
+
+  @override
+  String get alerts_deleteConfirm => 'Supprimer la regle ?';
+
+  @override
+  String get settings_notifications => 'NOTIFICATIONS';
+
+  @override
+  String get settings_manageAlerts => 'Gerer les regles d\'alerte';
+
+  @override
+  String get settings_manageAlertsDesc =>
+      'Configurez les alertes que vous recevez';
 }

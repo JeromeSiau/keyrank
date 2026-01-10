@@ -531,5 +531,24 @@
   "appPreview_free": "Gratuit",
   "appPreview_openInStore": "Ouvrir dans le Store",
   "appPreview_addToMyApps": "Ajouter à mes apps",
-  "appPreview_added": "Ajouté"
+  "appPreview_added": "Ajouté",
+  "appPreview_showMore": "Voir plus",
+  "appPreview_showLess": "Voir moins",
+
+  "notifications_title": "Notifications",
+  "notifications_markAllRead": "Tout marquer comme lu",
+  "notifications_empty": "Aucune notification pour le moment",
+
+  "alerts_title": "Regles d'alerte",
+  "alerts_templatesTitle": "Modeles rapides",
+  "alerts_templatesSubtitle": "Activez les alertes courantes en un clic",
+  "alerts_myRulesTitle": "Mes regles",
+  "alerts_createRule": "Creer une regle",
+  "alerts_editRule": "Modifier la regle",
+  "alerts_noRulesYet": "Aucune regle pour le moment",
+  "alerts_deleteConfirm": "Supprimer la regle ?",
+
+  "settings_notifications": "NOTIFICATIONS",
+  "settings_manageAlerts": "Gerer les regles d'alerte",
+  "settings_manageAlertsDesc": "Configurez les alertes que vous recevez"
 }

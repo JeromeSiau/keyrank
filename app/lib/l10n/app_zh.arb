@@ -445,5 +445,22 @@
   "appDetail_period30d": "30天",
   "appDetail_period90d": "90天",
 
-  "reviews_version": "v{version}"
+  "reviews_version": "v{version}",
+
+  "notifications_title": "通知",
+  "notifications_markAllRead": "全部标为已读",
+  "notifications_empty": "暂无通知",
+
+  "alerts_title": "警报规则",
+  "alerts_templatesTitle": "快速模板",
+  "alerts_templatesSubtitle": "一键激活常用警报",
+  "alerts_myRulesTitle": "我的规则",
+  "alerts_createRule": "创建规则",
+  "alerts_editRule": "编辑规则",
+  "alerts_noRulesYet": "暂无规则",
+  "alerts_deleteConfirm": "删除规则？",
+
+  "settings_notifications": "通知",
+  "settings_manageAlerts": "管理警报规则",
+  "settings_manageAlertsDesc": "配置您收到的警报"
 }

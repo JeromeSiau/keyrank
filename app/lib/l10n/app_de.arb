@@ -445,5 +445,22 @@
   "appDetail_period30d": "30T",
   "appDetail_period90d": "90T",
 
-  "reviews_version": "v{version}"
+  "reviews_version": "v{version}",
+
+  "notifications_title": "Benachrichtigungen",
+  "notifications_markAllRead": "Alle als gelesen markieren",
+  "notifications_empty": "Noch keine Benachrichtigungen",
+
+  "alerts_title": "Alarmregeln",
+  "alerts_templatesTitle": "Schnellvorlagen",
+  "alerts_templatesSubtitle": "Aktivieren Sie haufige Alarme mit einem Tippen",
+  "alerts_myRulesTitle": "Meine Regeln",
+  "alerts_createRule": "Regel erstellen",
+  "alerts_editRule": "Regel bearbeiten",
+  "alerts_noRulesYet": "Noch keine Regeln",
+  "alerts_deleteConfirm": "Regel loschen?",
+
+  "settings_notifications": "BENACHRICHTIGUNGEN",
+  "settings_manageAlerts": "Alarmregeln verwalten",
+  "settings_manageAlertsDesc": "Konfigurieren Sie, welche Alarme Sie erhalten"
 }

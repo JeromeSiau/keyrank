@@ -1125,4 +1125,54 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => 'Benachrichtigungen';
+
+  @override
+  String get notifications_markAllRead => 'Alle als gelesen markieren';
+
+  @override
+  String get notifications_empty => 'Noch keine Benachrichtigungen';
+
+  @override
+  String get alerts_title => 'Alarmregeln';
+
+  @override
+  String get alerts_templatesTitle => 'Schnellvorlagen';
+
+  @override
+  String get alerts_templatesSubtitle =>
+      'Aktivieren Sie haufige Alarme mit einem Tippen';
+
+  @override
+  String get alerts_myRulesTitle => 'Meine Regeln';
+
+  @override
+  String get alerts_createRule => 'Regel erstellen';
+
+  @override
+  String get alerts_editRule => 'Regel bearbeiten';
+
+  @override
+  String get alerts_noRulesYet => 'Noch keine Regeln';
+
+  @override
+  String get alerts_deleteConfirm => 'Regel loschen?';
+
+  @override
+  String get settings_notifications => 'BENACHRICHTIGUNGEN';
+
+  @override
+  String get settings_manageAlerts => 'Alarmregeln verwalten';
+
+  @override
+  String get settings_manageAlertsDesc =>
+      'Konfigurieren Sie, welche Alarme Sie erhalten';
 }

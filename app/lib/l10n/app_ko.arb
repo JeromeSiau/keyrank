@@ -445,5 +445,22 @@
   "appDetail_period30d": "30일",
   "appDetail_period90d": "90일",
 
-  "reviews_version": "v{version}"
+  "reviews_version": "v{version}",
+
+  "notifications_title": "알림",
+  "notifications_markAllRead": "모두 읽음으로 표시",
+  "notifications_empty": "아직 알림이 없습니다",
+
+  "alerts_title": "알림 규칙",
+  "alerts_templatesTitle": "빠른 템플릿",
+  "alerts_templatesSubtitle": "한 번 탭으로 일반 알림 활성화",
+  "alerts_myRulesTitle": "내 규칙",
+  "alerts_createRule": "규칙 만들기",
+  "alerts_editRule": "규칙 편집",
+  "alerts_noRulesYet": "아직 규칙이 없습니다",
+  "alerts_deleteConfirm": "규칙을 삭제하시겠습니까?",
+
+  "settings_notifications": "알림",
+  "settings_manageAlerts": "알림 규칙 관리",
+  "settings_manageAlertsDesc": "받을 알림 설정"
 }

@@ -445,5 +445,22 @@
   "appDetail_period30d": "30d",
   "appDetail_period90d": "90d",
 
-  "reviews_version": "v{version}"
+  "reviews_version": "v{version}",
+
+  "notifications_title": "Notificacoes",
+  "notifications_markAllRead": "Marcar tudo como lido",
+  "notifications_empty": "Nenhuma notificacao ainda",
+
+  "alerts_title": "Regras de alerta",
+  "alerts_templatesTitle": "Modelos rapidos",
+  "alerts_templatesSubtitle": "Ative alertas comuns com um toque",
+  "alerts_myRulesTitle": "Minhas regras",
+  "alerts_createRule": "Criar regra",
+  "alerts_editRule": "Editar regra",
+  "alerts_noRulesYet": "Nenhuma regra ainda",
+  "alerts_deleteConfirm": "Excluir regra?",
+
+  "settings_notifications": "NOTIFICACOES",
+  "settings_manageAlerts": "Gerenciar regras de alerta",
+  "settings_manageAlertsDesc": "Configure quais alertas voce recebe"
 }

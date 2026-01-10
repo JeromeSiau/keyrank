@@ -1122,4 +1122,52 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => 'Notifiche';
+
+  @override
+  String get notifications_markAllRead => 'Segna tutto come letto';
+
+  @override
+  String get notifications_empty => 'Nessuna notifica ancora';
+
+  @override
+  String get alerts_title => 'Regole di avviso';
+
+  @override
+  String get alerts_templatesTitle => 'Modelli rapidi';
+
+  @override
+  String get alerts_templatesSubtitle => 'Attiva avvisi comuni con un tocco';
+
+  @override
+  String get alerts_myRulesTitle => 'Le mie regole';
+
+  @override
+  String get alerts_createRule => 'Crea regola';
+
+  @override
+  String get alerts_editRule => 'Modifica regola';
+
+  @override
+  String get alerts_noRulesYet => 'Nessuna regola ancora';
+
+  @override
+  String get alerts_deleteConfirm => 'Eliminare la regola?';
+
+  @override
+  String get settings_notifications => 'NOTIFICHE';
+
+  @override
+  String get settings_manageAlerts => 'Gestisci regole di avviso';
+
+  @override
+  String get settings_manageAlertsDesc => 'Configura quali avvisi ricevi';
 }

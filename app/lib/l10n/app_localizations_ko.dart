@@ -1097,4 +1097,52 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => '알림';
+
+  @override
+  String get notifications_markAllRead => '모두 읽음으로 표시';
+
+  @override
+  String get notifications_empty => '아직 알림이 없습니다';
+
+  @override
+  String get alerts_title => '알림 규칙';
+
+  @override
+  String get alerts_templatesTitle => '빠른 템플릿';
+
+  @override
+  String get alerts_templatesSubtitle => '한 번 탭으로 일반 알림 활성화';
+
+  @override
+  String get alerts_myRulesTitle => '내 규칙';
+
+  @override
+  String get alerts_createRule => '규칙 만들기';
+
+  @override
+  String get alerts_editRule => '규칙 편집';
+
+  @override
+  String get alerts_noRulesYet => '아직 규칙이 없습니다';
+
+  @override
+  String get alerts_deleteConfirm => '규칙을 삭제하시겠습니까?';
+
+  @override
+  String get settings_notifications => '알림';
+
+  @override
+  String get settings_manageAlerts => '알림 규칙 관리';
+
+  @override
+  String get settings_manageAlertsDesc => '받을 알림 설정';
 }

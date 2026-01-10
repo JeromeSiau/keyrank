@@ -1120,4 +1120,52 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appPreview_added => 'Added';
+
+  @override
+  String get appPreview_showMore => 'Show more';
+
+  @override
+  String get appPreview_showLess => 'Show less';
+
+  @override
+  String get notifications_title => 'Notificacoes';
+
+  @override
+  String get notifications_markAllRead => 'Marcar tudo como lido';
+
+  @override
+  String get notifications_empty => 'Nenhuma notificacao ainda';
+
+  @override
+  String get alerts_title => 'Regras de alerta';
+
+  @override
+  String get alerts_templatesTitle => 'Modelos rapidos';
+
+  @override
+  String get alerts_templatesSubtitle => 'Ative alertas comuns com um toque';
+
+  @override
+  String get alerts_myRulesTitle => 'Minhas regras';
+
+  @override
+  String get alerts_createRule => 'Criar regra';
+
+  @override
+  String get alerts_editRule => 'Editar regra';
+
+  @override
+  String get alerts_noRulesYet => 'Nenhuma regra ainda';
+
+  @override
+  String get alerts_deleteConfirm => 'Excluir regra?';
+
+  @override
+  String get settings_notifications => 'NOTIFICACOES';
+
+  @override
+  String get settings_manageAlerts => 'Gerenciar regras de alerta';
+
+  @override
+  String get settings_manageAlertsDesc => 'Configure quais alertas voce recebe';
 }
