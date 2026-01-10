@@ -7,6 +7,7 @@ import '../theme/app_colors.dart';
 import '../utils/l10n_extension.dart';
 import '../widgets/keyrank_logo.dart';
 import '../widgets/user_menu.dart';
+import '../widgets/responsive_shell.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
@@ -134,34 +135,17 @@ class MainShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).valueOrNull;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
-      body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            // Glass sidebar
-            _GlassSidebar(
-              selectedIndex: _getSelectedIndex(context),
-              selectedAppId: _getSelectedAppId(context),
-              onDestinationSelected: (index) => _onDestinationSelected(context, index),
-              userName: user?.name ?? 'User',
-              userEmail: user?.email ?? '',
-              onLogout: () => ref.read(authStateProvider.notifier).logout(),
-            ),
-            const SizedBox(width: 12),
-            // Main content
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-                child: child,
-              ),
-            ),
-          ],
-        ),
+    return ResponsiveShell(
+      sidebar: _GlassSidebar(
+        selectedIndex: _getSelectedIndex(context),
+        selectedAppId: _getSelectedAppId(context),
+        onDestinationSelected: (index) => _onDestinationSelected(context, index),
+        userName: user?.name ?? 'User',
+        userEmail: user?.email ?? '',
+        onLogout: () => ref.read(authStateProvider.notifier).logout(),
       ),
+      child: child,
     );
   }
 
