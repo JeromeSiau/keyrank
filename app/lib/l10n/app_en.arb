@@ -346,8 +346,9 @@
   "discover_tabKeywords": "Keywords",
   "discover_tabCategories": "Categories",
   "discover_selectCategory": "Select a category",
-  "discover_topFree": "Top Free",
-  "discover_topPaid": "Top Paid",
+  "discover_topFree": "Free",
+  "discover_topPaid": "Paid",
+  "discover_topGrossing": "Grossing",
   "discover_noResults": "No results",
   "discover_loadingTopApps": "Loading top apps...",
   "discover_topAppsIn": "Top {collection} in {category}",
@@ -507,6 +508,7 @@
   "nav_research": "RESEARCH",
   "nav_keywords": "Keywords",
   "nav_discover": "Discover",
+  "nav_notifications": "Alerts",
 
   "common_save": "Save",
 
@@ -553,5 +555,21 @@
     "placeholders": {
       "version": { "type": "String" }
     }
-  }
+  },
+
+  "appPreview_title": "App Details",
+  "appPreview_notFound": "App not found",
+  "appPreview_screenshots": "Screenshots",
+  "appPreview_description": "Description",
+  "appPreview_details": "Details",
+  "appPreview_version": "Version",
+  "appPreview_updated": "Updated",
+  "appPreview_released": "Released",
+  "appPreview_size": "Size",
+  "appPreview_minimumOs": "Requires",
+  "appPreview_price": "Price",
+  "appPreview_free": "Free",
+  "appPreview_openInStore": "Open in Store",
+  "appPreview_addToMyApps": "Add to My Apps",
+  "appPreview_added": "Added"
 }

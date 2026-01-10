@@ -15,6 +15,7 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/apps/presentation/apps_list_screen.dart';
 import '../../features/apps/presentation/app_detail_screen.dart';
 import '../../features/apps/presentation/add_app_screen.dart';
+import '../../features/apps/presentation/app_preview_screen.dart';
 import '../../features/keywords/presentation/discover_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
@@ -22,6 +23,7 @@ import '../../features/insights/presentation/app_insights_screen.dart';
 import '../../features/insights/presentation/insights_compare_screen.dart';
 import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/notifications/providers/notifications_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -116,6 +118,21 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/discover',
             builder: (context, state) => const DiscoverScreen(),
+            routes: [
+              GoRoute(
+                path: 'preview/:platform/:storeId',
+                builder: (context, state) {
+                  final platform = state.pathParameters['platform']!;
+                  final storeId = state.pathParameters['storeId']!;
+                  final country = state.uri.queryParameters['country'] ?? 'us';
+                  return AppPreviewScreen(
+                    platform: platform,
+                    storeId: storeId,
+                    country: country,
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/settings',
@@ -180,7 +197,7 @@ class MainShell extends ConsumerWidget {
   }
 }
 
-class _GlassSidebar extends StatelessWidget {
+class _GlassSidebar extends ConsumerWidget {
   final int selectedIndex;
   final int? selectedAppId;
   final ValueChanged<int> onDestinationSelected;
@@ -198,8 +215,10 @@ class _GlassSidebar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final unreadAsync = ref.watch(unreadCountProvider);
+    final unreadCount = unreadAsync.valueOrNull ?? 0;
 
     return Container(
       width: 220,
@@ -221,8 +240,8 @@ class _GlassSidebar extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Column(
             children: [
-              // Header with logo
-              _buildHeader(context, isDark),
+              // Header with logo and notification bell
+              _buildHeader(context, isDark, unreadCount),
 
               // Navigation
               Expanded(
@@ -280,27 +299,45 @@ class _GlassSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, bool isDark) {
-    return InkWell(
-      onTap: () => context.go('/dashboard'),
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            const KeyrankLogoIcon(size: 36),
-            const SizedBox(width: 12),
-            Text(
-              'keyrank',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
-                letterSpacing: -0.3,
+  Widget _buildHeader(BuildContext context, bool isDark, int unreadCount) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () => context.go('/dashboard'),
+              borderRadius: BorderRadius.circular(8),
+              child: Row(
+                children: [
+                  const KeyrankLogoIcon(size: 36),
+                  const SizedBox(width: 12),
+                  Text(
+                    'keyrank',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          Badge(
+            isLabelVisible: unreadCount > 0,
+            label: Text('$unreadCount'),
+            child: IconButton(
+              icon: Icon(
+                Icons.notifications_outlined,
+                color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+              ),
+              onPressed: () => context.go('/notifications'),
+              tooltip: context.l10n.nav_notifications,
+            ),
+          ),
+        ],
       ),
     );
   }

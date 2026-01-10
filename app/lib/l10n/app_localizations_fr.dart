@@ -698,10 +698,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get discover_selectCategory => 'Sélectionner une catégorie';
 
   @override
-  String get discover_topFree => 'Top Gratuit';
+  String get discover_topFree => 'Gratuit';
 
   @override
-  String get discover_topPaid => 'Top Payant';
+  String get discover_topPaid => 'Payant';
+
+  @override
+  String get discover_topGrossing => 'Revenus';
 
   @override
   String get discover_noResults => 'Aucun résultat';
@@ -994,6 +997,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nav_discover => 'Découvrir';
 
   @override
+  String get nav_notifications => 'Alertes';
+
+  @override
   String get common_save => 'Enregistrer';
 
   @override
@@ -1069,4 +1075,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String reviews_version(String version) {
     return 'v$version';
   }
+
+  @override
+  String get appPreview_title => 'Détails de l\'app';
+
+  @override
+  String get appPreview_notFound => 'Application introuvable';
+
+  @override
+  String get appPreview_screenshots => 'Captures d\'écran';
+
+  @override
+  String get appPreview_description => 'Description';
+
+  @override
+  String get appPreview_details => 'Détails';
+
+  @override
+  String get appPreview_version => 'Version';
+
+  @override
+  String get appPreview_updated => 'Mise à jour';
+
+  @override
+  String get appPreview_released => 'Sortie';
+
+  @override
+  String get appPreview_size => 'Taille';
+
+  @override
+  String get appPreview_minimumOs => 'Requis';
+
+  @override
+  String get appPreview_price => 'Prix';
+
+  @override
+  String get appPreview_free => 'Gratuit';
+
+  @override
+  String get appPreview_openInStore => 'Ouvrir dans le Store';
+
+  @override
+  String get appPreview_addToMyApps => 'Ajouter à mes apps';
+
+  @override
+  String get appPreview_added => 'Ajouté';
 }

@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../theme/app_colors.dart';
 import '../utils/l10n_extension.dart';
+import '../../features/notifications/providers/notifications_provider.dart';
 
-class GlassBottomNavBar extends StatelessWidget {
+class GlassBottomNavBar extends ConsumerWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
 
@@ -14,8 +17,10 @@ class GlassBottomNavBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final unreadAsync = ref.watch(unreadCountProvider);
+    final unreadCount = unreadAsync.valueOrNull ?? 0;
 
     return Container(
       decoration: BoxDecoration(
@@ -33,7 +38,15 @@ class GlassBottomNavBar extends StatelessWidget {
             backgroundColor: Colors.transparent,
             indicatorColor: colors.accent.withAlpha(30),
             selectedIndex: selectedIndex,
-            onDestinationSelected: onDestinationSelected,
+            onDestinationSelected: (index) {
+              // Handle notification bell tap (index 3)
+              if (index == 3) {
+                context.go('/notifications');
+              } else {
+                // Adjust index for items after the bell
+                onDestinationSelected(index < 3 ? index : index - 1);
+              }
+            },
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
             destinations: [
               NavigationDestination(
@@ -50,6 +63,19 @@ class GlassBottomNavBar extends StatelessWidget {
                 icon: Icon(Icons.explore_outlined, color: colors.textMuted),
                 selectedIcon: Icon(Icons.explore, color: colors.accent),
                 label: context.l10n.nav_discover,
+              ),
+              NavigationDestination(
+                icon: Badge(
+                  isLabelVisible: unreadCount > 0,
+                  label: Text('$unreadCount'),
+                  child: Icon(Icons.notifications_outlined, color: colors.textMuted),
+                ),
+                selectedIcon: Badge(
+                  isLabelVisible: unreadCount > 0,
+                  label: Text('$unreadCount'),
+                  child: Icon(Icons.notifications, color: colors.accent),
+                ),
+                label: context.l10n.nav_notifications,
               ),
               NavigationDestination(
                 icon: Icon(Icons.person_outline, color: colors.textMuted),

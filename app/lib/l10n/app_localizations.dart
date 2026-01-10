@@ -1383,14 +1383,20 @@ abstract class AppLocalizations {
   /// No description provided for @discover_topFree.
   ///
   /// In en, this message translates to:
-  /// **'Top Free'**
+  /// **'Free'**
   String get discover_topFree;
 
   /// No description provided for @discover_topPaid.
   ///
   /// In en, this message translates to:
-  /// **'Top Paid'**
+  /// **'Paid'**
   String get discover_topPaid;
+
+  /// No description provided for @discover_topGrossing.
+  ///
+  /// In en, this message translates to:
+  /// **'Grossing'**
+  String get discover_topGrossing;
 
   /// No description provided for @discover_noResults.
   ///
@@ -1914,6 +1920,12 @@ abstract class AppLocalizations {
   /// **'Discover'**
   String get nav_discover;
 
+  /// No description provided for @nav_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get nav_notifications;
+
   /// No description provided for @common_save.
   ///
   /// In en, this message translates to:
@@ -2027,6 +2039,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'v{version}'**
   String reviews_version(String version);
+
+  /// No description provided for @appPreview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'App Details'**
+  String get appPreview_title;
+
+  /// No description provided for @appPreview_notFound.
+  ///
+  /// In en, this message translates to:
+  /// **'App not found'**
+  String get appPreview_notFound;
+
+  /// No description provided for @appPreview_screenshots.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots'**
+  String get appPreview_screenshots;
+
+  /// No description provided for @appPreview_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get appPreview_description;
+
+  /// No description provided for @appPreview_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get appPreview_details;
+
+  /// No description provided for @appPreview_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get appPreview_version;
+
+  /// No description provided for @appPreview_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated'**
+  String get appPreview_updated;
+
+  /// No description provided for @appPreview_released.
+  ///
+  /// In en, this message translates to:
+  /// **'Released'**
+  String get appPreview_released;
+
+  /// No description provided for @appPreview_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get appPreview_size;
+
+  /// No description provided for @appPreview_minimumOs.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires'**
+  String get appPreview_minimumOs;
+
+  /// No description provided for @appPreview_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get appPreview_price;
+
+  /// No description provided for @appPreview_free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get appPreview_free;
+
+  /// No description provided for @appPreview_openInStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Store'**
+  String get appPreview_openInStore;
+
+  /// No description provided for @appPreview_addToMyApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to My Apps'**
+  String get appPreview_addToMyApps;
+
+  /// No description provided for @appPreview_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get appPreview_added;
 }
 
 class _AppLocalizationsDelegate

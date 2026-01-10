@@ -1,10 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../theme/app_colors.dart';
 import '../utils/l10n_extension.dart';
+import '../../features/notifications/providers/notifications_provider.dart';
 import 'keyrank_logo.dart';
 
-class GlassNavigationRail extends StatelessWidget {
+class GlassNavigationRail extends ConsumerWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
   final VoidCallback onLogoTap;
@@ -19,8 +22,10 @@ class GlassNavigationRail extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final unreadAsync = ref.watch(unreadCountProvider);
+    final unreadCount = unreadAsync.valueOrNull ?? 0;
 
     return Container(
       width: 72,
@@ -86,6 +91,19 @@ class GlassNavigationRail extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+              // Notification bell
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Badge(
+                  isLabelVisible: unreadCount > 0,
+                  label: Text('$unreadCount'),
+                  child: IconButton(
+                    icon: Icon(Icons.notifications_outlined, color: colors.textMuted),
+                    onPressed: () => context.go('/notifications'),
+                    tooltip: context.l10n.nav_notifications,
+                  ),
                 ),
               ),
               // User menu at bottom
