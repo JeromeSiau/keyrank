@@ -15,7 +15,6 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/apps/presentation/apps_list_screen.dart';
 import '../../features/apps/presentation/app_detail_screen.dart';
 import '../../features/apps/presentation/add_app_screen.dart';
-import '../../features/apps/presentation/app_preview_screen.dart';
 import '../../features/keywords/presentation/discover_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
@@ -24,6 +23,10 @@ import '../../features/insights/presentation/insights_compare_screen.dart';
 import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/notifications/providers/notifications_provider.dart';
+import '../../features/alerts/presentation/alert_rule_builder_screen.dart';
+import '../../features/alerts/presentation/alerts_screen.dart';
+import '../../features/alerts/domain/alert_rule_model.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -125,7 +128,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final platform = state.pathParameters['platform']!;
                   final storeId = state.pathParameters['storeId']!;
                   final country = state.uri.queryParameters['country'] ?? 'us';
-                  return AppPreviewScreen(
+                  return AppDetailScreen(
                     platform: platform,
                     storeId: storeId,
                     country: country,
@@ -137,6 +140,21 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
+          ),
+          GoRoute(
+            path: '/notifications',
+            builder: (context, state) => const NotificationsScreen(),
+          ),
+          GoRoute(
+            path: '/alerts',
+            builder: (context, state) => const AlertsScreen(),
+          ),
+          GoRoute(
+            path: '/alerts/builder',
+            builder: (context, state) {
+              final existingRule = state.extra as AlertRuleModel?;
+              return AlertRuleBuilderScreen(existingRule: existingRule);
+            },
           ),
         ],
       ),
