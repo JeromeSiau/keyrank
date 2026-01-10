@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
 import '../../apps/domain/app_model.dart';
@@ -62,9 +63,9 @@ class _Toolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Text(
-            'Dashboard',
-            style: TextStyle(
+          Text(
+            context.l10n.dashboard_title,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
@@ -73,7 +74,7 @@ class _Toolbar extends StatelessWidget {
           const Spacer(),
           PrimaryButton(
             icon: Icons.add_rounded,
-            label: 'Add App',
+            label: context.l10n.dashboard_addApp,
             onTap: onAddApp,
           ),
         ],
@@ -150,7 +151,7 @@ class _StatsBar extends StatelessWidget {
           children: [
             Expanded(
               child: _StatItem(
-                label: 'Apps Tracked',
+                label: context.l10n.dashboard_appsTracked,
                 value: appsCount.toString(),
                 icon: Icons.apps_rounded,
                 color: AppColors.accent,
@@ -161,7 +162,7 @@ class _StatsBar extends StatelessWidget {
             Container(width: 1, color: AppColors.glassBorder),
             Expanded(
               child: _StatItem(
-                label: 'Keywords',
+                label: context.l10n.dashboard_keywords,
                 value: keywordsCount.toString(),
                 icon: Icons.key_rounded,
                 color: AppColors.purple,
@@ -170,9 +171,9 @@ class _StatsBar extends StatelessWidget {
               ),
             ),
             Container(width: 1, color: AppColors.glassBorder),
-            const Expanded(
+            Expanded(
               child: _StatItem(
-                label: 'Avg Position',
+                label: context.l10n.dashboard_avgPosition,
                 value: '--',
                 icon: Icons.trending_up_rounded,
                 color: AppColors.green,
@@ -181,9 +182,9 @@ class _StatsBar extends StatelessWidget {
               ),
             ),
             Container(width: 1, color: AppColors.glassBorder),
-            const Expanded(
+            Expanded(
               child: _StatItem(
-                label: 'Top 10',
+                label: context.l10n.dashboard_top10,
                 value: '--',
                 icon: Icons.emoji_events_rounded,
                 color: AppColors.yellow,
@@ -327,31 +328,31 @@ class _AppsPanelState extends State<_AppsPanel> {
     return filtered;
   }
 
-  String get _filterLabel {
+  String _getFilterLabel(BuildContext context) {
     switch (_filter) {
       case AppFilter.all:
-        return 'All';
+        return context.l10n.filter_all;
       case AppFilter.ios:
-        return 'iOS';
+        return context.l10n.filter_ios;
       case AppFilter.android:
-        return 'Android';
+        return context.l10n.filter_android;
       case AppFilter.favorites:
-        return 'Favorites';
+        return context.l10n.filter_favorites;
     }
   }
 
-  String get _sortLabel {
+  String _getSortLabel(BuildContext context) {
     switch (_sort) {
       case AppSort.nameAsc:
-        return 'Name A-Z';
+        return context.l10n.sort_nameAZ;
       case AppSort.nameDesc:
-        return 'Name Z-A';
+        return context.l10n.sort_nameZA;
       case AppSort.keywordsDesc:
-        return 'Keywords';
+        return context.l10n.sort_keywords;
       case AppSort.bestRank:
-        return 'Best Rank';
+        return context.l10n.sort_bestRank;
       case AppSort.recentlyAdded:
-        return 'Recent';
+        return context.l10n.sort_recent;
     }
   }
 
@@ -368,10 +369,10 @@ class _AppsPanelState extends State<_AppsPanel> {
         offset.dy + button.size.height + 200,
       ),
       items: [
-        _buildFilterMenuItem(AppFilter.all, 'All Apps'),
-        _buildFilterMenuItem(AppFilter.ios, 'iOS Only'),
-        _buildFilterMenuItem(AppFilter.android, 'Android Only'),
-        _buildFilterMenuItem(AppFilter.favorites, 'Favorites'),
+        _buildFilterMenuItem(AppFilter.all, context.l10n.filter_allApps),
+        _buildFilterMenuItem(AppFilter.ios, context.l10n.filter_iosOnly),
+        _buildFilterMenuItem(AppFilter.android, context.l10n.filter_androidOnly),
+        _buildFilterMenuItem(AppFilter.favorites, context.l10n.filter_favorites),
       ],
     ).then((value) {
       if (value != null) {
@@ -409,11 +410,11 @@ class _AppsPanelState extends State<_AppsPanel> {
         offset.dy + button.size.height + 250,
       ),
       items: [
-        _buildSortMenuItem(AppSort.recentlyAdded, 'Recently Added'),
-        _buildSortMenuItem(AppSort.nameAsc, 'Name A-Z'),
-        _buildSortMenuItem(AppSort.nameDesc, 'Name Z-A'),
-        _buildSortMenuItem(AppSort.keywordsDesc, 'Most Keywords'),
-        _buildSortMenuItem(AppSort.bestRank, 'Best Rank'),
+        _buildSortMenuItem(AppSort.recentlyAdded, context.l10n.sort_recentlyAdded),
+        _buildSortMenuItem(AppSort.nameAsc, context.l10n.sort_nameAZ),
+        _buildSortMenuItem(AppSort.nameDesc, context.l10n.sort_nameZA),
+        _buildSortMenuItem(AppSort.keywordsDesc, context.l10n.sort_mostKeywords),
+        _buildSortMenuItem(AppSort.bestRank, context.l10n.sort_bestRank),
       ],
     ).then((value) {
       if (value != null) {
@@ -441,6 +442,7 @@ class _AppsPanelState extends State<_AppsPanel> {
   @override
   Widget build(BuildContext context) {
     final displayedApps = _filteredAndSortedApps;
+    final filterLabel = _getFilterLabel(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -458,7 +460,7 @@ class _AppsPanelState extends State<_AppsPanel> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Tracked Apps${_filter != AppFilter.all ? ' ($_filterLabel)' : ''}',
+                  '${context.l10n.dashboard_trackedApps}${_filter != AppFilter.all ? ' ($filterLabel)' : ''}',
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -469,7 +471,7 @@ class _AppsPanelState extends State<_AppsPanel> {
                   children: [
                     Builder(
                       builder: (context) => _FilterSortButton(
-                        label: _filterLabel,
+                        label: _getFilterLabel(context),
                         icon: Icons.filter_list_rounded,
                         isActive: _filter != AppFilter.all,
                         onTap: () => _showFilterMenu(context),
@@ -478,7 +480,7 @@ class _AppsPanelState extends State<_AppsPanel> {
                     const SizedBox(width: 6),
                     Builder(
                       builder: (context) => _FilterSortButton(
-                        label: _sortLabel,
+                        label: _getSortLabel(context),
                         icon: Icons.sort_rounded,
                         isActive: _sort != AppSort.recentlyAdded,
                         onTap: () => _showSortMenu(context),
@@ -499,13 +501,13 @@ class _AppsPanelState extends State<_AppsPanel> {
                 bottom: BorderSide(color: AppColors.glassBorder),
               ),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                SizedBox(width: 52),
+                const SizedBox(width: 52),
                 Expanded(
                   child: Text(
-                    'APP',
-                    style: TextStyle(
+                    context.l10n.apps_tableApp,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -516,8 +518,8 @@ class _AppsPanelState extends State<_AppsPanel> {
                 SizedBox(
                   width: 80,
                   child: Text(
-                    'KEYWORDS',
-                    style: TextStyle(
+                    context.l10n.apps_tableKeywords,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -525,12 +527,12 @@ class _AppsPanelState extends State<_AppsPanel> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 SizedBox(
                   width: 110,
                   child: Text(
-                    'PLATFORM',
-                    style: TextStyle(
+                    context.l10n.apps_tablePlatform,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -538,12 +540,12 @@ class _AppsPanelState extends State<_AppsPanel> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 SizedBox(
                   width: 80,
                   child: Text(
-                    'BEST RANK',
-                    style: TextStyle(
+                    context.l10n.apps_tableBestRank,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -849,7 +851,7 @@ class _EmptyAppsState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            hasFilter ? 'No apps match filter' : 'No apps tracked yet',
+            hasFilter ? context.l10n.dashboard_noAppsMatchFilter : context.l10n.dashboard_noAppsYet,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -858,7 +860,7 @@ class _EmptyAppsState extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            hasFilter ? 'Try changing the filter criteria' : 'Add an app to start tracking keywords',
+            hasFilter ? context.l10n.dashboard_changeFilterCriteria : context.l10n.dashboard_addAppToStart,
             style: const TextStyle(
               fontSize: 13,
               color: AppColors.textMuted,
@@ -872,16 +874,16 @@ class _EmptyAppsState extends StatelessWidget {
               child: InkWell(
                 onTap: () => context.go('/apps/add'),
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.add_rounded, size: 18, color: Colors.white),
-                      SizedBox(width: 8),
+                      const Icon(Icons.add_rounded, size: 18, color: Colors.white),
+                      const SizedBox(width: 8),
                       Text(
-                        'Add App',
-                        style: TextStyle(
+                        context.l10n.dashboard_addApp,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -911,11 +913,11 @@ class _QuickActionsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Text(
-              'Quick Actions',
-              style: TextStyle(
+              context.l10n.dashboard_quickActions,
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -928,19 +930,19 @@ class _QuickActionsPanel extends StatelessWidget {
           ),
           _QuickActionItem(
             icon: Icons.add_circle_outline_rounded,
-            label: 'Add a new app',
+            label: context.l10n.dashboard_addNewApp,
             color: AppColors.accent,
             onTap: () => context.go('/apps/add'),
           ),
           _QuickActionItem(
             icon: Icons.search_rounded,
-            label: 'Search keywords',
+            label: context.l10n.dashboard_searchKeywords,
             color: AppColors.purple,
             onTap: () => context.go('/keywords'),
           ),
           _QuickActionItem(
             icon: Icons.apps_rounded,
-            label: 'View all apps',
+            label: context.l10n.dashboard_viewAllApps,
             color: AppColors.green,
             onTap: () => context.go('/apps'),
           ),
@@ -1006,4 +1008,3 @@ class _QuickActionItem extends StatelessWidget {
     );
   }
 }
-
