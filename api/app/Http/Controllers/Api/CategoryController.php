@@ -57,7 +57,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'platform' => 'required|string|in:ios,android',
             'country' => 'nullable|string|size:2',
-            'collection' => 'nullable|string|in:top_free,top_paid',
+            'collection' => 'nullable|string|in:top_free,top_paid,top_grossing',
             'limit' => 'nullable|integer|min:1|max:200',
         ]);
 

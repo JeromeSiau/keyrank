@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Schedule;
 |--------------------------------------------------------------------------
 */
 
-// Sync rankings every day at 4 AM
-Schedule::command('aso:sync-rankings')
-    ->dailyAt('04:00')
+// Daily ASO refresh - dispatches chained jobs to queue
+// Jobs run sequentially: top-apps → user-apps → rankings → suggestions
+Schedule::command('aso:daily-refresh')
+    ->dailyAt('03:00')
     ->withoutOverlapping()
     ->runInBackground();
 

@@ -664,8 +664,8 @@ flutter_aso/
 
 ```yaml
 # pubspec.yaml
-name: aso_app
-description: App Store Optimization Tool
+name: keyrank
+description: Track your App Store rankings
 version: 1.0.0+1
 
 environment:

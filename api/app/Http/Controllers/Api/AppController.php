@@ -147,8 +147,47 @@ class AppController extends Controller
             ->first();
 
         if ($app) {
-            // App exists, just attach user to it
+            // App exists, attach user to it
             $app->users()->attach($user->id);
+
+            // If app is missing details (description), refresh them
+            if (empty($app->description)) {
+                if ($platform === 'ios') {
+                    $details = $this->iTunesService->getAppDetails($storeId, $country);
+                } else {
+                    $details = $this->googlePlayService->getAppDetails($storeId, $country);
+                }
+
+                if ($details) {
+                    $categoryId = $platform === 'ios'
+                        ? ($details['category_id'] ?? null)
+                        : ($details['genre_id'] ?? null);
+                    $secondaryCategoryId = $platform === 'ios'
+                        ? ($details['secondary_category_id'] ?? null)
+                        : null;
+
+                    $app->update([
+                        'name' => $details['name'] ?? $app->name,
+                        'icon_url' => $details['icon_url'] ?? $app->icon_url,
+                        'developer' => $details['developer'] ?? $app->developer,
+                        'description' => $details['description'] ?? null,
+                        'screenshots' => $details['screenshots'] ?? null,
+                        'version' => $details['version'] ?? null,
+                        'release_date' => isset($details['release_date']) ? date('Y-m-d', strtotime($details['release_date'])) : null,
+                        'updated_date' => isset($details['updated_date']) ? date('Y-m-d H:i:s', strtotime($details['updated_date'])) : null,
+                        'size_bytes' => $details['size_bytes'] ?? null,
+                        'minimum_os' => $details['minimum_os'] ?? null,
+                        'store_url' => $details['store_url'] ?? null,
+                        'price' => $details['price'] ?? $app->price,
+                        'currency' => $details['currency'] ?? $app->currency,
+                        'rating' => $details['rating'] ?? $app->rating,
+                        'rating_count' => $details['rating_count'] ?? $app->rating_count,
+                        'category_id' => $categoryId ?? $app->category_id,
+                        'secondary_category_id' => $secondaryCategoryId ?? $app->secondary_category_id,
+                    ]);
+                    $app->refresh();
+                }
+            }
 
             return response()->json([
                 'message' => 'App added successfully',
@@ -191,6 +230,16 @@ class AppController extends Controller
             'bundle_id' => $details['bundle_id'] ?? null,
             'icon_url' => $details['icon_url'] ?? null,
             'developer' => $details['developer'] ?? null,
+            'description' => $details['description'] ?? null,
+            'screenshots' => $details['screenshots'] ?? null,
+            'version' => $details['version'] ?? null,
+            'release_date' => isset($details['release_date']) ? date('Y-m-d', strtotime($details['release_date'])) : null,
+            'updated_date' => isset($details['updated_date']) ? date('Y-m-d H:i:s', strtotime($details['updated_date'])) : null,
+            'size_bytes' => $details['size_bytes'] ?? null,
+            'minimum_os' => $details['minimum_os'] ?? null,
+            'store_url' => $details['store_url'] ?? null,
+            'price' => $details['price'] ?? null,
+            'currency' => $details['currency'] ?? null,
             'rating' => $details['rating'] ?? null,
             'rating_count' => $details['rating_count'] ?? 0,
             'storefront' => strtoupper($country),
@@ -276,6 +325,16 @@ class AppController extends Controller
                 'name' => $details['name'] ?? $app->name,
                 'icon_url' => $details['icon_url'] ?? $app->icon_url,
                 'developer' => $details['developer'] ?? $app->developer,
+                'description' => $details['description'] ?? $app->description,
+                'screenshots' => $details['screenshots'] ?? $app->screenshots,
+                'version' => $details['version'] ?? $app->version,
+                'release_date' => isset($details['release_date']) ? date('Y-m-d', strtotime($details['release_date'])) : $app->release_date,
+                'updated_date' => isset($details['updated_date']) ? date('Y-m-d H:i:s', strtotime($details['updated_date'])) : $app->updated_date,
+                'size_bytes' => $details['size_bytes'] ?? $app->size_bytes,
+                'minimum_os' => $details['minimum_os'] ?? $app->minimum_os,
+                'store_url' => $details['store_url'] ?? $app->store_url,
+                'price' => $details['price'] ?? $app->price,
+                'currency' => $details['currency'] ?? $app->currency,
                 'rating' => $details['rating'] ?? $app->rating,
                 'rating_count' => $details['rating_count'] ?? $app->rating_count,
                 'category_id' => $categoryId ?? $app->category_id,
@@ -308,6 +367,54 @@ class AppController extends Controller
         return response()->json([
             'is_favorite' => $isFavorite,
             'favorited_at' => $isFavorite ? now()->toIso8601String() : null,
+        ]);
+    }
+
+    /**
+     * Preview app details without tracking
+     */
+    public function preview(Request $request, string $platform, string $storeId): JsonResponse
+    {
+        $validated = $request->validate([
+            'country' => 'nullable|string|size:2',
+        ]);
+
+        $country = $validated['country'] ?? 'us';
+
+        if ($platform === 'ios') {
+            $details = $this->iTunesService->getAppDetails($storeId, $country);
+        } else {
+            $details = $this->googlePlayService->getAppDetails($storeId, $country);
+        }
+
+        if (!$details) {
+            return response()->json([
+                'message' => 'App not found',
+            ], 404);
+        }
+
+        // Normalize the response format
+        return response()->json([
+            'data' => [
+                'platform' => $platform,
+                'store_id' => $platform === 'ios' ? ($details['apple_id'] ?? $storeId) : ($details['google_play_id'] ?? $storeId),
+                'name' => $details['name'] ?? null,
+                'icon_url' => $details['icon_url'] ?? null,
+                'developer' => $details['developer'] ?? null,
+                'description' => $details['description'] ?? null,
+                'screenshots' => $details['screenshots'] ?? [],
+                'version' => $details['version'] ?? null,
+                'release_date' => $details['release_date'] ?? null,
+                'updated_date' => $details['updated_date'] ?? $details['updated'] ?? null,
+                'size_bytes' => $details['size_bytes'] ?? null,
+                'minimum_os' => $details['minimum_os'] ?? null,
+                'store_url' => $details['store_url'] ?? null,
+                'price' => $details['price'] ?? null,
+                'currency' => $details['currency'] ?? null,
+                'rating' => $details['rating'] ?? null,
+                'rating_count' => $details['rating_count'] ?? 0,
+                'category_id' => $details['category_id'] ?? $details['genre_id'] ?? null,
+            ],
         ]);
     }
 }

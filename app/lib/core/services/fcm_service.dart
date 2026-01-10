@@ -14,35 +14,40 @@ class FcmService {
   FcmService(this._ref);
 
   Future<void> initialize() async {
-    // Request permission
-    final settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    try {
+      // Request permission
+      final settings = await _messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized ||
-        settings.authorizationStatus == AuthorizationStatus.provisional) {
-      // Get token and send to backend
-      final token = await _messaging.getToken();
-      if (token != null) {
-        await _sendTokenToBackend(token);
+      if (settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional) {
+        // Get token and send to backend
+        final token = await _messaging.getToken();
+        if (token != null) {
+          await _sendTokenToBackend(token);
+        }
+
+        // Listen for token refresh
+        _messaging.onTokenRefresh.listen(_sendTokenToBackend);
       }
 
-      // Listen for token refresh
-      _messaging.onTokenRefresh.listen(_sendTokenToBackend);
-    }
+      // Handle foreground messages
+      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+      // Handle background/terminated message taps
+      FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageTap);
 
-    // Handle background/terminated message taps
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageTap);
-
-    // Check for initial message (app opened from terminated state)
-    final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) {
-      _handleMessageTap(initialMessage);
+      // Check for initial message (app opened from terminated state)
+      final initialMessage = await _messaging.getInitialMessage();
+      if (initialMessage != null) {
+        _handleMessageTap(initialMessage);
+      }
+    } catch (e) {
+      // FCM not available (missing entitlements, simulator, etc.)
+      print('FCM initialization skipped: $e');
     }
   }
 

@@ -1,6 +1,6 @@
 // app/test/features/tags/tags_repository_test.dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:aso_app/features/tags/domain/tag_model.dart';
+import 'package:keyrank/features/tags/domain/tag_model.dart';
 
 void main() {
   group('TagModel', () {

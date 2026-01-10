@@ -53,4 +53,12 @@ return [
         'model' => env('OPENROUTER_MODEL', 'openai/gpt-5-nano'),
     ],
 
+    'proxy' => [
+        'enabled' => env('PROXY_ENABLED', false),
+        'host' => env('PROXY_HOST'),
+        'port' => env('PROXY_PORT', 10001),
+        'username' => env('PROXY_USERNAME'),
+        'password' => env('PROXY_PASSWORD'),
+    ],
+
 ];

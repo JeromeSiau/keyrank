@@ -54,6 +54,13 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Apps
+    Route::prefix('apps')->group(function () {
+        // Preview (no ownership required)
+        Route::get('preview/{platform}/{storeId}', [AppController::class, 'preview'])
+            ->where('platform', 'ios|android')
+            ->middleware('throttle:60,1');
+    });
+
     Route::prefix('apps')->middleware('owns.app')->group(function () {
         Route::get('/', [AppController::class, 'index']);
         Route::get('search', [AppController::class, 'search'])->middleware('throttle:60,1');

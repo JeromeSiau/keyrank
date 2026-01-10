@@ -23,7 +23,8 @@ router.get('/', async (req: Request, res: Response) => {
     const collectionMap: Record<string, gplay.collection> = {
       top_free: gplay.collection.TOP_FREE,
       top_paid: gplay.collection.TOP_PAID,
-      grossing: gplay.collection.GROSSING,
+      top_grossing: gplay.collection.GROSSING,
+      grossing: gplay.collection.GROSSING, // alias
     };
 
     const gplayCollection = collectionMap[collection] || gplay.collection.TOP_FREE;

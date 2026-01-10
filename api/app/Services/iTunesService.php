@@ -400,7 +400,11 @@ class iTunesService
      */
     public function getTopApps(string $categoryId, string $country = 'us', string $collection = 'top_free', int $limit = 100): array
     {
-        $feedType = $collection === 'top_paid' ? 'toppaidapplications' : 'topfreeapplications';
+        $feedType = match ($collection) {
+            'top_paid' => 'toppaidapplications',
+            'top_grossing' => 'topgrossingapplications',
+            default => 'topfreeapplications',
+        };
         $cacheKey = "itunes_top_{$feedType}_{$categoryId}_{$country}_{$limit}";
 
         return Cache::remember($cacheKey, now()->addHour(), function () use ($feedType, $categoryId, $country, $limit) {
@@ -464,10 +468,10 @@ class iTunesService
             '6018' => 'Books',
             '6020' => 'Medical',
             '6021' => 'Magazines & Newspapers',
-            '6022' => 'Catalogs',
+            // '6022' => 'Catalogs', // Deprecated
             '6023' => 'Food & Drink',
             '6024' => 'Shopping',
-            '6025' => 'Stickers',
+            // '6025' => 'Stickers', // iMessage only, no top charts
             '6026' => 'Developer Tools',
             '6027' => 'Graphics & Design',
         ];

@@ -2142,6 +2142,12 @@ abstract class AppLocalizations {
   /// **'Show less'**
   String get appPreview_showLess;
 
+  /// No description provided for @appPreview_keywordsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this app to your tracked apps to enable keyword tracking'**
+  String get appPreview_keywordsPlaceholder;
+
   /// No description provided for @notifications_title.
   ///
   /// In en, this message translates to:

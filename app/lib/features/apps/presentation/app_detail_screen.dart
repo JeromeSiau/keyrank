@@ -11,6 +11,8 @@ import '../../../core/providers/country_provider.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/country_picker.dart';
+import '../data/apps_repository.dart';
+import '../domain/app_model.dart';
 import '../providers/apps_provider.dart';
 import '../../keywords/data/keywords_repository.dart';
 import '../../keywords/domain/keyword_model.dart';
@@ -24,9 +26,22 @@ enum KeywordFilter { all, favorites, hasTags, hasNotes, ios, android }
 enum KeywordSort { nameAsc, nameDesc, positionBest, popularity, recentlyTracked }
 
 class AppDetailScreen extends ConsumerStatefulWidget {
-  final int appId;
+  final int? appId;
+  // Preview mode params
+  final String? platform;
+  final String? storeId;
+  final String? country;
 
-  const AppDetailScreen({super.key, required this.appId});
+  const AppDetailScreen({
+    super.key,
+    this.appId,
+    this.platform,
+    this.storeId,
+    this.country,
+  }) : assert(appId != null || (platform != null && storeId != null),
+           'Either appId or (platform + storeId) must be provided');
+
+  bool get isPreviewMode => appId == null;
 
   @override
   ConsumerState<AppDetailScreen> createState() => _AppDetailScreenState();
@@ -37,6 +52,87 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
   bool _isAddingKeyword = false;
   Keyword? _selectedKeyword;
   bool _countryInitialized = false;
+
+  // Preview mode state
+  AppPreview? _previewData;
+  bool _isLoadingPreview = false;
+  String? _previewError;
+  bool _isAddingApp = false;
+
+  // Helper getter for tracked mode
+  int get appId => widget.appId!;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isPreviewMode) {
+      _loadPreview();
+    }
+  }
+
+  Future<void> _loadPreview() async {
+    setState(() {
+      _isLoadingPreview = true;
+      _previewError = null;
+    });
+
+    try {
+      final repository = ref.read(appsRepositoryProvider);
+      final preview = await repository.getAppPreview(
+        platform: widget.platform!,
+        storeId: widget.storeId!,
+        country: widget.country ?? 'us',
+      );
+      if (mounted) {
+        setState(() {
+          _previewData = preview;
+          _isLoadingPreview = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _previewError = e.toString();
+          _isLoadingPreview = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _addAppToMyApps() async {
+    if (_previewData == null) return;
+
+    setState(() => _isAddingApp = true);
+
+    try {
+      final newApp = await ref.read(appsRepositoryProvider).addApp(
+        platform: _previewData!.platform,
+        storeId: _previewData!.storeId,
+        country: widget.country ?? 'us',
+      );
+      ref.invalidate(appsNotifierProvider);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.appPreview_added),
+            backgroundColor: AppColors.green,
+          ),
+        );
+        // Navigate to the newly added app
+        context.go('/apps/${newApp.id}');
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: AppColors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isAddingApp = false);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -72,9 +168,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     try {
       final repository = ref.read(keywordsRepositoryProvider);
       final country = ref.read(selectedCountryProvider);
-      await repository.addKeywordToApp(widget.appId, keyword, storefront: country.code.toUpperCase());
+      await repository.addKeywordToApp(appId, keyword, storefront: country.code.toUpperCase());
       _keywordController.clear();
-      ref.read(keywordsNotifierProvider(widget.appId).notifier).load();
+      ref.read(keywordsNotifierProvider(appId).notifier).load();
       ref.invalidate(appsNotifierProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -104,12 +200,12 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       context: context,
       builder: (context) => _TagsManagementDialog(
         keyword: keyword,
-        appId: widget.appId,
+        appId: appId,
       ),
     );
 
     if (result != null) {
-      ref.read(keywordsNotifierProvider(widget.appId).notifier).updateKeywordTags(keyword.id, result);
+      ref.read(keywordsNotifierProvider(appId).notifier).updateKeywordTags(keyword.id, result);
     }
   }
 
@@ -134,7 +230,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
     if (selectedTagIds != null && selectedTagIds.isNotEmpty) {
       try {
-        await ref.read(keywordsNotifierProvider(widget.appId).notifier)
+        await ref.read(keywordsNotifierProvider(appId).notifier)
             .bulkAddTags(trackedKeywordIds, selectedTagIds);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -164,7 +260,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => KeywordSuggestionsModal(
-        appId: widget.appId,
+        appId: appId,
         appName: app.name,
         country: country.code.toUpperCase(),
         existingKeywords: existingKeywords,
@@ -172,7 +268,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
           final repository = ref.read(keywordsRepositoryProvider);
           for (final keyword in selectedKeywords) {
             await repository.addKeywordToApp(
-              widget.appId,
+              appId,
               keyword,
               storefront: country.code.toUpperCase(),
             );
@@ -182,7 +278,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     );
 
     if (result == true) {
-      ref.read(keywordsNotifierProvider(widget.appId).notifier).load();
+      ref.read(keywordsNotifierProvider(appId).notifier).load();
       ref.invalidate(appsNotifierProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -227,7 +323,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     );
 
     if (confirm == true) {
-      await ref.read(appsNotifierProvider.notifier).deleteApp(widget.appId);
+      await ref.read(appsNotifierProvider.notifier).deleteApp(appId);
       if (mounted) {
         context.go('/apps');
       }
@@ -245,7 +341,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       );
 
       // Get CSV data from API
-      final csvData = await ref.read(keywordsRepositoryProvider).exportRankingsCsv(widget.appId);
+      final csvData = await ref.read(keywordsRepositoryProvider).exportRankingsCsv(appId);
 
       // Use path_provider to get a writable directory
       final fileName = 'rankings-${appName.replaceAll(RegExp(r'[^\w\s-]'), '')}-${DateTime.now().toIso8601String().split('T')[0]}.csv';
@@ -290,10 +386,10 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     final result = await showDialog<ImportResult>(
       context: context,
       builder: (context) => _ImportKeywordsDialog(
-        appId: widget.appId,
+        appId: appId,
         onImport: (keywords, storefront) async {
           return await ref.read(keywordsRepositoryProvider).importKeywords(
-            widget.appId,
+            appId,
             keywords,
             storefront: storefront,
           );
@@ -303,7 +399,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
     if (result != null && mounted) {
       // Refresh keywords list
-      ref.invalidate(keywordsNotifierProvider(widget.appId));
+      ref.invalidate(keywordsNotifierProvider(appId));
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -317,15 +413,10 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final appsAsync = ref.watch(appsNotifierProvider);
-    final keywordsState = ref.watch(keywordsNotifierProvider(widget.appId));
+    final isPreview = widget.isPreviewMode;
 
-    final app = appsAsync.valueOrNull?.firstWhere(
-      (a) => a.id == widget.appId,
-      orElse: () => throw Exception('App not found'),
-    );
-
-    if (app == null) {
+    // Loading state for preview mode
+    if (isPreview && _isLoadingPreview) {
       return Container(
         decoration: BoxDecoration(
           color: colors.glassPanel,
@@ -337,8 +428,92 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       );
     }
 
-    // Initialize country selector from app's storefront
-    _initializeCountryFromApp(app.storefront);
+    // Error state for preview mode
+    if (isPreview && (_previewError != null || _previewData == null)) {
+      return Container(
+        decoration: BoxDecoration(
+          color: colors.glassPanel,
+          borderRadius: BorderRadius.circular(AppColors.radiusLarge),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, size: 48, color: colors.red),
+              const SizedBox(height: 16),
+              Text(
+                context.l10n.appPreview_notFound,
+                style: TextStyle(color: colors.textSecondary),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => context.pop(),
+                child: const Text('Back'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Tracked mode: get app from provider
+    AppModel? app;
+    KeywordsState? keywordsState;
+    if (!isPreview) {
+      final appsAsync = ref.watch(appsNotifierProvider);
+      keywordsState = ref.watch(keywordsNotifierProvider(appId));
+
+      app = appsAsync.valueOrNull?.firstWhere(
+        (a) => a.id == appId,
+        orElse: () => throw Exception('App not found'),
+      );
+
+      if (app == null) {
+        return Container(
+          decoration: BoxDecoration(
+            color: colors.glassPanel,
+            borderRadius: BorderRadius.circular(AppColors.radiusLarge),
+          ),
+          child: const Center(
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        );
+      }
+
+      // Initialize country selector from app's storefront
+      _initializeCountryFromApp(app.storefront);
+    }
+
+    // For preview mode, create a fake AppModel from preview data
+    if (isPreview) {
+      final preview = _previewData!;
+      app = AppModel(
+        id: 0,
+        platform: preview.platform,
+        storeId: preview.storeId,
+        name: preview.name,
+        iconUrl: preview.iconUrl,
+        developer: preview.developer,
+        description: preview.description,
+        screenshots: preview.screenshots,
+        version: preview.version,
+        releaseDate: preview.releaseDate,
+        updatedDate: preview.updatedDate,
+        sizeBytes: preview.sizeBytes,
+        minimumOs: preview.minimumOs,
+        storeUrl: preview.storeUrl,
+        price: preview.price,
+        currency: preview.currency,
+        rating: preview.rating,
+        ratingCount: preview.ratingCount,
+        categoryId: preview.categoryId,
+        createdAt: DateTime.now(),
+      );
+    }
+
+    // At this point app is guaranteed non-null
+    final appData = app!;
+    final keywords = keywordsState?.keywords ?? [];
 
     return Container(
       decoration: BoxDecoration(
@@ -352,19 +527,20 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
               children: [
                 // Toolbar
                 _Toolbar(
-                appName: app.name,
-                isFavorite: app.isFavorite,
-                onBack: () => context.go('/apps'),
-                onToggleFavorite: () => ref.read(appsNotifierProvider.notifier).toggleFavorite(widget.appId),
-                onDelete: _deleteApp,
-                onViewRatings: () => context.push(
-                  '/apps/${widget.appId}/ratings?name=${Uri.encodeComponent(app.name)}',
+                appName: appData.name,
+                isFavorite: appData.isFavorite,
+                isPreview: isPreview,
+                onBack: () => isPreview ? context.pop() : context.go('/apps'),
+                onToggleFavorite: isPreview ? null : () => ref.read(appsNotifierProvider.notifier).toggleFavorite(appId),
+                onDelete: isPreview ? null : _deleteApp,
+                onViewRatings: isPreview ? null : () => context.push(
+                  '/apps/$appId/ratings?name=${Uri.encodeComponent(appData.name)}',
                 ),
-                onViewInsights: () => context.push(
-                  '/apps/${widget.appId}/insights?name=${Uri.encodeComponent(app.name)}',
+                onViewInsights: isPreview ? null : () => context.push(
+                  '/apps/$appId/insights?name=${Uri.encodeComponent(appData.name)}',
                 ),
-                onExport: () => _exportRankings(app.name),
-                onImport: _showImportDialog,
+                onExport: isPreview ? null : () => _exportRankings(appData.name),
+                onImport: isPreview ? null : _showImportDialog,
               ),
               // Content
               Expanded(
@@ -375,56 +551,68 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                     children: [
                       // App info card
                       _AppInfoCard(
-                        app: app,
-                        onViewRatings: () => context.push(
-                          '/apps/${widget.appId}/ratings?name=${Uri.encodeComponent(app.name)}',
+                        app: appData,
+                        isPreview: isPreview,
+                        onViewRatings: isPreview ? null : () => context.push(
+                          '/apps/$appId/ratings?name=${Uri.encodeComponent(appData.name)}',
                         ),
                       ),
+                      // Collapsible app info (description, screenshots, details)
+                      const SizedBox(height: 12),
+                      _CollapsibleAppInfo(app: appData),
                       const SizedBox(height: 16),
-                      // Add keyword section
-                      _AddKeywordSection(
-                        controller: _keywordController,
-                        isAdding: _isAddingKeyword,
-                        onAdd: _addKeyword,
-                      ),
-                      const SizedBox(height: 16),
-                      // Keywords table
-                      _KeywordsTable(
-                        keywordsState: keywordsState,
-                        onDelete: (keyword) async {
-                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).deleteKeyword(keyword);
-                          ref.invalidate(appsNotifierProvider);
-                        },
-                        onKeywordTap: _showKeywordHistory,
-                        onToggleFavorite: (keyword) async {
-                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).toggleFavorite(keyword);
-                        },
-                        onUpdateNote: (keyword, content) async {
-                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).updateNote(keyword, content);
-                        },
-                        onManageTags: (keyword) => _showTagsModal(keyword),
-                        onSuggestions: () => _showSuggestionsModal(app, keywordsState.keywords),
-                        hasIos: app.isIos,
-                        hasAndroid: app.isAndroid,
-                        onBulkDelete: (ids) async {
-                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkDelete(ids);
-                          ref.invalidate(appsNotifierProvider);
-                        },
-                        onBulkFavorite: (ids, isFavorite) async {
-                          await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkFavorite(ids, isFavorite);
-                        },
-                        onBulkAddTags: (ids) async {
-                          await _showBulkTagsDialog(ids);
-                        },
-                      ),
+                      // Keywords section or preview message
+                      if (isPreview)
+                        _PreviewKeywordsPlaceholder(
+                          isAdding: _isAddingApp,
+                          onAddApp: _addAppToMyApps,
+                        )
+                      else ...[
+                        // Add keyword section
+                        _AddKeywordSection(
+                          controller: _keywordController,
+                          isAdding: _isAddingKeyword,
+                          onAdd: _addKeyword,
+                        ),
+                        const SizedBox(height: 16),
+                        // Keywords table
+                        _KeywordsTable(
+                          keywordsState: keywordsState!,
+                          onDelete: (keyword) async {
+                            await ref.read(keywordsNotifierProvider(appId).notifier).deleteKeyword(keyword);
+                            ref.invalidate(appsNotifierProvider);
+                          },
+                          onKeywordTap: _showKeywordHistory,
+                          onToggleFavorite: (keyword) async {
+                            await ref.read(keywordsNotifierProvider(appId).notifier).toggleFavorite(keyword);
+                          },
+                          onUpdateNote: (keyword, content) async {
+                            await ref.read(keywordsNotifierProvider(appId).notifier).updateNote(keyword, content);
+                          },
+                          onManageTags: (keyword) => _showTagsModal(keyword),
+                          onSuggestions: () => _showSuggestionsModal(appData, keywords),
+                          hasIos: appData.isIos,
+                          hasAndroid: appData.isAndroid,
+                          onBulkDelete: (ids) async {
+                            await ref.read(keywordsNotifierProvider(appId).notifier).bulkDelete(ids);
+                            ref.invalidate(appsNotifierProvider);
+                          },
+                          onBulkFavorite: (ids, isFavorite) async {
+                            await ref.read(keywordsNotifierProvider(appId).notifier).bulkFavorite(ids, isFavorite);
+                          },
+                          onBulkAddTags: (ids) async {
+                            await _showBulkTagsDialog(ids);
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),
               ),
             ],
           ),
-          // Backdrop to close panel when tapping outside
-          if (_selectedKeyword != null)
+          // Backdrop to close panel when tapping outside (only for tracked mode)
+          if (!isPreview && _selectedKeyword != null)
             Positioned.fill(
               child: GestureDetector(
                 onTap: _hideKeywordHistory,
@@ -432,12 +620,13 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                 child: Container(color: Colors.transparent),
               ),
             ),
-          // Sliding history panel
-          _KeywordHistoryPanel(
-            keyword: _selectedKeyword,
-            appId: widget.appId,
-            onClose: _hideKeywordHistory,
-          ),
+          // Sliding history panel (only for tracked mode)
+          if (!isPreview)
+            _KeywordHistoryPanel(
+              keyword: _selectedKeyword,
+              appId: appId,
+              onClose: _hideKeywordHistory,
+            ),
         ],
       ),
     );
@@ -447,24 +636,26 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 class _Toolbar extends StatelessWidget {
   final String appName;
   final bool isFavorite;
+  final bool isPreview;
   final VoidCallback onBack;
-  final VoidCallback onToggleFavorite;
-  final VoidCallback onDelete;
-  final VoidCallback onViewRatings;
-  final VoidCallback onViewInsights;
-  final VoidCallback onExport;
-  final VoidCallback onImport;
+  final VoidCallback? onToggleFavorite;
+  final VoidCallback? onDelete;
+  final VoidCallback? onViewRatings;
+  final VoidCallback? onViewInsights;
+  final VoidCallback? onExport;
+  final VoidCallback? onImport;
 
   const _Toolbar({
     required this.appName,
     required this.isFavorite,
+    this.isPreview = false,
     required this.onBack,
-    required this.onToggleFavorite,
-    required this.onDelete,
-    required this.onViewRatings,
-    required this.onViewInsights,
-    required this.onExport,
-    required this.onImport,
+    this.onToggleFavorite,
+    this.onDelete,
+    this.onViewRatings,
+    this.onViewInsights,
+    this.onExport,
+    this.onImport,
   });
 
   @override
@@ -505,84 +696,86 @@ class _Toolbar extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // Actions
-          ToolbarButton(
-            icon: isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
-            label: context.l10n.appDetail_favorite,
-            iconColor: isFavorite ? colors.yellow : null,
-            onTap: onToggleFavorite,
-          ),
-          const SizedBox(width: 10),
-          ToolbarButton(
-            icon: Icons.bar_chart_rounded,
-            label: context.l10n.appDetail_ratings,
-            onTap: onViewRatings,
-          ),
-          const SizedBox(width: 10),
-          ToolbarButton(
-            icon: Icons.insights_rounded,
-            label: context.l10n.appDetail_insights,
-            onTap: onViewInsights,
-          ),
-          const SizedBox(width: 10),
-          // Overflow menu for secondary actions
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert_rounded, color: colors.textMuted, size: 20),
-            tooltip: '',
-            splashRadius: 18,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+          // Actions (hidden in preview mode)
+          if (!isPreview) ...[
+            ToolbarButton(
+              icon: isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
+              label: context.l10n.appDetail_favorite,
+              iconColor: isFavorite ? colors.yellow : null,
+              onTap: onToggleFavorite,
             ),
-            color: colors.glassPanel,
-            surfaceTintColor: Colors.transparent,
-            offset: const Offset(0, 40),
-            onSelected: (value) {
-              switch (value) {
-                case 'import':
-                  onImport();
-                  break;
-                case 'export':
-                  onExport();
-                  break;
-                case 'delete':
-                  onDelete();
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'import',
-                child: Row(
-                  children: [
-                    Icon(Icons.upload_rounded, size: 18, color: colors.textSecondary),
-                    const SizedBox(width: 12),
-                    Text(context.l10n.appDetail_import, style: TextStyle(color: colors.textPrimary)),
-                  ],
-                ),
+            const SizedBox(width: 10),
+            ToolbarButton(
+              icon: Icons.bar_chart_rounded,
+              label: context.l10n.appDetail_ratings,
+              onTap: onViewRatings,
+            ),
+            const SizedBox(width: 10),
+            ToolbarButton(
+              icon: Icons.insights_rounded,
+              label: context.l10n.appDetail_insights,
+              onTap: onViewInsights,
+            ),
+            const SizedBox(width: 10),
+            // Overflow menu for secondary actions
+            PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert_rounded, color: colors.textMuted, size: 20),
+              tooltip: '',
+              splashRadius: 18,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppColors.radiusMedium),
               ),
-              PopupMenuItem(
-                value: 'export',
-                child: Row(
-                  children: [
-                    Icon(Icons.download_rounded, size: 18, color: colors.textSecondary),
-                    const SizedBox(width: 12),
-                    Text(context.l10n.appDetail_export, style: TextStyle(color: colors.textPrimary)),
-                  ],
+              color: colors.glassPanel,
+              surfaceTintColor: Colors.transparent,
+              offset: const Offset(0, 40),
+              onSelected: (value) {
+                switch (value) {
+                  case 'import':
+                    onImport?.call();
+                    break;
+                  case 'export':
+                    onExport?.call();
+                    break;
+                  case 'delete':
+                    onDelete?.call();
+                    break;
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'import',
+                  child: Row(
+                    children: [
+                      Icon(Icons.upload_rounded, size: 18, color: colors.textSecondary),
+                      const SizedBox(width: 12),
+                      Text(context.l10n.appDetail_import, style: TextStyle(color: colors.textPrimary)),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline_rounded, size: 18, color: colors.red),
-                    const SizedBox(width: 12),
-                    Text(context.l10n.appDetail_delete, style: TextStyle(color: colors.red)),
-                  ],
+                PopupMenuItem(
+                  value: 'export',
+                  child: Row(
+                    children: [
+                      Icon(Icons.download_rounded, size: 18, color: colors.textSecondary),
+                      const SizedBox(width: 12),
+                      Text(context.l10n.appDetail_export, style: TextStyle(color: colors.textPrimary)),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline_rounded, size: 18, color: colors.red),
+                      const SizedBox(width: 12),
+                      Text(context.l10n.appDetail_delete, style: TextStyle(color: colors.red)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -591,9 +784,14 @@ class _Toolbar extends StatelessWidget {
 
 class _AppInfoCard extends StatelessWidget {
   final dynamic app;
-  final VoidCallback onViewRatings;
+  final bool isPreview;
+  final VoidCallback? onViewRatings;
 
-  const _AppInfoCard({required this.app, required this.onViewRatings});
+  const _AppInfoCard({
+    required this.app,
+    this.isPreview = false,
+    this.onViewRatings,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -3381,5 +3579,507 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
         ),
       ],
     );
+  }
+}
+
+// =============================================================================
+// Preview Mode Widgets
+// =============================================================================
+
+class _PreviewKeywordsPlaceholder extends StatelessWidget {
+  final bool isAdding;
+  final VoidCallback onAddApp;
+
+  const _PreviewKeywordsPlaceholder({
+    required this.isAdding,
+    required this.onAddApp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: colors.accent.withAlpha(30),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.key_rounded, size: 18, color: colors.accent),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              context.l10n.appPreview_keywordsPlaceholder,
+              style: TextStyle(
+                fontSize: 13,
+                color: colors.textSecondary,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          ElevatedButton.icon(
+            onPressed: isAdding ? null : onAddApp,
+            icon: isAdding
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
+                : const Icon(Icons.add, size: 18),
+            label: Text(context.l10n.appPreview_addToMyApps),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colors.accent,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailData {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _DetailData({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+}
+
+class _DetailChip extends StatelessWidget {
+  final _DetailData data;
+
+  const _DetailChip({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(data.icon, size: 14, color: colors.textMuted),
+        const SizedBox(width: 6),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              data.label,
+              style: TextStyle(
+                fontSize: 10,
+                color: colors.textMuted,
+              ),
+            ),
+            Text(
+              data.value,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: colors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Collapsible section that groups Description, Screenshots, and Details
+/// Collapsed by default to prioritize keyword visibility
+class _CollapsibleAppInfo extends StatefulWidget {
+  final AppModel app;
+
+  const _CollapsibleAppInfo({required this.app});
+
+  @override
+  State<_CollapsibleAppInfo> createState() => _CollapsibleAppInfoState();
+}
+
+class _CollapsibleAppInfoState extends State<_CollapsibleAppInfo>
+    with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+  late AnimationController _controller;
+  late Animation<double> _heightFactor;
+  late Animation<double> _iconTurns;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _heightFactor = _controller.drive(CurveTween(curve: Curves.easeInOut));
+    _iconTurns = _controller.drive(
+      Tween<double>(begin: 0.0, end: 0.5).chain(CurveTween(curve: Curves.easeIn)),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  bool get _hasDescription =>
+      widget.app.description != null && widget.app.description!.isNotEmpty;
+
+  bool get _hasScreenshots =>
+      widget.app.screenshots != null && widget.app.screenshots!.isNotEmpty;
+
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          // Header - always visible
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _toggleExpanded,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: colors.accent.withAlpha(30),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.info_outline,
+                        size: 16,
+                        color: colors.accent,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.appPreview_details,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: colors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            _buildSummary(context),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RotationTransition(
+                      turns: _iconTurns,
+                      child: Icon(
+                        Icons.expand_more,
+                        color: colors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Expandable content
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return ClipRect(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  heightFactor: _heightFactor.value,
+                  child: child,
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Divider(height: 1, color: colors.glassBorder),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Description
+                      if (_hasDescription) ...[
+                        _CollapsedDescription(description: widget.app.description!),
+                        const SizedBox(height: 16),
+                      ],
+                      // Screenshots
+                      if (_hasScreenshots) ...[
+                        _CollapsedScreenshots(screenshots: widget.app.screenshots!),
+                        const SizedBox(height: 16),
+                      ],
+                      // Details grid
+                      _CollapsedDetails(app: widget.app),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _buildSummary(BuildContext context) {
+    final parts = <String>[];
+    if (_hasDescription) parts.add(context.l10n.appPreview_description);
+    if (_hasScreenshots) {
+      parts.add('${widget.app.screenshots!.length} ${context.l10n.appPreview_screenshots}');
+    }
+    if (widget.app.version != null) parts.add('v${widget.app.version}');
+    return parts.join(' · ');
+  }
+}
+
+class _CollapsedDescription extends StatefulWidget {
+  final String description;
+
+  const _CollapsedDescription({required this.description});
+
+  @override
+  State<_CollapsedDescription> createState() => _CollapsedDescriptionState();
+}
+
+class _CollapsedDescriptionState extends State<_CollapsedDescription> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.description_outlined, size: 14, color: colors.textMuted),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.appPreview_description,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: colors.textSecondary,
+              ),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () => setState(() => _isExpanded = !_isExpanded),
+              child: Text(
+                _isExpanded ? context.l10n.appPreview_showLess : context.l10n.appPreview_showMore,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: colors.accent,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        AnimatedCrossFade(
+          firstChild: Text(
+            widget.description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              color: colors.textSecondary,
+              height: 1.4,
+            ),
+          ),
+          secondChild: Text(
+            widget.description,
+            style: TextStyle(
+              fontSize: 12,
+              color: colors.textSecondary,
+              height: 1.4,
+            ),
+          ),
+          crossFadeState: _isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 200),
+        ),
+      ],
+    );
+  }
+}
+
+class _CollapsedScreenshots extends StatelessWidget {
+  final List<String> screenshots;
+
+  const _CollapsedScreenshots({required this.screenshots});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.photo_library_outlined, size: 14, color: colors.textMuted),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.appPreview_screenshots,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: colors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 140,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: screenshots.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  screenshots[index],
+                  height: 140,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => Container(
+                    width: 70,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: colors.bgActive,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(Icons.image_not_supported, size: 20, color: colors.textMuted),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CollapsedDetails extends StatelessWidget {
+  final AppModel app;
+
+  const _CollapsedDetails({required this.app});
+
+  @override
+  Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMMMd();
+
+    final details = <_DetailData>[];
+
+    if (app.version != null) {
+      details.add(_DetailData(
+        icon: Icons.new_releases_outlined,
+        label: context.l10n.appPreview_version,
+        value: app.version!,
+      ));
+    }
+    if (app.updatedDate != null) {
+      details.add(_DetailData(
+        icon: Icons.update,
+        label: context.l10n.appPreview_updated,
+        value: dateFormat.format(app.updatedDate!),
+      ));
+    }
+    if (app.releaseDate != null) {
+      details.add(_DetailData(
+        icon: Icons.rocket_launch_outlined,
+        label: context.l10n.appPreview_released,
+        value: dateFormat.format(app.releaseDate!),
+      ));
+    }
+    if (app.sizeBytes != null) {
+      details.add(_DetailData(
+        icon: Icons.storage_outlined,
+        label: context.l10n.appPreview_size,
+        value: _formatSize(app.sizeBytes!),
+      ));
+    }
+    if (app.minimumOs != null) {
+      details.add(_DetailData(
+        icon: Icons.phone_iphone,
+        label: context.l10n.appPreview_minimumOs,
+        value: app.minimumOs!,
+      ));
+    }
+    details.add(_DetailData(
+      icon: Icons.sell_outlined,
+      label: context.l10n.appPreview_price,
+      value: app.price == null || app.price == 0
+          ? context.l10n.appPreview_free
+          : '${app.currency ?? '\$'}${app.price!.toStringAsFixed(2)}',
+    ));
+
+    return Wrap(
+      spacing: 20,
+      runSpacing: 12,
+      children: details.map((d) => _DetailChip(data: d)).toList(),
+    );
+  }
+
+  String _formatSize(int bytes) {
+    if (bytes >= 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
+    } else if (bytes >= 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    } else if (bytes >= 1024) {
+      return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    }
+    return '$bytes B';
   }
 }

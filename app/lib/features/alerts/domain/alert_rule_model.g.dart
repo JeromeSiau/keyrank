@@ -15,9 +15,9 @@ _$AlertRuleModelImpl _$$AlertRuleModelImplFromJson(Map<String, dynamic> json) =>
       scopeType: json['scope_type'] as String,
       scopeId: (json['scope_id'] as num?)?.toInt(),
       conditions: json['conditions'] as Map<String, dynamic>,
-      isTemplate: json['is_template'] as bool,
-      isActive: json['is_active'] as bool,
-      priority: (json['priority'] as num).toInt(),
+      isTemplate: json['is_template'] as bool? ?? false,
+      isActive: json['is_active'] as bool? ?? true,
+      priority: (json['priority'] as num?)?.toInt() ?? 100,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );

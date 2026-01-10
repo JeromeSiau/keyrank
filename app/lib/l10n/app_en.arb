@@ -574,6 +574,7 @@
   "appPreview_added": "Added",
   "appPreview_showMore": "Show more",
   "appPreview_showLess": "Show less",
+  "appPreview_keywordsPlaceholder": "Add this app to your tracked apps to enable keyword tracking",
 
   "notifications_title": "Notifications",
   "notifications_markAllRead": "Mark all read",

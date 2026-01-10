@@ -1128,6 +1128,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appPreview_showLess => 'Voir moins';
 
   @override
+  String get appPreview_keywordsPlaceholder =>
+      'Ajoutez cette app à vos apps suivies pour activer le suivi des mots-clés';
+
+  @override
   String get notifications_title => 'Notifications';
 
   @override

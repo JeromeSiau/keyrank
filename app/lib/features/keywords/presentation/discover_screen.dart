@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/api/api_client.dart';
@@ -798,6 +799,11 @@ class _CollectionToggle extends StatelessWidget {
             isSelected: selectedCollection == 'top_paid',
             onTap: () => onChanged('top_paid'),
           ),
+          _TabButton(
+            label: context.l10n.discover_topGrossing,
+            isSelected: selectedCollection == 'top_grossing',
+            onTap: () => onChanged('top_grossing'),
+          ),
         ],
       ),
     );
@@ -956,95 +962,104 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
     }
   }
 
+  void _openPreview() {
+    context.push(
+      '/discover/preview/${widget.platform}/${widget.app.storeId}?country=${widget.country}',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isTopRank = widget.app.position <= 3;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: colors.glassBorder)),
-      ),
-      child: Row(
-        children: [
-          // Position
-          SizedBox(
-            width: 60,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: isTopRank ? colors.greenMuted : colors.bgActive,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '#${widget.app.position}',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isTopRank ? colors.green : colors.textSecondary,
+    return InkWell(
+      onTap: _openPreview,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: colors.glassBorder)),
+        ),
+        child: Row(
+          children: [
+            // Position
+            SizedBox(
+              width: 60,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isTopRank ? colors.greenMuted : colors.bgActive,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Icon
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              gradient: AppColors.getGradient(widget.app.position),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: widget.app.iconUrl != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.app.iconUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Icon(Icons.apps, size: 20, color: Colors.white),
-                      ),
-                    ),
-                  )
-                : const Center(
-                    child: Icon(Icons.apps, size: 20, color: Colors.white),
-                  ),
-          ),
-          const SizedBox(width: 12),
-          // App info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.app.name,
+                child: Text(
+                  '#${widget.app.position}',
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: isTopRank ? colors.green : colors.textSecondary,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
-                if (widget.app.developer != null)
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Icon
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                gradient: AppColors.getGradient(widget.app.position),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: widget.app.iconUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        widget.app.iconUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Center(
+                          child: Icon(Icons.apps, size: 20, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : const Center(
+                      child: Icon(Icons.apps, size: 20, color: Colors.white),
+                    ),
+            ),
+            const SizedBox(width: 12),
+            // App info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    widget.app.developer!,
+                    widget.app.name,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: colors.textMuted,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-              ],
+                  if (widget.app.developer != null)
+                    Text(
+                      widget.app.developer!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.textMuted,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
+              ),
             ),
-          ),
-          // Track button
-          SizedBox(
-            width: 48,
-            child: _buildTrackButton(),
-          ),
-        ],
+            // Track button
+            SizedBox(
+              width: 48,
+              child: _buildTrackButton(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1157,122 +1172,135 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
     }
   }
 
+  void _openPreview() {
+    final storeId = widget.platform == 'android'
+        ? widget.app.googlePlayId
+        : widget.app.appleId;
+    if (storeId == null) return;
+    context.push(
+      '/discover/preview/${widget.platform}/$storeId?country=${widget.country}',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isTopRank = widget.app.position <= 3;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: colors.glassBorder)),
-      ),
-      child: Row(
-        children: [
-          // Position
-          SizedBox(
-            width: 60,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: isTopRank ? colors.greenMuted : colors.bgActive,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '#${widget.app.position}',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isTopRank ? colors.green : colors.textSecondary,
+    return InkWell(
+      onTap: _openPreview,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: colors.glassBorder)),
+        ),
+        child: Row(
+          children: [
+            // Position
+            SizedBox(
+              width: 60,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isTopRank ? colors.greenMuted : colors.bgActive,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Icon
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              gradient: AppColors.getGradient(widget.app.position),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: widget.app.iconUrl != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.app.iconUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Icon(Icons.apps, size: 20, color: Colors.white),
-                      ),
-                    ),
-                  )
-                : const Center(
-                    child: Icon(Icons.apps, size: 20, color: Colors.white),
-                  ),
-          ),
-          const SizedBox(width: 12),
-          // App info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.app.name,
+                child: Text(
+                  '#${widget.app.position}',
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: isTopRank ? colors.green : colors.textSecondary,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
-                if (widget.app.developer != null)
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Icon
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                gradient: AppColors.getGradient(widget.app.position),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: widget.app.iconUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        widget.app.iconUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Center(
+                          child: Icon(Icons.apps, size: 20, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : const Center(
+                      child: Icon(Icons.apps, size: 20, color: Colors.white),
+                    ),
+            ),
+            const SizedBox(width: 12),
+            // App info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    widget.app.developer!,
+                    widget.app.name,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: colors.textMuted,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-              ],
-            ),
-          ),
-          // Rating
-          SizedBox(
-            width: 70,
-            child: widget.app.rating != null
-                ? Row(
-                    children: [
-                      Icon(Icons.star_rounded, size: 16, color: colors.yellow),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.app.rating!.toStringAsFixed(1),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: colors.textSecondary,
-                        ),
+                  if (widget.app.developer != null)
+                    Text(
+                      widget.app.developer!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.textMuted,
                       ),
-                    ],
-                  )
-                : Text(
-                    '--',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colors.textMuted,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-          ),
-          const SizedBox(width: 12),
-          // Track button
-          SizedBox(
-            width: 48,
-            child: _buildTrackButton(),
-          ),
-        ],
+                ],
+              ),
+            ),
+            // Rating
+            SizedBox(
+              width: 70,
+              child: widget.app.rating != null
+                  ? Row(
+                      children: [
+                        Icon(Icons.star_rounded, size: 16, color: colors.yellow),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.app.rating!.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      '--',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: colors.textMuted,
+                      ),
+                    ),
+            ),
+            const SizedBox(width: 12),
+            // Track button
+            SizedBox(
+              width: 48,
+              child: _buildTrackButton(),
+            ),
+          ],
+        ),
       ),
     );
   }

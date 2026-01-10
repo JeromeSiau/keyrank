@@ -21,6 +21,7 @@ class ApiConstants {
   // Apps endpoints
   static const String apps = '/apps';
   static const String appsSearch = '/apps/search';
+  static const String appsPreview = '/apps/preview';
 
   // Keywords endpoints
   static const String keywordsSearch = '/keywords/search';

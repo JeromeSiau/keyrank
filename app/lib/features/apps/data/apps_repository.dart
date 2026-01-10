@@ -120,4 +120,20 @@ class AppsRepository {
       throw ApiException.fromDioError(e);
     }
   }
+
+  Future<AppPreview> getAppPreview({
+    required String platform,
+    required String storeId,
+    String country = 'us',
+  }) async {
+    try {
+      final response = await dio.get(
+        '${ApiConstants.appsPreview}/$platform/$storeId',
+        queryParameters: {'country': country},
+      );
+      return AppPreview.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
 }

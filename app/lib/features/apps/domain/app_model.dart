@@ -6,6 +6,16 @@ class AppModel {
   final String name;
   final String? iconUrl;
   final String? developer;
+  final String? description;
+  final List<String>? screenshots;
+  final String? version;
+  final DateTime? releaseDate;
+  final DateTime? updatedDate;
+  final int? sizeBytes;
+  final String? minimumOs;
+  final String? storeUrl;
+  final double? price;
+  final String? currency;
   final double? rating;
   final int ratingCount;
   final String? storefront;
@@ -25,6 +35,16 @@ class AppModel {
     required this.name,
     this.iconUrl,
     this.developer,
+    this.description,
+    this.screenshots,
+    this.version,
+    this.releaseDate,
+    this.updatedDate,
+    this.sizeBytes,
+    this.minimumOs,
+    this.storeUrl,
+    this.price,
+    this.currency,
     this.rating,
     required this.ratingCount,
     this.storefront,
@@ -48,6 +68,16 @@ class AppModel {
     String? name,
     String? iconUrl,
     String? developer,
+    String? description,
+    List<String>? screenshots,
+    String? version,
+    DateTime? releaseDate,
+    DateTime? updatedDate,
+    int? sizeBytes,
+    String? minimumOs,
+    String? storeUrl,
+    double? price,
+    String? currency,
     double? rating,
     int? ratingCount,
     String? storefront,
@@ -67,6 +97,16 @@ class AppModel {
       name: name ?? this.name,
       iconUrl: iconUrl ?? this.iconUrl,
       developer: developer ?? this.developer,
+      description: description ?? this.description,
+      screenshots: screenshots ?? this.screenshots,
+      version: version ?? this.version,
+      releaseDate: releaseDate ?? this.releaseDate,
+      updatedDate: updatedDate ?? this.updatedDate,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      minimumOs: minimumOs ?? this.minimumOs,
+      storeUrl: storeUrl ?? this.storeUrl,
+      price: price ?? this.price,
+      currency: currency ?? this.currency,
       rating: rating ?? this.rating,
       ratingCount: ratingCount ?? this.ratingCount,
       storefront: storefront ?? this.storefront,
@@ -89,6 +129,22 @@ class AppModel {
       name: json['name'] as String,
       iconUrl: json['icon_url'] as String?,
       developer: json['developer'] as String?,
+      description: json['description'] as String?,
+      screenshots: (json['screenshots'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      version: json['version'] as String?,
+      releaseDate: json['release_date'] != null
+          ? DateTime.tryParse(json['release_date'] as String)
+          : null,
+      updatedDate: json['updated_date'] != null
+          ? DateTime.tryParse(json['updated_date'] as String)
+          : null,
+      sizeBytes: _parseInt(json['size_bytes']),
+      minimumOs: json['minimum_os'] as String?,
+      storeUrl: json['store_url'] as String?,
+      price: _parseDouble(json['price']),
+      currency: json['currency'] as String?,
       rating: _parseDouble(json['rating']),
       ratingCount: _parseInt(json['rating_count']) ?? 0,
       storefront: json['storefront'] as String?,
@@ -189,6 +245,81 @@ class AndroidSearchResult {
       rating: AppModel._parseDouble(json['rating']),
       ratingCount: AppModel._parseInt(json['rating_count']) ?? 0,
       free: json['free'] as bool? ?? true,
+    );
+  }
+}
+
+/// Preview of an app that is not yet tracked by the user
+class AppPreview {
+  final String platform;
+  final String storeId;
+  final String name;
+  final String? iconUrl;
+  final String? developer;
+  final String? description;
+  final List<String>? screenshots;
+  final String? version;
+  final DateTime? releaseDate;
+  final DateTime? updatedDate;
+  final int? sizeBytes;
+  final String? minimumOs;
+  final String? storeUrl;
+  final double? price;
+  final String? currency;
+  final double? rating;
+  final int ratingCount;
+  final String? categoryId;
+
+  AppPreview({
+    required this.platform,
+    required this.storeId,
+    required this.name,
+    this.iconUrl,
+    this.developer,
+    this.description,
+    this.screenshots,
+    this.version,
+    this.releaseDate,
+    this.updatedDate,
+    this.sizeBytes,
+    this.minimumOs,
+    this.storeUrl,
+    this.price,
+    this.currency,
+    this.rating,
+    required this.ratingCount,
+    this.categoryId,
+  });
+
+  bool get isIos => platform == 'ios';
+  bool get isAndroid => platform == 'android';
+
+  factory AppPreview.fromJson(Map<String, dynamic> json) {
+    return AppPreview(
+      platform: json['platform'] as String,
+      storeId: json['store_id'] as String,
+      name: json['name'] as String,
+      iconUrl: json['icon_url'] as String?,
+      developer: json['developer'] as String?,
+      description: json['description'] as String?,
+      screenshots: (json['screenshots'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      version: json['version'] as String?,
+      releaseDate: json['release_date'] != null
+          ? DateTime.tryParse(json['release_date'] as String)
+          : null,
+      updatedDate: json['updated_date'] != null
+          ? DateTime.tryParse(json['updated_date'] as String)
+          : null,
+      sizeBytes: AppModel._parseInt(json['size_bytes']),
+      minimumOs: json['minimum_os'] as String?,
+      storeUrl: json['store_url'] as String?,
+      price: AppModel._parseDouble(json['price']),
+      currency: json['currency'] as String?,
+      rating: AppModel._parseDouble(json['rating']),
+      ratingCount: AppModel._parseInt(json['rating_count']) ?? 0,
+      categoryId: json['category_id'] as String?,
     );
   }
 }

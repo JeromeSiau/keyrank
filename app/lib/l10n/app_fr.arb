@@ -534,6 +534,7 @@
   "appPreview_added": "Ajouté",
   "appPreview_showMore": "Voir plus",
   "appPreview_showLess": "Voir moins",
+  "appPreview_keywordsPlaceholder": "Ajoutez cette app à vos apps suivies pour activer le suivi des mots-clés",
 
   "notifications_title": "Notifications",
   "notifications_markAllRead": "Tout marquer comme lu",

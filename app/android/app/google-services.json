@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "600591630798",
+    "project_id": "keyrank-flutter",
+    "storage_bucket": "keyrank-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600591630798:android:c861bc46afaa412f37eb9f",
+        "android_client_info": {
+          "package_name": "com.ranking.keyrank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYL8Tq2yHgJDoRKejw-yTGMsRG1cTJ7A8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

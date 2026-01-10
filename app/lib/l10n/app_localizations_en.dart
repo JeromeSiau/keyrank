@@ -1122,6 +1122,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appPreview_showLess => 'Show less';
 
   @override
+  String get appPreview_keywordsPlaceholder =>
+      'Add this app to your tracked apps to enable keyword tracking';
+
+  @override
   String get notifications_title => 'Notifications';
 
   @override

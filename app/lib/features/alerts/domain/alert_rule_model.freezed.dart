@@ -276,9 +276,9 @@ class _$AlertRuleModelImpl implements _AlertRuleModel {
     @JsonKey(name: 'scope_type') required this.scopeType,
     @JsonKey(name: 'scope_id') this.scopeId,
     required final Map<String, dynamic> conditions,
-    @JsonKey(name: 'is_template') required this.isTemplate,
-    @JsonKey(name: 'is_active') required this.isActive,
-    required this.priority,
+    @JsonKey(name: 'is_template') this.isTemplate = false,
+    @JsonKey(name: 'is_active') this.isActive = true,
+    this.priority = 100,
     @JsonKey(name: 'created_at') required this.createdAt,
     @JsonKey(name: 'updated_at') required this.updatedAt,
   }) : _conditions = conditions;
@@ -316,6 +316,7 @@ class _$AlertRuleModelImpl implements _AlertRuleModel {
   @JsonKey(name: 'is_active')
   final bool isActive;
   @override
+  @JsonKey()
   final int priority;
   @override
   @JsonKey(name: 'created_at')
@@ -401,9 +402,9 @@ abstract class _AlertRuleModel implements AlertRuleModel {
     @JsonKey(name: 'scope_type') required final String scopeType,
     @JsonKey(name: 'scope_id') final int? scopeId,
     required final Map<String, dynamic> conditions,
-    @JsonKey(name: 'is_template') required final bool isTemplate,
-    @JsonKey(name: 'is_active') required final bool isActive,
-    required final int priority,
+    @JsonKey(name: 'is_template') final bool isTemplate,
+    @JsonKey(name: 'is_active') final bool isActive,
+    final int priority,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
     @JsonKey(name: 'updated_at') required final DateTime updatedAt,
   }) = _$AlertRuleModelImpl;

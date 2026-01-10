@@ -1,4 +1,4 @@
-package com.ranking.aso_app
+package com.ranking.keyrank
 
 import io.flutter.embedding.android.FlutterActivity
 

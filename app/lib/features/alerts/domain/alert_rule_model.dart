@@ -13,9 +13,9 @@ class AlertRuleModel with _$AlertRuleModel {
     @JsonKey(name: 'scope_type') required String scopeType,
     @JsonKey(name: 'scope_id') int? scopeId,
     required Map<String, dynamic> conditions,
-    @JsonKey(name: 'is_template') required bool isTemplate,
-    @JsonKey(name: 'is_active') required bool isActive,
-    required int priority,
+    @JsonKey(name: 'is_template') @Default(false) bool isTemplate,
+    @JsonKey(name: 'is_active') @Default(true) bool isActive,
+    @Default(100) int priority,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
   }) = _AlertRuleModel;
