@@ -297,22 +297,26 @@ class _GlassSidebar extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, bool isDark) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          const KeyrankLogoIcon(size: 36),
-          const SizedBox(width: 12),
-          Text(
-            'keyrank',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
-              letterSpacing: -0.3,
+    return InkWell(
+      onTap: () => context.go('/dashboard'),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            const KeyrankLogoIcon(size: 36),
+            const SizedBox(width: 12),
+            Text(
+              'keyrank',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                letterSpacing: -0.3,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
