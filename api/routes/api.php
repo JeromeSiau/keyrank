@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\InsightsController;
 use App\Http\Controllers\Api\KeywordController;
+use App\Http\Controllers\Api\NotificationsController;
 use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\RatingsController;
 use App\Http\Controllers\Api\ReviewsController;
@@ -136,5 +137,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('rules/{rule}', [AlertRulesController::class, 'update']);
         Route::delete('rules/{rule}', [AlertRulesController::class, 'destroy']);
         Route::patch('rules/{rule}/toggle', [AlertRulesController::class, 'toggle']);
+    });
+
+    // Notifications
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationsController::class, 'index']);
+        Route::get('unread-count', [NotificationsController::class, 'unreadCount']);
+        Route::post('mark-all-read', [NotificationsController::class, 'markAllAsRead']);
+        Route::patch('{notification}/read', [NotificationsController::class, 'markAsRead']);
+        Route::delete('{notification}', [NotificationsController::class, 'destroy']);
     });
 });
