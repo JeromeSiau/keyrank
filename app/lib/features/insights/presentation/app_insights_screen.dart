@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
 import '../domain/insight_model.dart';
 import '../data/insights_repository.dart';
+import 'widgets/compare_app_selector_modal.dart';
 
 class AppInsightsScreen extends ConsumerStatefulWidget {
   final int appId;
@@ -189,7 +190,56 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               ],
             ),
           ),
+          // Compare button
+          Tooltip(
+            message: _insight == null ? 'Generate insights first' : 'Compare with other apps',
+            child: Material(
+              color: _insight != null ? AppColors.bgActive : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+              child: InkWell(
+                onTap: _insight != null ? _openCompareModal : null,
+                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                hoverColor: AppColors.bgHover,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.compare_arrows_rounded,
+                        size: 18,
+                        color: _insight != null ? AppColors.textSecondary : AppColors.textMuted.withAlpha(100),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Compare',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: _insight != null ? AppColors.textSecondary : AppColors.textMuted.withAlpha(100),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  void _openCompareModal() {
+    showDialog(
+      context: context,
+      builder: (context) => CompareAppSelectorModal(
+        currentAppId: widget.appId,
+        currentAppName: widget.appName,
+        onCompare: (selectedAppIds) {
+          final allIds = [widget.appId, ...selectedAppIds];
+          context.go('/apps/compare?ids=${allIds.join(',')}');
+        },
       ),
     );
   }
