@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../core/widgets/keyrank_logo.dart';
 import '../providers/auth_provider.dart';
 
@@ -58,7 +59,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       });
     } else {
       setState(() {
-        _error = 'An error occurred';
+        _error = context.l10n.auth_errorOccurred;
         _isLoading = false;
       });
     }
@@ -66,6 +67,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Scaffold(
       backgroundColor: AppColors.bgBase,
       body: Center(
@@ -93,9 +96,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          'Create account',
-                          style: TextStyle(
+                        Text(
+                          l10n.auth_createAccount,
+                          style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
@@ -103,9 +106,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          'Start tracking your rankings',
-                          style: TextStyle(
+                        Text(
+                          l10n.auth_createAccountSubtitle,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textMuted,
                           ),
@@ -144,11 +147,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         // Name field
                         _buildTextField(
                           controller: _nameController,
-                          label: 'Name',
+                          label: l10n.auth_nameLabel,
                           icon: Icons.person_outlined,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your name';
+                              return l10n.auth_nameRequired;
                             }
                             return null;
                           },
@@ -158,15 +161,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         // Email field
                         _buildTextField(
                           controller: _emailController,
-                          label: 'Email',
+                          label: l10n.auth_emailLabel,
                           icon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return l10n.auth_emailRequired;
                             }
                             if (!value.contains('@')) {
-                              return 'Invalid email';
+                              return l10n.auth_emailInvalid;
                             }
                             return null;
                           },
@@ -176,15 +179,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         // Password field
                         _buildTextField(
                           controller: _passwordController,
-                          label: 'Password',
+                          label: l10n.auth_passwordLabel,
                           icon: Icons.lock_outlined,
                           obscureText: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a password';
+                              return l10n.auth_enterPassword;
                             }
                             if (value.length < 8) {
-                              return 'Password must be at least 8 characters';
+                              return l10n.auth_passwordMinLength;
                             }
                             return null;
                           },
@@ -194,13 +197,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         // Confirm password field
                         _buildTextField(
                           controller: _confirmPasswordController,
-                          label: 'Confirm password',
+                          label: l10n.auth_confirmPasswordLabel,
                           icon: Icons.lock_outlined,
                           obscureText: true,
                           onSubmitted: (_) => _submit(),
                           validator: (value) {
                             if (value != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return l10n.auth_passwordsNoMatch;
                             }
                             return null;
                           },
@@ -209,7 +212,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                         // Register button
                         _buildPrimaryButton(
-                          label: 'Create account',
+                          label: l10n.auth_signUpButton,
                           isLoading: _isLoading,
                           onPressed: _submit,
                         ),
@@ -219,18 +222,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Already have an account? ',
-                              style: TextStyle(
+                            Text(
+                              l10n.auth_hasAccount,
+                              style: const TextStyle(
                                 color: AppColors.textMuted,
                                 fontSize: 13,
                               ),
                             ),
                             GestureDetector(
                               onTap: () => context.go('/login'),
-                              child: const Text(
-                                'Sign in',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.auth_signInLink,
+                                style: const TextStyle(
                                   color: AppColors.accent,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -347,4 +350,3 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 }
-

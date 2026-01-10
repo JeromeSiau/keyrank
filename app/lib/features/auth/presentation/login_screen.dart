@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../core/widgets/keyrank_logo.dart';
 import '../providers/auth_provider.dart';
 
@@ -52,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       });
     } else {
       setState(() {
-        _error = 'An error occurred';
+        _error = context.l10n.auth_errorOccurred;
         _isLoading = false;
       });
     }
@@ -60,6 +61,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Scaffold(
       backgroundColor: AppColors.bgBase,
       body: Center(
@@ -69,10 +72,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo
-              const KeyrankLogoStacked(
+              KeyrankLogoStacked(
                 iconSize: 64,
                 fontSize: 26,
-                tagline: 'Track your App Store rankings',
+                tagline: l10n.appTagline,
                 textColor: AppColors.textPrimary,
               ),
               const SizedBox(height: 40),
@@ -88,9 +91,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          'Welcome back',
-                          style: TextStyle(
+                        Text(
+                          l10n.auth_welcomeBack,
+                          style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
@@ -98,9 +101,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          'Sign in to your account',
-                          style: TextStyle(
+                        Text(
+                          l10n.auth_signInSubtitle,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textMuted,
                           ),
@@ -139,15 +142,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         // Email field
                         _buildTextField(
                           controller: _emailController,
-                          label: 'Email',
+                          label: l10n.auth_emailLabel,
                           icon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return l10n.auth_emailRequired;
                             }
                             if (!value.contains('@')) {
-                              return 'Invalid email';
+                              return l10n.auth_emailInvalid;
                             }
                             return null;
                           },
@@ -157,13 +160,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         // Password field
                         _buildTextField(
                           controller: _passwordController,
-                          label: 'Password',
+                          label: l10n.auth_passwordLabel,
                           icon: Icons.lock_outlined,
                           obscureText: true,
                           onSubmitted: (_) => _submit(),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
+                              return l10n.auth_passwordRequired;
                             }
                             return null;
                           },
@@ -172,7 +175,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                         // Login button
                         _buildPrimaryButton(
-                          label: 'Sign in',
+                          label: l10n.auth_signInButton,
                           isLoading: _isLoading,
                           onPressed: _submit,
                         ),
@@ -182,18 +185,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Don't have an account? ",
-                              style: TextStyle(
+                            Text(
+                              l10n.auth_noAccount,
+                              style: const TextStyle(
                                 color: AppColors.textMuted,
                                 fontSize: 13,
                               ),
                             ),
                             GestureDetector(
                               onTap: () => context.go('/register'),
-                              child: const Text(
-                                'Sign up',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.auth_signUpLink,
+                                style: const TextStyle(
                                   color: AppColors.accent,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -310,4 +313,3 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 }
-
