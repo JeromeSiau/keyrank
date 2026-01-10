@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\RankingsSynced;
 use App\Models\AppRanking;
 use App\Models\TrackedKeyword;
 use App\Services\GooglePlayService;
@@ -47,6 +48,7 @@ class SyncRankings extends Command
 
         $synced = 0;
         $errors = 0;
+        $syncedRankings = collect();
 
         foreach ($pairs as $item) {
             $country = strtolower($item->keyword->storefront);
@@ -80,7 +82,7 @@ class SyncRankings extends Command
                 ], $searchResults), 0, 3);
 
                 // Save ranking
-                AppRanking::updateOrCreate(
+                $ranking = AppRanking::updateOrCreate(
                     [
                         'app_id' => $item->app_id,
                         'keyword_id' => $item->keyword_id,
@@ -88,6 +90,7 @@ class SyncRankings extends Command
                     ],
                     ['position' => $position]
                 );
+                $syncedRankings->push($ranking);
 
                 // Update tracked_keywords metrics for all users tracking this keyword/app pair
                 TrackedKeyword::where('app_id', $item->app_id)
@@ -114,6 +117,11 @@ class SyncRankings extends Command
         $this->newLine(2);
 
         $this->info("Sync complete: {$synced} rankings synced, {$errors} errors.");
+
+        // Dispatch event to evaluate alerts for synced rankings
+        if ($syncedRankings->isNotEmpty()) {
+            RankingsSynced::dispatch($syncedRankings);
+        }
 
         return $errors > 0 ? 1 : 0;
     }
