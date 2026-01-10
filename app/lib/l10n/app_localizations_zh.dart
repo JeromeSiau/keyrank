@@ -798,4 +798,71 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nav_keywords => '关键词';
+
+  @override
+  String get common_save => '保存';
+
+  @override
+  String get appDetail_manageTags => '管理标签';
+
+  @override
+  String get appDetail_newTagHint => '新标签名称...';
+
+  @override
+  String get appDetail_availableTags => '可用标签';
+
+  @override
+  String get appDetail_noTagsYet => '还没有标签。在上方创建一个。';
+
+  @override
+  String get appDetail_addTagsTitle => '添加标签';
+
+  @override
+  String get appDetail_selectTagsDescription => '选择要添加到所选关键词的标签：';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    return '添加 $count 个标签';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return '导入失败：$error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => '导入关键词';
+
+  @override
+  String get appDetail_pasteKeywordsHint => '在下方粘贴关键词，每行一个：';
+
+  @override
+  String get appDetail_keywordPlaceholder => '关键词一\n关键词二\n关键词三';
+
+  @override
+  String get appDetail_storefront => '商店：';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count 个关键词';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return '导入 $count 个关键词';
+  }
+
+  @override
+  String get appDetail_period7d => '7天';
+
+  @override
+  String get appDetail_period30d => '30天';
+
+  @override
+  String get appDetail_period90d => '90天';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }

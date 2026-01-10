@@ -814,4 +814,80 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nav_keywords => 'Parole chiave';
+
+  @override
+  String get common_save => 'Salva';
+
+  @override
+  String get appDetail_manageTags => 'Gestisci tag';
+
+  @override
+  String get appDetail_newTagHint => 'Nome nuovo tag...';
+
+  @override
+  String get appDetail_availableTags => 'Tag disponibili';
+
+  @override
+  String get appDetail_noTagsYet => 'Nessun tag ancora. Creane uno sopra.';
+
+  @override
+  String get appDetail_addTagsTitle => 'Aggiungi tag';
+
+  @override
+  String get appDetail_selectTagsDescription =>
+      'Seleziona i tag da aggiungere alle parole chiave:';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'tag',
+      one: 'tag',
+    );
+    return 'Aggiungi $count $_temp0';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return 'Importazione fallita: $error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => 'Importa parole chiave';
+
+  @override
+  String get appDetail_pasteKeywordsHint =>
+      'Incolla le parole chiave sotto, una per riga:';
+
+  @override
+  String get appDetail_keywordPlaceholder =>
+      'parola chiave uno\nparola chiave due\nparola chiave tre';
+
+  @override
+  String get appDetail_storefront => 'Storefront:';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count parole chiave';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return 'Importa $count parole chiave';
+  }
+
+  @override
+  String get appDetail_period7d => '7g';
+
+  @override
+  String get appDetail_period30d => '30g';
+
+  @override
+  String get appDetail_period90d => '90g';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }

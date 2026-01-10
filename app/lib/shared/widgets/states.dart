@@ -63,7 +63,7 @@ class ErrorView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Error: $message',
+            context.l10n.common_error(message),
             style: TextStyle(
               fontSize: 14,
               color: colors.textSecondary,

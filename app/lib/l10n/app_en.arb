@@ -434,5 +434,52 @@
   "nav_dashboard": "Dashboard",
   "nav_myApps": "My Apps",
   "nav_research": "RESEARCH",
-  "nav_keywords": "Keywords"
+  "nav_keywords": "Keywords",
+
+  "common_save": "Save",
+
+  "appDetail_manageTags": "Manage Tags",
+  "appDetail_newTagHint": "New tag name...",
+  "appDetail_availableTags": "Available Tags",
+  "appDetail_noTagsYet": "No tags yet. Create one above.",
+  "appDetail_addTagsTitle": "Add Tags",
+  "appDetail_selectTagsDescription": "Select tags to add to selected keywords:",
+  "appDetail_addTagsCount": "Add {count} {count, plural, =1{Tag} other{Tags}}",
+  "@appDetail_addTagsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importFailed": "Import failed: {error}",
+  "@appDetail_importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importKeywordsTitle": "Import Keywords",
+  "appDetail_pasteKeywordsHint": "Paste keywords below, one per line:",
+  "appDetail_keywordPlaceholder": "keyword one\nkeyword two\nkeyword three",
+  "appDetail_storefront": "Storefront:",
+  "appDetail_keywordsCount": "{count} keywords",
+  "@appDetail_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importKeywordsCount": "Import {count} Keywords",
+  "@appDetail_importKeywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_period7d": "7d",
+  "appDetail_period30d": "30d",
+  "appDetail_period90d": "90d",
+
+  "reviews_version": "v{version}",
+  "@reviews_version": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  }
 }

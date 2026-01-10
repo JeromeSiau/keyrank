@@ -419,5 +419,27 @@
   "nav_dashboard": "Kontrol Paneli",
   "nav_myApps": "Uygulamalarım",
   "nav_research": "ARAŞTIRMA",
-  "nav_keywords": "Anahtar Kelimeler"
+  "nav_keywords": "Anahtar Kelimeler",
+
+  "common_save": "Kaydet",
+
+  "appDetail_manageTags": "Etiketleri Yönet",
+  "appDetail_newTagHint": "Yeni etiket adı...",
+  "appDetail_availableTags": "Mevcut Etiketler",
+  "appDetail_noTagsYet": "Henüz etiket yok. Yukarıda bir tane oluşturun.",
+  "appDetail_addTagsTitle": "Etiket Ekle",
+  "appDetail_selectTagsDescription": "Seçili anahtar kelimelere eklenecek etiketleri seçin:",
+  "appDetail_addTagsCount": "{count} Etiket Ekle",
+  "appDetail_importFailed": "İçe aktarma başarısız: {error}",
+  "appDetail_importKeywordsTitle": "Anahtar Kelimeleri İçe Aktar",
+  "appDetail_pasteKeywordsHint": "Anahtar kelimeleri aşağıya yapıştırın, her satıra bir tane:",
+  "appDetail_keywordPlaceholder": "anahtar kelime bir\nanahtar kelime iki\nanahtar kelime üç",
+  "appDetail_storefront": "Mağaza:",
+  "appDetail_keywordsCount": "{count} anahtar kelime",
+  "appDetail_importKeywordsCount": "{count} Anahtar Kelime İçe Aktar",
+  "appDetail_period7d": "7g",
+  "appDetail_period30d": "30g",
+  "appDetail_period90d": "90g",
+
+  "reviews_version": "v{version}"
 }

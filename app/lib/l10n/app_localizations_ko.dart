@@ -798,4 +798,71 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nav_keywords => '키워드';
+
+  @override
+  String get common_save => '저장';
+
+  @override
+  String get appDetail_manageTags => '태그 관리';
+
+  @override
+  String get appDetail_newTagHint => '새 태그 이름...';
+
+  @override
+  String get appDetail_availableTags => '사용 가능한 태그';
+
+  @override
+  String get appDetail_noTagsYet => '아직 태그가 없습니다. 위에서 만드세요.';
+
+  @override
+  String get appDetail_addTagsTitle => '태그 추가';
+
+  @override
+  String get appDetail_selectTagsDescription => '선택한 키워드에 추가할 태그 선택:';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    return '$count개 태그 추가';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return '가져오기 실패: $error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => '키워드 가져오기';
+
+  @override
+  String get appDetail_pasteKeywordsHint => '아래에 키워드를 붙여넣기 (줄당 하나씩):';
+
+  @override
+  String get appDetail_keywordPlaceholder => '키워드 하나\n키워드 둘\n키워드 셋';
+
+  @override
+  String get appDetail_storefront => '스토어프론트:';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count개 키워드';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return '$count개 키워드 가져오기';
+  }
+
+  @override
+  String get appDetail_period7d => '7일';
+
+  @override
+  String get appDetail_period30d => '30일';
+
+  @override
+  String get appDetail_period90d => '90일';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }

@@ -1559,6 +1559,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keywords'**
   String get nav_keywords;
+
+  /// No description provided for @common_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get common_save;
+
+  /// No description provided for @appDetail_manageTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Tags'**
+  String get appDetail_manageTags;
+
+  /// No description provided for @appDetail_newTagHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New tag name...'**
+  String get appDetail_newTagHint;
+
+  /// No description provided for @appDetail_availableTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Tags'**
+  String get appDetail_availableTags;
+
+  /// No description provided for @appDetail_noTagsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet. Create one above.'**
+  String get appDetail_noTagsYet;
+
+  /// No description provided for @appDetail_addTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tags'**
+  String get appDetail_addTagsTitle;
+
+  /// No description provided for @appDetail_selectTagsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Select tags to add to selected keywords:'**
+  String get appDetail_selectTagsDescription;
+
+  /// No description provided for @appDetail_addTagsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {count} {count, plural, =1{Tag} other{Tags}}'**
+  String appDetail_addTagsCount(int count);
+
+  /// No description provided for @appDetail_importFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: {error}'**
+  String appDetail_importFailed(String error);
+
+  /// No description provided for @appDetail_importKeywordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Keywords'**
+  String get appDetail_importKeywordsTitle;
+
+  /// No description provided for @appDetail_pasteKeywordsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste keywords below, one per line:'**
+  String get appDetail_pasteKeywordsHint;
+
+  /// No description provided for @appDetail_keywordPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'keyword one\nkeyword two\nkeyword three'**
+  String get appDetail_keywordPlaceholder;
+
+  /// No description provided for @appDetail_storefront.
+  ///
+  /// In en, this message translates to:
+  /// **'Storefront:'**
+  String get appDetail_storefront;
+
+  /// No description provided for @appDetail_keywordsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} keywords'**
+  String appDetail_keywordsCount(int count);
+
+  /// No description provided for @appDetail_importKeywordsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {count} Keywords'**
+  String appDetail_importKeywordsCount(int count);
+
+  /// No description provided for @appDetail_period7d.
+  ///
+  /// In en, this message translates to:
+  /// **'7d'**
+  String get appDetail_period7d;
+
+  /// No description provided for @appDetail_period30d.
+  ///
+  /// In en, this message translates to:
+  /// **'30d'**
+  String get appDetail_period30d;
+
+  /// No description provided for @appDetail_period90d.
+  ///
+  /// In en, this message translates to:
+  /// **'90d'**
+  String get appDetail_period90d;
+
+  /// No description provided for @reviews_version.
+  ///
+  /// In en, this message translates to:
+  /// **'v{version}'**
+  String reviews_version(String version);
 }
 
 class _AppLocalizationsDelegate

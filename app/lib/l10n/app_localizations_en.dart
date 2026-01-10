@@ -806,4 +806,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nav_keywords => 'Keywords';
+
+  @override
+  String get common_save => 'Save';
+
+  @override
+  String get appDetail_manageTags => 'Manage Tags';
+
+  @override
+  String get appDetail_newTagHint => 'New tag name...';
+
+  @override
+  String get appDetail_availableTags => 'Available Tags';
+
+  @override
+  String get appDetail_noTagsYet => 'No tags yet. Create one above.';
+
+  @override
+  String get appDetail_addTagsTitle => 'Add Tags';
+
+  @override
+  String get appDetail_selectTagsDescription =>
+      'Select tags to add to selected keywords:';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tags',
+      one: 'Tag',
+    );
+    return 'Add $count $_temp0';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => 'Import Keywords';
+
+  @override
+  String get appDetail_pasteKeywordsHint =>
+      'Paste keywords below, one per line:';
+
+  @override
+  String get appDetail_keywordPlaceholder =>
+      'keyword one\nkeyword two\nkeyword three';
+
+  @override
+  String get appDetail_storefront => 'Storefront:';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count keywords';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return 'Import $count Keywords';
+  }
+
+  @override
+  String get appDetail_period7d => '7d';
+
+  @override
+  String get appDetail_period30d => '30d';
+
+  @override
+  String get appDetail_period90d => '90d';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }

@@ -419,5 +419,27 @@
   "nav_dashboard": "Panel de control",
   "nav_myApps": "Mis Apps",
   "nav_research": "INVESTIGACIÓN",
-  "nav_keywords": "Palabras clave"
+  "nav_keywords": "Palabras clave",
+
+  "common_save": "Guardar",
+
+  "appDetail_manageTags": "Gestionar etiquetas",
+  "appDetail_newTagHint": "Nombre de nueva etiqueta...",
+  "appDetail_availableTags": "Etiquetas disponibles",
+  "appDetail_noTagsYet": "Sin etiquetas aún. Crea una arriba.",
+  "appDetail_addTagsTitle": "Añadir etiquetas",
+  "appDetail_selectTagsDescription": "Selecciona etiquetas para añadir a las palabras clave:",
+  "appDetail_addTagsCount": "Añadir {count} {count, plural, =1{etiqueta} other{etiquetas}}",
+  "appDetail_importFailed": "Error en importación: {error}",
+  "appDetail_importKeywordsTitle": "Importar palabras clave",
+  "appDetail_pasteKeywordsHint": "Pega las palabras clave abajo, una por línea:",
+  "appDetail_keywordPlaceholder": "palabra clave uno\npalabra clave dos\npalabra clave tres",
+  "appDetail_storefront": "Tienda:",
+  "appDetail_keywordsCount": "{count} palabras clave",
+  "appDetail_importKeywordsCount": "Importar {count} palabras clave",
+  "appDetail_period7d": "7d",
+  "appDetail_period30d": "30d",
+  "appDetail_period90d": "90d",
+
+  "reviews_version": "v{version}"
 }

@@ -419,5 +419,27 @@
   "nav_dashboard": "Tableau de bord",
   "nav_myApps": "Mes Apps",
   "nav_research": "RECHERCHE",
-  "nav_keywords": "Mots-clés"
+  "nav_keywords": "Mots-clés",
+
+  "common_save": "Enregistrer",
+
+  "appDetail_manageTags": "Gérer les tags",
+  "appDetail_newTagHint": "Nom du nouveau tag...",
+  "appDetail_availableTags": "Tags disponibles",
+  "appDetail_noTagsYet": "Aucun tag pour l'instant. Créez-en un ci-dessus.",
+  "appDetail_addTagsTitle": "Ajouter des tags",
+  "appDetail_selectTagsDescription": "Sélectionnez les tags à ajouter aux mots-clés sélectionnés :",
+  "appDetail_addTagsCount": "Ajouter {count} {count, plural, =1{tag} other{tags}}",
+  "appDetail_importFailed": "Échec de l'import : {error}",
+  "appDetail_importKeywordsTitle": "Importer des mots-clés",
+  "appDetail_pasteKeywordsHint": "Collez les mots-clés ci-dessous, un par ligne :",
+  "appDetail_keywordPlaceholder": "mot-clé un\nmot-clé deux\nmot-clé trois",
+  "appDetail_storefront": "Storefront :",
+  "appDetail_keywordsCount": "{count} mots-clés",
+  "appDetail_importKeywordsCount": "Importer {count} mots-clés",
+  "appDetail_period7d": "7j",
+  "appDetail_period30d": "30j",
+  "appDetail_period90d": "90j",
+
+  "reviews_version": "v{version}"
 }

@@ -419,5 +419,27 @@
   "nav_dashboard": "仪表盘",
   "nav_myApps": "我的应用",
   "nav_research": "研究",
-  "nav_keywords": "关键词"
+  "nav_keywords": "关键词",
+
+  "common_save": "保存",
+
+  "appDetail_manageTags": "管理标签",
+  "appDetail_newTagHint": "新标签名称...",
+  "appDetail_availableTags": "可用标签",
+  "appDetail_noTagsYet": "还没有标签。在上方创建一个。",
+  "appDetail_addTagsTitle": "添加标签",
+  "appDetail_selectTagsDescription": "选择要添加到所选关键词的标签：",
+  "appDetail_addTagsCount": "添加 {count} 个标签",
+  "appDetail_importFailed": "导入失败：{error}",
+  "appDetail_importKeywordsTitle": "导入关键词",
+  "appDetail_pasteKeywordsHint": "在下方粘贴关键词，每行一个：",
+  "appDetail_keywordPlaceholder": "关键词一\n关键词二\n关键词三",
+  "appDetail_storefront": "商店：",
+  "appDetail_keywordsCount": "{count} 个关键词",
+  "appDetail_importKeywordsCount": "导入 {count} 个关键词",
+  "appDetail_period7d": "7天",
+  "appDetail_period30d": "30天",
+  "appDetail_period90d": "90天",
+
+  "reviews_version": "v{version}"
 }

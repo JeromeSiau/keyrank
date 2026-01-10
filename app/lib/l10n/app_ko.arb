@@ -419,5 +419,27 @@
   "nav_dashboard": "대시보드",
   "nav_myApps": "내 앱",
   "nav_research": "리서치",
-  "nav_keywords": "키워드"
+  "nav_keywords": "키워드",
+
+  "common_save": "저장",
+
+  "appDetail_manageTags": "태그 관리",
+  "appDetail_newTagHint": "새 태그 이름...",
+  "appDetail_availableTags": "사용 가능한 태그",
+  "appDetail_noTagsYet": "아직 태그가 없습니다. 위에서 만드세요.",
+  "appDetail_addTagsTitle": "태그 추가",
+  "appDetail_selectTagsDescription": "선택한 키워드에 추가할 태그 선택:",
+  "appDetail_addTagsCount": "{count}개 태그 추가",
+  "appDetail_importFailed": "가져오기 실패: {error}",
+  "appDetail_importKeywordsTitle": "키워드 가져오기",
+  "appDetail_pasteKeywordsHint": "아래에 키워드를 붙여넣기 (줄당 하나씩):",
+  "appDetail_keywordPlaceholder": "키워드 하나\n키워드 둘\n키워드 셋",
+  "appDetail_storefront": "스토어프론트:",
+  "appDetail_keywordsCount": "{count}개 키워드",
+  "appDetail_importKeywordsCount": "{count}개 키워드 가져오기",
+  "appDetail_period7d": "7일",
+  "appDetail_period30d": "30일",
+  "appDetail_period90d": "90일",
+
+  "reviews_version": "v{version}"
 }

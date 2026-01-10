@@ -419,5 +419,27 @@
   "nav_dashboard": "ダッシュボード",
   "nav_myApps": "マイアプリ",
   "nav_research": "リサーチ",
-  "nav_keywords": "キーワード"
+  "nav_keywords": "キーワード",
+
+  "common_save": "保存",
+
+  "appDetail_manageTags": "タグを管理",
+  "appDetail_newTagHint": "新しいタグ名...",
+  "appDetail_availableTags": "利用可能なタグ",
+  "appDetail_noTagsYet": "タグがまだありません。上で作成してください。",
+  "appDetail_addTagsTitle": "タグを追加",
+  "appDetail_selectTagsDescription": "選択したキーワードに追加するタグを選択:",
+  "appDetail_addTagsCount": "{count}個のタグを追加",
+  "appDetail_importFailed": "インポート失敗: {error}",
+  "appDetail_importKeywordsTitle": "キーワードをインポート",
+  "appDetail_pasteKeywordsHint": "以下にキーワードを貼り付け（1行に1つ）:",
+  "appDetail_keywordPlaceholder": "キーワード1\nキーワード2\nキーワード3",
+  "appDetail_storefront": "ストアフロント:",
+  "appDetail_keywordsCount": "{count}個のキーワード",
+  "appDetail_importKeywordsCount": "{count}個のキーワードをインポート",
+  "appDetail_period7d": "7日",
+  "appDetail_period30d": "30日",
+  "appDetail_period90d": "90日",
+
+  "reviews_version": "v{version}"
 }

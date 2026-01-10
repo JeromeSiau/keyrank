@@ -419,5 +419,27 @@
   "nav_dashboard": "Dashboard",
   "nav_myApps": "Meine Apps",
   "nav_research": "RECHERCHE",
-  "nav_keywords": "Schlüsselwörter"
+  "nav_keywords": "Schlüsselwörter",
+
+  "common_save": "Speichern",
+
+  "appDetail_manageTags": "Tags verwalten",
+  "appDetail_newTagHint": "Neuer Tag-Name...",
+  "appDetail_availableTags": "Verfügbare Tags",
+  "appDetail_noTagsYet": "Noch keine Tags. Erstellen Sie oben einen.",
+  "appDetail_addTagsTitle": "Tags hinzufügen",
+  "appDetail_selectTagsDescription": "Wählen Sie Tags für die ausgewählten Keywords:",
+  "appDetail_addTagsCount": "{count} {count, plural, =1{Tag} other{Tags}} hinzufügen",
+  "appDetail_importFailed": "Import fehlgeschlagen: {error}",
+  "appDetail_importKeywordsTitle": "Keywords importieren",
+  "appDetail_pasteKeywordsHint": "Keywords hier einfügen, eines pro Zeile:",
+  "appDetail_keywordPlaceholder": "keyword eins\nkeyword zwei\nkeyword drei",
+  "appDetail_storefront": "Storefront:",
+  "appDetail_keywordsCount": "{count} Keywords",
+  "appDetail_importKeywordsCount": "{count} Keywords importieren",
+  "appDetail_period7d": "7T",
+  "appDetail_period30d": "30T",
+  "appDetail_period90d": "90T",
+
+  "reviews_version": "v{version}"
 }

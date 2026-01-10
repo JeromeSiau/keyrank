@@ -419,5 +419,27 @@
   "nav_dashboard": "Painel",
   "nav_myApps": "Meus Apps",
   "nav_research": "PESQUISA",
-  "nav_keywords": "Palavras-chave"
+  "nav_keywords": "Palavras-chave",
+
+  "common_save": "Salvar",
+
+  "appDetail_manageTags": "Gerenciar tags",
+  "appDetail_newTagHint": "Nome da nova tag...",
+  "appDetail_availableTags": "Tags disponíveis",
+  "appDetail_noTagsYet": "Nenhuma tag ainda. Crie uma acima.",
+  "appDetail_addTagsTitle": "Adicionar tags",
+  "appDetail_selectTagsDescription": "Selecione tags para adicionar às palavras-chave:",
+  "appDetail_addTagsCount": "Adicionar {count} {count, plural, =1{tag} other{tags}}",
+  "appDetail_importFailed": "Falha na importação: {error}",
+  "appDetail_importKeywordsTitle": "Importar palavras-chave",
+  "appDetail_pasteKeywordsHint": "Cole as palavras-chave abaixo, uma por linha:",
+  "appDetail_keywordPlaceholder": "palavra-chave um\npalavra-chave dois\npalavra-chave três",
+  "appDetail_storefront": "Loja:",
+  "appDetail_keywordsCount": "{count} palavras-chave",
+  "appDetail_importKeywordsCount": "Importar {count} palavras-chave",
+  "appDetail_period7d": "7d",
+  "appDetail_period30d": "30d",
+  "appDetail_period90d": "90d",
+
+  "reviews_version": "v{version}"
 }

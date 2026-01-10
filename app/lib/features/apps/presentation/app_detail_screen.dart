@@ -2329,7 +2329,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                     child: Row(
                       children: [
                         _PeriodChip(
-                          label: '7d',
+                          label: context.l10n.appDetail_period7d,
                           isSelected: _selectedDays == 7,
                           onTap: () {
                             setState(() => _selectedDays = 7);
@@ -2338,7 +2338,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                         ),
                         const SizedBox(width: 8),
                         _PeriodChip(
-                          label: '30d',
+                          label: context.l10n.appDetail_period30d,
                           isSelected: _selectedDays == 30,
                           onTap: () {
                             setState(() => _selectedDays = 30);
@@ -2347,7 +2347,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                         ),
                         const SizedBox(width: 8),
                         _PeriodChip(
-                          label: '90d',
+                          label: context.l10n.appDetail_period90d,
                           isSelected: _selectedDays == 90,
                           onTap: () {
                             setState(() => _selectedDays = 90);
@@ -2847,7 +2847,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Tags',
+                  context.l10n.appDetail_manageTags,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -2887,7 +2887,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
                       controller: _newTagController,
                       style: TextStyle(fontSize: 13, color: colors.textPrimary),
                       decoration: InputDecoration(
-                        hintText: 'New tag name...',
+                        hintText: context.l10n.appDetail_newTagHint,
                         hintStyle: TextStyle(color: colors.textMuted),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -2920,7 +2920,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
             const SizedBox(height: 16),
             // Existing tags
             Text(
-              'Available Tags',
+              context.l10n.appDetail_availableTags,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -2937,7 +2937,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
                     padding: const EdgeInsets.all(20),
                     child: Center(
                       child: Text(
-                        'No tags yet. Create one above.',
+                        context.l10n.appDetail_noTagsYet,
                         style: TextStyle(color: colors.textMuted, fontSize: 13),
                       ),
                     ),
@@ -3007,7 +3007,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
         ),
         FilledButton(
           onPressed: _save,
-          child: const Text('Save'),
+          child: Text(context.l10n.common_save),
         ),
       ],
     );
@@ -3030,7 +3030,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return AlertDialog(
-      title: const Text('Add Tags'),
+      title: Text(context.l10n.appDetail_addTagsTitle),
       content: SizedBox(
         width: 300,
         child: Column(
@@ -3038,7 +3038,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Select tags to add to selected keywords:',
+              context.l10n.appDetail_selectTagsDescription,
               style: TextStyle(
                 fontSize: 13,
                 color: colors.textSecondary,
@@ -3116,7 +3116,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
           onPressed: _selectedTagIds.isEmpty
               ? null
               : () => Navigator.pop(context, _selectedTagIds.toList()),
-          child: Text('Add ${_selectedTagIds.length} Tag${_selectedTagIds.length != 1 ? 's' : ''}'),
+          child: Text(context.l10n.appDetail_addTagsCount(_selectedTagIds.length)),
         ),
       ],
     );
@@ -3161,7 +3161,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Import failed: ${e.toString()}'),
+            content: Text(context.l10n.appDetail_importFailed(e.toString())),
             backgroundColor: context.colors.red,
           ),
         );
@@ -3187,7 +3187,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
         side: BorderSide(color: colors.glassBorder),
       ),
       title: Text(
-        'Import Keywords',
+        context.l10n.appDetail_importKeywordsTitle,
         style: TextStyle(color: colors.textPrimary),
       ),
       content: SizedBox(
@@ -3197,7 +3197,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Paste keywords below, one per line:',
+              context.l10n.appDetail_pasteKeywordsHint,
               style: TextStyle(
                 fontSize: 13,
                 color: colors.textSecondary,
@@ -3213,7 +3213,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
                 fontFamily: 'monospace',
               ),
               decoration: InputDecoration(
-                hintText: 'keyword one\nkeyword two\nkeyword three',
+                hintText: context.l10n.appDetail_keywordPlaceholder,
                 hintStyle: TextStyle(
                   color: colors.textMuted.withAlpha(100),
                 ),
@@ -3238,7 +3238,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
             Row(
               children: [
                 Text(
-                  'Storefront:',
+                  context.l10n.appDetail_storefront,
                   style: TextStyle(
                     fontSize: 13,
                     color: colors.textSecondary,
@@ -3268,7 +3268,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
                 ),
                 const Spacer(),
                 Text(
-                  '$_keywordCount keywords',
+                  context.l10n.appDetail_keywordsCount(_keywordCount),
                   style: TextStyle(
                     fontSize: 12,
                     color: colors.textMuted,
@@ -3292,7 +3292,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                 )
-              : Text('Import $_keywordCount Keywords'),
+              : Text(context.l10n.appDetail_importKeywordsCount(_keywordCount)),
         ),
       ],
     );

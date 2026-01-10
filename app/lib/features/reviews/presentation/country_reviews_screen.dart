@@ -315,7 +315,7 @@ class _ReviewCard extends StatelessWidget {
                 children: [
                   if (review.version != null)
                     Text(
-                      'v${review.version}',
+                      context.l10n.reviews_version(review.version!),
                       style: TextStyle(
                         fontSize: 11,
                         color: colors.textMuted,

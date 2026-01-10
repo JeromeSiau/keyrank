@@ -798,4 +798,71 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get nav_keywords => 'キーワード';
+
+  @override
+  String get common_save => '保存';
+
+  @override
+  String get appDetail_manageTags => 'タグを管理';
+
+  @override
+  String get appDetail_newTagHint => '新しいタグ名...';
+
+  @override
+  String get appDetail_availableTags => '利用可能なタグ';
+
+  @override
+  String get appDetail_noTagsYet => 'タグがまだありません。上で作成してください。';
+
+  @override
+  String get appDetail_addTagsTitle => 'タグを追加';
+
+  @override
+  String get appDetail_selectTagsDescription => '選択したキーワードに追加するタグを選択:';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    return '$count個のタグを追加';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return 'インポート失敗: $error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => 'キーワードをインポート';
+
+  @override
+  String get appDetail_pasteKeywordsHint => '以下にキーワードを貼り付け（1行に1つ）:';
+
+  @override
+  String get appDetail_keywordPlaceholder => 'キーワード1\nキーワード2\nキーワード3';
+
+  @override
+  String get appDetail_storefront => 'ストアフロント:';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count個のキーワード';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return '$count個のキーワードをインポート';
+  }
+
+  @override
+  String get appDetail_period7d => '7日';
+
+  @override
+  String get appDetail_period30d => '30日';
+
+  @override
+  String get appDetail_period90d => '90日';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }

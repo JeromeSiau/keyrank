@@ -811,4 +811,81 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nav_keywords => 'Mots-clés';
+
+  @override
+  String get common_save => 'Enregistrer';
+
+  @override
+  String get appDetail_manageTags => 'Gérer les tags';
+
+  @override
+  String get appDetail_newTagHint => 'Nom du nouveau tag...';
+
+  @override
+  String get appDetail_availableTags => 'Tags disponibles';
+
+  @override
+  String get appDetail_noTagsYet =>
+      'Aucun tag pour l\'instant. Créez-en un ci-dessus.';
+
+  @override
+  String get appDetail_addTagsTitle => 'Ajouter des tags';
+
+  @override
+  String get appDetail_selectTagsDescription =>
+      'Sélectionnez les tags à ajouter aux mots-clés sélectionnés :';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'tags',
+      one: 'tag',
+    );
+    return 'Ajouter $count $_temp0';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return 'Échec de l\'import : $error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => 'Importer des mots-clés';
+
+  @override
+  String get appDetail_pasteKeywordsHint =>
+      'Collez les mots-clés ci-dessous, un par ligne :';
+
+  @override
+  String get appDetail_keywordPlaceholder =>
+      'mot-clé un\nmot-clé deux\nmot-clé trois';
+
+  @override
+  String get appDetail_storefront => 'Storefront :';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count mots-clés';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return 'Importer $count mots-clés';
+  }
+
+  @override
+  String get appDetail_period7d => '7j';
+
+  @override
+  String get appDetail_period30d => '30j';
+
+  @override
+  String get appDetail_period90d => '90j';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }

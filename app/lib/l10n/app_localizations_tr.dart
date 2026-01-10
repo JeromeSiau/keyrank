@@ -812,4 +812,75 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nav_keywords => 'Anahtar Kelimeler';
+
+  @override
+  String get common_save => 'Kaydet';
+
+  @override
+  String get appDetail_manageTags => 'Etiketleri Yönet';
+
+  @override
+  String get appDetail_newTagHint => 'Yeni etiket adı...';
+
+  @override
+  String get appDetail_availableTags => 'Mevcut Etiketler';
+
+  @override
+  String get appDetail_noTagsYet =>
+      'Henüz etiket yok. Yukarıda bir tane oluşturun.';
+
+  @override
+  String get appDetail_addTagsTitle => 'Etiket Ekle';
+
+  @override
+  String get appDetail_selectTagsDescription =>
+      'Seçili anahtar kelimelere eklenecek etiketleri seçin:';
+
+  @override
+  String appDetail_addTagsCount(int count) {
+    return '$count Etiket Ekle';
+  }
+
+  @override
+  String appDetail_importFailed(String error) {
+    return 'İçe aktarma başarısız: $error';
+  }
+
+  @override
+  String get appDetail_importKeywordsTitle => 'Anahtar Kelimeleri İçe Aktar';
+
+  @override
+  String get appDetail_pasteKeywordsHint =>
+      'Anahtar kelimeleri aşağıya yapıştırın, her satıra bir tane:';
+
+  @override
+  String get appDetail_keywordPlaceholder =>
+      'anahtar kelime bir\nanahtar kelime iki\nanahtar kelime üç';
+
+  @override
+  String get appDetail_storefront => 'Mağaza:';
+
+  @override
+  String appDetail_keywordsCount(int count) {
+    return '$count anahtar kelime';
+  }
+
+  @override
+  String appDetail_importKeywordsCount(int count) {
+    return '$count Anahtar Kelime İçe Aktar';
+  }
+
+  @override
+  String get appDetail_period7d => '7g';
+
+  @override
+  String get appDetail_period30d => '30g';
+
+  @override
+  String get appDetail_period90d => '90g';
+
+  @override
+  String reviews_version(String version) {
+    return 'v$version';
+  }
 }
