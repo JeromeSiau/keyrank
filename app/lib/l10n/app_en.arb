@@ -1,0 +1,117 @@
+{
+  "@@locale": "en",
+
+  "appTagline": "Track your App Store rankings",
+
+  "auth_welcomeBack": "Welcome back",
+  "auth_signInSubtitle": "Sign in to your account",
+  "auth_createAccount": "Create account",
+  "auth_createAccountSubtitle": "Start tracking your rankings",
+  "auth_emailLabel": "Email",
+  "auth_passwordLabel": "Password",
+  "auth_nameLabel": "Name",
+  "auth_confirmPasswordLabel": "Confirm password",
+  "auth_signInButton": "Sign in",
+  "auth_signUpButton": "Create account",
+  "auth_noAccount": "Don't have an account?",
+  "auth_hasAccount": "Already have an account?",
+  "auth_signUpLink": "Sign up",
+  "auth_signInLink": "Sign in",
+  "auth_emailRequired": "Please enter your email",
+  "auth_emailInvalid": "Invalid email",
+  "auth_passwordRequired": "Please enter your password",
+  "auth_enterPassword": "Please enter a password",
+  "auth_nameRequired": "Please enter your name",
+  "auth_passwordMinLength": "Password must be at least 8 characters",
+  "auth_passwordsNoMatch": "Passwords do not match",
+  "auth_errorOccurred": "An error occurred",
+
+  "common_retry": "Retry",
+  "common_error": "Error: {message}",
+  "@common_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "common_loading": "Loading...",
+  "common_add": "Add",
+  "common_filter": "Filter",
+  "common_sort": "Sort",
+  "common_refresh": "Refresh",
+  "common_settings": "Settings",
+
+  "dashboard_title": "Dashboard",
+  "dashboard_addApp": "Add App",
+  "dashboard_appsTracked": "Apps Tracked",
+  "dashboard_keywords": "Keywords",
+  "dashboard_avgPosition": "Avg Position",
+  "dashboard_top10": "Top 10",
+  "dashboard_trackedApps": "Tracked Apps",
+  "dashboard_quickActions": "Quick Actions",
+  "dashboard_addNewApp": "Add a new app",
+  "dashboard_searchKeywords": "Search keywords",
+  "dashboard_viewAllApps": "View all apps",
+  "dashboard_noAppsYet": "No apps tracked yet",
+  "dashboard_addAppToStart": "Add an app to start tracking keywords",
+  "dashboard_noAppsMatchFilter": "No apps match filter",
+  "dashboard_changeFilterCriteria": "Try changing the filter criteria",
+
+  "apps_title": "My Apps",
+  "apps_appCount": "{count} apps",
+  "@apps_appCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "apps_tableApp": "APP",
+  "apps_tableDeveloper": "DEVELOPER",
+  "apps_tableKeywords": "KEYWORDS",
+  "apps_tablePlatform": "PLATFORM",
+  "apps_tableRating": "RATING",
+  "apps_tableBestRank": "BEST RANK",
+  "apps_noAppsYet": "No apps tracked yet",
+  "apps_addAppToStart": "Add an app to start tracking its rankings",
+
+  "addApp_title": "Add App",
+  "addApp_searchAppStore": "Search App Store...",
+  "addApp_searchPlayStore": "Search Play Store...",
+  "addApp_searchForApp": "Search for an app",
+  "addApp_enterAtLeast2Chars": "Enter at least 2 characters",
+  "addApp_noResults": "No results found",
+  "addApp_addedSuccess": "{name} added successfully",
+  "@addApp_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "settings_title": "Settings",
+  "settings_language": "Language",
+  "settings_appearance": "Appearance",
+  "settings_theme": "Theme",
+  "settings_themeSystem": "System",
+  "settings_themeDark": "Dark",
+  "settings_themeLight": "Light",
+  "settings_account": "Account",
+  "settings_memberSince": "Member since",
+  "settings_logout": "Log out",
+  "settings_languageSystem": "System",
+
+  "filter_all": "All",
+  "filter_allApps": "All Apps",
+  "filter_ios": "iOS",
+  "filter_iosOnly": "iOS Only",
+  "filter_android": "Android",
+  "filter_androidOnly": "Android Only",
+  "filter_favorites": "Favorites",
+
+  "sort_recent": "Recent",
+  "sort_recentlyAdded": "Recently Added",
+  "sort_nameAZ": "Name A-Z",
+  "sort_nameZA": "Name Z-A",
+  "sort_keywords": "Keywords",
+  "sort_mostKeywords": "Most Keywords",
+  "sort_bestRank": "Best Rank",
+
+  "userMenu_logout": "Log out"
+}
