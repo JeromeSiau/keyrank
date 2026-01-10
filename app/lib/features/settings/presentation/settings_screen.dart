@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/theme_provider.dart';
@@ -68,6 +69,44 @@ class SettingsScreen extends ConsumerWidget {
                     systemLabel: context.l10n.settings_themeSystem,
                     darkLabel: context.l10n.settings_themeDark,
                     lightLabel: context.l10n.settings_themeLight,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Notifications section
+            _SectionCard(
+              isDark: isDark,
+              title: 'NOTIFICATIONS',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.notifications_active,
+                      color: isDark ? AppColors.accent : AppColorsLight.accent,
+                    ),
+                    title: Text(
+                      'Manage Alert Rules',
+                      style: TextStyle(
+                        color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Configure what alerts you receive',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+                    ),
+                    onTap: () => context.push('/alerts'),
                   ),
                 ],
               ),
