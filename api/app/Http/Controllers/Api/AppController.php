@@ -173,6 +173,17 @@ class AppController extends Controller
             }
         }
 
+        // Extract category_id based on platform
+        $categoryId = null;
+        $secondaryCategoryId = null;
+        if ($platform === 'ios') {
+            $categoryId = $details['category_id'] ?? null;
+            $secondaryCategoryId = $details['secondary_category_id'] ?? null;
+        } else {
+            // Android uses genre_id
+            $categoryId = $details['genre_id'] ?? null;
+        }
+
         $app = App::create([
             'platform' => $platform,
             'store_id' => $storeId,
@@ -183,6 +194,8 @@ class AppController extends Controller
             'rating' => $details['rating'] ?? null,
             'rating_count' => $details['rating_count'] ?? 0,
             'storefront' => strtoupper($country),
+            'category_id' => $categoryId,
+            'secondary_category_id' => $secondaryCategoryId,
         ]);
 
         // Attach user to newly created app
@@ -249,12 +262,24 @@ class AppController extends Controller
         }
 
         if ($details) {
+            // Extract category_id based on platform
+            $categoryId = null;
+            $secondaryCategoryId = null;
+            if ($app->platform === 'ios') {
+                $categoryId = $details['category_id'] ?? null;
+                $secondaryCategoryId = $details['secondary_category_id'] ?? null;
+            } else {
+                $categoryId = $details['genre_id'] ?? null;
+            }
+
             $app->update([
                 'name' => $details['name'] ?? $app->name,
                 'icon_url' => $details['icon_url'] ?? $app->icon_url,
                 'developer' => $details['developer'] ?? $app->developer,
                 'rating' => $details['rating'] ?? $app->rating,
                 'rating_count' => $details['rating_count'] ?? $app->rating_count,
+                'category_id' => $categoryId ?? $app->category_id,
+                'secondary_category_id' => $secondaryCategoryId ?? $app->secondary_category_id,
             ]);
         }
 

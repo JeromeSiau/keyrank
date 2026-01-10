@@ -169,6 +169,8 @@ class iTunesService
      */
     private function formatAppDetails(array $app): array
     {
+        $genreIds = $app['genreIds'] ?? [];
+
         return [
             'apple_id' => (string) $app['trackId'],
             'name' => $app['trackName'],
@@ -186,6 +188,8 @@ class iTunesService
             'size_bytes' => $app['fileSizeBytes'] ?? null,
             'minimum_os' => $app['minimumOsVersion'] ?? null,
             'genres' => $app['genres'] ?? [],
+            'category_id' => isset($app['primaryGenreId']) ? (string) $app['primaryGenreId'] : null,
+            'secondary_category_id' => count($genreIds) > 1 ? (string) $genreIds[1] : null,
             'screenshots' => $app['screenshotUrls'] ?? [],
             'store_url' => $app['trackViewUrl'] ?? null,
         ];
@@ -382,6 +386,90 @@ class iTunesService
             'co' => 'Colombia',
             'pe' => 'Peru',
             'nz' => 'New Zealand',
+        ];
+    }
+
+    /**
+     * Get top apps for a category
+     *
+     * @param string $categoryId Genre ID (e.g., "6014" for Games)
+     * @param string $country Country code
+     * @param string $collection "top_free" or "top_paid"
+     * @param int $limit Max results (up to 200)
+     * @return array
+     */
+    public function getTopApps(string $categoryId, string $country = 'us', string $collection = 'top_free', int $limit = 100): array
+    {
+        $feedType = $collection === 'top_paid' ? 'toppaidapplications' : 'topfreeapplications';
+        $cacheKey = "itunes_top_{$feedType}_{$categoryId}_{$country}_{$limit}";
+
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($feedType, $categoryId, $country, $limit) {
+            $url = "https://itunes.apple.com/{$country}/rss/{$feedType}/limit={$limit}/genre={$categoryId}/json";
+
+            $response = Http::timeout(30)->get($url);
+
+            if (!$response->successful()) {
+                return [];
+            }
+
+            $feed = $response->json('feed', []);
+            $entries = $feed['entry'] ?? [];
+
+            if (empty($entries)) {
+                return [];
+            }
+
+            return collect($entries)->map(function ($entry, $index) {
+                return [
+                    'position' => $index + 1,
+                    'apple_id' => $entry['id']['attributes']['im:id'] ?? null,
+                    'name' => $entry['im:name']['label'] ?? null,
+                    'icon_url' => $entry['im:image'][2]['label'] ?? $entry['im:image'][0]['label'] ?? null,
+                    'developer' => $entry['im:artist']['label'] ?? null,
+                    'category' => $entry['category']['attributes']['label'] ?? null,
+                    'category_id' => $entry['category']['attributes']['im:id'] ?? null,
+                    'price' => $entry['im:price']['attributes']['amount'] ?? 0,
+                    'store_url' => $entry['link']['attributes']['href'] ?? null,
+                ];
+            })->filter(fn($app) => $app['apple_id'])->values()->toArray();
+        });
+    }
+
+    /**
+     * Get available iOS app categories
+     *
+     * @return array
+     */
+    public static function getCategories(): array
+    {
+        return [
+            '6000' => 'Business',
+            '6001' => 'Weather',
+            '6002' => 'Utilities',
+            '6003' => 'Travel',
+            '6004' => 'Sports',
+            '6005' => 'Social Networking',
+            '6006' => 'Reference',
+            '6007' => 'Productivity',
+            '6008' => 'Photo & Video',
+            '6009' => 'News',
+            '6010' => 'Navigation',
+            '6011' => 'Music',
+            '6012' => 'Lifestyle',
+            '6013' => 'Health & Fitness',
+            '6014' => 'Games',
+            '6015' => 'Finance',
+            '6016' => 'Entertainment',
+            '6017' => 'Education',
+            '6018' => 'Books',
+            '6020' => 'Medical',
+            '6021' => 'Magazines & Newspapers',
+            '6022' => 'Catalogs',
+            '6023' => 'Food & Drink',
+            '6024' => 'Shopping',
+            '6025' => 'Stickers',
+            '6026' => 'Developer Tools',
+            '6027' => 'Graphics & Design',
         ];
     }
 }

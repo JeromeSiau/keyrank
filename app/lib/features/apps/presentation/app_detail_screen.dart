@@ -705,6 +705,25 @@ class _AppInfoCard extends StatelessWidget {
                           ],
                         ),
                       ),
+                    // Category badge
+                    if (app.categoryId != null) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: colors.bgActive,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          _getCategoryName(app.categoryId!, app.isIos),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ],
@@ -729,6 +748,79 @@ class _AppInfoCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getCategoryName(String categoryId, bool isIos) {
+    const iosCategoryNames = {
+      '6000': 'Business',
+      '6001': 'Weather',
+      '6002': 'Utilities',
+      '6003': 'Travel',
+      '6004': 'Sports',
+      '6005': 'Social Networking',
+      '6006': 'Reference',
+      '6007': 'Productivity',
+      '6008': 'Photo & Video',
+      '6009': 'News',
+      '6010': 'Navigation',
+      '6011': 'Music',
+      '6012': 'Lifestyle',
+      '6013': 'Health & Fitness',
+      '6014': 'Games',
+      '6015': 'Finance',
+      '6016': 'Entertainment',
+      '6017': 'Education',
+      '6018': 'Books',
+      '6020': 'Medical',
+      '6021': 'Magazines & Newspapers',
+      '6022': 'Catalogs',
+      '6023': 'Food & Drink',
+      '6024': 'Shopping',
+      '6025': 'Stickers',
+      '6026': 'Developer Tools',
+      '6027': 'Graphics & Design',
+    };
+    const androidCategoryNames = {
+      'APPLICATION': 'All Apps',
+      'ART_AND_DESIGN': 'Art & Design',
+      'AUTO_AND_VEHICLES': 'Auto & Vehicles',
+      'BEAUTY': 'Beauty',
+      'BOOKS_AND_REFERENCE': 'Books & Reference',
+      'BUSINESS': 'Business',
+      'COMICS': 'Comics',
+      'COMMUNICATION': 'Communication',
+      'DATING': 'Dating',
+      'EDUCATION': 'Education',
+      'ENTERTAINMENT': 'Entertainment',
+      'EVENTS': 'Events',
+      'FINANCE': 'Finance',
+      'FOOD_AND_DRINK': 'Food & Drink',
+      'GAME': 'Games',
+      'HEALTH_AND_FITNESS': 'Health & Fitness',
+      'HOUSE_AND_HOME': 'House & Home',
+      'LIBRARIES_AND_DEMO': 'Libraries & Demo',
+      'LIFESTYLE': 'Lifestyle',
+      'MAPS_AND_NAVIGATION': 'Maps & Navigation',
+      'MEDICAL': 'Medical',
+      'MUSIC_AND_AUDIO': 'Music & Audio',
+      'NEWS_AND_MAGAZINES': 'News & Magazines',
+      'PARENTING': 'Parenting',
+      'PERSONALIZATION': 'Personalization',
+      'PHOTOGRAPHY': 'Photography',
+      'PRODUCTIVITY': 'Productivity',
+      'SHOPPING': 'Shopping',
+      'SOCIAL': 'Social',
+      'SPORTS': 'Sports',
+      'TOOLS': 'Tools',
+      'TRAVEL_AND_LOCAL': 'Travel & Local',
+      'VIDEO_PLAYERS': 'Video Players & Editors',
+      'WEATHER': 'Weather',
+    };
+
+    if (isIos) {
+      return iosCategoryNames[categoryId] ?? categoryId;
+    }
+    return androidCategoryNames[categoryId] ?? categoryId;
   }
 }
 

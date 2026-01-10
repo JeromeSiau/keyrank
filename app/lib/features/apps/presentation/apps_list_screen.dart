@@ -6,6 +6,41 @@ import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
 import '../providers/apps_provider.dart';
+import '../domain/app_model.dart';
+
+// Provider for selected category filter (null = all categories)
+final _selectedCategoryFilterProvider = StateProvider<String?>((ref) => null);
+
+// Provider to get unique categories from tracked apps
+final _availableCategoriesProvider = Provider<List<String>>((ref) {
+  final appsAsync = ref.watch(appsNotifierProvider);
+  return appsAsync.maybeWhen(
+    data: (apps) {
+      final categories = <String>{};
+      for (final app in apps) {
+        if (app.categoryId != null) {
+          categories.add(app.categoryId!);
+        }
+      }
+      return categories.toList()..sort();
+    },
+    orElse: () => [],
+  );
+});
+
+// Filtered apps based on selected category
+final _filteredAppsProvider = Provider<List<AppModel>>((ref) {
+  final appsAsync = ref.watch(appsNotifierProvider);
+  final selectedCategory = ref.watch(_selectedCategoryFilterProvider);
+
+  return appsAsync.maybeWhen(
+    data: (apps) {
+      if (selectedCategory == null) return apps;
+      return apps.where((app) => app.categoryId == selectedCategory).toList();
+    },
+    orElse: () => [],
+  );
+});
 
 class AppsListScreen extends ConsumerWidget {
   const AppsListScreen({super.key});
@@ -14,6 +49,9 @@ class AppsListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final appsAsync = ref.watch(appsNotifierProvider);
+    final filteredApps = ref.watch(_filteredAppsProvider);
+    final availableCategories = ref.watch(_availableCategoriesProvider);
+    final selectedCategory = ref.watch(_selectedCategoryFilterProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -26,6 +64,11 @@ class AppsListScreen extends ConsumerWidget {
           _Toolbar(
             onAddApp: () => context.go('/apps/add'),
             onRefresh: () => ref.read(appsNotifierProvider.notifier).load(),
+            availableCategories: availableCategories,
+            selectedCategory: selectedCategory,
+            onCategoryChanged: (category) {
+              ref.read(_selectedCategoryFilterProvider.notifier).state = category;
+            },
           ),
           // Content
           Expanded(
@@ -37,7 +80,7 @@ class AppsListScreen extends ConsumerWidget {
                 message: e.toString(),
                 onRetry: () => ref.read(appsNotifierProvider.notifier).load(),
               ),
-              data: (apps) => apps.isEmpty
+              data: (_) => filteredApps.isEmpty
                   ? EmptyStateView(
                       icon: Icons.app_shortcut_outlined,
                       title: context.l10n.apps_noAppsYet,
@@ -46,7 +89,7 @@ class AppsListScreen extends ConsumerWidget {
                       actionIcon: Icons.add_rounded,
                       onAction: () => context.go('/apps/add'),
                     )
-                  : _AppsTable(apps: apps),
+                  : _AppsTable(apps: filteredApps),
             ),
           ),
         ],
@@ -58,8 +101,17 @@ class AppsListScreen extends ConsumerWidget {
 class _Toolbar extends StatelessWidget {
   final VoidCallback onAddApp;
   final VoidCallback onRefresh;
+  final List<String> availableCategories;
+  final String? selectedCategory;
+  final ValueChanged<String?> onCategoryChanged;
 
-  const _Toolbar({required this.onAddApp, required this.onRefresh});
+  const _Toolbar({
+    required this.onAddApp,
+    required this.onRefresh,
+    required this.availableCategories,
+    required this.selectedCategory,
+    required this.onCategoryChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +132,14 @@ class _Toolbar extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
+          const SizedBox(width: 16),
+          // Category filter dropdown
+          if (availableCategories.isNotEmpty)
+            _CategoryFilterDropdown(
+              availableCategories: availableCategories,
+              selectedCategory: selectedCategory,
+              onChanged: onCategoryChanged,
+            ),
           const Spacer(),
           ToolbarButton(
             icon: Icons.refresh_rounded,
@@ -95,6 +155,124 @@ class _Toolbar extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _CategoryFilterDropdown extends StatelessWidget {
+  final List<String> availableCategories;
+  final String? selectedCategory;
+  final ValueChanged<String?> onChanged;
+
+  const _CategoryFilterDropdown({
+    required this.availableCategories,
+    required this.selectedCategory,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: colors.bgActive,
+        border: Border.all(color: colors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String?>(
+          value: selectedCategory,
+          hint: Text(
+            context.l10n.discover_allCategories,
+            style: TextStyle(
+              fontSize: 13,
+              color: colors.textSecondary,
+            ),
+          ),
+          icon: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: colors.textMuted),
+          dropdownColor: colors.bgBase,
+          isDense: true,
+          items: [
+            DropdownMenuItem<String?>(
+              value: null,
+              child: Text(
+                context.l10n.discover_allCategories,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: colors.textPrimary,
+                ),
+              ),
+            ),
+            ...availableCategories.map((categoryId) {
+              return DropdownMenuItem<String?>(
+                value: categoryId,
+                child: Text(
+                  _getCategoryName(categoryId),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: colors.textPrimary,
+                  ),
+                ),
+              );
+            }),
+          ],
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+
+  String _getCategoryName(String categoryId) {
+    // Map category IDs to display names
+    // iOS categories
+    const iosCategoryNames = {
+      '6000': 'Business',
+      '6001': 'Weather',
+      '6002': 'Utilities',
+      '6003': 'Travel',
+      '6004': 'Sports',
+      '6005': 'Social Networking',
+      '6006': 'Reference',
+      '6007': 'Productivity',
+      '6008': 'Photo & Video',
+      '6009': 'News',
+      '6010': 'Navigation',
+      '6011': 'Music',
+      '6012': 'Lifestyle',
+      '6013': 'Health & Fitness',
+      '6014': 'Games',
+      '6015': 'Finance',
+      '6016': 'Entertainment',
+      '6017': 'Education',
+      '6018': 'Books',
+      '6020': 'Medical',
+      '6023': 'Food & Drink',
+      '6024': 'Shopping',
+    };
+    // Android categories
+    const androidCategoryNames = {
+      'GAME': 'Games',
+      'BUSINESS': 'Business',
+      'EDUCATION': 'Education',
+      'ENTERTAINMENT': 'Entertainment',
+      'FINANCE': 'Finance',
+      'FOOD_AND_DRINK': 'Food & Drink',
+      'HEALTH_AND_FITNESS': 'Health & Fitness',
+      'LIFESTYLE': 'Lifestyle',
+      'MEDICAL': 'Medical',
+      'MUSIC_AND_AUDIO': 'Music & Audio',
+      'PRODUCTIVITY': 'Productivity',
+      'SHOPPING': 'Shopping',
+      'SOCIAL': 'Social',
+      'SPORTS': 'Sports',
+      'TOOLS': 'Tools',
+      'TRAVEL_AND_LOCAL': 'Travel & Local',
+      'WEATHER': 'Weather',
+    };
+
+    return iosCategoryNames[categoryId] ??
+           androidCategoryNames[categoryId] ??
+           categoryId;
   }
 }
 

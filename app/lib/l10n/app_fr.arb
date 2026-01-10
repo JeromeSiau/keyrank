@@ -327,6 +327,75 @@
   "keywordSearch_headerTrack": "SUIVRE",
   "keywordSearch_trackApp": "Suivre cette app",
 
+  "discover_title": "Découvrir",
+  "discover_tabKeywords": "Mots-clés",
+  "discover_tabCategories": "Catégories",
+  "discover_selectCategory": "Sélectionner une catégorie",
+  "discover_topFree": "Top Gratuit",
+  "discover_topPaid": "Top Payant",
+  "discover_noResults": "Aucun résultat",
+  "discover_loadingTopApps": "Chargement des top apps...",
+  "discover_topAppsIn": "Top {collection} en {category}",
+  "@discover_topAppsIn": {
+    "placeholders": {
+      "collection": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "discover_appsCount": "{count} apps",
+  "@discover_appsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "discover_allCategories": "Toutes les catégories",
+
+  "category_games": "Jeux",
+  "category_business": "Affaires",
+  "category_education": "Éducation",
+  "category_entertainment": "Divertissement",
+  "category_finance": "Finance",
+  "category_food_drink": "Alimentation",
+  "category_health_fitness": "Santé et forme",
+  "category_lifestyle": "Style de vie",
+  "category_medical": "Médecine",
+  "category_music": "Musique",
+  "category_navigation": "Navigation",
+  "category_news": "Actualités",
+  "category_photo_video": "Photo et vidéo",
+  "category_productivity": "Productivité",
+  "category_reference": "Référence",
+  "category_shopping": "Shopping",
+  "category_social": "Réseaux sociaux",
+  "category_sports": "Sports",
+  "category_travel": "Voyage",
+  "category_utilities": "Utilitaires",
+  "category_weather": "Météo",
+  "category_books": "Livres",
+  "category_developer_tools": "Outils de développement",
+  "category_graphics_design": "Graphisme et design",
+  "category_magazines": "Magazines et journaux",
+  "category_stickers": "Autocollants",
+  "category_catalogs": "Catalogues",
+  "category_art_design": "Art et design",
+  "category_auto_vehicles": "Auto et véhicules",
+  "category_beauty": "Beauté",
+  "category_comics": "BD",
+  "category_communication": "Communication",
+  "category_dating": "Rencontres",
+  "category_events": "Événements",
+  "category_house_home": "Maison",
+  "category_libraries": "Bibliothèques",
+  "category_maps_navigation": "Cartes et navigation",
+  "category_music_audio": "Musique et audio",
+  "category_news_magazines": "Actualités et magazines",
+  "category_parenting": "Parentalité",
+  "category_personalization": "Personnalisation",
+  "category_photography": "Photographie",
+  "category_tools": "Outils",
+  "category_video_players": "Lecteurs vidéo",
+  "category_all_apps": "Toutes les apps",
+
   "reviews_reviewsFor": "Avis pour {appName}",
   "@reviews_reviewsFor": {
     "placeholders": {
@@ -422,6 +491,7 @@
   "nav_myApps": "Mes Apps",
   "nav_research": "RECHERCHE",
   "nav_keywords": "Mots-clés",
+  "nav_discover": "Découvrir",
 
   "common_save": "Enregistrer",
 

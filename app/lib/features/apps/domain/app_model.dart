@@ -9,6 +9,8 @@ class AppModel {
   final double? rating;
   final int ratingCount;
   final String? storefront;
+  final String? categoryId;
+  final String? secondaryCategoryId;
   final int? trackedKeywordsCount;
   final int? bestRank;
   final DateTime createdAt;
@@ -26,6 +28,8 @@ class AppModel {
     this.rating,
     required this.ratingCount,
     this.storefront,
+    this.categoryId,
+    this.secondaryCategoryId,
     this.trackedKeywordsCount,
     this.bestRank,
     required this.createdAt,
@@ -47,6 +51,8 @@ class AppModel {
     double? rating,
     int? ratingCount,
     String? storefront,
+    String? categoryId,
+    String? secondaryCategoryId,
     int? trackedKeywordsCount,
     int? bestRank,
     DateTime? createdAt,
@@ -64,6 +70,8 @@ class AppModel {
       rating: rating ?? this.rating,
       ratingCount: ratingCount ?? this.ratingCount,
       storefront: storefront ?? this.storefront,
+      categoryId: categoryId ?? this.categoryId,
+      secondaryCategoryId: secondaryCategoryId ?? this.secondaryCategoryId,
       trackedKeywordsCount: trackedKeywordsCount ?? this.trackedKeywordsCount,
       bestRank: bestRank ?? this.bestRank,
       createdAt: createdAt ?? this.createdAt,
@@ -84,6 +92,8 @@ class AppModel {
       rating: _parseDouble(json['rating']),
       ratingCount: _parseInt(json['rating_count']) ?? 0,
       storefront: json['storefront'] as String?,
+      categoryId: json['category_id'] as String?,
+      secondaryCategoryId: json['secondary_category_id'] as String?,
       trackedKeywordsCount: _parseInt(json['tracked_keywords_count']),
       bestRank: _parseInt(json['best_rank']),
       createdAt: DateTime.parse(json['created_at'] as String),

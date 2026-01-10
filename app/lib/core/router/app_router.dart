@@ -14,7 +14,7 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/apps/presentation/apps_list_screen.dart';
 import '../../features/apps/presentation/app_detail_screen.dart';
 import '../../features/apps/presentation/add_app_screen.dart';
-import '../../features/keywords/presentation/keyword_search_screen.dart';
+import '../../features/keywords/presentation/discover_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
 import '../../features/insights/presentation/app_insights_screen.dart';
@@ -113,8 +113,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(
-            path: '/keywords',
-            builder: (context, state) => const KeywordSearchScreen(),
+            path: '/discover',
+            builder: (context, state) => const DiscoverScreen(),
           ),
           GoRoute(
             path: '/settings',
@@ -168,7 +168,7 @@ class MainShell extends ConsumerWidget {
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
     if (location.startsWith('/apps')) return 1;
-    if (location.startsWith('/keywords')) return 2;
+    if (location.startsWith('/discover')) return 2;
     return 0;
   }
 
@@ -190,7 +190,7 @@ class MainShell extends ConsumerWidget {
         context.go('/apps');
         break;
       case 2:
-        context.go('/keywords');
+        context.go('/discover');
         break;
     }
   }
@@ -275,9 +275,9 @@ class _GlassSidebar extends StatelessWidget {
                         label: context.l10n.nav_research,
                         items: [
                           _NavItemData(
-                            icon: Icons.search_outlined,
-                            selectedIcon: Icons.search,
-                            label: context.l10n.nav_keywords,
+                            icon: Icons.explore_outlined,
+                            selectedIcon: Icons.explore,
+                            label: context.l10n.nav_discover,
                             index: 2,
                           ),
                         ],

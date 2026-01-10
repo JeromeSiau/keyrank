@@ -676,6 +676,178 @@ class AppLocalizationsKo extends AppLocalizations {
   String get keywordSearch_trackApp => '이 앱 추적하기';
 
   @override
+  String get discover_title => 'Discover';
+
+  @override
+  String get discover_tabKeywords => 'Keywords';
+
+  @override
+  String get discover_tabCategories => 'Categories';
+
+  @override
+  String get discover_selectCategory => 'Select a category';
+
+  @override
+  String get discover_topFree => 'Top Free';
+
+  @override
+  String get discover_topPaid => 'Top Paid';
+
+  @override
+  String get discover_noResults => 'No results';
+
+  @override
+  String get discover_loadingTopApps => 'Loading top apps...';
+
+  @override
+  String discover_topAppsIn(String collection, String category) {
+    return 'Top $collection in $category';
+  }
+
+  @override
+  String discover_appsCount(int count) {
+    return '$count apps';
+  }
+
+  @override
+  String get discover_allCategories => 'All categories';
+
+  @override
+  String get category_games => 'Games';
+
+  @override
+  String get category_business => 'Business';
+
+  @override
+  String get category_education => 'Education';
+
+  @override
+  String get category_entertainment => 'Entertainment';
+
+  @override
+  String get category_finance => 'Finance';
+
+  @override
+  String get category_food_drink => 'Food & Drink';
+
+  @override
+  String get category_health_fitness => 'Health & Fitness';
+
+  @override
+  String get category_lifestyle => 'Lifestyle';
+
+  @override
+  String get category_medical => 'Medical';
+
+  @override
+  String get category_music => 'Music';
+
+  @override
+  String get category_navigation => 'Navigation';
+
+  @override
+  String get category_news => 'News';
+
+  @override
+  String get category_photo_video => 'Photo & Video';
+
+  @override
+  String get category_productivity => 'Productivity';
+
+  @override
+  String get category_reference => 'Reference';
+
+  @override
+  String get category_shopping => 'Shopping';
+
+  @override
+  String get category_social => 'Social Networking';
+
+  @override
+  String get category_sports => 'Sports';
+
+  @override
+  String get category_travel => 'Travel';
+
+  @override
+  String get category_utilities => 'Utilities';
+
+  @override
+  String get category_weather => 'Weather';
+
+  @override
+  String get category_books => 'Books';
+
+  @override
+  String get category_developer_tools => 'Developer Tools';
+
+  @override
+  String get category_graphics_design => 'Graphics & Design';
+
+  @override
+  String get category_magazines => 'Magazines & Newspapers';
+
+  @override
+  String get category_stickers => 'Stickers';
+
+  @override
+  String get category_catalogs => 'Catalogs';
+
+  @override
+  String get category_art_design => 'Art & Design';
+
+  @override
+  String get category_auto_vehicles => 'Auto & Vehicles';
+
+  @override
+  String get category_beauty => 'Beauty';
+
+  @override
+  String get category_comics => 'Comics';
+
+  @override
+  String get category_communication => 'Communication';
+
+  @override
+  String get category_dating => 'Dating';
+
+  @override
+  String get category_events => 'Events';
+
+  @override
+  String get category_house_home => 'House & Home';
+
+  @override
+  String get category_libraries => 'Libraries & Demo';
+
+  @override
+  String get category_maps_navigation => 'Maps & Navigation';
+
+  @override
+  String get category_music_audio => 'Music & Audio';
+
+  @override
+  String get category_news_magazines => 'News & Magazines';
+
+  @override
+  String get category_parenting => 'Parenting';
+
+  @override
+  String get category_personalization => 'Personalization';
+
+  @override
+  String get category_photography => 'Photography';
+
+  @override
+  String get category_tools => 'Tools';
+
+  @override
+  String get category_video_players => 'Video Players & Editors';
+
+  @override
+  String get category_all_apps => 'All Apps';
+
+  @override
   String reviews_reviewsFor(String appName) {
     return '$appName 리뷰';
   }
@@ -804,6 +976,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nav_keywords => '키워드';
+
+  @override
+  String get nav_discover => 'Discover';
 
   @override
   String get common_save => '저장';

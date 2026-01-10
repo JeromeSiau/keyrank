@@ -5,6 +5,8 @@ import searchRouter from './routes/search';
 import appRouter from './routes/app';
 import reviewsRouter from './routes/reviews';
 import suggestionsRouter from './routes/suggestions';
+import topRouter from './routes/top';
+import categoriesRouter from './routes/categories';
 
 dotenv.config();
 
@@ -24,6 +26,8 @@ app.use('/search', searchRouter);
 app.use('/app', appRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/suggestions', suggestionsRouter);
+app.use('/top', topRouter);
+app.use('/categories', categoriesRouter);
 
 app.listen(PORT, () => {
   console.log(`Google Play scraper running on port ${PORT}`);

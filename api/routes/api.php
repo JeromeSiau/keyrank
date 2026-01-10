@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AppController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\InsightsController;
@@ -110,6 +111,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('{tag}', [TagsController::class, 'destroy']);
         Route::post('add-to-keyword', [TagsController::class, 'addToKeyword']);
         Route::post('remove-from-keyword', [TagsController::class, 'removeFromKeyword']);
+    });
+
+    // Categories
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::get('{categoryId}/top', [CategoryController::class, 'top'])->middleware('throttle:60,1');
     });
 
     // Notes

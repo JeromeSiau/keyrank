@@ -1356,6 +1356,342 @@ abstract class AppLocalizations {
   /// **'Track this app'**
   String get keywordSearch_trackApp;
 
+  /// No description provided for @discover_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get discover_title;
+
+  /// No description provided for @discover_tabKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get discover_tabKeywords;
+
+  /// No description provided for @discover_tabCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get discover_tabCategories;
+
+  /// No description provided for @discover_selectCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a category'**
+  String get discover_selectCategory;
+
+  /// No description provided for @discover_topFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Free'**
+  String get discover_topFree;
+
+  /// No description provided for @discover_topPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Paid'**
+  String get discover_topPaid;
+
+  /// No description provided for @discover_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get discover_noResults;
+
+  /// No description provided for @discover_loadingTopApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading top apps...'**
+  String get discover_loadingTopApps;
+
+  /// No description provided for @discover_topAppsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Top {collection} in {category}'**
+  String discover_topAppsIn(String collection, String category);
+
+  /// No description provided for @discover_appsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} apps'**
+  String discover_appsCount(int count);
+
+  /// No description provided for @discover_allCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get discover_allCategories;
+
+  /// No description provided for @category_games.
+  ///
+  /// In en, this message translates to:
+  /// **'Games'**
+  String get category_games;
+
+  /// No description provided for @category_business.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get category_business;
+
+  /// No description provided for @category_education.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get category_education;
+
+  /// No description provided for @category_entertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get category_entertainment;
+
+  /// No description provided for @category_finance.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get category_finance;
+
+  /// No description provided for @category_food_drink.
+  ///
+  /// In en, this message translates to:
+  /// **'Food & Drink'**
+  String get category_food_drink;
+
+  /// No description provided for @category_health_fitness.
+  ///
+  /// In en, this message translates to:
+  /// **'Health & Fitness'**
+  String get category_health_fitness;
+
+  /// No description provided for @category_lifestyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifestyle'**
+  String get category_lifestyle;
+
+  /// No description provided for @category_medical.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical'**
+  String get category_medical;
+
+  /// No description provided for @category_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get category_music;
+
+  /// No description provided for @category_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation'**
+  String get category_navigation;
+
+  /// No description provided for @category_news.
+  ///
+  /// In en, this message translates to:
+  /// **'News'**
+  String get category_news;
+
+  /// No description provided for @category_photo_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo & Video'**
+  String get category_photo_video;
+
+  /// No description provided for @category_productivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Productivity'**
+  String get category_productivity;
+
+  /// No description provided for @category_reference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get category_reference;
+
+  /// No description provided for @category_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get category_shopping;
+
+  /// No description provided for @category_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social Networking'**
+  String get category_social;
+
+  /// No description provided for @category_sports.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports'**
+  String get category_sports;
+
+  /// No description provided for @category_travel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get category_travel;
+
+  /// No description provided for @category_utilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Utilities'**
+  String get category_utilities;
+
+  /// No description provided for @category_weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get category_weather;
+
+  /// No description provided for @category_books.
+  ///
+  /// In en, this message translates to:
+  /// **'Books'**
+  String get category_books;
+
+  /// No description provided for @category_developer_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer Tools'**
+  String get category_developer_tools;
+
+  /// No description provided for @category_graphics_design.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics & Design'**
+  String get category_graphics_design;
+
+  /// No description provided for @category_magazines.
+  ///
+  /// In en, this message translates to:
+  /// **'Magazines & Newspapers'**
+  String get category_magazines;
+
+  /// No description provided for @category_stickers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stickers'**
+  String get category_stickers;
+
+  /// No description provided for @category_catalogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalogs'**
+  String get category_catalogs;
+
+  /// No description provided for @category_art_design.
+  ///
+  /// In en, this message translates to:
+  /// **'Art & Design'**
+  String get category_art_design;
+
+  /// No description provided for @category_auto_vehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto & Vehicles'**
+  String get category_auto_vehicles;
+
+  /// No description provided for @category_beauty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beauty'**
+  String get category_beauty;
+
+  /// No description provided for @category_comics.
+  ///
+  /// In en, this message translates to:
+  /// **'Comics'**
+  String get category_comics;
+
+  /// No description provided for @category_communication.
+  ///
+  /// In en, this message translates to:
+  /// **'Communication'**
+  String get category_communication;
+
+  /// No description provided for @category_dating.
+  ///
+  /// In en, this message translates to:
+  /// **'Dating'**
+  String get category_dating;
+
+  /// No description provided for @category_events.
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get category_events;
+
+  /// No description provided for @category_house_home.
+  ///
+  /// In en, this message translates to:
+  /// **'House & Home'**
+  String get category_house_home;
+
+  /// No description provided for @category_libraries.
+  ///
+  /// In en, this message translates to:
+  /// **'Libraries & Demo'**
+  String get category_libraries;
+
+  /// No description provided for @category_maps_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Maps & Navigation'**
+  String get category_maps_navigation;
+
+  /// No description provided for @category_music_audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Music & Audio'**
+  String get category_music_audio;
+
+  /// No description provided for @category_news_magazines.
+  ///
+  /// In en, this message translates to:
+  /// **'News & Magazines'**
+  String get category_news_magazines;
+
+  /// No description provided for @category_parenting.
+  ///
+  /// In en, this message translates to:
+  /// **'Parenting'**
+  String get category_parenting;
+
+  /// No description provided for @category_personalization.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalization'**
+  String get category_personalization;
+
+  /// No description provided for @category_photography.
+  ///
+  /// In en, this message translates to:
+  /// **'Photography'**
+  String get category_photography;
+
+  /// No description provided for @category_tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get category_tools;
+
+  /// No description provided for @category_video_players.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Players & Editors'**
+  String get category_video_players;
+
+  /// No description provided for @category_all_apps.
+  ///
+  /// In en, this message translates to:
+  /// **'All Apps'**
+  String get category_all_apps;
+
   /// No description provided for @reviews_reviewsFor.
   ///
   /// In en, this message translates to:
@@ -1571,6 +1907,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keywords'**
   String get nav_keywords;
+
+  /// No description provided for @nav_discover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get nav_discover;
 
   /// No description provided for @common_save.
   ///

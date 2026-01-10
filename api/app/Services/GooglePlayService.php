@@ -139,4 +139,78 @@ class GooglePlayService
             return false;
         }
     }
+
+    /**
+     * Get top apps for a category
+     *
+     * @param string $categoryId Category ID (e.g., "GAME", "BUSINESS")
+     * @param string $country Country code
+     * @param string $collection "top_free" or "top_paid"
+     * @param int $limit Max results
+     * @return array
+     */
+    public function getTopApps(string $categoryId, string $country = 'us', string $collection = 'top_free', int $limit = 100): array
+    {
+        $cacheKey = "gplay_top_{$collection}_{$categoryId}_{$country}_{$limit}";
+
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($categoryId, $country, $collection, $limit) {
+            $response = Http::timeout(60)->get("{$this->scraperUrl}/top", [
+                'category' => $categoryId,
+                'country' => $country,
+                'collection' => $collection,
+                'num' => min($limit, 200),
+            ]);
+
+            if (!$response->successful()) {
+                return [];
+            }
+
+            return $response->json('results', []);
+        });
+    }
+
+    /**
+     * Get available Android app categories
+     *
+     * @return array
+     */
+    public static function getCategories(): array
+    {
+        return [
+            'APPLICATION' => 'All Apps',
+            'ART_AND_DESIGN' => 'Art & Design',
+            'AUTO_AND_VEHICLES' => 'Auto & Vehicles',
+            'BEAUTY' => 'Beauty',
+            'BOOKS_AND_REFERENCE' => 'Books & Reference',
+            'BUSINESS' => 'Business',
+            'COMICS' => 'Comics',
+            'COMMUNICATION' => 'Communication',
+            'DATING' => 'Dating',
+            'EDUCATION' => 'Education',
+            'ENTERTAINMENT' => 'Entertainment',
+            'EVENTS' => 'Events',
+            'FINANCE' => 'Finance',
+            'FOOD_AND_DRINK' => 'Food & Drink',
+            'GAME' => 'Games',
+            'HEALTH_AND_FITNESS' => 'Health & Fitness',
+            'HOUSE_AND_HOME' => 'House & Home',
+            'LIBRARIES_AND_DEMO' => 'Libraries & Demo',
+            'LIFESTYLE' => 'Lifestyle',
+            'MAPS_AND_NAVIGATION' => 'Maps & Navigation',
+            'MEDICAL' => 'Medical',
+            'MUSIC_AND_AUDIO' => 'Music & Audio',
+            'NEWS_AND_MAGAZINES' => 'News & Magazines',
+            'PARENTING' => 'Parenting',
+            'PERSONALIZATION' => 'Personalization',
+            'PHOTOGRAPHY' => 'Photography',
+            'PRODUCTIVITY' => 'Productivity',
+            'SHOPPING' => 'Shopping',
+            'SOCIAL' => 'Social',
+            'SPORTS' => 'Sports',
+            'TOOLS' => 'Tools',
+            'TRAVEL_AND_LOCAL' => 'Travel & Local',
+            'VIDEO_PLAYERS' => 'Video Players & Editors',
+            'WEATHER' => 'Weather',
+        ];
+    }
 }

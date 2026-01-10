@@ -17,3 +17,7 @@ Schedule::command('aso:sync-rankings')
 // Cleanup old data every Monday at 5 AM
 Schedule::command('aso:cleanup --days=90')
     ->weeklyOn(1, '05:00');
+
+// Sync categories every Sunday at 3 AM
+Schedule::command('categories:sync')
+    ->weeklyOn(0, '03:00');

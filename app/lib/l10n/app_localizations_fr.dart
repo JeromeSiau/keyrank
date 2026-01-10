@@ -686,6 +686,178 @@ class AppLocalizationsFr extends AppLocalizations {
   String get keywordSearch_trackApp => 'Suivre cette app';
 
   @override
+  String get discover_title => 'Découvrir';
+
+  @override
+  String get discover_tabKeywords => 'Mots-clés';
+
+  @override
+  String get discover_tabCategories => 'Catégories';
+
+  @override
+  String get discover_selectCategory => 'Sélectionner une catégorie';
+
+  @override
+  String get discover_topFree => 'Top Gratuit';
+
+  @override
+  String get discover_topPaid => 'Top Payant';
+
+  @override
+  String get discover_noResults => 'Aucun résultat';
+
+  @override
+  String get discover_loadingTopApps => 'Chargement des top apps...';
+
+  @override
+  String discover_topAppsIn(String collection, String category) {
+    return 'Top $collection en $category';
+  }
+
+  @override
+  String discover_appsCount(int count) {
+    return '$count apps';
+  }
+
+  @override
+  String get discover_allCategories => 'Toutes les catégories';
+
+  @override
+  String get category_games => 'Jeux';
+
+  @override
+  String get category_business => 'Affaires';
+
+  @override
+  String get category_education => 'Éducation';
+
+  @override
+  String get category_entertainment => 'Divertissement';
+
+  @override
+  String get category_finance => 'Finance';
+
+  @override
+  String get category_food_drink => 'Alimentation';
+
+  @override
+  String get category_health_fitness => 'Santé et forme';
+
+  @override
+  String get category_lifestyle => 'Style de vie';
+
+  @override
+  String get category_medical => 'Médecine';
+
+  @override
+  String get category_music => 'Musique';
+
+  @override
+  String get category_navigation => 'Navigation';
+
+  @override
+  String get category_news => 'Actualités';
+
+  @override
+  String get category_photo_video => 'Photo et vidéo';
+
+  @override
+  String get category_productivity => 'Productivité';
+
+  @override
+  String get category_reference => 'Référence';
+
+  @override
+  String get category_shopping => 'Shopping';
+
+  @override
+  String get category_social => 'Réseaux sociaux';
+
+  @override
+  String get category_sports => 'Sports';
+
+  @override
+  String get category_travel => 'Voyage';
+
+  @override
+  String get category_utilities => 'Utilitaires';
+
+  @override
+  String get category_weather => 'Météo';
+
+  @override
+  String get category_books => 'Livres';
+
+  @override
+  String get category_developer_tools => 'Outils de développement';
+
+  @override
+  String get category_graphics_design => 'Graphisme et design';
+
+  @override
+  String get category_magazines => 'Magazines et journaux';
+
+  @override
+  String get category_stickers => 'Autocollants';
+
+  @override
+  String get category_catalogs => 'Catalogues';
+
+  @override
+  String get category_art_design => 'Art et design';
+
+  @override
+  String get category_auto_vehicles => 'Auto et véhicules';
+
+  @override
+  String get category_beauty => 'Beauté';
+
+  @override
+  String get category_comics => 'BD';
+
+  @override
+  String get category_communication => 'Communication';
+
+  @override
+  String get category_dating => 'Rencontres';
+
+  @override
+  String get category_events => 'Événements';
+
+  @override
+  String get category_house_home => 'Maison';
+
+  @override
+  String get category_libraries => 'Bibliothèques';
+
+  @override
+  String get category_maps_navigation => 'Cartes et navigation';
+
+  @override
+  String get category_music_audio => 'Musique et audio';
+
+  @override
+  String get category_news_magazines => 'Actualités et magazines';
+
+  @override
+  String get category_parenting => 'Parentalité';
+
+  @override
+  String get category_personalization => 'Personnalisation';
+
+  @override
+  String get category_photography => 'Photographie';
+
+  @override
+  String get category_tools => 'Outils';
+
+  @override
+  String get category_video_players => 'Lecteurs vidéo';
+
+  @override
+  String get category_all_apps => 'Toutes les apps';
+
+  @override
   String reviews_reviewsFor(String appName) {
     return 'Avis pour $appName';
   }
@@ -817,6 +989,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nav_keywords => 'Mots-clés';
+
+  @override
+  String get nav_discover => 'Découvrir';
 
   @override
   String get common_save => 'Enregistrer';

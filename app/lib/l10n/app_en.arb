@@ -342,6 +342,75 @@
   "keywordSearch_headerTrack": "TRACK",
   "keywordSearch_trackApp": "Track this app",
 
+  "discover_title": "Discover",
+  "discover_tabKeywords": "Keywords",
+  "discover_tabCategories": "Categories",
+  "discover_selectCategory": "Select a category",
+  "discover_topFree": "Top Free",
+  "discover_topPaid": "Top Paid",
+  "discover_noResults": "No results",
+  "discover_loadingTopApps": "Loading top apps...",
+  "discover_topAppsIn": "Top {collection} in {category}",
+  "@discover_topAppsIn": {
+    "placeholders": {
+      "collection": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "discover_appsCount": "{count} apps",
+  "@discover_appsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "discover_allCategories": "All categories",
+
+  "category_games": "Games",
+  "category_business": "Business",
+  "category_education": "Education",
+  "category_entertainment": "Entertainment",
+  "category_finance": "Finance",
+  "category_food_drink": "Food & Drink",
+  "category_health_fitness": "Health & Fitness",
+  "category_lifestyle": "Lifestyle",
+  "category_medical": "Medical",
+  "category_music": "Music",
+  "category_navigation": "Navigation",
+  "category_news": "News",
+  "category_photo_video": "Photo & Video",
+  "category_productivity": "Productivity",
+  "category_reference": "Reference",
+  "category_shopping": "Shopping",
+  "category_social": "Social Networking",
+  "category_sports": "Sports",
+  "category_travel": "Travel",
+  "category_utilities": "Utilities",
+  "category_weather": "Weather",
+  "category_books": "Books",
+  "category_developer_tools": "Developer Tools",
+  "category_graphics_design": "Graphics & Design",
+  "category_magazines": "Magazines & Newspapers",
+  "category_stickers": "Stickers",
+  "category_catalogs": "Catalogs",
+  "category_art_design": "Art & Design",
+  "category_auto_vehicles": "Auto & Vehicles",
+  "category_beauty": "Beauty",
+  "category_comics": "Comics",
+  "category_communication": "Communication",
+  "category_dating": "Dating",
+  "category_events": "Events",
+  "category_house_home": "House & Home",
+  "category_libraries": "Libraries & Demo",
+  "category_maps_navigation": "Maps & Navigation",
+  "category_music_audio": "Music & Audio",
+  "category_news_magazines": "News & Magazines",
+  "category_parenting": "Parenting",
+  "category_personalization": "Personalization",
+  "category_photography": "Photography",
+  "category_tools": "Tools",
+  "category_video_players": "Video Players & Editors",
+  "category_all_apps": "All Apps",
+
   "reviews_reviewsFor": "Reviews for {appName}",
   "@reviews_reviewsFor": {
     "placeholders": {
@@ -437,6 +506,7 @@
   "nav_myApps": "My Apps",
   "nav_research": "RESEARCH",
   "nav_keywords": "Keywords",
+  "nav_discover": "Discover",
 
   "common_save": "Save",
 

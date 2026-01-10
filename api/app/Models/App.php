@@ -22,6 +22,8 @@ class App extends Model
         'rating',
         'rating_count',
         'storefront',
+        'category_id',
+        'secondary_category_id',
         'ratings_fetched_at',
         'reviews_fetched_at',
     ];
