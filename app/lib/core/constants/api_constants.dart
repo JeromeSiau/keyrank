@@ -36,4 +36,17 @@ class ApiConstants {
 
   // Insights endpoints
   static const String insightsCompare = '/insights/compare';
+
+  // Alert Rules endpoints
+  static const String alertTemplates = '/alerts/templates';
+  static const String alertRules = '/alerts/rules';
+
+  // Notifications endpoints
+  static const String notifications = '/notifications';
+  static const String notificationsUnreadCount = '/notifications/unread-count';
+  static const String notificationsMarkAllRead = '/notifications/mark-all-read';
+
+  // User preferences
+  static const String userPreferences = '/user/preferences';
+  static const String userFcmToken = '/user/fcm-token';
 }
