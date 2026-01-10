@@ -70,6 +70,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (context, state) => const AddAppScreen(),
               ),
               GoRoute(
+                path: 'compare',
+                builder: (context, state) {
+                  final idsParam = state.uri.queryParameters['ids'] ?? '';
+                  final ids = idsParam.split(',').map((s) => int.tryParse(s)).whereType<int>().toList();
+                  return InsightsCompareScreen(appIds: ids);
+                },
+              ),
+              GoRoute(
                 path: ':id',
                 builder: (context, state) {
                   final id = int.parse(state.pathParameters['id']!);
@@ -99,14 +107,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final id = int.parse(state.pathParameters['id']!);
                   final appName = state.uri.queryParameters['name'] ?? 'App';
                   return AppInsightsScreen(appId: id, appName: appName);
-                },
-              ),
-              GoRoute(
-                path: 'compare',
-                builder: (context, state) {
-                  final idsParam = state.uri.queryParameters['ids'] ?? '';
-                  final ids = idsParam.split(',').map((s) => int.tryParse(s)).whereType<int>().toList();
-                  return InsightsCompareScreen(appIds: ids);
                 },
               ),
             ],
