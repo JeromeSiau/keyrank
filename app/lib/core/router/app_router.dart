@@ -17,6 +17,7 @@ import '../../features/keywords/presentation/keyword_search_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
 import '../../features/insights/presentation/app_insights_screen.dart';
+import '../../features/insights/presentation/insights_compare_screen.dart';
 import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 
@@ -98,6 +99,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final id = int.parse(state.pathParameters['id']!);
                   final appName = state.uri.queryParameters['name'] ?? 'App';
                   return AppInsightsScreen(appId: id, appName: appName);
+                },
+              ),
+              GoRoute(
+                path: 'compare',
+                builder: (context, state) {
+                  final idsParam = state.uri.queryParameters['ids'] ?? '';
+                  final ids = idsParam.split(',').map((s) => int.tryParse(s)).whereType<int>().toList();
+                  return InsightsCompareScreen(appIds: ids);
                 },
               ),
             ],
