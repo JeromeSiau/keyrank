@@ -136,6 +136,7 @@ class InsightComparison {
   final String appName;
   final String? iconUrl;
   final String platform;
+  final String? storefront;
   final AppInsight? insight;
 
   InsightComparison({
@@ -143,6 +144,7 @@ class InsightComparison {
     required this.appName,
     this.iconUrl,
     required this.platform,
+    this.storefront,
     this.insight,
   });
 
@@ -155,6 +157,7 @@ class InsightComparison {
       appName: appJson['name'] as String,
       iconUrl: appJson['icon_url'] as String?,
       platform: appJson['platform'] as String,
+      storefront: appJson['storefront'] as String?,
       insight: insightJson != null ? AppInsight.fromJson(insightJson) : null,
     );
   }

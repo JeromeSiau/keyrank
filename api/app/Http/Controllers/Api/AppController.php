@@ -23,25 +23,36 @@ class AppController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
+        $userId = $user->id;
 
+        // Get all user's tracked keyword IDs (single query)
+        $trackedKeywordIds = TrackedKeyword::where('user_id', $userId)
+            ->pluck('keyword_id')
+            ->unique()
+            ->values();
+
+        // Get best ranks for all apps in a single query
+        $bestRanks = [];
+        if ($trackedKeywordIds->isNotEmpty()) {
+            $bestRanks = \DB::table('app_rankings')
+                ->select('app_id', \DB::raw('MIN(position) as best_rank'))
+                ->whereIn('keyword_id', $trackedKeywordIds)
+                ->whereDate('recorded_at', today())
+                ->whereNotNull('position')
+                ->groupBy('app_id')
+                ->pluck('best_rank', 'app_id')
+                ->toArray();
+        }
+
+        // Get apps with tracked keywords count for this user
         $apps = $user
             ->apps()
-            ->withCount('trackedKeywords')
+            ->withCount(['trackedKeywords' => fn($q) => $q->where('user_id', $userId)])
             ->get()
-            ->map(function ($app) use ($user) {
+            ->map(function ($app) use ($bestRanks) {
                 $app->is_favorite = (bool) $app->pivot->is_favorite;
                 $app->favorited_at = $app->pivot->favorited_at;
-
-                // Get best rank (lowest position) from today's rankings for user's tracked keywords
-                $userKeywordIds = $app->trackedKeywords()
-                    ->where('user_id', $user->id)
-                    ->pluck('keyword_id');
-
-                $app->best_rank = $app->rankings()
-                    ->whereIn('keyword_id', $userKeywordIds)
-                    ->whereDate('recorded_at', today())
-                    ->whereNotNull('position')
-                    ->min('position');
+                $app->best_rank = $bestRanks[$app->id] ?? null;
 
                 return $app;
             })

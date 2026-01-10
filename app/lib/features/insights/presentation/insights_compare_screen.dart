@@ -20,6 +20,7 @@ class _CompareColumn {
   String appName = '';
   String? iconUrl;
   String platform = '';
+  String? storefront;
   AppInsight? insight;
   bool isLoading = true;
   String? error;
@@ -50,6 +51,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
             _columns[index].appName = comparison.appName;
             _columns[index].iconUrl = comparison.iconUrl;
             _columns[index].platform = comparison.platform;
+            _columns[index].storefront = comparison.storefront;
             _columns[index].insight = comparison.insight;
             _columns[index].isLoading = comparison.insight == null;
           });
@@ -73,11 +75,12 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   Future<void> _generateInsight(int index) async {
     final repository = ref.read(insightsRepositoryProvider);
     final column = _columns[index];
+    final country = column.storefront ?? 'US';
 
     try {
       final insight = await repository.generateInsights(
         appId: column.appId,
-        countries: ['US'],
+        countries: [country],
         periodMonths: 6,
       );
 

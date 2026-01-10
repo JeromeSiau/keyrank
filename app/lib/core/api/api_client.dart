@@ -32,13 +32,13 @@ final dioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
-class AuthInterceptor extends Interceptor {
+class AuthInterceptor extends QueuedInterceptor {
   final Ref ref;
 
   AuthInterceptor(this.ref);
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -53,7 +53,7 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
       final storage = ref.read(secureStorageProvider);
       await storage.delete(key: 'auth_token');

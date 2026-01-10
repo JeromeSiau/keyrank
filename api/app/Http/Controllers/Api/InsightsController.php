@@ -110,6 +110,7 @@ class InsightsController extends Controller
                     'name' => $app->name,
                     'icon_url' => $app->icon_url,
                     'platform' => $app->platform,
+                    'storefront' => $app->storefront,
                 ],
                 'insight' => $insight ? $this->formatInsight($insight, $userId) : null,
             ];
