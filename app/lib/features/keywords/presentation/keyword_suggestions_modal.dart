@@ -120,10 +120,11 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
       }
     } catch (e) {
       if (mounted) {
+        final colors = context.colors;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(context.l10n.keywordSuggestions_errorAdding(e.toString())),
-            backgroundColor: AppColors.red,
+            backgroundColor: colors.red,
           ),
         );
         setState(() => _isAdding = false);
@@ -132,27 +133,29 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
   }
 
   Color _getDifficultyColor(String label) {
+    final colors = context.colors;
     switch (label) {
       case 'easy':
-        return AppColors.green;
+        return colors.green;
       case 'medium':
-        return AppColors.yellow;
+        return colors.yellow;
       case 'hard':
-        return AppColors.orange;
+        return colors.orange;
       case 'very_hard':
-        return AppColors.red;
+        return colors.red;
       default:
-        return AppColors.textMuted;
+        return colors.textMuted;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Dialog(
-      backgroundColor: AppColors.glassPanel,
+      backgroundColor: colors.glassPanel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-        side: const BorderSide(color: AppColors.glassBorder),
+        side: BorderSide(color: colors.glassBorder),
       ),
       child: Container(
         width: 700,
@@ -172,10 +175,11 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
   }
 
   Widget _buildHeader() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
@@ -183,10 +187,10 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.greenMuted,
+              color: colors.greenMuted,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.lightbulb_outline_rounded, size: 20, color: AppColors.green),
+            child: Icon(Icons.lightbulb_outline_rounded, size: 20, color: colors.green),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -195,18 +199,18 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
               children: [
                 Text(
                   context.l10n.keywordSuggestions_title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   context.l10n.keywordSuggestions_appInCountry(widget.appName, widget.country),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                 ),
               ],
@@ -215,13 +219,13 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
           IconButton(
             onPressed: _loadSuggestions,
             icon: const Icon(Icons.refresh_rounded, size: 20),
-            color: AppColors.textMuted,
+            color: colors.textMuted,
             tooltip: context.l10n.keywordSuggestions_refresh,
           ),
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.close_rounded, size: 20),
-            color: AppColors.textMuted,
+            color: colors.textMuted,
           ),
         ],
       ),
@@ -229,27 +233,28 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
   }
 
   Widget _buildSearchBar() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.bgBase,
-                border: Border.all(color: AppColors.glassBorder),
+                color: colors.bgBase,
+                border: Border.all(color: colors.glassBorder),
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               ),
               child: TextField(
                 onChanged: (value) => setState(() => _searchQuery = value),
-                style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                style: TextStyle(fontSize: 14, color: colors.textPrimary),
                 decoration: InputDecoration(
                   hintText: context.l10n.keywordSuggestions_search,
-                  hintStyle: const TextStyle(color: AppColors.textMuted),
-                  prefixIcon: const Icon(Icons.search_rounded, size: 18, color: AppColors.textMuted),
+                  hintStyle: TextStyle(color: colors.textMuted),
+                  prefixIcon: Icon(Icons.search_rounded, size: 18, color: colors.textMuted),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 ),
@@ -272,6 +277,7 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
   }
 
   Widget _buildContent() {
+    final colors = context.colors;
     if (_isLoading) {
       return Center(
         child: Column(
@@ -281,12 +287,12 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             const SizedBox(height: 16),
             Text(
               context.l10n.keywordSuggestions_analyzing,
-              style: const TextStyle(color: AppColors.textMuted),
+              style: TextStyle(color: colors.textMuted),
             ),
             const SizedBox(height: 4),
             Text(
               context.l10n.keywordSuggestions_mayTakeFewSeconds,
-              style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+              style: TextStyle(fontSize: 12, color: colors.textMuted),
             ),
           ],
         ),
@@ -302,15 +308,15 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: AppColors.redMuted,
+                color: colors.redMuted,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.error_outline_rounded, size: 28, color: AppColors.red),
+              child: Icon(Icons.error_outline_rounded, size: 28, color: colors.red),
             ),
             const SizedBox(height: 16),
             Text(
               _error!,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: colors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -334,18 +340,18 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: AppColors.bgActive,
+                color: colors.bgActive,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.search_off_rounded, size: 28, color: AppColors.textMuted),
+              child: Icon(Icons.search_off_rounded, size: 28, color: colors.textMuted),
             ),
             const SizedBox(height: 16),
             Text(
               _searchQuery.isEmpty ? context.l10n.keywordSuggestions_noSuggestions : context.l10n.keywordSuggestions_noMatchingSuggestions,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
           ],
@@ -359,7 +365,7 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.bgActive.withAlpha(50),
+            color: colors.bgActive.withAlpha(50),
           ),
           child: Row(
             children: [
@@ -368,11 +374,11 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                 flex: 3,
                 child: Text(
                   context.l10n.keywordSuggestions_headerKeyword,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                 ),
               ),
@@ -380,11 +386,11 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                 width: 100,
                 child: Text(
                   context.l10n.keywordSuggestions_headerDifficulty,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -393,11 +399,11 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                 width: 80,
                 child: Text(
                   context.l10n.keywordSuggestions_headerApps,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -418,13 +424,13 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => _toggleSelection(suggestion.keyword),
-                  hoverColor: AppColors.bgHover,
+                  hoverColor: colors.bgHover,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.accentMuted : Colors.transparent,
-                      border: const Border(
-                        bottom: BorderSide(color: AppColors.glassBorder),
+                      color: isSelected ? colors.accentMuted : Colors.transparent,
+                      border: Border(
+                        bottom: BorderSide(color: colors.glassBorder),
                       ),
                     ),
                     child: Row(
@@ -435,8 +441,8 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                           child: Checkbox(
                             value: isSelected,
                             onChanged: (_) => _toggleSelection(suggestion.keyword),
-                            activeColor: AppColors.accent,
-                            side: const BorderSide(color: AppColors.textMuted),
+                            activeColor: colors.accent,
+                            side: BorderSide(color: colors.textMuted),
                           ),
                         ),
                         // Keyword
@@ -447,18 +453,18 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                             children: [
                               Text(
                                 suggestion.keyword,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.textPrimary,
+                                  color: colors.textPrimary,
                                 ),
                               ),
                               if (suggestion.position != null)
                                 Text(
                                   context.l10n.keywordSuggestions_rankedAt(suggestion.position!),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 11,
-                                    color: AppColors.green,
+                                    color: colors.green,
                                   ),
                                 ),
                             ],
@@ -495,9 +501,9 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                           width: 80,
                           child: Text(
                             '${suggestion.competition}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
-                              color: AppColors.textSecondary,
+                              color: colors.textSecondary,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -515,18 +521,19 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
   }
 
   Widget _buildFooter() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Text(
             context.l10n.keywordSuggestions_keywordsSelected(_selectedKeywords.length),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
           const Spacer(),
@@ -538,8 +545,8 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
           FilledButton(
             onPressed: _selectedKeywords.isEmpty || _isAdding ? null : _addSelected,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.green,
-              disabledBackgroundColor: AppColors.greenMuted,
+              backgroundColor: colors.green,
+              disabledBackgroundColor: colors.greenMuted,
             ),
             child: _isAdding
                 ? const SizedBox(

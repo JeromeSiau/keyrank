@@ -24,11 +24,12 @@ class AppRatingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final ratingsAsync = ref.watch(appRatingsProvider(appId));
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -37,8 +38,8 @@ class AppRatingsScreen extends ConsumerWidget {
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: colors.glassBorder)),
             ),
             child: Row(
               children: [
@@ -48,10 +49,10 @@ class AppRatingsScreen extends ConsumerWidget {
                   child: InkWell(
                     onTap: () => context.pop(),
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    hoverColor: AppColors.bgHover,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Icons.arrow_back_rounded, size: 20, color: AppColors.textMuted),
+                    hoverColor: colors.bgHover,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(Icons.arrow_back_rounded, size: 20, color: colors.textMuted),
                     ),
                   ),
                 ),
@@ -63,18 +64,18 @@ class AppRatingsScreen extends ConsumerWidget {
                     children: [
                       Text(
                         appName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: colors.textPrimary,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         context.l10n.ratings_byCountry,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textMuted,
+                          color: colors.textMuted,
                         ),
                       ),
                     ],
@@ -98,27 +99,27 @@ class AppRatingsScreen extends ConsumerWidget {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: AppColors.redMuted,
+                        color: colors.redMuted,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.error_outline_rounded,
                         size: 32,
-                        color: AppColors.red,
+                        color: colors.red,
                       ),
                     ),
                     const SizedBox(height: 20),
                     Text(
                       context.l10n.common_error(e.toString()),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: colors.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
                     Material(
-                      color: AppColors.accent,
+                      color: colors.accent,
                       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                       child: InkWell(
                         onTap: () => ref.invalidate(appRatingsProvider(appId)),
@@ -149,30 +150,30 @@ class AppRatingsScreen extends ConsumerWidget {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: AppColors.bgActive,
+                            color: colors.bgActive,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.star_outline_rounded,
                             size: 40,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           context.l10n.ratings_noRatingsAvailable,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
+                            color: colors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           context.l10n.ratings_noRatingsYet,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                         ),
                       ],
@@ -231,11 +232,12 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
@@ -243,18 +245,18 @@ class _SummaryCard extends StatelessWidget {
         children: [
           _SummaryItem(
             icon: Icons.people_rounded,
-            iconColor: AppColors.accent,
+            iconColor: colors.accent,
             value: _formatCount(totalRatings),
             label: totalRatingsLabel,
           ),
           Container(
             width: 1,
             height: 60,
-            color: AppColors.glassBorder,
+            color: colors.glassBorder,
           ),
           _SummaryItem(
             icon: Icons.star_rounded,
-            iconColor: _getRatingColor(averageRating),
+            iconColor: _getRatingColor(context, averageRating),
             value: averageRating?.toStringAsFixed(2) ?? '--',
             label: averageRatingLabel,
           ),
@@ -272,12 +274,13 @@ class _SummaryCard extends StatelessWidget {
     return count.toString();
   }
 
-  Color _getRatingColor(double? rating) {
-    if (rating == null) return AppColors.textMuted;
-    if (rating >= 4.5) return AppColors.green;
+  Color _getRatingColor(BuildContext context, double? rating) {
+    final colors = context.colors;
+    if (rating == null) return colors.textMuted;
+    if (rating >= 4.5) return colors.green;
     if (rating >= 4.0) return const Color(0xFF84cc16);
-    if (rating >= 3.5) return AppColors.yellow;
-    return AppColors.red;
+    if (rating >= 3.5) return colors.yellow;
+    return colors.red;
   }
 }
 
@@ -296,6 +299,7 @@ class _SummaryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Column(
       children: [
         Row(
@@ -305,10 +309,10 @@ class _SummaryItem extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
           ],
@@ -316,9 +320,9 @@ class _SummaryItem extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: AppColors.textMuted,
+            color: colors.textMuted,
           ),
         ),
       ],
@@ -351,10 +355,11 @@ class _RatingsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -367,18 +372,18 @@ class _RatingsTable extends StatelessWidget {
               children: [
                 Text(
                   countriesCountLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                 ),
                 if (lastUpdated != null)
                   Text(
                     updatedLabel(_formatDate(lastUpdated!)),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
               ],
@@ -388,10 +393,10 @@ class _RatingsTable extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: AppColors.bgActive.withAlpha(80),
-              border: const Border(
-                top: BorderSide(color: AppColors.glassBorder),
-                bottom: BorderSide(color: AppColors.glassBorder),
+              color: colors.bgActive.withAlpha(80),
+              border: Border(
+                top: BorderSide(color: colors.glassBorder),
+                bottom: BorderSide(color: colors.glassBorder),
               ),
             ),
             child: Row(
@@ -400,11 +405,11 @@ class _RatingsTable extends StatelessWidget {
                   flex: 3,
                   child: Text(
                     headerCountry,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -412,11 +417,11 @@ class _RatingsTable extends StatelessWidget {
                   width: 100,
                   child: Text(
                     headerRatings,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                     textAlign: TextAlign.right,
                   ),
@@ -425,11 +430,11 @@ class _RatingsTable extends StatelessWidget {
                   width: 100,
                   child: Text(
                     headerAverage,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                     textAlign: TextAlign.right,
                   ),
@@ -466,6 +471,7 @@ class _RatingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final flag = getFlagForStorefront(rating.country);
 
     return Material(
@@ -474,11 +480,11 @@ class _RatingRow extends StatelessWidget {
         onTap: () {
           context.push('/apps/$appId/reviews/${rating.country}?name=${Uri.encodeComponent(appName)}');
         },
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: colors.glassBorder)),
           ),
           child: Row(
             children: [
@@ -490,10 +496,10 @@ class _RatingRow extends StatelessWidget {
                     const SizedBox(width: 10),
                     Text(
                       _getCountryName(rating.country),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                     ),
                   ],
@@ -503,10 +509,10 @@ class _RatingRow extends StatelessWidget {
                 width: 100,
                 child: Text(
                   _formatCount(rating.ratingCount),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                   textAlign: TextAlign.right,
                 ),
@@ -521,23 +527,23 @@ class _RatingRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: _getRatingColor(rating.rating),
+                        color: _getRatingColor(context, rating.rating),
                       ),
                     ),
                     const SizedBox(width: 4),
                     Icon(
                       Icons.star_rounded,
                       size: 16,
-                      color: _getRatingColor(rating.rating),
+                      color: _getRatingColor(context, rating.rating),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: AppColors.textMuted,
+                color: colors.textMuted,
               ),
             ],
           ),
@@ -555,12 +561,13 @@ class _RatingRow extends StatelessWidget {
     return count.toString();
   }
 
-  Color _getRatingColor(double? rating) {
-    if (rating == null) return AppColors.textMuted;
-    if (rating >= 4.5) return AppColors.green;
+  Color _getRatingColor(BuildContext context, double? rating) {
+    final colors = context.colors;
+    if (rating == null) return colors.textMuted;
+    if (rating >= 4.5) return colors.green;
     if (rating >= 4.0) return const Color(0xFF84cc16);
-    if (rating >= 3.5) return AppColors.yellow;
-    return AppColors.red;
+    if (rating >= 3.5) return colors.yellow;
+    return colors.red;
   }
 
   String _getCountryName(String code) {

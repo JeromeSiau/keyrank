@@ -27,18 +27,19 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovering = true),
       onExit: (_) => setState(() => _isHovering = false),
       child: Material(
         color: widget.isSelected
-            ? AppColors.accent.withAlpha(30)
+            ? colors.accent.withAlpha(30)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         child: InkWell(
           onTap: widget.onTap,
           borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-          hoverColor: AppColors.bgHover,
+          hoverColor: colors.bgHover,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Row(
@@ -49,23 +50,23 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
                   height: 24,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
-                    color: AppColors.bgActive,
+                    color: colors.bgActive,
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: widget.app.iconUrl != null
                       ? Image.network(
                           widget.app.iconUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => const Icon(
+                          errorBuilder: (_, _, _) => Icon(
                             Icons.apps,
                             size: 14,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.apps,
                           size: 14,
-                          color: AppColors.textMuted,
+                          color: colors.textMuted,
                         ),
                 ),
                 const SizedBox(width: 8),
@@ -76,7 +77,7 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
                     child: Icon(
                       widget.app.isIos ? Icons.apple : Icons.android,
                       size: 14,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 // App name
@@ -88,8 +89,8 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
                       fontWeight:
                           widget.isSelected ? FontWeight.w600 : FontWeight.w500,
                       color: widget.isSelected
-                          ? AppColors.textPrimary
-                          : AppColors.textSecondary,
+                          ? colors.textPrimary
+                          : colors.textSecondary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -106,8 +107,8 @@ class _SidebarAppTileState extends State<SidebarAppTile> {
                             : Icons.star_outline_rounded,
                         size: 16,
                         color: widget.app.isFavorite
-                            ? AppColors.yellow
-                            : AppColors.textMuted,
+                            ? colors.yellow
+                            : colors.textMuted,
                       ),
                     ),
                   ),

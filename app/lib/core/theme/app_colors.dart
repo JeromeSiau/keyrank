@@ -1,6 +1,248 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+/// Theme extension for custom app colors
+/// Usage: Theme.of(context).extension<AppColorsExtension>()!.textMuted
+class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
+  final Color bgBase;
+  final Color bgSurface;
+  final Color glassPanel;
+  final Color glassPanelAlpha;
+  final Color glassBorder;
+  final Color glassHighlight;
+  final Color bgPanel;
+  final Color bgHover;
+  final Color bgActive;
+  final Color border;
+  final Color borderLight;
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color textMuted;
+  final Color accent;
+  final Color accentHover;
+  final Color accentMuted;
+  final Color green;
+  final Color greenBright;
+  final Color greenDim;
+  final Color greenMuted;
+  final Color red;
+  final Color redBright;
+  final Color redDim;
+  final Color redMuted;
+  final Color yellow;
+  final Color yellowBright;
+  final Color orange;
+  final Color purple;
+
+  const AppColorsExtension({
+    required this.bgBase,
+    required this.bgSurface,
+    required this.glassPanel,
+    required this.glassPanelAlpha,
+    required this.glassBorder,
+    required this.glassHighlight,
+    required this.bgPanel,
+    required this.bgHover,
+    required this.bgActive,
+    required this.border,
+    required this.borderLight,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.textMuted,
+    required this.accent,
+    required this.accentHover,
+    required this.accentMuted,
+    required this.green,
+    required this.greenBright,
+    required this.greenDim,
+    required this.greenMuted,
+    required this.red,
+    required this.redBright,
+    required this.redDim,
+    required this.redMuted,
+    required this.yellow,
+    required this.yellowBright,
+    required this.orange,
+    required this.purple,
+  });
+
+  /// Dark theme colors
+  static const dark = AppColorsExtension(
+    bgBase: AppColors.bgBase,
+    bgSurface: AppColors.bgSurface,
+    glassPanel: AppColors.glassPanel,
+    glassPanelAlpha: AppColors.glassPanelAlpha,
+    glassBorder: AppColors.glassBorder,
+    glassHighlight: AppColors.glassHighlight,
+    bgPanel: AppColors.bgPanel,
+    bgHover: AppColors.bgHover,
+    bgActive: AppColors.bgActive,
+    border: AppColors.border,
+    borderLight: AppColors.borderLight,
+    textPrimary: AppColors.textPrimary,
+    textSecondary: AppColors.textSecondary,
+    textMuted: AppColors.textMuted,
+    accent: AppColors.accent,
+    accentHover: AppColors.accentHover,
+    accentMuted: AppColors.accentMuted,
+    green: AppColors.green,
+    greenBright: AppColors.greenBright,
+    greenDim: AppColors.greenDim,
+    greenMuted: AppColors.greenMuted,
+    red: AppColors.red,
+    redBright: AppColors.redBright,
+    redDim: AppColors.redDim,
+    redMuted: AppColors.redMuted,
+    yellow: AppColors.yellow,
+    yellowBright: AppColors.yellowBright,
+    orange: AppColors.orange,
+    purple: AppColors.purple,
+  );
+
+  /// Light theme colors
+  static const light = AppColorsExtension(
+    bgBase: AppColorsLight.bgBase,
+    bgSurface: AppColorsLight.bgSurface,
+    glassPanel: AppColorsLight.glassPanel,
+    glassPanelAlpha: AppColorsLight.glassPanelAlpha,
+    glassBorder: AppColorsLight.glassBorder,
+    glassHighlight: AppColorsLight.glassHighlight,
+    bgPanel: AppColorsLight.bgPanel,
+    bgHover: AppColorsLight.bgHover,
+    bgActive: AppColorsLight.bgActive,
+    border: AppColorsLight.border,
+    borderLight: AppColorsLight.borderLight,
+    textPrimary: AppColorsLight.textPrimary,
+    textSecondary: AppColorsLight.textSecondary,
+    textMuted: AppColorsLight.textMuted,
+    accent: AppColorsLight.accent,
+    accentHover: AppColorsLight.accentHover,
+    accentMuted: AppColorsLight.accentMuted,
+    green: AppColorsLight.green,
+    greenBright: AppColorsLight.greenBright,
+    greenDim: AppColorsLight.greenDim,
+    greenMuted: AppColorsLight.greenMuted,
+    red: AppColorsLight.red,
+    redBright: AppColorsLight.redBright,
+    redDim: AppColorsLight.redDim,
+    redMuted: AppColorsLight.redMuted,
+    yellow: AppColorsLight.yellow,
+    yellowBright: AppColorsLight.yellowBright,
+    orange: AppColorsLight.orange,
+    purple: AppColorsLight.purple,
+  );
+
+  @override
+  ThemeExtension<AppColorsExtension> copyWith({
+    Color? bgBase,
+    Color? bgSurface,
+    Color? glassPanel,
+    Color? glassPanelAlpha,
+    Color? glassBorder,
+    Color? glassHighlight,
+    Color? bgPanel,
+    Color? bgHover,
+    Color? bgActive,
+    Color? border,
+    Color? borderLight,
+    Color? textPrimary,
+    Color? textSecondary,
+    Color? textMuted,
+    Color? accent,
+    Color? accentHover,
+    Color? accentMuted,
+    Color? green,
+    Color? greenBright,
+    Color? greenDim,
+    Color? greenMuted,
+    Color? red,
+    Color? redBright,
+    Color? redDim,
+    Color? redMuted,
+    Color? yellow,
+    Color? yellowBright,
+    Color? orange,
+    Color? purple,
+  }) {
+    return AppColorsExtension(
+      bgBase: bgBase ?? this.bgBase,
+      bgSurface: bgSurface ?? this.bgSurface,
+      glassPanel: glassPanel ?? this.glassPanel,
+      glassPanelAlpha: glassPanelAlpha ?? this.glassPanelAlpha,
+      glassBorder: glassBorder ?? this.glassBorder,
+      glassHighlight: glassHighlight ?? this.glassHighlight,
+      bgPanel: bgPanel ?? this.bgPanel,
+      bgHover: bgHover ?? this.bgHover,
+      bgActive: bgActive ?? this.bgActive,
+      border: border ?? this.border,
+      borderLight: borderLight ?? this.borderLight,
+      textPrimary: textPrimary ?? this.textPrimary,
+      textSecondary: textSecondary ?? this.textSecondary,
+      textMuted: textMuted ?? this.textMuted,
+      accent: accent ?? this.accent,
+      accentHover: accentHover ?? this.accentHover,
+      accentMuted: accentMuted ?? this.accentMuted,
+      green: green ?? this.green,
+      greenBright: greenBright ?? this.greenBright,
+      greenDim: greenDim ?? this.greenDim,
+      greenMuted: greenMuted ?? this.greenMuted,
+      red: red ?? this.red,
+      redBright: redBright ?? this.redBright,
+      redDim: redDim ?? this.redDim,
+      redMuted: redMuted ?? this.redMuted,
+      yellow: yellow ?? this.yellow,
+      yellowBright: yellowBright ?? this.yellowBright,
+      orange: orange ?? this.orange,
+      purple: purple ?? this.purple,
+    );
+  }
+
+  @override
+  ThemeExtension<AppColorsExtension> lerp(
+    covariant ThemeExtension<AppColorsExtension>? other,
+    double t,
+  ) {
+    if (other is! AppColorsExtension) return this;
+    return AppColorsExtension(
+      bgBase: Color.lerp(bgBase, other.bgBase, t)!,
+      bgSurface: Color.lerp(bgSurface, other.bgSurface, t)!,
+      glassPanel: Color.lerp(glassPanel, other.glassPanel, t)!,
+      glassPanelAlpha: Color.lerp(glassPanelAlpha, other.glassPanelAlpha, t)!,
+      glassBorder: Color.lerp(glassBorder, other.glassBorder, t)!,
+      glassHighlight: Color.lerp(glassHighlight, other.glassHighlight, t)!,
+      bgPanel: Color.lerp(bgPanel, other.bgPanel, t)!,
+      bgHover: Color.lerp(bgHover, other.bgHover, t)!,
+      bgActive: Color.lerp(bgActive, other.bgActive, t)!,
+      border: Color.lerp(border, other.border, t)!,
+      borderLight: Color.lerp(borderLight, other.borderLight, t)!,
+      textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
+      textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
+      textMuted: Color.lerp(textMuted, other.textMuted, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
+      accentHover: Color.lerp(accentHover, other.accentHover, t)!,
+      accentMuted: Color.lerp(accentMuted, other.accentMuted, t)!,
+      green: Color.lerp(green, other.green, t)!,
+      greenBright: Color.lerp(greenBright, other.greenBright, t)!,
+      greenDim: Color.lerp(greenDim, other.greenDim, t)!,
+      greenMuted: Color.lerp(greenMuted, other.greenMuted, t)!,
+      red: Color.lerp(red, other.red, t)!,
+      redBright: Color.lerp(redBright, other.redBright, t)!,
+      redDim: Color.lerp(redDim, other.redDim, t)!,
+      redMuted: Color.lerp(redMuted, other.redMuted, t)!,
+      yellow: Color.lerp(yellow, other.yellow, t)!,
+      yellowBright: Color.lerp(yellowBright, other.yellowBright, t)!,
+      orange: Color.lerp(orange, other.orange, t)!,
+      purple: Color.lerp(purple, other.purple, t)!,
+    );
+  }
+}
+
+/// Convenience extension to access AppColorsExtension
+extension AppColorsExtensionContext on BuildContext {
+  AppColorsExtension get colors =>
+      Theme.of(this).extension<AppColorsExtension>()!;
+}
+
 /// Design system colors for liquid glass dark theme
 class AppColors {
   // Base backgrounds - darker for contrast with glass panels

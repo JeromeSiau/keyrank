@@ -7,6 +7,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.bgBase,
+      extensions: const [AppColorsExtension.dark],
       colorScheme: const ColorScheme.dark(
         surface: AppColors.bgSurface,
         primary: AppColors.accent,
@@ -245,6 +246,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       scaffoldBackgroundColor: AppColorsLight.bgBase,
+      extensions: const [AppColorsExtension.light],
       colorScheme: const ColorScheme.light(
         surface: AppColorsLight.bgSurface,
         primary: AppColorsLight.accent,

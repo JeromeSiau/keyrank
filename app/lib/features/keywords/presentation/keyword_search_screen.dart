@@ -40,6 +40,7 @@ class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final searchResults = ref.watch(_keywordSearchResultsProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
     final selectedPlatform = ref.watch(_selectedPlatformProvider);
@@ -47,7 +48,7 @@ class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -117,28 +118,29 @@ class _Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Text(
             context.l10n.keywordSearch_title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(width: 16),
           // Platform toggle
           Container(
             decoration: BoxDecoration(
-              color: AppColors.bgActive,
-              border: Border.all(color: AppColors.glassBorder),
+              color: colors.bgActive,
+              border: Border.all(color: colors.glassBorder),
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
             ),
             padding: const EdgeInsets.all(4),
@@ -165,9 +167,9 @@ class _Toolbar extends StatelessWidget {
             offset: const Offset(0, 44),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-              side: const BorderSide(color: AppColors.glassBorder),
+              side: BorderSide(color: colors.glassBorder),
             ),
-            color: AppColors.glassPanel,
+            color: colors.glassPanel,
             itemBuilder: (context) => countries
                 .map((country) => PopupMenuItem<Country>(
                       value: country,
@@ -178,9 +180,9 @@ class _Toolbar extends StatelessWidget {
                           const SizedBox(width: 10),
                           Text(
                             country.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.textPrimary,
+                              color: colors.textPrimary,
                             ),
                           ),
                         ],
@@ -190,8 +192,8 @@ class _Toolbar extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.bgActive,
-                border: Border.all(color: AppColors.glassBorder),
+                color: colors.bgActive,
+                border: Border.all(color: colors.glassBorder),
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               ),
               child: Row(
@@ -201,14 +203,14 @@ class _Toolbar extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     selectedCountry.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: AppColors.textMuted),
+                  Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: colors.textMuted),
                 ],
               ),
             ),
@@ -232,12 +234,13 @@ class _PlatformToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.glassPanel : Colors.transparent,
+          color: isSelected ? colors.glassPanel : Colors.transparent,
           borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
         ),
         child: Text(
@@ -245,7 +248,7 @@ class _PlatformToggleButton extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? AppColors.textPrimary : AppColors.textMuted,
+            color: isSelected ? colors.textPrimary : colors.textMuted,
           ),
         ),
       ),
@@ -266,37 +269,38 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.bgBase,
-                border: Border.all(color: AppColors.glassBorder),
+                color: colors.bgBase,
+                border: Border.all(color: colors.glassBorder),
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               ),
               child: Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14),
-                    child: Icon(Icons.search_rounded, size: 20, color: AppColors.textMuted),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(Icons.search_rounded, size: 20, color: colors.textMuted),
                   ),
                   Expanded(
                     child: TextField(
                       controller: controller,
                       onChanged: onChanged,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                       decoration: InputDecoration(
                         hintText: context.l10n.keywordSearch_searchPlaceholder,
-                        hintStyle: const TextStyle(color: AppColors.textMuted),
+                        hintStyle: TextStyle(color: colors.textMuted),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -305,7 +309,7 @@ class _SearchBar extends StatelessWidget {
                   if (controller.text.isNotEmpty)
                     IconButton(
                       icon: const Icon(Icons.clear_rounded, size: 18),
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                       onPressed: onClear,
                       padding: const EdgeInsets.all(8),
                       constraints: const BoxConstraints(),
@@ -361,11 +365,12 @@ class _KeywordInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
@@ -376,18 +381,18 @@ class _KeywordInfoCard extends StatelessWidget {
               children: [
                 Text(
                   keyword,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   context.l10n.keywordSearch_appsRanked(totalResults),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                 ),
               ],
@@ -397,7 +402,7 @@ class _KeywordInfoCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                color: _getPopularityColor(popularity!).withAlpha(25),
+                color: _getPopularityColor(context, popularity!).withAlpha(25),
                 borderRadius: BorderRadius.circular(AppColors.radiusMedium),
               ),
               child: Column(
@@ -407,7 +412,7 @@ class _KeywordInfoCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.w700,
-                      color: _getPopularityColor(popularity!),
+                      color: _getPopularityColor(context, popularity!),
                     ),
                   ),
                   Text(
@@ -415,7 +420,7 @@ class _KeywordInfoCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: _getPopularityColor(popularity!),
+                      color: _getPopularityColor(context, popularity!),
                     ),
                   ),
                 ],
@@ -426,10 +431,11 @@ class _KeywordInfoCard extends StatelessWidget {
     );
   }
 
-  Color _getPopularityColor(int popularity) {
-    if (popularity >= 70) return AppColors.green;
-    if (popularity >= 40) return AppColors.yellow;
-    return AppColors.red;
+  Color _getPopularityColor(BuildContext context, int popularity) {
+    final colors = context.colors;
+    if (popularity >= 70) return colors.green;
+    if (popularity >= 40) return colors.yellow;
+    return colors.red;
   }
 }
 
@@ -440,13 +446,14 @@ class _ResultsTable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final selectedPlatform = ref.watch(_selectedPlatformProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -459,10 +466,10 @@ class _ResultsTable extends ConsumerWidget {
               children: [
                 Text(
                   context.l10n.keywordSearch_results(results.length),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                 ),
               ],
@@ -472,10 +479,10 @@ class _ResultsTable extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: AppColors.bgActive.withAlpha(80),
-              border: const Border(
-                top: BorderSide(color: AppColors.glassBorder),
-                bottom: BorderSide(color: AppColors.glassBorder),
+              color: colors.bgActive.withAlpha(80),
+              border: Border(
+                top: BorderSide(color: colors.glassBorder),
+                bottom: BorderSide(color: colors.glassBorder),
               ),
             ),
             child: Row(
@@ -484,11 +491,11 @@ class _ResultsTable extends ConsumerWidget {
                   width: 60,
                   child: Text(
                     context.l10n.keywordSearch_headerRank,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -496,11 +503,11 @@ class _ResultsTable extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     context.l10n.keywordSearch_headerApp,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -508,11 +515,11 @@ class _ResultsTable extends ConsumerWidget {
                   width: 70,
                   child: Text(
                     context.l10n.keywordSearch_headerRating,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -521,11 +528,11 @@ class _ResultsTable extends ConsumerWidget {
                   width: 48,
                   child: Text(
                     context.l10n.keywordSearch_headerTrack,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -605,12 +612,13 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final isTopRank = widget.app.position <= 3;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
@@ -620,7 +628,7 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: isTopRank ? AppColors.greenMuted : AppColors.bgActive,
+                color: isTopRank ? colors.greenMuted : colors.bgActive,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -628,7 +636,7 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: isTopRank ? AppColors.green : AppColors.textSecondary,
+                  color: isTopRank ? colors.green : colors.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -666,19 +674,19 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
               children: [
                 Text(
                   widget.app.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (widget.app.developer != null)
                   Text(
                     widget.app.developer!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -691,23 +699,23 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
             child: widget.app.rating != null
                 ? Row(
                     children: [
-                      const Icon(Icons.star_rounded, size: 16, color: AppColors.yellow),
+                      Icon(Icons.star_rounded, size: 16, color: colors.yellow),
                       const SizedBox(width: 4),
                       Text(
                         widget.app.rating!.toStringAsFixed(1),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
+                          color: colors.textSecondary,
                         ),
                       ),
                     ],
                   )
-                : const Text(
+                : Text(
                     '--',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
           ),
@@ -723,21 +731,22 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
   }
 
   Widget _buildTrackButton() {
+    final colors = context.colors;
     if (_isAdded) {
-      return const Icon(
+      return Icon(
         Icons.check_circle_rounded,
         size: 22,
-        color: AppColors.green,
+        color: colors.green,
       );
     }
 
     if (_isLoading) {
-      return const SizedBox(
+      return SizedBox(
         width: 22,
         height: 22,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          color: AppColors.textMuted,
+          color: colors.textMuted,
         ),
       );
     }
@@ -747,7 +756,7 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
         message: _error!,
         child: IconButton(
           icon: const Icon(Icons.error_outline_rounded, size: 22),
-          color: AppColors.red,
+          color: colors.red,
           onPressed: _trackApp,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
@@ -757,8 +766,8 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
 
     return IconButton(
       icon: const Icon(Icons.add_circle_outline_rounded, size: 22),
-      color: AppColors.textMuted,
-      hoverColor: AppColors.green.withAlpha(30),
+      color: colors.textMuted,
+      hoverColor: colors.green.withAlpha(30),
       onPressed: _trackApp,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),

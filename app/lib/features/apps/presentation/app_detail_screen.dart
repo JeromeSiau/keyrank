@@ -315,6 +315,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final appsAsync = ref.watch(appsNotifierProvider);
     final keywordsState = ref.watch(keywordsNotifierProvider(widget.appId));
 
@@ -326,7 +327,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     if (app == null) {
       return Container(
         decoration: BoxDecoration(
-          color: AppColors.glassPanel,
+          color: colors.glassPanel,
           borderRadius: BorderRadius.circular(AppColors.radiusLarge),
         ),
         child: const Center(
@@ -340,7 +341,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Stack(
@@ -467,11 +468,12 @@ class _Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
@@ -482,10 +484,10 @@ class _Toolbar extends StatelessWidget {
             child: InkWell(
               onTap: onBack,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              hoverColor: AppColors.bgHover,
-              child: const Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.arrow_back_rounded, size: 20, color: AppColors.textMuted),
+              hoverColor: colors.bgHover,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Icon(Icons.arrow_back_rounded, size: 20, color: colors.textMuted),
               ),
             ),
           ),
@@ -494,10 +496,10 @@ class _Toolbar extends StatelessWidget {
           Expanded(
             child: Text(
               appName,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -506,7 +508,7 @@ class _Toolbar extends StatelessWidget {
           ToolbarButton(
             icon: isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
             label: context.l10n.appDetail_favorite,
-            iconColor: isFavorite ? AppColors.yellow : null,
+            iconColor: isFavorite ? colors.yellow : null,
             onTap: onToggleFavorite,
           ),
           const SizedBox(width: 10),
@@ -554,11 +556,12 @@ class _AppInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
@@ -594,19 +597,19 @@ class _AppInfoCard extends StatelessWidget {
               children: [
                 Text(
                   app.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 if (app.developer != null) ...[
                   const SizedBox(height: 4),
                   Text(
                     app.developer!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ],
@@ -619,20 +622,20 @@ class _AppInfoCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         margin: const EdgeInsets.only(right: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.bgActive,
+                          color: colors.bgActive,
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('🍎', style: TextStyle(fontSize: 12)),
-                            SizedBox(width: 4),
+                            const Text('🍎', style: TextStyle(fontSize: 12)),
+                            const SizedBox(width: 4),
                             Text(
                               'iOS',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textSecondary,
+                                color: colors.textSecondary,
                               ),
                             ),
                           ],
@@ -642,20 +645,20 @@ class _AppInfoCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.greenMuted,
+                          color: colors.greenMuted,
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('🤖', style: TextStyle(fontSize: 12)),
-                            SizedBox(width: 4),
+                            const Text('🤖', style: TextStyle(fontSize: 12)),
+                            const SizedBox(width: 4),
                             Text(
                               'Android',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.green,
+                                color: colors.green,
                               ),
                             ),
                           ],
@@ -670,7 +673,7 @@ class _AppInfoCard extends StatelessWidget {
           if (app.rating != null)
             _StatBadge(
               icon: Icons.star_rounded,
-              iconColor: AppColors.yellow,
+              iconColor: colors.yellow,
               value: app.rating!.toStringAsFixed(1),
               label: context.l10n.appDetail_reviewsCount(app.ratingCount ?? 0),
               onTap: onViewRatings,
@@ -678,7 +681,7 @@ class _AppInfoCard extends StatelessWidget {
           const SizedBox(width: 12),
           _StatBadge(
             icon: Icons.key_rounded,
-            iconColor: AppColors.accent,
+            iconColor: colors.accent,
             value: '${app.trackedKeywordsCount ?? 0}',
             label: context.l10n.appDetail_keywords,
           ),
@@ -705,10 +708,11 @@ class _StatBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final content = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.bgActive,
+        color: colors.bgActive,
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
       ),
       child: Column(
@@ -720,10 +724,10 @@ class _StatBadge extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
             ],
@@ -731,9 +735,9 @@ class _StatBadge extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
         ],
@@ -747,7 +751,7 @@ class _StatBadge extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-          hoverColor: AppColors.bgHover,
+          hoverColor: colors.bgHover,
           child: content,
         ),
       );
@@ -770,14 +774,15 @@ class _AddKeywordSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final selectedCountry = ref.watch(selectedCountryProvider);
     final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
@@ -786,18 +791,18 @@ class _AddKeywordSection extends ConsumerWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.accent.withAlpha(30),
+              color: colors.accent.withAlpha(30),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.add_rounded, size: 18, color: AppColors.accent),
+            child: Icon(Icons.add_rounded, size: 18, color: colors.accent),
           ),
           const SizedBox(width: 12),
           Text(
             context.l10n.appDetail_addKeyword,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(width: 16),
@@ -809,9 +814,9 @@ class _AddKeywordSection extends ConsumerWidget {
             offset: const Offset(0, 44),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-              side: const BorderSide(color: AppColors.glassBorder),
+              side: BorderSide(color: colors.glassBorder),
             ),
-            color: AppColors.glassPanel,
+            color: colors.glassPanel,
             itemBuilder: (context) => countries
                 .map((country) => PopupMenuItem<Country>(
                       value: country,
@@ -822,9 +827,9 @@ class _AddKeywordSection extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Text(
                             country.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.textPrimary,
+                              color: colors.textPrimary,
                             ),
                           ),
                         ],
@@ -834,8 +839,8 @@ class _AddKeywordSection extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.bgActive,
-                border: Border.all(color: AppColors.glassBorder),
+                color: colors.bgActive,
+                border: Border.all(color: colors.glassBorder),
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               ),
               child: Row(
@@ -845,14 +850,14 @@ class _AddKeywordSection extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Text(
                     selectedCountry.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: AppColors.textMuted),
+                  Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: colors.textMuted),
                 ],
               ),
             ),
@@ -862,20 +867,20 @@ class _AddKeywordSection extends ConsumerWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.bgBase,
-                border: Border.all(color: AppColors.glassBorder),
+                color: colors.bgBase,
+                border: Border.all(color: colors.glassBorder),
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               ),
               child: TextField(
                 controller: controller,
                 onSubmitted: (_) => onAdd(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
                 decoration: InputDecoration(
                   hintText: context.l10n.appDetail_keywordHint,
-                  hintStyle: const TextStyle(color: AppColors.textMuted),
+                  hintStyle: TextStyle(color: colors.textMuted),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 ),
@@ -885,7 +890,7 @@ class _AddKeywordSection extends ConsumerWidget {
           const SizedBox(width: 12),
           // Add button
           Material(
-            color: AppColors.accent,
+            color: colors.accent,
             borderRadius: BorderRadius.circular(AppColors.radiusSmall),
             child: InkWell(
               onTap: isAdding ? null : onAdd,
@@ -1167,12 +1172,13 @@ class _KeywordsTableState extends State<_KeywordsTable> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final displayedKeywords = _filteredAndSortedKeywords;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -1189,15 +1195,15 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                     onPressed: _clearSelection,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     context.l10n.appDetail_selectedCount(_selectedIds.length),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                   const Spacer(),
@@ -1240,10 +1246,10 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   // Normal mode header
                   Text(
                     '${context.l10n.appDetail_trackedKeywords}${_filter != KeywordFilter.all ? ' (${_filterLabel(context)})' : ''}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -1251,15 +1257,15 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.accentMuted,
+                        color: colors.accentMuted,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '${displayedKeywords.length}${_filter != KeywordFilter.all ? '/${widget.keywordsState.keywords.length}' : ''}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.accent,
+                          color: colors.accent,
                         ),
                       ),
                     ),
@@ -1294,7 +1300,7 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   if (widget.onSuggestions != null) ...[
                     const SizedBox(width: 10),
                     Material(
-                      color: AppColors.greenMuted,
+                      color: colors.greenMuted,
                       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                       child: InkWell(
                         onTap: widget.onSuggestions,
@@ -1304,18 +1310,18 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.lightbulb_outline_rounded,
                                 size: 16,
-                                color: AppColors.green,
+                                color: colors.green,
                               ),
                               const SizedBox(width: 6),
                               Text(
                                 context.l10n.appDetail_suggestions,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.green,
+                                  color: colors.green,
                                 ),
                               ),
                             ],
@@ -1332,10 +1338,10 @@ class _KeywordsTableState extends State<_KeywordsTable> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: AppColors.bgActive.withAlpha(80),
-              border: const Border(
-                top: BorderSide(color: AppColors.glassBorder),
-                bottom: BorderSide(color: AppColors.glassBorder),
+              color: colors.bgActive.withAlpha(80),
+              border: Border(
+                top: BorderSide(color: colors.glassBorder),
+                bottom: BorderSide(color: colors.glassBorder),
               ),
             ),
             child: Row(
@@ -1344,22 +1350,22 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   width: 50,
                   child: Text(
                     context.l10n.appDetail_store,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     context.l10n.keywordSuggestions_headerKeyword,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -1368,18 +1374,18 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                     width: 80,
                     child: Text(
                       context.l10n.filter_ios,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
                 if (widget.hasIos && widget.hasAndroid) const SizedBox(width: 12),
                 if (widget.hasAndroid)
-                  const SizedBox(
+                  SizedBox(
                     width: 80,
                     child: Text(
                       'ANDROID',
@@ -1387,7 +1393,7 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -1404,6 +1410,7 @@ class _KeywordsTableState extends State<_KeywordsTable> {
   }
 
   Widget _buildContent() {
+    final colors = context.colors;
     if (widget.keywordsState.isLoading) {
       return const Padding(
         padding: EdgeInsets.all(40),
@@ -1423,19 +1430,19 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.redMuted,
+                  color: colors.redMuted,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.error_outline_rounded,
                   size: 28,
-                  color: AppColors.red,
+                  color: colors.red,
                 ),
               ),
               const SizedBox(height: 16),
               Text(
                 'Error: ${widget.keywordsState.error}',
-                style: const TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: colors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -1456,26 +1463,26 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.bgActive,
+                  color: colors.bgActive,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(Icons.key_off_rounded, size: 28, color: AppColors.textMuted),
+                child: Icon(Icons.key_off_rounded, size: 28, color: colors.textMuted),
               ),
               const SizedBox(height: 16),
               Text(
                 context.l10n.appDetail_noKeywordsTracked,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 context.l10n.appDetail_addKeywordHint,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.textMuted,
+                  color: colors.textMuted,
                 ),
               ),
             ],
@@ -1494,26 +1501,26 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.bgActive,
+                  color: colors.bgActive,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(Icons.filter_list_off_rounded, size: 28, color: AppColors.textMuted),
+                child: Icon(Icons.filter_list_off_rounded, size: 28, color: colors.textMuted),
               ),
               const SizedBox(height: 16),
               Text(
                 context.l10n.appDetail_noKeywordsMatchFilter,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 context.l10n.appDetail_tryChangingFilter,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.textMuted,
+                  color: colors.textMuted,
                 ),
               ),
             ],
@@ -1555,18 +1562,19 @@ class _KeywordFilterSortButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.accentMuted : Colors.transparent,
+            color: isActive ? colors.accentMuted : Colors.transparent,
             border: Border.all(
-              color: isActive ? AppColors.accent.withAlpha(100) : AppColors.glassBorder,
+              color: isActive ? colors.accent.withAlpha(100) : colors.glassBorder,
             ),
             borderRadius: BorderRadius.circular(6),
           ),
@@ -1576,7 +1584,7 @@ class _KeywordFilterSortButton extends StatelessWidget {
               Icon(
                 icon,
                 size: 14,
-                color: isActive ? AppColors.accent : AppColors.textMuted,
+                color: isActive ? colors.accent : colors.textMuted,
               ),
               const SizedBox(width: 4),
               Text(
@@ -1584,7 +1592,7 @@ class _KeywordFilterSortButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isActive ? AppColors.accent : AppColors.textMuted,
+                  color: isActive ? colors.accent : colors.textMuted,
                 ),
               ),
             ],
@@ -1610,23 +1618,24 @@ class _BulkActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final isDisabled = onTap == null;
-    final color = isDestructive ? AppColors.red : AppColors.accent;
+    final color = isDestructive ? colors.red : colors.accent;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
-        hoverColor: isDisabled ? null : AppColors.bgHover,
+        hoverColor: isDisabled ? null : colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
             color: isDisabled
                 ? Colors.transparent
-                : (isDestructive ? AppColors.redMuted : AppColors.accentMuted),
+                : (isDestructive ? colors.redMuted : colors.accentMuted),
             border: Border.all(
-              color: isDisabled ? AppColors.glassBorder : color.withAlpha(100),
+              color: isDisabled ? colors.glassBorder : color.withAlpha(100),
             ),
             borderRadius: BorderRadius.circular(6),
           ),
@@ -1636,7 +1645,7 @@ class _BulkActionButton extends StatelessWidget {
               Icon(
                 icon,
                 size: 14,
-                color: isDisabled ? AppColors.textMuted : color,
+                color: isDisabled ? colors.textMuted : color,
               ),
               const SizedBox(width: 4),
               Text(
@@ -1644,7 +1653,7 @@ class _BulkActionButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isDisabled ? AppColors.textMuted : color,
+                  color: isDisabled ? colors.textMuted : color,
                 ),
               ),
             ],
@@ -1713,6 +1722,7 @@ class _KeywordRowState extends State<_KeywordRow> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final keyword = widget.keyword;
     final isTopRank = keyword.position != null && keyword.position! <= 10;
 
@@ -1720,11 +1730,11 @@ class _KeywordRowState extends State<_KeywordRow> {
       color: Colors.transparent,
       child: InkWell(
         onTap: widget.onTap,
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: colors.glassBorder)),
           ),
           child: Row(
             children: [
@@ -1737,8 +1747,8 @@ class _KeywordRowState extends State<_KeywordRow> {
                     onChanged: widget.onToggleSelection != null
                         ? (_) => widget.onToggleSelection!()
                         : null,
-                    activeColor: AppColors.accent,
-                    side: const BorderSide(color: AppColors.textMuted),
+                    activeColor: colors.accent,
+                    side: BorderSide(color: colors.textMuted),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
@@ -1759,7 +1769,7 @@ class _KeywordRowState extends State<_KeywordRow> {
                       child: Icon(
                         keyword.isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
                         size: 18,
-                        color: keyword.isFavorite ? AppColors.yellow : AppColors.textMuted,
+                        color: keyword.isFavorite ? colors.yellow : colors.textMuted,
                       ),
                     ),
                   ),
@@ -1778,10 +1788,10 @@ class _KeywordRowState extends State<_KeywordRow> {
                 width: 160,
                 child: Text(
                   keyword.keyword,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1804,7 +1814,7 @@ class _KeywordRowState extends State<_KeywordRow> {
                 width: 50,
                 child: keyword.difficulty != null
                     ? _DifficultyBadge(score: keyword.difficulty!)
-                    : const Text('--', style: TextStyle(color: AppColors.textMuted, fontSize: 12), textAlign: TextAlign.center),
+                    : Text('--', style: TextStyle(color: colors.textMuted, fontSize: 12), textAlign: TextAlign.center),
               ),
               const SizedBox(width: 8),
               // Top competitors
@@ -1812,7 +1822,7 @@ class _KeywordRowState extends State<_KeywordRow> {
                 width: 90,
                 child: keyword.topCompetitors != null && keyword.topCompetitors!.isNotEmpty
                     ? _TopCompetitorsRow(competitors: keyword.topCompetitors!)
-                    : const Text('--', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                    : Text('--', style: TextStyle(color: colors.textMuted, fontSize: 12)),
               ),
               const SizedBox(width: 8),
               // Tags
@@ -1835,10 +1845,10 @@ class _KeywordRowState extends State<_KeywordRow> {
                   child: InkWell(
                     onTap: widget.onDelete,
                     borderRadius: BorderRadius.circular(6),
-                    hoverColor: AppColors.redMuted,
-                    child: const Padding(
-                      padding: EdgeInsets.all(6),
-                      child: Icon(Icons.close_rounded, size: 16, color: AppColors.textMuted),
+                    hoverColor: colors.redMuted,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(Icons.close_rounded, size: 16, color: colors.textMuted),
                     ),
                   ),
                 ),
@@ -1851,6 +1861,7 @@ class _KeywordRowState extends State<_KeywordRow> {
   }
 
   Widget _buildTagsSection(BuildContext context, Keyword keyword) {
+    final colors = context.colors;
     if (keyword.tags.isEmpty) {
       return Material(
         color: Colors.transparent,
@@ -1863,13 +1874,13 @@ class _KeywordRowState extends State<_KeywordRow> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.add_rounded, size: 14, color: AppColors.textMuted.withAlpha(150)),
+                Icon(Icons.add_rounded, size: 14, color: colors.textMuted.withAlpha(150)),
                 const SizedBox(width: 4),
                 Text(
                   context.l10n.appDetail_addTag,
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.textMuted.withAlpha(150),
+                    color: colors.textMuted.withAlpha(150),
                   ),
                 ),
               ],
@@ -1906,6 +1917,7 @@ class _KeywordRowState extends State<_KeywordRow> {
   }
 
   Widget _buildNoteSection(BuildContext context, Keyword keyword) {
+    final colors = context.colors;
     if (_isEditingNote) {
       return Row(
         children: [
@@ -1913,14 +1925,14 @@ class _KeywordRowState extends State<_KeywordRow> {
             child: Container(
               height: 28,
               decoration: BoxDecoration(
-                color: AppColors.bgBase,
-                border: Border.all(color: AppColors.accent),
+                color: colors.bgBase,
+                border: Border.all(color: colors.accent),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: TextField(
                 controller: _noteController,
                 autofocus: true,
-                style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                style: TextStyle(fontSize: 12, color: colors.textPrimary),
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -1932,7 +1944,7 @@ class _KeywordRowState extends State<_KeywordRow> {
           ),
           const SizedBox(width: 4),
           Material(
-            color: AppColors.accent,
+            color: colors.accent,
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
               onTap: _saveNote,
@@ -1953,9 +1965,9 @@ class _KeywordRowState extends State<_KeywordRow> {
                 setState(() => _isEditingNote = false);
               },
               borderRadius: BorderRadius.circular(4),
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(Icons.close_rounded, size: 14, color: AppColors.textMuted),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(Icons.close_rounded, size: 14, color: colors.textMuted),
               ),
             ),
           ),
@@ -1975,13 +1987,13 @@ class _KeywordRowState extends State<_KeywordRow> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.edit_note_rounded, size: 14, color: AppColors.textMuted.withAlpha(150)),
+                Icon(Icons.edit_note_rounded, size: 14, color: colors.textMuted.withAlpha(150)),
                 const SizedBox(width: 4),
                 Text(
                   context.l10n.appDetail_addNote,
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.textMuted.withAlpha(150),
+                    color: colors.textMuted.withAlpha(150),
                   ),
                 ),
               ],
@@ -1996,14 +2008,14 @@ class _KeywordRowState extends State<_KeywordRow> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.bgActive.withAlpha(80),
+          color: colors.bgActive.withAlpha(80),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
           keyword.note!,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
-            color: AppColors.textSecondary,
+            color: colors.textSecondary,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -2026,13 +2038,14 @@ class _PositionBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: isTopRank ? AppColors.greenMuted : AppColors.bgActive,
+            color: isTopRank ? colors.greenMuted : colors.bgActive,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
@@ -2040,7 +2053,7 @@ class _PositionBadge extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: isTopRank ? AppColors.green : AppColors.textSecondary,
+              color: isTopRank ? colors.green : colors.textSecondary,
             ),
           ),
         ),
@@ -2049,7 +2062,7 @@ class _PositionBadge extends StatelessWidget {
           Icon(
             change! > 0 ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
             size: 12,
-            color: change! > 0 ? AppColors.green : AppColors.red,
+            color: change! > 0 ? colors.green : colors.red,
           ),
         ],
       ],
@@ -2062,19 +2075,21 @@ class _DifficultyBadge extends StatelessWidget {
 
   const _DifficultyBadge({required this.score});
 
-  Color get _color {
-    if (score <= 25) return AppColors.green;
-    if (score <= 50) return AppColors.yellow;
-    if (score <= 75) return AppColors.orange;
-    return AppColors.red;
+  Color _getColor(AppColorsExtension colors) {
+    if (score <= 25) return colors.green;
+    if (score <= 50) return colors.yellow;
+    if (score <= 75) return colors.orange;
+    return colors.red;
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final color = _getColor(colors);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: _color.withAlpha(25),
+        color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -2082,7 +2097,7 @@ class _DifficultyBadge extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: _color,
+          color: color,
         ),
         textAlign: TextAlign.center,
       ),
@@ -2097,6 +2112,7 @@ class _TopCompetitorsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Row(
       children: [
         ...competitors.take(3).map((c) => Padding(
@@ -2107,9 +2123,9 @@ class _TopCompetitorsRow extends StatelessWidget {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: AppColors.bgActive,
+                    color: colors.bgActive,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColors.glassBorder),
+                    border: Border.all(color: colors.glassBorder),
                   ),
                   child: c.iconUrl != null
                       ? ClipRRect(
@@ -2118,10 +2134,10 @@ class _TopCompetitorsRow extends StatelessWidget {
                             c.iconUrl!,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.apps, size: 14, color: AppColors.textMuted),
+                                Icon(Icons.apps, size: 14, color: colors.textMuted),
                           ),
                         )
-                      : const Icon(Icons.apps, size: 14, color: AppColors.textMuted),
+                      : Icon(Icons.apps, size: 14, color: colors.textMuted),
                 ),
               ),
             )),
@@ -2135,19 +2151,20 @@ class _NotRankedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.bgActive.withAlpha(50),
+          color: colors.bgActive.withAlpha(50),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: const Text(
+        child: Text(
           '250+',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: AppColors.textMuted,
+            color: colors.textMuted,
           ),
         ),
       ),
@@ -2217,6 +2234,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final isVisible = widget.keyword != null;
 
     return AnimatedPositioned(
@@ -2228,8 +2246,8 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
       width: 400,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.glassPanel,
-          border: const Border(left: BorderSide(color: AppColors.glassBorder)),
+          color: colors.glassPanel,
+          border: Border(left: BorderSide(color: colors.glassBorder)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(40),
@@ -2246,8 +2264,8 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                   Container(
                     height: 56,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: colors.glassBorder)),
                     ),
                     child: Row(
                       children: [
@@ -2255,13 +2273,13 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withAlpha(30),
+                            color: colors.accent.withAlpha(30),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.show_chart_rounded,
                             size: 18,
-                            color: AppColors.accent,
+                            color: colors.accent,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -2272,18 +2290,18 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                             children: [
                               Text(
                                 widget.keyword!.keyword,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
+                                  color: colors.textPrimary,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
                                 context.l10n.appDetail_positionHistory,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.textMuted,
+                                  color: colors.textMuted,
                                 ),
                               ),
                             ],
@@ -2295,10 +2313,10 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                           child: InkWell(
                             onTap: widget.onClose,
                             borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                            hoverColor: AppColors.bgHover,
-                            child: const Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Icon(Icons.close_rounded, size: 20, color: AppColors.textMuted),
+                            hoverColor: colors.bgHover,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Icon(Icons.close_rounded, size: 20, color: colors.textMuted),
                             ),
                           ),
                         ),
@@ -2350,6 +2368,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
   }
 
   Widget _buildContent() {
+    final colors = context.colors;
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(strokeWidth: 2),
@@ -2365,22 +2384,22 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: AppColors.redMuted,
+                color: colors.redMuted,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.error_outline_rounded, size: 28, color: AppColors.red),
+              child: Icon(Icons.error_outline_rounded, size: 28, color: colors.red),
             ),
             const SizedBox(height: 16),
             Text(
               'Error loading history',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
               ),
             ),
             const SizedBox(height: 12),
             Material(
-              color: AppColors.accent,
+              color: colors.accent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               child: InkWell(
                 onTap: _loadHistory,
@@ -2412,26 +2431,26 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: AppColors.bgActive,
+                color: colors.bgActive,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.timeline_rounded, size: 28, color: AppColors.textMuted),
+              child: Icon(Icons.timeline_rounded, size: 28, color: colors.textMuted),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'No history data',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               'Refresh rankings to start tracking',
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textMuted,
+                color: colors.textMuted,
               ),
             ),
           ],
@@ -2456,6 +2475,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
   }
 
   Widget _buildCurrentStats() {
+    final colors = context.colors;
     final current = _history!.isNotEmpty ? _history!.last.position : null;
     final first = _history!.isNotEmpty ? _history!.first.position : null;
     int? change;
@@ -2466,8 +2486,8 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
@@ -2480,17 +2500,17 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
-                    color: current != null && current <= 10 ? AppColors.green : AppColors.textPrimary,
+                    color: current != null && current <= 10 ? colors.green : colors.textPrimary,
                   ),
                 ),
-                const Text(
+                Text(
                   'Current',
-                  style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  style: TextStyle(fontSize: 12, color: colors.textMuted),
                 ),
               ],
             ),
           ),
-          Container(width: 1, height: 40, color: AppColors.glassBorder),
+          Container(width: 1, height: 40, color: colors.glassBorder),
           Expanded(
             child: Column(
               children: [
@@ -2501,7 +2521,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                       Icon(
                         change > 0 ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
                         size: 20,
-                        color: change > 0 ? AppColors.green : AppColors.red,
+                        color: change > 0 ? colors.green : colors.red,
                       ),
                     Text(
                       change != null ? change.abs().toString() : '--',
@@ -2509,15 +2529,15 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
                         color: change != null
-                            ? (change > 0 ? AppColors.green : (change < 0 ? AppColors.red : AppColors.textMuted))
-                            : AppColors.textMuted,
+                            ? (change > 0 ? colors.green : (change < 0 ? colors.red : colors.textMuted))
+                            : colors.textMuted,
                       ),
                     ),
                   ],
                 ),
                 Text(
                   'Change ($_selectedDays d)',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  style: TextStyle(fontSize: 12, color: colors.textMuted),
                 ),
               ],
             ),
@@ -2528,6 +2548,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
   }
 
   Widget _buildChart() {
+    final colors = context.colors;
     final spots = <FlSpot>[];
     final dates = <double, DateTime>{};
 
@@ -2540,10 +2561,10 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
     }
 
     if (spots.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'Not enough data to display chart',
-          style: TextStyle(color: AppColors.textMuted),
+          style: TextStyle(color: colors.textMuted),
         ),
       );
     }
@@ -2555,8 +2576,8 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: LineChart(
@@ -2566,7 +2587,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
             drawVerticalLine: false,
             horizontalInterval: ((maxY - minY) / 4).clamp(1, 50),
             getDrawingHorizontalLine: (value) => FlLine(
-              color: AppColors.glassBorder,
+              color: colors.glassBorder,
               strokeWidth: 1,
             ),
           ),
@@ -2577,9 +2598,9 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                 reservedSize: 40,
                 getTitlesWidget: (value, meta) => Text(
                   '#${value.toInt()}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                 ),
               ),
@@ -2596,9 +2617,9 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       DateFormat('d/M').format(date),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   );
@@ -2618,35 +2639,35 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
               spots: spots,
               isCurved: true,
               curveSmoothness: 0.3,
-              color: AppColors.accent,
+              color: colors.accent,
               barWidth: 3,
               isStrokeCapRound: true,
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                   radius: 4,
-                  color: AppColors.accent,
+                  color: colors.accent,
                   strokeWidth: 2,
-                  strokeColor: AppColors.glassPanel,
+                  strokeColor: colors.glassPanel,
                 ),
               ),
               belowBarData: BarAreaData(
                 show: true,
-                color: AppColors.accent.withAlpha(30),
+                color: colors.accent.withAlpha(30),
               ),
             ),
           ],
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (touchedSpot) => AppColors.bgPanel,
-              tooltipBorder: const BorderSide(color: AppColors.glassBorder),
+              getTooltipColor: (touchedSpot) => colors.bgPanel,
+              tooltipBorder: BorderSide(color: colors.glassBorder),
               tooltipRoundedRadius: 8,
               getTooltipItems: (touchedSpots) => touchedSpots.map((spot) {
                 final date = dates[spot.x];
                 return LineTooltipItem(
                   '#${spot.y.toInt()}\n${date != null ? DateFormat('d MMM').format(date) : ''}',
-                  const TextStyle(
-                    color: AppColors.textPrimary,
+                  TextStyle(
+                    color: colors.textPrimary,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -2673,8 +2694,9 @@ class _PeriodChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
-      color: isSelected ? AppColors.accent : AppColors.bgActive,
+      color: isSelected ? colors.accent : colors.bgActive,
       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
       child: InkWell(
         onTap: onTap,
@@ -2686,7 +2708,7 @@ class _PeriodChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
+              color: isSelected ? Colors.white : colors.textSecondary,
             ),
           ),
         ),
@@ -2754,7 +2776,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.common_error(e.toString())), backgroundColor: AppColors.red),
+          SnackBar(content: Text(context.l10n.common_error(e.toString())), backgroundColor: context.colors.red),
         );
       }
     } finally {
@@ -2799,13 +2821,14 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final tagsState = ref.watch(tagsNotifierProvider);
 
     return AlertDialog(
-      backgroundColor: AppColors.glassPanel,
+      backgroundColor: colors.glassPanel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        side: const BorderSide(color: AppColors.glassBorder),
+        side: BorderSide(color: colors.glassBorder),
       ),
       title: Row(
         children: [
@@ -2813,29 +2836,29 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.accent.withAlpha(30),
+              color: colors.accent.withAlpha(30),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.label_rounded, size: 18, color: AppColors.accent),
+            child: Icon(Icons.label_rounded, size: 18, color: colors.accent),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Manage Tags',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 Text(
                   widget.keyword.keyword,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -2856,18 +2879,18 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.bgBase,
-                      border: Border.all(color: AppColors.glassBorder),
+                      color: colors.bgBase,
+                      border: Border.all(color: colors.glassBorder),
                       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                     ),
                     child: TextField(
                       controller: _newTagController,
-                      style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
-                      decoration: const InputDecoration(
+                      style: TextStyle(fontSize: 13, color: colors.textPrimary),
+                      decoration: InputDecoration(
                         hintText: 'New tag name...',
-                        hintStyle: TextStyle(color: AppColors.textMuted),
+                        hintStyle: TextStyle(color: colors.textMuted),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
                       onSubmitted: (_) => _createTag(),
                     ),
@@ -2875,7 +2898,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
                 ),
                 const SizedBox(width: 8),
                 Material(
-                  color: AppColors.accent,
+                  color: colors.accent,
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                   child: InkWell(
                     onTap: _isCreatingTag ? null : _createTag,
@@ -2896,26 +2919,26 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
             ),
             const SizedBox(height: 16),
             // Existing tags
-            const Text(
+            Text(
               'Available Tags',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textMuted,
+                color: colors.textMuted,
               ),
             ),
             const SizedBox(height: 8),
             tagsState.when(
               loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-              error: (e, _) => Text(context.l10n.common_error(e.toString()), style: const TextStyle(color: AppColors.red)),
+              error: (e, _) => Text(context.l10n.common_error(e.toString()), style: TextStyle(color: colors.red)),
               data: (tags) {
                 if (tags.isEmpty) {
                   return Container(
                     padding: const EdgeInsets.all(20),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'No tags yet. Create one above.',
-                        style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                        style: TextStyle(color: colors.textMuted, fontSize: 13),
                       ),
                     ),
                   );
@@ -2927,7 +2950,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
                   children: tags.map((tag) {
                     final isSelected = _selectedTags.any((t) => t.id == tag.id);
                     return Material(
-                      color: isSelected ? tag.colorValue.withAlpha(60) : AppColors.bgActive,
+                      color: isSelected ? tag.colorValue.withAlpha(60) : colors.bgActive,
                       borderRadius: BorderRadius.circular(6),
                       child: InkWell(
                         onTap: () => _toggleTag(tag),
@@ -2958,7 +2981,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
-                                  color: isSelected ? tag.colorValue : AppColors.textSecondary,
+                                  color: isSelected ? tag.colorValue : colors.textSecondary,
                                 ),
                               ),
                               if (isSelected) ...[
@@ -3005,6 +3028,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return AlertDialog(
       title: const Text('Add Tags'),
       content: SizedBox(
@@ -3013,11 +3037,11 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Select tags to add to selected keywords:',
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
               ),
             ),
             const SizedBox(height: 16),
@@ -3027,7 +3051,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
               children: widget.tags.map((tag) {
                 final isSelected = _selectedTagIds.contains(tag.id);
                 return Material(
-                  color: isSelected ? tag.colorValue.withAlpha(60) : AppColors.bgActive,
+                  color: isSelected ? tag.colorValue.withAlpha(60) : colors.bgActive,
                   borderRadius: BorderRadius.circular(6),
                   child: InkWell(
                     onTap: () {
@@ -3066,7 +3090,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: isSelected ? tag.colorValue : AppColors.textSecondary,
+                              color: isSelected ? tag.colorValue : colors.textSecondary,
                             ),
                           ),
                           if (isSelected) ...[
@@ -3138,7 +3162,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Import failed: ${e.toString()}'),
-            backgroundColor: AppColors.red,
+            backgroundColor: context.colors.red,
           ),
         );
         setState(() => _isLoading = false);
@@ -3155,15 +3179,16 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return AlertDialog(
-      backgroundColor: AppColors.glassPanel,
+      backgroundColor: colors.glassPanel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        side: const BorderSide(color: AppColors.glassBorder),
+        side: BorderSide(color: colors.glassBorder),
       ),
-      title: const Text(
+      title: Text(
         'Import Keywords',
-        style: TextStyle(color: AppColors.textPrimary),
+        style: TextStyle(color: colors.textPrimary),
       ),
       content: SizedBox(
         width: 400,
@@ -3171,40 +3196,40 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Paste keywords below, one per line:',
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _controller,
               maxLines: 10,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
                 fontFamily: 'monospace',
               ),
               decoration: InputDecoration(
                 hintText: 'keyword one\nkeyword two\nkeyword three',
                 hintStyle: TextStyle(
-                  color: AppColors.textMuted.withAlpha(100),
+                  color: colors.textMuted.withAlpha(100),
                 ),
                 filled: true,
-                fillColor: AppColors.bgActive,
+                fillColor: colors.bgActive,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: AppColors.glassBorder),
+                  borderSide: BorderSide(color: colors.glassBorder),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: AppColors.glassBorder),
+                  borderSide: BorderSide(color: colors.glassBorder),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: AppColors.accent),
+                  borderSide: BorderSide(color: colors.accent),
                 ),
               ),
               onChanged: (_) => setState(() {}),
@@ -3212,20 +3237,20 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
             const SizedBox(height: 12),
             Row(
               children: [
-                const Text(
+                Text(
                   'Storefront:',
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                 ),
                 const SizedBox(width: 12),
                 DropdownButton<String>(
                   value: _storefront,
-                  dropdownColor: AppColors.glassPanel,
-                  style: const TextStyle(
+                  dropdownColor: colors.glassPanel,
+                  style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                   items: const [
                     DropdownMenuItem(value: 'US', child: Text('🇺🇸 US')),
@@ -3244,9 +3269,9 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
                 const Spacer(),
                 Text(
                   '$_keywordCount keywords',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                 ),
               ],

@@ -105,9 +105,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -138,11 +139,12 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildToolbar() {
+    final colors = context.colors;
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
@@ -152,10 +154,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
             child: InkWell(
               onTap: () => context.pop(),
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              hoverColor: AppColors.bgHover,
-              child: const Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.arrow_back_rounded, size: 20, color: AppColors.textMuted),
+              hoverColor: colors.bgHover,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Icon(Icons.arrow_back_rounded, size: 20, color: colors.textMuted),
               ),
             ),
           ),
@@ -164,10 +166,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.accent.withAlpha(30),
+              color: colors.accent.withAlpha(30),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.insights_rounded, size: 18, color: AppColors.accent),
+            child: Icon(Icons.insights_rounded, size: 18, color: colors.accent),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -177,16 +179,16 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               children: [
                 Text(
                   widget.appName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   context.l10n.insights_reviewInsights,
-                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  style: TextStyle(fontSize: 12, color: colors.textMuted),
                 ),
               ],
             ),
@@ -195,12 +197,12 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
           Tooltip(
             message: _insight == null ? context.l10n.insights_generateFirst : context.l10n.insights_compareWithOther,
             child: Material(
-              color: _insight != null ? AppColors.bgActive : Colors.transparent,
+              color: _insight != null ? colors.bgActive : Colors.transparent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               child: InkWell(
                 onTap: _insight != null ? _openCompareModal : null,
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                hoverColor: AppColors.bgHover,
+                hoverColor: colors.bgHover,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Row(
@@ -209,7 +211,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                       Icon(
                         Icons.compare_arrows_rounded,
                         size: 18,
-                        color: _insight != null ? AppColors.textSecondary : AppColors.textMuted.withAlpha(100),
+                        color: _insight != null ? colors.textSecondary : colors.textMuted.withAlpha(100),
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -217,7 +219,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: _insight != null ? AppColors.textSecondary : AppColors.textMuted.withAlpha(100),
+                          color: _insight != null ? colors.textSecondary : colors.textMuted.withAlpha(100),
                         ),
                       ),
                     ],
@@ -246,13 +248,14 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildGenerateSection() {
+    final colors = context.colors;
     final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -260,10 +263,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
         children: [
           Text(
             context.l10n.insights_generateAnalysis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -285,15 +288,15 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                     }
                   });
                 },
-                selectedColor: AppColors.accentMuted,
-                checkmarkColor: AppColors.accent,
-                backgroundColor: AppColors.bgActive,
+                selectedColor: colors.accentMuted,
+                checkmarkColor: colors.accent,
+                backgroundColor: colors.bgActive,
                 labelStyle: TextStyle(
-                  color: isSelected ? AppColors.accent : AppColors.textSecondary,
+                  color: isSelected ? colors.accent : colors.textSecondary,
                   fontSize: 12,
                 ),
                 side: BorderSide(
-                  color: isSelected ? AppColors.accent : AppColors.glassBorder,
+                  color: isSelected ? colors.accent : colors.glassBorder,
                 ),
               );
             }).toList(),
@@ -304,7 +307,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
             children: [
               Text(
                 context.l10n.insights_period,
-                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                style: TextStyle(fontSize: 13, color: colors.textSecondary),
               ),
               const SizedBox(width: 12),
               _PeriodChip(label: context.l10n.insights_3months, value: 3, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 3)),
@@ -316,7 +319,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               // Generate button - hidden if insight < 24h
               if (!_isInsightRecent)
                 Material(
-                  color: AppColors.accent,
+                  color: colors.accent,
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                   child: InkWell(
                     onTap: _isGenerating ? null : _generateInsights,
@@ -355,21 +358,22 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildError() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.redMuted,
-        border: Border.all(color: AppColors.red.withAlpha(50)),
+        color: colors.redMuted,
+        border: Border.all(color: colors.red.withAlpha(50)),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, color: AppColors.red, size: 20),
+          Icon(Icons.error_outline_rounded, color: colors.red, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               _error!,
-              style: const TextStyle(color: AppColors.red, fontSize: 13),
+              style: TextStyle(color: colors.red, fontSize: 13),
             ),
           ),
         ],
@@ -412,35 +416,36 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildMetadata(AppInsight insight) {
+    final colors = context.colors;
     final dateFormat = DateFormat('d MMM yyyy');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(30),
+        color: colors.bgActive.withAlpha(30),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.textMuted),
+          Icon(Icons.info_outline_rounded, size: 16, color: colors.textMuted),
           const SizedBox(width: 8),
           Text(
             context.l10n.insights_reviewsCount(insight.reviewsCount),
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 12, color: colors.textSecondary),
           ),
           const SizedBox(width: 12),
           Text(
             insight.countries.join(', '),
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 12, color: colors.textSecondary),
           ),
           const SizedBox(width: 12),
           Text(
             '${dateFormat.format(insight.periodStart)} - ${dateFormat.format(insight.periodEnd)}',
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 12, color: colors.textSecondary),
           ),
           const Spacer(),
           Text(
             context.l10n.insights_analyzedAgo(_timeAgo(context, insight.analyzedAt)),
-            style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+            style: TextStyle(fontSize: 12, color: colors.textMuted),
           ),
         ],
       ),
@@ -448,6 +453,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildNoteSection(AppInsight insight) {
+    final colors = context.colors;
     Future<void> saveNote() async {
       final content = _noteController.text.trim();
       try {
@@ -461,7 +467,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(context.l10n.insights_noteSaved),
-              backgroundColor: AppColors.green,
+              backgroundColor: colors.green,
               duration: const Duration(seconds: 1),
             ),
           );
@@ -469,7 +475,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.red),
+            SnackBar(content: Text('Error: $e'), backgroundColor: colors.red),
           );
         }
       }
@@ -479,8 +485,8 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.bgActive.withAlpha(50),
-          border: Border.all(color: AppColors.accent),
+          color: colors.bgActive.withAlpha(50),
+          border: Border.all(color: colors.accent),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -488,19 +494,19 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.edit_note_rounded, size: 16, color: AppColors.accent),
+                Icon(Icons.edit_note_rounded, size: 16, color: colors.accent),
                 const SizedBox(width: 8),
                 Text(
                   context.l10n.insights_yourNotes,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 const Spacer(),
                 Material(
-                  color: AppColors.accent,
+                  color: colors.accent,
                   borderRadius: BorderRadius.circular(6),
                   child: InkWell(
                     onTap: saveNote,
@@ -524,9 +530,9 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                       setState(() => _isEditingNote = false);
                     },
                     borderRadius: BorderRadius.circular(6),
-                    child: const Padding(
-                      padding: EdgeInsets.all(6),
-                      child: Icon(Icons.close_rounded, size: 16, color: AppColors.textMuted),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(Icons.close_rounded, size: 16, color: colors.textMuted),
                     ),
                   ),
                 ),
@@ -535,17 +541,17 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.bgBase,
-                border: Border.all(color: AppColors.glassBorder),
+                color: colors.bgBase,
+                border: Border.all(color: colors.glassBorder),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: TextField(
                 controller: _noteController,
                 maxLines: 3,
-                style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                style: TextStyle(fontSize: 13, color: colors.textPrimary),
                 decoration: InputDecoration(
                   hintText: context.l10n.insights_noteHint,
-                  hintStyle: const TextStyle(color: AppColors.textMuted),
+                  hintStyle: TextStyle(color: colors.textMuted),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(12),
                 ),
@@ -564,12 +570,12 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       child: InkWell(
         onTap: () => setState(() => _isEditingNote = true),
         borderRadius: BorderRadius.circular(8),
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.bgActive.withAlpha(30),
-            border: Border.all(color: AppColors.glassBorder),
+            color: colors.bgActive.withAlpha(30),
+            border: Border.all(color: colors.glassBorder),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -578,23 +584,23 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               Icon(
                 hasNote ? Icons.sticky_note_2_rounded : Icons.edit_note_rounded,
                 size: 16,
-                color: hasNote ? AppColors.accent : AppColors.textMuted,
+                color: hasNote ? colors.accent : colors.textMuted,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: hasNote
                     ? Text(
                         insight.note!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.textSecondary,
+                          color: colors.textSecondary,
                         ),
                       )
                     : Text(
                         context.l10n.insights_clickToAddNotes,
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.textMuted.withAlpha(150),
+                          color: colors.textMuted.withAlpha(150),
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -602,7 +608,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               Icon(
                 Icons.edit_rounded,
                 size: 14,
-                color: AppColors.textMuted.withAlpha(100),
+                color: colors.textMuted.withAlpha(100),
               ),
             ],
           ),
@@ -612,22 +618,24 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildStrengthsCard(AppInsight insight) {
+    final colors = context.colors;
     return _buildListCard(
       title: context.l10n.insights_strengths,
       icon: Icons.thumb_up_rounded,
-      iconColor: AppColors.green,
+      iconColor: colors.green,
       items: insight.overallStrengths,
-      bgColor: AppColors.greenMuted,
+      bgColor: colors.greenMuted,
     );
   }
 
   Widget _buildWeaknessesCard(AppInsight insight) {
+    final colors = context.colors;
     return _buildListCard(
       title: context.l10n.insights_weaknesses,
       icon: Icons.thumb_down_rounded,
-      iconColor: AppColors.red,
+      iconColor: colors.red,
       items: insight.overallWeaknesses,
-      bgColor: AppColors.redMuted,
+      bgColor: colors.redMuted,
     );
   }
 
@@ -638,6 +646,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
     required List<String> items,
     required Color bgColor,
   }) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -654,10 +663,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
             ],
@@ -673,7 +682,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                     Expanded(
                       child: Text(
                         item,
-                        style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                        style: TextStyle(fontSize: 13, color: colors.textSecondary),
                       ),
                     ),
                   ],
@@ -685,11 +694,12 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildCategoryScores(AppInsight insight) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -697,10 +707,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
         children: [
           Text(
             context.l10n.insights_categoryScores,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 16),
@@ -722,11 +732,12 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildEmergentThemes(AppInsight insight) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -734,10 +745,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
         children: [
           Text(
             context.l10n.insights_emergentThemes,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 16),
@@ -751,12 +762,13 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   }
 
   Widget _buildOpportunities(AppInsight insight) {
+    final colors = context.colors;
     return _buildListCard(
       title: context.l10n.insights_opportunities,
       icon: Icons.lightbulb_rounded,
-      iconColor: AppColors.yellow,
+      iconColor: colors.yellow,
       items: insight.opportunities,
-      bgColor: AppColors.yellow.withAlpha(30),
+      bgColor: colors.yellow.withAlpha(30),
     );
   }
 
@@ -802,9 +814,10 @@ class _PeriodChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final isSelected = value == selected;
     return Material(
-      color: isSelected ? AppColors.accent : AppColors.bgActive,
+      color: isSelected ? colors.accent : colors.bgActive,
       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
       child: InkWell(
         onTap: onTap,
@@ -816,7 +829,7 @@ class _PeriodChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
+              color: isSelected ? Colors.white : colors.textSecondary,
             ),
           ),
         ),
@@ -840,11 +853,12 @@ class _CategoryScoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final color = score >= 4
-        ? AppColors.green
+        ? colors.green
         : score >= 3
-            ? AppColors.yellow
-            : AppColors.red;
+            ? colors.yellow
+            : colors.red;
 
     return Container(
       width: 180,
@@ -861,10 +875,10 @@ class _CategoryScoreCard extends StatelessWidget {
             children: [
               Text(
                 categoryLabel,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
               const Spacer(),
@@ -889,7 +903,7 @@ class _CategoryScoreCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               summary,
-              style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+              style: TextStyle(fontSize: 11, color: colors.textSecondary),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
@@ -918,18 +932,19 @@ class _EmergentThemeCardState extends State<_EmergentThemeCard> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final theme = widget.theme;
     final sentimentColor = theme.sentiment == 'positive'
-        ? AppColors.green
+        ? colors.green
         : theme.sentiment == 'negative'
-            ? AppColors.red
-            : AppColors.yellow;
+            ? colors.red
+            : colors.yellow;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Material(
@@ -956,25 +971,25 @@ class _EmergentThemeCardState extends State<_EmergentThemeCard> {
                     Expanded(
                       child: Text(
                         theme.label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: colors.textPrimary,
                         ),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.bgActive,
+                        color: colors.bgActive,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         '${theme.frequency}x',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textMuted,
+                          color: colors.textMuted,
                         ),
                       ),
                     ),
@@ -982,25 +997,25 @@ class _EmergentThemeCardState extends State<_EmergentThemeCard> {
                     Icon(
                       _expanded ? Icons.expand_less : Icons.expand_more,
                       size: 18,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
                   theme.summary,
-                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 12, color: colors.textSecondary),
                 ),
                 if (_expanded && theme.exampleQuotes.isNotEmpty) ...[
                   const SizedBox(height: 12),
-                  const Divider(color: AppColors.glassBorder, height: 1),
+                  Divider(color: colors.glassBorder, height: 1),
                   const SizedBox(height: 12),
                   Text(
                     widget.exampleQuotesLabel,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -1008,10 +1023,10 @@ class _EmergentThemeCardState extends State<_EmergentThemeCard> {
                         padding: const EdgeInsets.only(bottom: 6),
                         child: Text(
                           '"$quote"',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             fontStyle: FontStyle.italic,
-                            color: AppColors.textSecondary,
+                            color: colors.textSecondary,
                           ),
                         ),
                       )),

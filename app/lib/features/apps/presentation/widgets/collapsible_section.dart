@@ -21,6 +21,7 @@ class CollapsibleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,7 +31,7 @@ class CollapsibleSection extends StatelessWidget {
           child: InkWell(
             onTap: onToggle,
             borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            hoverColor: AppColors.bgHover,
+            hoverColor: colors.bgHover,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
@@ -40,16 +41,16 @@ class CollapsibleSection extends StatelessWidget {
                         ? Icons.keyboard_arrow_down_rounded
                         : Icons.keyboard_arrow_right_rounded,
                     size: 16,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                   const Spacer(),
@@ -57,15 +58,15 @@ class CollapsibleSection extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColors.bgActive,
+                      color: colors.bgActive,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       '$count',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ),

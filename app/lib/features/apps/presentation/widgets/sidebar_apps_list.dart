@@ -56,6 +56,7 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final sidebarApps = ref.watch(sidebarAppsProvider);
 
     if (!_prefsLoaded || !sidebarApps.hasApps) {
@@ -73,11 +74,11 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
               children: [
                 Text(
                   context.l10n.sidebar_favorites,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                 ),
                 if (sidebarApps.hasTooManyFavorites) ...[
@@ -87,7 +88,7 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
                     child: Icon(
                       Icons.info_outline_rounded,
                       size: 12,
-                      color: AppColors.yellow.withAlpha(180),
+                      color: colors.yellow.withAlpha(180),
                     ),
                   ),
                 ],

@@ -16,11 +16,12 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final appsAsync = ref.watch(appsNotifierProvider);
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -55,20 +56,21 @@ class _Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Text(
             context.l10n.dashboard_title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const Spacer(),
@@ -140,11 +142,12 @@ class _StatsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
+        color: colors.bgActive.withAlpha(50),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(color: AppColors.glassBorder),
+        border: Border.all(color: colors.glassBorder),
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -154,40 +157,40 @@ class _StatsBar extends StatelessWidget {
                 label: context.l10n.dashboard_appsTracked,
                 value: appsCount.toString(),
                 icon: Icons.apps_rounded,
-                color: AppColors.accent,
+                color: colors.accent,
                 trend: appsCount > 0 ? '+1' : '',
                 isPositive: true,
               ),
             ),
-            Container(width: 1, color: AppColors.glassBorder),
+            Container(width: 1, color: colors.glassBorder),
             Expanded(
               child: _StatItem(
                 label: context.l10n.dashboard_keywords,
                 value: keywordsCount.toString(),
                 icon: Icons.key_rounded,
-                color: AppColors.purple,
+                color: colors.purple,
                 trend: keywordsCount > 0 ? '+5' : '',
                 isPositive: true,
               ),
             ),
-            Container(width: 1, color: AppColors.glassBorder),
+            Container(width: 1, color: colors.glassBorder),
             Expanded(
               child: _StatItem(
                 label: context.l10n.dashboard_avgPosition,
                 value: '--',
                 icon: Icons.trending_up_rounded,
-                color: AppColors.green,
+                color: colors.green,
                 trend: '',
                 isPositive: true,
               ),
             ),
-            Container(width: 1, color: AppColors.glassBorder),
+            Container(width: 1, color: colors.glassBorder),
             Expanded(
               child: _StatItem(
                 label: context.l10n.dashboard_top10,
                 value: '--',
                 icon: Icons.emoji_events_rounded,
-                color: AppColors.yellow,
+                color: colors.yellow,
                 trend: '',
                 isPositive: true,
               ),
@@ -218,6 +221,7 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -239,7 +243,7 @@ class _StatItem extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: (isPositive ? AppColors.green : AppColors.red).withAlpha(20),
+                    color: (isPositive ? colors.green : colors.red).withAlpha(20),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -247,7 +251,7 @@ class _StatItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: isPositive ? AppColors.green : AppColors.red,
+                      color: isPositive ? colors.green : colors.red,
                     ),
                   ),
                 ),
@@ -256,19 +260,19 @@ class _StatItem extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
         ],
@@ -357,6 +361,7 @@ class _AppsPanelState extends State<_AppsPanel> {
   }
 
   void _showFilterMenu(BuildContext context) {
+    final colors = context.colors;
     final RenderBox button = context.findRenderObject() as RenderBox;
     final offset = button.localToGlobal(Offset.zero);
 
@@ -369,10 +374,10 @@ class _AppsPanelState extends State<_AppsPanel> {
         offset.dy + button.size.height + 200,
       ),
       items: [
-        _buildFilterMenuItem(AppFilter.all, context.l10n.filter_allApps),
-        _buildFilterMenuItem(AppFilter.ios, context.l10n.filter_iosOnly),
-        _buildFilterMenuItem(AppFilter.android, context.l10n.filter_androidOnly),
-        _buildFilterMenuItem(AppFilter.favorites, context.l10n.filter_favorites),
+        _buildFilterMenuItem(AppFilter.all, context.l10n.filter_allApps, colors),
+        _buildFilterMenuItem(AppFilter.ios, context.l10n.filter_iosOnly, colors),
+        _buildFilterMenuItem(AppFilter.android, context.l10n.filter_androidOnly, colors),
+        _buildFilterMenuItem(AppFilter.favorites, context.l10n.filter_favorites, colors),
       ],
     ).then((value) {
       if (value != null) {
@@ -381,13 +386,13 @@ class _AppsPanelState extends State<_AppsPanel> {
     });
   }
 
-  PopupMenuItem<AppFilter> _buildFilterMenuItem(AppFilter filter, String label) {
+  PopupMenuItem<AppFilter> _buildFilterMenuItem(AppFilter filter, String label, AppColorsExtension colors) {
     return PopupMenuItem<AppFilter>(
       value: filter,
       child: Row(
         children: [
           if (_filter == filter)
-            const Icon(Icons.check, size: 16, color: AppColors.accent)
+            Icon(Icons.check, size: 16, color: colors.accent)
           else
             const SizedBox(width: 16),
           const SizedBox(width: 8),
@@ -398,6 +403,7 @@ class _AppsPanelState extends State<_AppsPanel> {
   }
 
   void _showSortMenu(BuildContext context) {
+    final colors = context.colors;
     final RenderBox button = context.findRenderObject() as RenderBox;
     final offset = button.localToGlobal(Offset.zero);
 
@@ -410,11 +416,11 @@ class _AppsPanelState extends State<_AppsPanel> {
         offset.dy + button.size.height + 250,
       ),
       items: [
-        _buildSortMenuItem(AppSort.recentlyAdded, context.l10n.sort_recentlyAdded),
-        _buildSortMenuItem(AppSort.nameAsc, context.l10n.sort_nameAZ),
-        _buildSortMenuItem(AppSort.nameDesc, context.l10n.sort_nameZA),
-        _buildSortMenuItem(AppSort.keywordsDesc, context.l10n.sort_mostKeywords),
-        _buildSortMenuItem(AppSort.bestRank, context.l10n.sort_bestRank),
+        _buildSortMenuItem(AppSort.recentlyAdded, context.l10n.sort_recentlyAdded, colors),
+        _buildSortMenuItem(AppSort.nameAsc, context.l10n.sort_nameAZ, colors),
+        _buildSortMenuItem(AppSort.nameDesc, context.l10n.sort_nameZA, colors),
+        _buildSortMenuItem(AppSort.keywordsDesc, context.l10n.sort_mostKeywords, colors),
+        _buildSortMenuItem(AppSort.bestRank, context.l10n.sort_bestRank, colors),
       ],
     ).then((value) {
       if (value != null) {
@@ -423,13 +429,13 @@ class _AppsPanelState extends State<_AppsPanel> {
     });
   }
 
-  PopupMenuItem<AppSort> _buildSortMenuItem(AppSort sort, String label) {
+  PopupMenuItem<AppSort> _buildSortMenuItem(AppSort sort, String label, AppColorsExtension colors) {
     return PopupMenuItem<AppSort>(
       value: sort,
       child: Row(
         children: [
           if (_sort == sort)
-            const Icon(Icons.check, size: 16, color: AppColors.accent)
+            Icon(Icons.check, size: 16, color: colors.accent)
           else
             const SizedBox(width: 16),
           const SizedBox(width: 8),
@@ -441,14 +447,15 @@ class _AppsPanelState extends State<_AppsPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final displayedApps = _filteredAndSortedApps;
     final filterLabel = _getFilterLabel(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
+        color: colors.bgActive.withAlpha(50),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(color: AppColors.glassBorder),
+        border: Border.all(color: colors.glassBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,10 +468,10 @@ class _AppsPanelState extends State<_AppsPanel> {
               children: [
                 Text(
                   '${context.l10n.dashboard_trackedApps}${_filter != AppFilter.all ? ' ($filterLabel)' : ''}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 Row(
@@ -495,10 +502,10 @@ class _AppsPanelState extends State<_AppsPanel> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: AppColors.bgActive.withAlpha(80),
-              border: const Border(
-                top: BorderSide(color: AppColors.glassBorder),
-                bottom: BorderSide(color: AppColors.glassBorder),
+              color: colors.bgActive.withAlpha(80),
+              border: Border(
+                top: BorderSide(color: colors.glassBorder),
+                bottom: BorderSide(color: colors.glassBorder),
               ),
             ),
             child: Row(
@@ -507,11 +514,11 @@ class _AppsPanelState extends State<_AppsPanel> {
                 Expanded(
                   child: Text(
                     context.l10n.apps_tableApp,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -519,11 +526,11 @@ class _AppsPanelState extends State<_AppsPanel> {
                   width: 80,
                   child: Text(
                     context.l10n.apps_tableKeywords,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -532,11 +539,11 @@ class _AppsPanelState extends State<_AppsPanel> {
                   width: 110,
                   child: Text(
                     context.l10n.apps_tablePlatform,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -545,11 +552,11 @@ class _AppsPanelState extends State<_AppsPanel> {
                   width: 80,
                   child: Text(
                     context.l10n.apps_tableBestRank,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ),
@@ -586,18 +593,19 @@ class _FilterSortButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.accentMuted : Colors.transparent,
+            color: isActive ? colors.accentMuted : Colors.transparent,
             border: Border.all(
-              color: isActive ? AppColors.accent.withAlpha(100) : AppColors.glassBorder,
+              color: isActive ? colors.accent.withAlpha(100) : colors.glassBorder,
             ),
             borderRadius: BorderRadius.circular(6),
           ),
@@ -607,7 +615,7 @@ class _FilterSortButton extends StatelessWidget {
               Icon(
                 icon,
                 size: 14,
-                color: isActive ? AppColors.accent : AppColors.textMuted,
+                color: isActive ? colors.accent : colors.textMuted,
               ),
               const SizedBox(width: 4),
               Text(
@@ -615,7 +623,7 @@ class _FilterSortButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isActive ? AppColors.accent : AppColors.textMuted,
+                  color: isActive ? colors.accent : colors.textMuted,
                 ),
               ),
             ],
@@ -634,24 +642,25 @@ class SmallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.glassBorder),
+            border: Border.all(color: colors.glassBorder),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
         ),
@@ -673,15 +682,16 @@ class _AppRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: colors.glassBorder)),
           ),
           child: Row(
             children: [
@@ -716,19 +726,19 @@ class _AppRow extends StatelessWidget {
                   children: [
                     Text(
                       app.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (app.developer != null)
                       Text(
                         app.developer!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textMuted,
+                          color: colors.textMuted,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -741,15 +751,15 @@ class _AppRow extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.accentMuted,
+                    color: colors.accentMuted,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '${app.trackedKeywordsCount ?? 0}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.accent,
+                      color: colors.accent,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -765,15 +775,15 @@ class _AppRow extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.textMuted.withAlpha(30),
+                          color: colors.textMuted.withAlpha(30),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Text(
+                        child: Text(
                           'iOS',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary,
+                            color: colors.textSecondary,
                           ),
                         ),
                       ),
@@ -781,15 +791,15 @@ class _AppRow extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.green.withAlpha(30),
+                          color: colors.green.withAlpha(30),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Android',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.green,
+                            color: colors.green,
                           ),
                         ),
                       ),
@@ -803,7 +813,7 @@ class _AppRow extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: app.bestRank != null ? AppColors.greenMuted : AppColors.bgActive,
+                    color: app.bestRank != null ? colors.greenMuted : colors.bgActive,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -811,7 +821,7 @@ class _AppRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: app.bestRank != null ? AppColors.green : AppColors.textMuted,
+                      color: app.bestRank != null ? colors.green : colors.textMuted,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -832,6 +842,7 @@ class _EmptyAppsState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.all(40),
       child: Column(
@@ -840,36 +851,36 @@ class _EmptyAppsState extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.bgActive,
+              color: colors.bgActive,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
               hasFilter ? Icons.filter_list_off_rounded : Icons.app_shortcut_outlined,
               size: 32,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             hasFilter ? context.l10n.dashboard_noAppsMatchFilter : context.l10n.dashboard_noAppsYet,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
           Text(
             hasFilter ? context.l10n.dashboard_changeFilterCriteria : context.l10n.dashboard_addAppToStart,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
           if (!hasFilter) ...[
             const SizedBox(height: 20),
             Material(
-              color: AppColors.accent,
+              color: colors.accent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               child: InkWell(
                 onTap: () => context.go('/apps/add'),
@@ -904,11 +915,12 @@ class _EmptyAppsState extends StatelessWidget {
 class _QuickActionsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
+        color: colors.bgActive.withAlpha(50),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(color: AppColors.glassBorder),
+        border: Border.all(color: colors.glassBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -917,33 +929,33 @@ class _QuickActionsPanel extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Text(
               context.l10n.dashboard_quickActions,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
           ),
           Container(
             height: 1,
-            color: AppColors.glassBorder,
+            color: colors.glassBorder,
           ),
           _QuickActionItem(
             icon: Icons.add_circle_outline_rounded,
             label: context.l10n.dashboard_addNewApp,
-            color: AppColors.accent,
+            color: colors.accent,
             onTap: () => context.go('/apps/add'),
           ),
           _QuickActionItem(
             icon: Icons.search_rounded,
             label: context.l10n.dashboard_searchKeywords,
-            color: AppColors.purple,
+            color: colors.purple,
             onTap: () => context.go('/keywords'),
           ),
           _QuickActionItem(
             icon: Icons.apps_rounded,
             label: context.l10n.dashboard_viewAllApps,
-            color: AppColors.green,
+            color: colors.green,
             onTap: () => context.go('/apps'),
           ),
         ],
@@ -967,11 +979,12 @@ class _QuickActionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
@@ -989,17 +1002,17 @@ class _QuickActionItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: AppColors.textMuted,
+                color: colors.textMuted,
               ),
             ],
           ),

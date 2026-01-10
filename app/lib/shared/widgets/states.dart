@@ -10,6 +10,7 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -19,8 +20,8 @@ class LoadingView extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               message!,
-              style: const TextStyle(
-                color: AppColors.textMuted,
+              style: TextStyle(
+                color: colors.textMuted,
                 fontSize: 14,
               ),
             ),
@@ -46,6 +47,7 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -54,24 +56,24 @@ class ErrorView extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.redMuted,
+              color: colors.redMuted,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, size: 32, color: AppColors.red),
+            child: Icon(icon, size: 32, color: colors.red),
           ),
           const SizedBox(height: 20),
           Text(
             'Error: $message',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: colors.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 20),
             Material(
-              color: AppColors.accent,
+              color: colors.accent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               child: InkWell(
                 onTap: onRetry,
@@ -119,6 +121,7 @@ class EmptyStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -127,37 +130,37 @@ class EmptyStateView extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: iconBackgroundColor ?? AppColors.bgActive,
+              color: iconBackgroundColor ?? colors.bgActive,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
               icon,
               size: 40,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             subtitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
           if (actionLabel != null && onAction != null) ...[
             const SizedBox(height: 28),
             Material(
-              color: AppColors.accent,
+              color: colors.accent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               child: InkWell(
                 onTap: onAction,

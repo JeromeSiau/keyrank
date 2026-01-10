@@ -15,11 +15,12 @@ class PlatformTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgActive,
+        color: colors.bgActive,
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        border: Border.all(color: AppColors.glassBorder),
+        border: Border.all(color: colors.glassBorder),
       ),
       padding: const EdgeInsets.all(4),
       child: Row(
@@ -31,7 +32,7 @@ class PlatformTabs extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.glassPanel : Colors.transparent,
+                color: isSelected ? colors.glassPanel : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
               ),
               child: Row(
@@ -47,7 +48,7 @@ class PlatformTabs extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      color: isSelected ? AppColors.textPrimary : AppColors.textMuted,
+                      color: isSelected ? colors.textPrimary : colors.textMuted,
                     ),
                   ),
                 ],

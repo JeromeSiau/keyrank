@@ -12,11 +12,12 @@ class AppsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final appsAsync = ref.watch(appsNotifierProvider);
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -62,20 +63,21 @@ class _Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Text(
             context.l10n.apps_title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const Spacer(),
@@ -103,13 +105,14 @@ class _AppsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.bgActive.withAlpha(50),
+          color: colors.bgActive.withAlpha(50),
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-          border: Border.all(color: AppColors.glassBorder),
+          border: Border.all(color: colors.glassBorder),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,10 +125,10 @@ class _AppsTable extends StatelessWidget {
                 children: [
                   Text(
                     context.l10n.apps_appCount(apps.length),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                   Row(
@@ -142,10 +145,10 @@ class _AppsTable extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: AppColors.bgActive.withAlpha(80),
-                border: const Border(
-                  top: BorderSide(color: AppColors.glassBorder),
-                  bottom: BorderSide(color: AppColors.glassBorder),
+                color: colors.bgActive.withAlpha(80),
+                border: Border(
+                  top: BorderSide(color: colors.glassBorder),
+                  bottom: BorderSide(color: colors.glassBorder),
                 ),
               ),
               child: Row(
@@ -154,11 +157,11 @@ class _AppsTable extends StatelessWidget {
                   Expanded(
                     child: Text(
                       context.l10n.apps_tableApp,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ),
@@ -166,11 +169,11 @@ class _AppsTable extends StatelessWidget {
                     width: 120,
                     child: Text(
                       context.l10n.apps_tableDeveloper,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ),
@@ -179,11 +182,11 @@ class _AppsTable extends StatelessWidget {
                     width: 80,
                     child: Text(
                       context.l10n.apps_tableKeywords,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ),
@@ -192,11 +195,11 @@ class _AppsTable extends StatelessWidget {
                     width: 110,
                     child: Text(
                       context.l10n.apps_tablePlatform,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ),
@@ -205,11 +208,11 @@ class _AppsTable extends StatelessWidget {
                     width: 70,
                     child: Text(
                       context.l10n.apps_tableRating,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ),
@@ -251,15 +254,16 @@ class _AppRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: colors.glassBorder)),
           ),
           child: Row(
             children: [
@@ -291,10 +295,10 @@ class _AppRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   app.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -304,9 +308,9 @@ class _AppRow extends StatelessWidget {
                 width: 120,
                 child: Text(
                   app.developer ?? '--',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textMuted,
+                    color: colors.textMuted,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -318,15 +322,15 @@ class _AppRow extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.accentMuted,
+                    color: colors.accentMuted,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '${app.trackedKeywordsCount ?? 0}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.accent,
+                      color: colors.accent,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -343,15 +347,15 @@ class _AppRow extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         margin: const EdgeInsets.only(right: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.textMuted.withAlpha(30),
+                          color: colors.textMuted.withAlpha(30),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Text(
+                        child: Text(
                           'iOS',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary,
+                            color: colors.textSecondary,
                           ),
                         ),
                       ),
@@ -359,15 +363,15 @@ class _AppRow extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.green.withAlpha(30),
+                          color: colors.green.withAlpha(30),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Android',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.green,
+                            color: colors.green,
                           ),
                         ),
                       ),
@@ -381,32 +385,32 @@ class _AppRow extends StatelessWidget {
                 child: Row(
                   children: [
                     if (app.rating != null) ...[
-                      const Icon(Icons.star_rounded, size: 16, color: AppColors.yellow),
+                      Icon(Icons.star_rounded, size: 16, color: colors.yellow),
                       const SizedBox(width: 4),
                       Text(
                         app.rating!.toStringAsFixed(1),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
+                          color: colors.textSecondary,
                         ),
                       ),
                     ] else
-                      const Text(
+                      Text(
                         '--',
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.textMuted,
+                          color: colors.textMuted,
                         ),
                       ),
                   ],
                 ),
               ),
               // Arrow
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: AppColors.textMuted,
+                color: colors.textMuted,
               ),
             ],
           ),

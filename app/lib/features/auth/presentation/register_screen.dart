@@ -68,9 +68,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colors = context.colors;
 
     return Scaffold(
-      backgroundColor: AppColors.bgBase,
+      backgroundColor: colors.bgBase,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -78,10 +79,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo
-              const KeyrankLogoStacked(
+              KeyrankLogoStacked(
                 iconSize: 64,
                 fontSize: 26,
-                textColor: AppColors.textPrimary,
+                textColor: colors.textPrimary,
               ),
               const SizedBox(height: 40),
               // Register form card
@@ -98,19 +99,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       children: [
                         Text(
                           l10n.auth_createAccount,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: colors.textPrimary,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 6),
                         Text(
                           l10n.auth_createAccountSubtitle,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -121,19 +122,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: AppColors.redMuted,
+                              color: colors.redMuted,
                               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                              border: Border.all(color: AppColors.red.withAlpha(50)),
+                              border: Border.all(color: colors.red.withAlpha(50)),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.error_outline, size: 18, color: AppColors.red),
+                                Icon(Icons.error_outline, size: 18, color: colors.red),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     _error!,
-                                    style: const TextStyle(
-                                      color: AppColors.red,
+                                    style: TextStyle(
+                                      color: colors.red,
                                       fontSize: 13,
                                     ),
                                   ),
@@ -224,8 +225,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           children: [
                             Text(
                               l10n.auth_hasAccount,
-                              style: const TextStyle(
-                                color: AppColors.textMuted,
+                              style: TextStyle(
+                                color: colors.textMuted,
                                 fontSize: 13,
                               ),
                             ),
@@ -233,8 +234,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               onTap: () => context.go('/login'),
                               child: Text(
                                 l10n.auth_signInLink,
-                                style: const TextStyle(
-                                  color: AppColors.accent,
+                                style: TextStyle(
+                                  color: colors.accent,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -263,15 +264,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     String? Function(String?)? validator,
     void Function(String)? onSubmitted,
   }) {
+    final colors = context.colors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: AppColors.textSecondary,
+            color: colors.textSecondary,
           ),
         ),
         const SizedBox(height: 8),
@@ -281,30 +284,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           obscureText: obscureText,
           validator: validator,
           onFieldSubmitted: onSubmitted,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: AppColors.textPrimary,
+            color: colors.textPrimary,
           ),
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, size: 20, color: AppColors.textMuted),
+            prefixIcon: Icon(icon, size: 20, color: colors.textMuted),
             filled: true,
-            fillColor: AppColors.bgBase,
+            fillColor: colors.bgBase,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: colors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: colors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+              borderSide: BorderSide(color: colors.accent, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              borderSide: const BorderSide(color: AppColors.red),
+              borderSide: BorderSide(color: colors.red),
             ),
             errorStyle: const TextStyle(fontSize: 12),
           ),
@@ -318,8 +321,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     required bool isLoading,
     required VoidCallback onPressed,
   }) {
+    final colors = context.colors;
+
     return Material(
-      color: AppColors.accent,
+      color: colors.accent,
       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
       child: InkWell(
         onTap: isLoading ? null : onPressed,

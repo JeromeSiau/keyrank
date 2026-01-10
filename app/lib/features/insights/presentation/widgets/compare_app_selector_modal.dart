@@ -45,13 +45,14 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final appsAsync = ref.watch(appsNotifierProvider);
 
     return Dialog(
-      backgroundColor: AppColors.glassPanel,
+      backgroundColor: colors.glassPanel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-        side: const BorderSide(color: AppColors.glassBorder),
+        side: BorderSide(color: colors.glassBorder),
       ),
       child: SizedBox(
         width: 500,
@@ -76,10 +77,11 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
   }
 
   Widget _buildHeader() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
@@ -87,10 +89,10 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.accent.withAlpha(30),
+              color: colors.accent.withAlpha(30),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.compare_arrows_rounded, size: 20, color: AppColors.accent),
+            child: Icon(Icons.compare_arrows_rounded, size: 20, color: colors.accent),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -99,16 +101,16 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
               children: [
                 Text(
                   context.l10n.insights_compareTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   context.l10n.compare_selectAppsToCompare(widget.currentAppName),
-                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  style: TextStyle(fontSize: 12, color: colors.textMuted),
                 ),
               ],
             ),
@@ -116,7 +118,7 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.close_rounded, size: 20),
-            color: AppColors.textMuted,
+            color: colors.textMuted,
           ),
         ],
       ),
@@ -124,24 +126,25 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
   }
 
   Widget _buildSearchBar() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.bgBase,
-          border: Border.all(color: AppColors.glassBorder),
+          color: colors.bgBase,
+          border: Border.all(color: colors.glassBorder),
           borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         ),
         child: TextField(
           onChanged: (value) => setState(() => _searchQuery = value),
-          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+          style: TextStyle(fontSize: 14, color: colors.textPrimary),
           decoration: InputDecoration(
             hintText: context.l10n.compare_searchApps,
-            hintStyle: const TextStyle(color: AppColors.textMuted),
-            prefixIcon: const Icon(Icons.search_rounded, size: 18, color: AppColors.textMuted),
+            hintStyle: TextStyle(color: colors.textMuted),
+            prefixIcon: Icon(Icons.search_rounded, size: 18, color: colors.textMuted),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
@@ -151,16 +154,17 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
   }
 
   Widget _buildAppsList(List<AppModel> apps) {
+    final colors = context.colors;
     if (apps.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off_rounded, size: 48, color: AppColors.textMuted.withAlpha(100)),
+            Icon(Icons.search_off_rounded, size: 48, color: colors.textMuted.withAlpha(100)),
             const SizedBox(height: 12),
             Text(
               _searchQuery.isEmpty ? context.l10n.compare_noOtherApps : context.l10n.compare_noMatchingApps,
-              style: const TextStyle(color: AppColors.textMuted),
+              style: TextStyle(color: colors.textMuted),
             ),
           ],
         ),
@@ -179,11 +183,11 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
           color: Colors.transparent,
           child: InkWell(
             onTap: isDisabled ? null : () => _toggleSelection(app.id),
-            hoverColor: AppColors.bgHover,
+            hoverColor: colors.bgHover,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.accentMuted : Colors.transparent,
+                color: isSelected ? colors.accentMuted : Colors.transparent,
               ),
               child: Row(
                 children: [
@@ -191,9 +195,9 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                   Checkbox(
                     value: isSelected,
                     onChanged: isDisabled ? null : (_) => _toggleSelection(app.id),
-                    activeColor: AppColors.accent,
+                    activeColor: colors.accent,
                     side: BorderSide(
-                      color: isDisabled ? AppColors.textMuted.withAlpha(50) : AppColors.textMuted,
+                      color: isDisabled ? colors.textMuted.withAlpha(50) : colors.textMuted,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -203,7 +207,7 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                     height: 36,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: AppColors.bgActive,
+                      color: colors.bgActive,
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: app.iconUrl != null
@@ -211,7 +215,7 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                         : Icon(
                             app.isIos ? Icons.apple : Icons.android,
                             size: 20,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                   ),
                   const SizedBox(width: 12),
@@ -226,8 +230,8 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: isDisabled
-                                ? AppColors.textMuted.withAlpha(100)
-                                : AppColors.textPrimary,
+                                ? colors.textMuted.withAlpha(100)
+                                : colors.textPrimary,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -236,8 +240,8 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                           style: TextStyle(
                             fontSize: 11,
                             color: isDisabled
-                                ? AppColors.textMuted.withAlpha(50)
-                                : AppColors.textMuted,
+                                ? colors.textMuted.withAlpha(50)
+                                : colors.textMuted,
                           ),
                         ),
                       ],
@@ -253,16 +257,17 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
   }
 
   Widget _buildFooter() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
           Text(
             context.l10n.compare_appsSelected(_selectedIds.length),
-            style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+            style: TextStyle(fontSize: 13, color: colors.textMuted),
           ),
           const Spacer(),
           TextButton(
@@ -278,8 +283,8 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                     widget.onCompare(_selectedIds.toList());
                   },
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.accent,
-              disabledBackgroundColor: AppColors.accentMuted,
+              backgroundColor: colors.accent,
+              disabledBackgroundColor: colors.accentMuted,
             ),
             child: Text(context.l10n.compare_button(_selectedIds.length + 1)),
           ),

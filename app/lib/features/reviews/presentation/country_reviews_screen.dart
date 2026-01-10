@@ -26,13 +26,14 @@ class CountryReviewsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final reviewsAsync = ref.watch(countryReviewsProvider((appId: appId, country: country)));
     final flag = getFlagForStorefront(country);
     final countryName = _getCountryName(country);
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -41,8 +42,8 @@ class CountryReviewsScreen extends ConsumerWidget {
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: colors.glassBorder)),
             ),
             child: Row(
               children: [
@@ -52,10 +53,10 @@ class CountryReviewsScreen extends ConsumerWidget {
                   child: InkWell(
                     onTap: () => context.pop(),
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    hoverColor: AppColors.bgHover,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Icons.arrow_back_rounded, size: 20, color: AppColors.textMuted),
+                    hoverColor: colors.bgHover,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(Icons.arrow_back_rounded, size: 20, color: colors.textMuted),
                     ),
                   ),
                 ),
@@ -69,18 +70,18 @@ class CountryReviewsScreen extends ConsumerWidget {
                     children: [
                       Text(
                         countryName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: colors.textPrimary,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         context.l10n.reviews_reviewsFor(appName),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textMuted,
+                          color: colors.textMuted,
                         ),
                       ),
                     ],
@@ -101,9 +102,9 @@ class CountryReviewsScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
                     Text(
                       context.l10n.reviews_loading,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ],
@@ -117,21 +118,21 @@ class CountryReviewsScreen extends ConsumerWidget {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: AppColors.redMuted,
+                        color: colors.redMuted,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.error_outline_rounded,
                         size: 32,
-                        color: AppColors.red,
+                        color: colors.red,
                       ),
                     ),
                     const SizedBox(height: 20),
                     Text(
                       context.l10n.common_error(e.toString()),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: colors.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -148,30 +149,30 @@ class CountryReviewsScreen extends ConsumerWidget {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: AppColors.bgActive,
+                            color: colors.bgActive,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.rate_review_outlined,
                             size: 40,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           context.l10n.reviews_noReviews,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
+                            color: colors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           context.l10n.reviews_noReviewsFor(countryName),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                         ),
                       ],
@@ -188,20 +189,20 @@ class CountryReviewsScreen extends ConsumerWidget {
                         margin: const EdgeInsets.only(bottom: 16),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.accent.withAlpha(20),
-                          border: Border.all(color: AppColors.accent.withAlpha(50)),
+                          color: colors.accent.withAlpha(20),
+                          border: Border.all(color: colors.accent.withAlpha(50)),
                           borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.info_outline_rounded, size: 18, color: AppColors.accent.withAlpha(180)),
+                            Icon(Icons.info_outline_rounded, size: 18, color: colors.accent.withAlpha(180)),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 context.l10n.reviews_showingRecent(response.reviews.length),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: AppColors.textSecondary.withAlpha(200),
+                                  color: colors.textSecondary.withAlpha(200),
                                 ),
                               ),
                             ),
@@ -278,12 +279,13 @@ class _ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -299,10 +301,10 @@ class _ReviewCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   review.author,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -314,16 +316,16 @@ class _ReviewCard extends StatelessWidget {
                   if (review.version != null)
                     Text(
                       'v${review.version}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   Text(
                     _formatDate(context, review.reviewedAt),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ],
@@ -335,10 +337,10 @@ class _ReviewCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               review.title!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
           ],
@@ -347,9 +349,9 @@ class _ReviewCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               review.content,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -386,13 +388,14 @@ class _StarRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
         return Icon(
           index < rating ? Icons.star_rounded : Icons.star_outline_rounded,
           size: 16,
-          color: index < rating ? AppColors.yellow : AppColors.textMuted,
+          color: index < rating ? colors.yellow : colors.textMuted,
         );
       }),
     );

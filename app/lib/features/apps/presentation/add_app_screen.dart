@@ -123,13 +123,14 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final selectedCountry = ref.watch(selectedCountryProvider);
     final selectedPlatform = ref.watch(_selectedPlatformProvider);
     final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -138,8 +139,8 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: colors.glassBorder)),
             ),
             child: Row(
               children: [
@@ -149,20 +150,20 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                   child: InkWell(
                     onTap: () => context.go('/apps'),
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    hoverColor: AppColors.bgHover,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Icons.arrow_back_rounded, size: 20, color: AppColors.textMuted),
+                    hoverColor: colors.bgHover,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(Icons.arrow_back_rounded, size: 20, color: colors.textMuted),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   context.l10n.addApp_title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
               ],
@@ -172,8 +173,8 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
           // Search bar with platform toggle
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: colors.glassBorder)),
             ),
             child: Row(
               children: [
@@ -185,9 +186,9 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                   offset: const Offset(0, 44),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-                    side: const BorderSide(color: AppColors.glassBorder),
+                    side: BorderSide(color: colors.glassBorder),
                   ),
-                  color: AppColors.glassPanel,
+                  color: colors.glassPanel,
                   itemBuilder: (context) => countries
                       .map((country) => PopupMenuItem<Country>(
                             value: country,
@@ -198,9 +199,9 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                                 const SizedBox(width: 10),
                                 Text(
                                   country.name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
-                                    color: AppColors.textPrimary,
+                                    color: colors.textPrimary,
                                   ),
                                 ),
                               ],
@@ -210,8 +211,8 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.bgActive,
-                      border: Border.all(color: AppColors.glassBorder),
+                      color: colors.bgActive,
+                      border: Border.all(color: colors.glassBorder),
                       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                     ),
                     child: Row(
@@ -219,7 +220,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                       children: [
                         Text(selectedCountry.flag, style: const TextStyle(fontSize: 18)),
                         const SizedBox(width: 6),
-                        const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: AppColors.textMuted),
+                        Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: colors.textMuted),
                       ],
                     ),
                   ),
@@ -228,9 +229,9 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                 // Platform toggle
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.bgActive,
+                    color: colors.bgActive,
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                    border: Border.all(color: AppColors.glassBorder),
+                    border: Border.all(color: colors.glassBorder),
                   ),
                   padding: const EdgeInsets.all(4),
                   child: Row(
@@ -254,15 +255,15 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.bgBase,
-                      border: Border.all(color: AppColors.glassBorder),
+                      color: colors.bgBase,
+                      border: Border.all(color: colors.glassBorder),
                       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                     ),
                     child: Row(
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 14),
-                          child: Icon(Icons.search_rounded, size: 20, color: AppColors.textMuted),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: Icon(Icons.search_rounded, size: 20, color: colors.textMuted),
                         ),
                         Expanded(
                           child: TextField(
@@ -270,15 +271,15 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                             onChanged: (value) {
                               ref.read(_searchQueryProvider.notifier).state = value;
                             },
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.textPrimary,
+                              color: colors.textPrimary,
                             ),
                             decoration: InputDecoration(
                               hintText: selectedPlatform == AppPlatform.ios
                                   ? context.l10n.addApp_searchAppStore
                                   : context.l10n.addApp_searchPlayStore,
-                              hintStyle: const TextStyle(color: AppColors.textMuted),
+                              hintStyle: TextStyle(color: colors.textMuted),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -287,7 +288,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                         if (_searchController.text.isNotEmpty)
                           IconButton(
                             icon: const Icon(Icons.clear_rounded, size: 18),
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                             onPressed: () {
                               _searchController.clear();
                               ref.read(_searchQueryProvider.notifier).state = '';
@@ -376,6 +377,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
   }
 
   Widget _buildEmptyState() {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -384,20 +386,20 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.bgActive,
+              color: colors.bgActive,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(Icons.search_rounded, size: 40, color: AppColors.textMuted),
+            child: Icon(Icons.search_rounded, size: 40, color: colors.textMuted),
           ),
           const SizedBox(height: 20),
           Text(
             context.l10n.addApp_searchForApp,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
           ),
           const SizedBox(height: 8),
           Text(
             context.l10n.addApp_enterAtLeast2Chars,
-            style: const TextStyle(fontSize: 14, color: AppColors.textMuted),
+            style: TextStyle(fontSize: 14, color: colors.textMuted),
           ),
         ],
       ),
@@ -405,6 +407,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
   }
 
   Widget _buildNoResults() {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -413,15 +416,15 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.bgActive,
+              color: colors.bgActive,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(Icons.apps_rounded, size: 32, color: AppColors.textMuted),
+            child: Icon(Icons.apps_rounded, size: 32, color: colors.textMuted),
           ),
           const SizedBox(height: 16),
           Text(
             context.l10n.addApp_noResults,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
           ),
         ],
       ),
@@ -429,6 +432,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
   }
 
   Widget _buildError(String error) {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -437,15 +441,15 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.redMuted,
+              color: colors.redMuted,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(Icons.error_outline_rounded, size: 32, color: AppColors.red),
+            child: Icon(Icons.error_outline_rounded, size: 32, color: colors.red),
           ),
           const SizedBox(height: 20),
           Text(
             'Error: $error',
-            style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 14, color: colors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -467,12 +471,13 @@ class _PlatformTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.glassPanel : Colors.transparent,
+          color: isSelected ? colors.glassPanel : Colors.transparent,
           borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
         ),
         child: Text(
@@ -480,7 +485,7 @@ class _PlatformTab extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? AppColors.textPrimary : AppColors.textMuted,
+            color: isSelected ? colors.textPrimary : colors.textMuted,
           ),
         ),
       ),
@@ -567,12 +572,13 @@ class _AppResultRowBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
@@ -608,10 +614,10 @@ class _AppResultRowBase extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -619,7 +625,7 @@ class _AppResultRowBase extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     developer!,
-                    style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                    style: TextStyle(fontSize: 13, color: colors.textMuted),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -627,11 +633,11 @@ class _AppResultRowBase extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded, size: 14, color: AppColors.yellow),
+                      Icon(Icons.star_rounded, size: 14, color: colors.yellow),
                       const SizedBox(width: 4),
                       Text(
                         '${rating!.toStringAsFixed(1)} (${_formatCount(ratingCount)})',
-                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        style: TextStyle(fontSize: 12, color: colors.textSecondary),
                       ),
                     ],
                   ),
@@ -641,7 +647,7 @@ class _AppResultRowBase extends StatelessWidget {
           ),
           // Add button
           Material(
-            color: AppColors.accent,
+            color: colors.accent,
             borderRadius: BorderRadius.circular(AppColors.radiusSmall),
             child: InkWell(
               onTap: isAdding ? null : onAdd,

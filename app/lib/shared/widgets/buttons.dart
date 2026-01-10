@@ -23,7 +23,8 @@ class ToolbarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive ? AppColors.red : AppColors.textSecondary;
+    final colors = context.colors;
+    final color = isDestructive ? colors.red : colors.textSecondary;
 
     return Material(
       color: Colors.transparent,
@@ -31,11 +32,11 @@ class ToolbarButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.glassBorder),
+            border: Border.all(color: colors.glassBorder),
             borderRadius: BorderRadius.circular(AppColors.radiusSmall),
           ),
           child: Row(
@@ -82,8 +83,9 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
-      color: AppColors.accent,
+      color: colors.accent,
       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
       child: InkWell(
         onTap: onTap,
@@ -124,24 +126,25 @@ class SmallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
-        hoverColor: AppColors.bgHover,
+        hoverColor: colors.bgHover,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.glassBorder),
+            border: Border.all(color: colors.glassBorder),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ),
         ),

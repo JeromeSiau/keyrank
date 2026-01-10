@@ -17,8 +17,7 @@ class UserMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final _MenuColors colors = isDark ? _DarkColors() : _LightColors();
+    final colors = context.colors;
 
     final initials = userName.isNotEmpty
         ? userName.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase()
@@ -30,7 +29,7 @@ class UserMenu extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
         side: BorderSide(color: colors.border),
       ),
-      color: colors.surface,
+      color: colors.bgSurface,
       onSelected: (value) {
         switch (value) {
           case 'settings':
@@ -92,7 +91,7 @@ class UserMenu extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: colors.bgActive,
+          color: colors.bgActive.withAlpha(100),
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
         ),
         child: Material(
@@ -165,48 +164,4 @@ class UserMenu extends StatelessWidget {
       ),
     );
   }
-}
-
-abstract class _MenuColors {
-  Color get textPrimary;
-  Color get textSecondary;
-  Color get textMuted;
-  Color get bgActive;
-  Color get bgHover;
-  Color get surface;
-  Color get border;
-}
-
-class _DarkColors implements _MenuColors {
-  @override
-  final Color textPrimary = AppColors.textPrimary;
-  @override
-  final Color textSecondary = AppColors.textSecondary;
-  @override
-  final Color textMuted = AppColors.textMuted;
-  @override
-  final Color bgActive = AppColors.bgActive.withAlpha(100);
-  @override
-  final Color bgHover = AppColors.bgHover;
-  @override
-  final Color surface = AppColors.bgSurface;
-  @override
-  final Color border = AppColors.glassBorder;
-}
-
-class _LightColors implements _MenuColors {
-  @override
-  final Color textPrimary = AppColorsLight.textPrimary;
-  @override
-  final Color textSecondary = AppColorsLight.textSecondary;
-  @override
-  final Color textMuted = AppColorsLight.textMuted;
-  @override
-  final Color bgActive = AppColorsLight.bgActive.withAlpha(200);
-  @override
-  final Color bgHover = AppColorsLight.bgHover;
-  @override
-  final Color surface = AppColorsLight.bgSurface;
-  @override
-  final Color border = AppColorsLight.glassBorder;
 }

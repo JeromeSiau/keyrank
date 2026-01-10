@@ -103,9 +103,10 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassPanel,
+        color: colors.glassPanel,
         borderRadius: BorderRadius.circular(AppColors.radiusLarge),
       ),
       child: Column(
@@ -134,11 +135,12 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildToolbar() {
+    final colors = context.colors;
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: [
@@ -148,10 +150,10 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
             child: InkWell(
               onTap: () => context.pop(),
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              hoverColor: AppColors.bgHover,
-              child: const Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.arrow_back_rounded, size: 20, color: AppColors.textMuted),
+              hoverColor: colors.bgHover,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Icon(Icons.arrow_back_rounded, size: 20, color: colors.textMuted),
               ),
             ),
           ),
@@ -160,18 +162,18 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.accent.withAlpha(30),
+              color: colors.accent.withAlpha(30),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.compare_arrows_rounded, size: 18, color: AppColors.accent),
+            child: Icon(Icons.compare_arrows_rounded, size: 18, color: colors.accent),
           ),
           const SizedBox(width: 12),
           Text(
             context.l10n.insights_compareTitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
         ],
@@ -180,11 +182,12 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildStickyHeader() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: const Border(bottom: BorderSide(color: AppColors.glassBorder)),
+        color: colors.bgActive.withAlpha(50),
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
       child: Row(
         children: _columns.map((column) {
@@ -198,7 +201,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
                     height: 32,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: AppColors.bgActive,
+                      color: colors.bgActive,
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: column.iconUrl != null
@@ -206,17 +209,17 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
                         : Icon(
                             column.platform == 'ios' ? Icons.apple : Icons.android,
                             size: 18,
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                           ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       column.appName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -247,11 +250,12 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildLoadingColumn() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(30),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(30),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -261,7 +265,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
           const SizedBox(height: 16),
           Text(
             context.l10n.insights_analyzingReviews,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+            style: TextStyle(color: colors.textMuted, fontSize: 13),
           ),
           const SizedBox(height: 40),
         ],
@@ -270,22 +274,23 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildErrorColumn(_CompareColumn column) {
+    final colors = context.colors;
     final index = _columns.indexOf(column);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.redMuted.withAlpha(30),
-        border: Border.all(color: AppColors.red.withAlpha(50)),
+        color: colors.redMuted.withAlpha(30),
+        border: Border.all(color: colors.red.withAlpha(50)),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
         children: [
           const SizedBox(height: 20),
-          const Icon(Icons.error_outline_rounded, size: 32, color: AppColors.red),
+          Icon(Icons.error_outline_rounded, size: 32, color: colors.red),
           const SizedBox(height: 12),
           Text(
             column.error!,
-            style: const TextStyle(color: AppColors.red, fontSize: 13),
+            style: TextStyle(color: colors.red, fontSize: 13),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -306,21 +311,22 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildNoInsightColumn() {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(30),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(30),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
         children: [
           const SizedBox(height: 40),
-          const Icon(Icons.analytics_outlined, size: 32, color: AppColors.textMuted),
+          Icon(Icons.analytics_outlined, size: 32, color: colors.textMuted),
           const SizedBox(height: 12),
           Text(
             context.l10n.insights_noInsightsAvailable,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+            style: TextStyle(color: colors.textMuted, fontSize: 13),
           ),
           const SizedBox(height: 40),
         ],
@@ -329,6 +335,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildInsightColumn(AppInsight insight) {
+    final colors = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -336,8 +343,8 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         _buildSectionCard(
           title: context.l10n.insights_strengths,
           icon: Icons.thumb_up_rounded,
-          iconColor: AppColors.green,
-          bgColor: AppColors.greenMuted,
+          iconColor: colors.green,
+          bgColor: colors.greenMuted,
           items: insight.overallStrengths,
         ),
         const SizedBox(height: 12),
@@ -345,8 +352,8 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         _buildSectionCard(
           title: context.l10n.insights_weaknesses,
           icon: Icons.thumb_down_rounded,
-          iconColor: AppColors.red,
-          bgColor: AppColors.redMuted,
+          iconColor: colors.red,
+          bgColor: colors.redMuted,
           items: insight.overallWeaknesses,
         ),
         const SizedBox(height: 12),
@@ -358,8 +365,8 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
           _buildSectionCard(
             title: context.l10n.insights_opportunities,
             icon: Icons.lightbulb_rounded,
-            iconColor: AppColors.yellow,
-            bgColor: AppColors.yellow.withAlpha(30),
+            iconColor: colors.yellow,
+            bgColor: colors.yellow.withAlpha(30),
             items: insight.opportunities,
           ),
       ],
@@ -373,6 +380,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
     required Color bgColor,
     required List<String> items,
   }) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -389,10 +397,10 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
             ],
@@ -408,7 +416,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
                     Expanded(
                       child: Text(
                         item,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        style: TextStyle(fontSize: 12, color: colors.textSecondary),
                       ),
                     ),
                   ],
@@ -420,6 +428,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
   }
 
   Widget _buildCategoryScores(AppInsight insight) {
+    final colors = context.colors;
     final categoryLabels = {
       'ux': context.l10n.insights_categoryUx,
       'performance': context.l10n.insights_categoryPerf,
@@ -432,8 +441,8 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.bgActive.withAlpha(50),
-        border: Border.all(color: AppColors.glassBorder),
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Column(
@@ -441,10 +450,10 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         children: [
           Text(
             context.l10n.insights_scores,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: 10),
@@ -454,10 +463,10 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
             children: insight.categoryScores.entries.map((entry) {
               final score = entry.value.score;
               final color = score >= 4
-                  ? AppColors.green
+                  ? colors.green
                   : score >= 3
-                      ? AppColors.yellow
-                      : AppColors.red;
+                      ? colors.yellow
+                      : colors.red;
 
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -471,7 +480,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
                   children: [
                     Text(
                       categoryLabels[entry.key] ?? entry.key,
-                      style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                      style: TextStyle(fontSize: 11, color: colors.textSecondary),
                     ),
                     const SizedBox(width: 6),
                     Container(
