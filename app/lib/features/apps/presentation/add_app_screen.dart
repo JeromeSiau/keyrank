@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../data/apps_repository.dart';
 import '../domain/app_model.dart';
 import '../providers/apps_provider.dart';
@@ -62,7 +63,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${app.name} added successfully'),
+            content: Text(context.l10n.addApp_addedSuccess(app.name)),
             backgroundColor: AppColors.green,
           ),
         );
@@ -98,7 +99,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${app.name} added successfully'),
+            content: Text(context.l10n.addApp_addedSuccess(app.name)),
             backgroundColor: AppColors.green,
           ),
         );
@@ -156,9 +157,9 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'Add App',
-                  style: TextStyle(
+                Text(
+                  context.l10n.addApp_title,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -275,8 +276,8 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                             ),
                             decoration: InputDecoration(
                               hintText: selectedPlatform == AppPlatform.ios
-                                  ? 'Search App Store...'
-                                  : 'Search Play Store...',
+                                  ? context.l10n.addApp_searchAppStore
+                                  : context.l10n.addApp_searchPlayStore,
                               hintStyle: const TextStyle(color: AppColors.textMuted),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -389,14 +390,14 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             child: const Icon(Icons.search_rounded, size: 40, color: AppColors.textMuted),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Search for an app',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+          Text(
+            context.l10n.addApp_searchForApp,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Enter at least 2 characters',
-            style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+          Text(
+            context.l10n.addApp_enterAtLeast2Chars,
+            style: const TextStyle(fontSize: 14, color: AppColors.textMuted),
           ),
         ],
       ),
@@ -418,9 +419,9 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
             child: const Icon(Icons.apps_rounded, size: 32, color: AppColors.textMuted),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'No results found',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+          Text(
+            context.l10n.addApp_noResults,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
           ),
         ],
       ),
@@ -653,12 +654,12 @@ class _AppResultRowBase extends StatelessWidget {
                         height: 18,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
-                    : const Row(
+                    : Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add_rounded, size: 18, color: Colors.white),
-                          SizedBox(width: 6),
-                          Text('Add', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
+                          const Icon(Icons.add_rounded, size: 18, color: Colors.white),
+                          const SizedBox(width: 6),
+                          Text(context.l10n.common_add, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
                         ],
                       ),
               ),

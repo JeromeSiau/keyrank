@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_colors.dart';
+import '../utils/l10n_extension.dart';
 
 class UserMenu extends StatelessWidget {
   final String userName;
@@ -61,7 +62,7 @@ class UserMenu extends StatelessWidget {
               Icon(Icons.settings_outlined, size: 18, color: colors.textSecondary),
               const SizedBox(width: 12),
               Text(
-                'Settings',
+                context.l10n.common_settings,
                 style: TextStyle(
                   fontSize: 13,
                   color: colors.textPrimary,
@@ -78,7 +79,7 @@ class UserMenu extends StatelessWidget {
               Icon(Icons.logout_rounded, size: 18, color: colors.textSecondary),
               const SizedBox(width: 12),
               Text(
-                'Se déconnecter',
+                context.l10n.userMenu_logout,
                 style: TextStyle(
                   fontSize: 13,
                   color: colors.textPrimary,

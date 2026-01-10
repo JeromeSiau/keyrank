@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/l10n_extension.dart';
 
 /// Loading indicator widget
 class LoadingView extends StatelessWidget {
@@ -75,11 +76,11 @@ class ErrorView extends StatelessWidget {
               child: InkWell(
                 onTap: onRetry,
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   child: Text(
-                    'Retry',
-                    style: TextStyle(
+                    context.l10n.common_retry,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,

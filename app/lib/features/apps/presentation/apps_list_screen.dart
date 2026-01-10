@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
 import '../providers/apps_provider.dart';
@@ -38,9 +39,9 @@ class AppsListScreen extends ConsumerWidget {
               data: (apps) => apps.isEmpty
                   ? EmptyStateView(
                       icon: Icons.app_shortcut_outlined,
-                      title: 'No apps tracked yet',
-                      subtitle: 'Add an app to start tracking its rankings',
-                      actionLabel: 'Add App',
+                      title: context.l10n.apps_noAppsYet,
+                      subtitle: context.l10n.apps_addAppToStart,
+                      actionLabel: context.l10n.dashboard_addApp,
                       actionIcon: Icons.add_rounded,
                       onAction: () => context.go('/apps/add'),
                     )
@@ -69,9 +70,9 @@ class _Toolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Text(
-            'My Apps',
-            style: TextStyle(
+          Text(
+            context.l10n.apps_title,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
@@ -80,13 +81,13 @@ class _Toolbar extends StatelessWidget {
           const Spacer(),
           ToolbarButton(
             icon: Icons.refresh_rounded,
-            label: 'Refresh',
+            label: context.l10n.common_refresh,
             onTap: onRefresh,
           ),
           const SizedBox(width: 10),
           PrimaryButton(
             icon: Icons.add_rounded,
-            label: 'Add App',
+            label: context.l10n.dashboard_addApp,
             onTap: onAddApp,
           ),
         ],
@@ -120,7 +121,7 @@ class _AppsTable extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${apps.length} apps',
+                    context.l10n.apps_appCount(apps.length),
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -129,9 +130,9 @@ class _AppsTable extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      SmallButton(label: 'Filter', onTap: () {}),
+                      SmallButton(label: context.l10n.common_filter, onTap: () {}),
                       const SizedBox(width: 6),
-                      SmallButton(label: 'Sort', onTap: () {}),
+                      SmallButton(label: context.l10n.common_sort, onTap: () {}),
                     ],
                   ),
                 ],
@@ -147,13 +148,13 @@ class _AppsTable extends StatelessWidget {
                   bottom: BorderSide(color: AppColors.glassBorder),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  SizedBox(width: 52),
+                  const SizedBox(width: 52),
                   Expanded(
                     child: Text(
-                      'APP',
-                      style: TextStyle(
+                      context.l10n.apps_tableApp,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -164,8 +165,8 @@ class _AppsTable extends StatelessWidget {
                   SizedBox(
                     width: 120,
                     child: Text(
-                      'DEVELOPER',
-                      style: TextStyle(
+                      context.l10n.apps_tableDeveloper,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -173,12 +174,12 @@ class _AppsTable extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   SizedBox(
                     width: 80,
                     child: Text(
-                      'KEYWORDS',
-                      style: TextStyle(
+                      context.l10n.apps_tableKeywords,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -186,12 +187,12 @@ class _AppsTable extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   SizedBox(
                     width: 110,
                     child: Text(
-                      'PLATFORM',
-                      style: TextStyle(
+                      context.l10n.apps_tablePlatform,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -199,12 +200,12 @@ class _AppsTable extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   SizedBox(
                     width: 70,
                     child: Text(
-                      'RATING',
-                      style: TextStyle(
+                      context.l10n.apps_tableRating,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -212,7 +213,7 @@ class _AppsTable extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 36),
+                  const SizedBox(width: 36),
                 ],
               ),
             ),
