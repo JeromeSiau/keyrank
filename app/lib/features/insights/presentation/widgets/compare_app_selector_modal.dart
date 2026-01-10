@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/l10n_extension.dart';
 import '../../../apps/domain/app_model.dart';
 import '../../../apps/providers/apps_provider.dart';
 
@@ -96,9 +97,9 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Compare Insights',
-                  style: TextStyle(
+                Text(
+                  context.l10n.insights_compareTitle,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -106,7 +107,7 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Select up to 3 apps to compare with ${widget.currentAppName}',
+                  context.l10n.compare_selectAppsToCompare(widget.currentAppName),
                   style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
                 ),
               ],
@@ -137,12 +138,12 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
         child: TextField(
           onChanged: (value) => setState(() => _searchQuery = value),
           style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
-          decoration: const InputDecoration(
-            hintText: 'Search apps...',
-            hintStyle: TextStyle(color: AppColors.textMuted),
-            prefixIcon: Icon(Icons.search_rounded, size: 18, color: AppColors.textMuted),
+          decoration: InputDecoration(
+            hintText: context.l10n.compare_searchApps,
+            hintStyle: const TextStyle(color: AppColors.textMuted),
+            prefixIcon: const Icon(Icons.search_rounded, size: 18, color: AppColors.textMuted),
             border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
       ),
@@ -158,7 +159,7 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
             Icon(Icons.search_off_rounded, size: 48, color: AppColors.textMuted.withAlpha(100)),
             const SizedBox(height: 12),
             Text(
-              _searchQuery.isEmpty ? 'No other apps to compare' : 'No matching apps',
+              _searchQuery.isEmpty ? context.l10n.compare_noOtherApps : context.l10n.compare_noMatchingApps,
               style: const TextStyle(color: AppColors.textMuted),
             ),
           ],
@@ -260,13 +261,13 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
       child: Row(
         children: [
           Text(
-            '${_selectedIds.length} of 3 apps selected',
+            context.l10n.compare_appsSelected(_selectedIds.length),
             style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
           ),
           const Spacer(),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.compare_cancel),
           ),
           const SizedBox(width: 12),
           FilledButton(
@@ -280,7 +281,7 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
               backgroundColor: AppColors.accent,
               disabledBackgroundColor: AppColors.accentMuted,
             ),
-            child: Text('Compare ${_selectedIds.length + 1} Apps'),
+            child: Text(context.l10n.compare_button(_selectedIds.length + 1)),
           ),
         ],
       ),

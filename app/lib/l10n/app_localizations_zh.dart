@@ -280,4 +280,522 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get userMenu_logout => '退出登录';
+
+  @override
+  String get insights_compareTitle => '对比分析';
+
+  @override
+  String get insights_analyzingReviews => '正在分析评论...';
+
+  @override
+  String get insights_noInsightsAvailable => '暂无分析数据';
+
+  @override
+  String get insights_strengths => '优势';
+
+  @override
+  String get insights_weaknesses => '劣势';
+
+  @override
+  String get insights_scores => '评分';
+
+  @override
+  String get insights_opportunities => '机会';
+
+  @override
+  String get insights_categoryUx => '用户体验';
+
+  @override
+  String get insights_categoryPerf => '性能';
+
+  @override
+  String get insights_categoryFeatures => '功能';
+
+  @override
+  String get insights_categoryPricing => '定价';
+
+  @override
+  String get insights_categorySupport => '支持';
+
+  @override
+  String get insights_categoryOnboard => '引导';
+
+  @override
+  String get insights_categoryUxFull => '用户体验/界面';
+
+  @override
+  String get insights_categoryPerformance => '性能';
+
+  @override
+  String get insights_categoryOnboarding => '新手引导';
+
+  @override
+  String get insights_reviewInsights => '评论洞察';
+
+  @override
+  String get insights_generateFirst => '请先生成分析';
+
+  @override
+  String get insights_compareWithOther => '与其他应用对比';
+
+  @override
+  String get insights_compare => '对比';
+
+  @override
+  String get insights_generateAnalysis => '生成分析';
+
+  @override
+  String get insights_period => '时间范围：';
+
+  @override
+  String get insights_3months => '3个月';
+
+  @override
+  String get insights_6months => '6个月';
+
+  @override
+  String get insights_12months => '12个月';
+
+  @override
+  String get insights_analyze => '分析';
+
+  @override
+  String insights_reviewsCount(int count) {
+    return '$count 条评论';
+  }
+
+  @override
+  String insights_analyzedAgo(String time) {
+    return '$time前分析';
+  }
+
+  @override
+  String get insights_yourNotes => '您的笔记';
+
+  @override
+  String get insights_save => '保存';
+
+  @override
+  String get insights_clickToAddNotes => '点击添加笔记...';
+
+  @override
+  String get insights_noteSaved => '笔记已保存';
+
+  @override
+  String get insights_noteHint => '添加您对此分析的笔记...';
+
+  @override
+  String get insights_categoryScores => '分类评分';
+
+  @override
+  String get insights_emergentThemes => '热门主题';
+
+  @override
+  String get insights_exampleQuotes => '示例引用：';
+
+  @override
+  String get insights_selectCountryFirst => '请至少选择一个国家';
+
+  @override
+  String compare_selectAppsToCompare(String appName) {
+    return '选择最多3个应用与 $appName 进行对比';
+  }
+
+  @override
+  String get compare_searchApps => '搜索应用...';
+
+  @override
+  String get compare_noOtherApps => '没有其他应用可对比';
+
+  @override
+  String get compare_noMatchingApps => '没有匹配的应用';
+
+  @override
+  String compare_appsSelected(int count) {
+    return '已选择 $count/3 个应用';
+  }
+
+  @override
+  String get compare_cancel => '取消';
+
+  @override
+  String compare_button(int count) {
+    return '对比 $count 个应用';
+  }
+
+  @override
+  String get appDetail_deleteAppTitle => '删除应用？';
+
+  @override
+  String get appDetail_deleteAppConfirm => '此操作无法撤销。';
+
+  @override
+  String get appDetail_cancel => '取消';
+
+  @override
+  String get appDetail_delete => '删除';
+
+  @override
+  String get appDetail_exporting => '正在导出排名...';
+
+  @override
+  String appDetail_savedFile(String filename) {
+    return '已保存：$filename';
+  }
+
+  @override
+  String get appDetail_showInFinder => '在访达中显示';
+
+  @override
+  String appDetail_exportFailed(String error) {
+    return '导出失败：$error';
+  }
+
+  @override
+  String appDetail_importedKeywords(int imported, int skipped) {
+    return '已导入 $imported 个关键词（跳过 $skipped 个）';
+  }
+
+  @override
+  String get appDetail_favorite => '收藏';
+
+  @override
+  String get appDetail_ratings => '评分';
+
+  @override
+  String get appDetail_insights => '洞察';
+
+  @override
+  String get appDetail_import => '导入';
+
+  @override
+  String get appDetail_export => '导出';
+
+  @override
+  String appDetail_reviewsCount(int count) {
+    return '$count 条评论';
+  }
+
+  @override
+  String get appDetail_keywords => '关键词';
+
+  @override
+  String get appDetail_addKeyword => '添加关键词';
+
+  @override
+  String get appDetail_keywordHint => '例如：健身追踪器';
+
+  @override
+  String get appDetail_trackedKeywords => '追踪的关键词';
+
+  @override
+  String appDetail_selectedCount(int count) {
+    return '已选择 $count 个';
+  }
+
+  @override
+  String get appDetail_allKeywords => '所有关键词';
+
+  @override
+  String get appDetail_hasTags => '有标签';
+
+  @override
+  String get appDetail_hasNotes => '有笔记';
+
+  @override
+  String get appDetail_position => '排名';
+
+  @override
+  String get appDetail_select => '选择';
+
+  @override
+  String get appDetail_suggestions => '建议';
+
+  @override
+  String get appDetail_deleteKeywordsTitle => '删除关键词';
+
+  @override
+  String appDetail_deleteKeywordsConfirm(int count) {
+    return '确定要删除 $count 个关键词吗？';
+  }
+
+  @override
+  String get appDetail_tag => '标签';
+
+  @override
+  String appDetail_keywordAdded(String keyword, String flag) {
+    return '已添加关键词 \"$keyword\"（$flag）';
+  }
+
+  @override
+  String appDetail_tagsAdded(int count) {
+    return '已为 $count 个关键词添加标签';
+  }
+
+  @override
+  String get appDetail_keywordsAddedSuccess => '关键词添加成功';
+
+  @override
+  String get appDetail_noTagsAvailable => '暂无可用标签，请先创建标签。';
+
+  @override
+  String get appDetail_tagged => '已标记';
+
+  @override
+  String get appDetail_withNotes => '有笔记';
+
+  @override
+  String get appDetail_nameAZ => '名称 A-Z';
+
+  @override
+  String get appDetail_nameZA => '名称 Z-A';
+
+  @override
+  String get appDetail_bestPosition => '最佳排名';
+
+  @override
+  String get appDetail_recentlyTracked => '最近追踪';
+
+  @override
+  String get keywordSuggestions_title => '关键词建议';
+
+  @override
+  String keywordSuggestions_appInCountry(String appName, String country) {
+    return '$appName（$country）';
+  }
+
+  @override
+  String get keywordSuggestions_refresh => '刷新建议';
+
+  @override
+  String get keywordSuggestions_search => '搜索建议...';
+
+  @override
+  String get keywordSuggestions_selectAll => '全选';
+
+  @override
+  String get keywordSuggestions_clear => '清除';
+
+  @override
+  String get keywordSuggestions_analyzing => '正在分析应用元数据...';
+
+  @override
+  String get keywordSuggestions_mayTakeFewSeconds => '这可能需要几秒钟';
+
+  @override
+  String get keywordSuggestions_noSuggestions => '暂无建议';
+
+  @override
+  String get keywordSuggestions_noMatchingSuggestions => '没有匹配的建议';
+
+  @override
+  String get keywordSuggestions_headerKeyword => '关键词';
+
+  @override
+  String get keywordSuggestions_headerDifficulty => '难度';
+
+  @override
+  String get keywordSuggestions_headerApps => '应用数';
+
+  @override
+  String keywordSuggestions_rankedAt(int position) {
+    return '排名第 $position';
+  }
+
+  @override
+  String keywordSuggestions_keywordsSelected(int count) {
+    return '已选择 $count 个关键词';
+  }
+
+  @override
+  String keywordSuggestions_addKeywords(int count) {
+    return '添加 $count 个关键词';
+  }
+
+  @override
+  String keywordSuggestions_errorAdding(String error) {
+    return '添加关键词时出错：$error';
+  }
+
+  @override
+  String get sidebar_favorites => '收藏';
+
+  @override
+  String get sidebar_tooManyFavorites => '建议保留5个或更少的收藏';
+
+  @override
+  String get sidebar_iphone => 'iPHONE';
+
+  @override
+  String get sidebar_android => 'ANDROID';
+
+  @override
+  String get keywordSearch_title => '关键词研究';
+
+  @override
+  String get keywordSearch_searchPlaceholder => '搜索关键词...';
+
+  @override
+  String get keywordSearch_searchTitle => '搜索关键词';
+
+  @override
+  String get keywordSearch_searchSubtitle => '发现哪些应用在特定关键词上排名';
+
+  @override
+  String keywordSearch_appsRanked(int count) {
+    return '$count 个应用上榜';
+  }
+
+  @override
+  String get keywordSearch_popularity => '热度';
+
+  @override
+  String keywordSearch_results(int count) {
+    return '$count 个结果';
+  }
+
+  @override
+  String get keywordSearch_headerRank => '排名';
+
+  @override
+  String get keywordSearch_headerApp => '应用';
+
+  @override
+  String get keywordSearch_headerRating => '评分';
+
+  @override
+  String get keywordSearch_headerTrack => '追踪';
+
+  @override
+  String get keywordSearch_trackApp => '追踪此应用';
+
+  @override
+  String reviews_reviewsFor(String appName) {
+    return '$appName 的评论';
+  }
+
+  @override
+  String get reviews_loading => '正在加载评论...';
+
+  @override
+  String get reviews_noReviews => '暂无评论';
+
+  @override
+  String reviews_noReviewsFor(String countryName) {
+    return '未找到 $countryName 的评论';
+  }
+
+  @override
+  String reviews_showingRecent(int count) {
+    return '显示 App Store 最近的 $count 条评论。';
+  }
+
+  @override
+  String get reviews_today => '今天';
+
+  @override
+  String get reviews_yesterday => '昨天';
+
+  @override
+  String reviews_daysAgo(int count) {
+    return '$count 天前';
+  }
+
+  @override
+  String reviews_weeksAgo(int count) {
+    return '$count 周前';
+  }
+
+  @override
+  String reviews_monthsAgo(int count) {
+    return '$count 个月前';
+  }
+
+  @override
+  String get ratings_byCountry => '各国评分';
+
+  @override
+  String get ratings_noRatingsAvailable => '暂无评分数据';
+
+  @override
+  String get ratings_noRatingsYet => '此应用暂无评分';
+
+  @override
+  String get ratings_totalRatings => '总评分数';
+
+  @override
+  String get ratings_averageRating => '平均评分';
+
+  @override
+  String ratings_countriesCount(int count) {
+    return '$count 个国家';
+  }
+
+  @override
+  String ratings_updated(String date) {
+    return '更新时间：$date';
+  }
+
+  @override
+  String get ratings_headerCountry => '国家';
+
+  @override
+  String get ratings_headerRatings => '评分数';
+
+  @override
+  String get ratings_headerAverage => '平均分';
+
+  @override
+  String time_minutesAgo(int count) {
+    return '$count分钟前';
+  }
+
+  @override
+  String time_hoursAgo(int count) {
+    return '$count小时前';
+  }
+
+  @override
+  String time_daysAgo(int count) {
+    return '$count天前';
+  }
+
+  @override
+  String get appDetail_noKeywordsTracked => '暂无追踪的关键词';
+
+  @override
+  String get appDetail_addKeywordHint => '在上方添加关键词以开始追踪';
+
+  @override
+  String get appDetail_noKeywordsMatchFilter => '没有符合筛选条件的关键词';
+
+  @override
+  String get appDetail_tryChangingFilter => '尝试更改筛选条件';
+
+  @override
+  String get appDetail_addTag => '添加标签';
+
+  @override
+  String get appDetail_addNote => '添加笔记';
+
+  @override
+  String get appDetail_positionHistory => '排名历史';
+
+  @override
+  String get appDetail_store => 'STORE';
+
+  @override
+  String get nav_overview => '概览';
+
+  @override
+  String get nav_dashboard => '仪表盘';
+
+  @override
+  String get nav_myApps => '我的应用';
+
+  @override
+  String get nav_research => '研究';
+
+  @override
+  String get nav_keywords => '关键词';
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../data/ratings_repository.dart';
 import '../domain/rating_model.dart';
 
@@ -69,9 +70,9 @@ class AppRatingsScreen extends ConsumerWidget {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const Text(
-                        'Ratings by Country',
-                        style: TextStyle(
+                      Text(
+                        context.l10n.ratings_byCountry,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textMuted,
                         ),
@@ -108,7 +109,7 @@ class AppRatingsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Error: $e',
+                      context.l10n.common_error(e.toString()),
                       style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -122,11 +123,11 @@ class AppRatingsScreen extends ConsumerWidget {
                       child: InkWell(
                         onTap: () => ref.invalidate(appRatingsProvider(appId)),
                         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           child: Text(
-                            'Retry',
-                            style: TextStyle(
+                            context.l10n.common_retry,
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -158,18 +159,18 @@ class AppRatingsScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'No ratings available',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.ratings_noRatingsAvailable,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'This app has no ratings yet',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.ratings_noRatingsYet,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textMuted,
                           ),
@@ -187,6 +188,8 @@ class AppRatingsScreen extends ConsumerWidget {
                       _SummaryCard(
                         totalRatings: response.totalRatings,
                         averageRating: response.averageRating,
+                        totalRatingsLabel: context.l10n.ratings_totalRatings,
+                        averageRatingLabel: context.l10n.ratings_averageRating,
                       ),
                       const SizedBox(height: 16),
                       // Ratings table
@@ -195,6 +198,11 @@ class AppRatingsScreen extends ConsumerWidget {
                         lastUpdated: response.lastUpdated,
                         appId: appId,
                         appName: appName,
+                        countriesCountLabel: context.l10n.ratings_countriesCount(response.ratings.length),
+                        updatedLabel: (date) => context.l10n.ratings_updated(date),
+                        headerCountry: context.l10n.ratings_headerCountry,
+                        headerRatings: context.l10n.ratings_headerRatings,
+                        headerAverage: context.l10n.ratings_headerAverage,
                       ),
                     ],
                   ),
@@ -211,10 +219,14 @@ class AppRatingsScreen extends ConsumerWidget {
 class _SummaryCard extends StatelessWidget {
   final int totalRatings;
   final double? averageRating;
+  final String totalRatingsLabel;
+  final String averageRatingLabel;
 
   const _SummaryCard({
     required this.totalRatings,
     required this.averageRating,
+    required this.totalRatingsLabel,
+    required this.averageRatingLabel,
   });
 
   @override
@@ -233,7 +245,7 @@ class _SummaryCard extends StatelessWidget {
             icon: Icons.people_rounded,
             iconColor: AppColors.accent,
             value: _formatCount(totalRatings),
-            label: 'Total Ratings',
+            label: totalRatingsLabel,
           ),
           Container(
             width: 1,
@@ -244,7 +256,7 @@ class _SummaryCard extends StatelessWidget {
             icon: Icons.star_rounded,
             iconColor: _getRatingColor(averageRating),
             value: averageRating?.toStringAsFixed(2) ?? '--',
-            label: 'Average Rating',
+            label: averageRatingLabel,
           ),
         ],
       ),
@@ -319,12 +331,22 @@ class _RatingsTable extends StatelessWidget {
   final DateTime? lastUpdated;
   final int appId;
   final String appName;
+  final String countriesCountLabel;
+  final String Function(String) updatedLabel;
+  final String headerCountry;
+  final String headerRatings;
+  final String headerAverage;
 
   const _RatingsTable({
     required this.ratings,
     required this.lastUpdated,
     required this.appId,
     required this.appName,
+    required this.countriesCountLabel,
+    required this.updatedLabel,
+    required this.headerCountry,
+    required this.headerRatings,
+    required this.headerAverage,
   });
 
   @override
@@ -344,7 +366,7 @@ class _RatingsTable extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${ratings.length} countries',
+                  countriesCountLabel,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -353,7 +375,7 @@ class _RatingsTable extends StatelessWidget {
                 ),
                 if (lastUpdated != null)
                   Text(
-                    'Updated: ${_formatDate(lastUpdated!)}',
+                    updatedLabel(_formatDate(lastUpdated!)),
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textMuted,
@@ -372,13 +394,13 @@ class _RatingsTable extends StatelessWidget {
                 bottom: BorderSide(color: AppColors.glassBorder),
               ),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Expanded(
                   flex: 3,
                   child: Text(
-                    'COUNTRY',
-                    style: TextStyle(
+                    headerCountry,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -389,8 +411,8 @@ class _RatingsTable extends StatelessWidget {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'RATINGS',
-                    style: TextStyle(
+                    headerRatings,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -402,8 +424,8 @@ class _RatingsTable extends StatelessWidget {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'AVERAGE',
-                    style: TextStyle(
+                    headerAverage,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,

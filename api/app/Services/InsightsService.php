@@ -12,6 +12,20 @@ class InsightsService
 {
     private const CHUNK_SIZE = 100;
     private const CATEGORIES = ['ux', 'performance', 'features', 'pricing', 'support', 'onboarding'];
+    private const LANGUAGE_NAMES = [
+        'en' => 'English',
+        'fr' => 'French',
+        'de' => 'German',
+        'es' => 'Spanish',
+        'pt' => 'Portuguese',
+        'it' => 'Italian',
+        'ja' => 'Japanese',
+        'ko' => 'Korean',
+        'zh' => 'Chinese',
+        'tr' => 'Turkish',
+    ];
+
+    private string $locale = 'en';
 
     public function __construct(
         private OpenRouterService $openRouter
@@ -20,8 +34,10 @@ class InsightsService
     /**
      * Generate insights for an app
      */
-    public function generateInsights(App $app, array $countries, int $periodMonths = 6): ?AppInsight
+    public function generateInsights(App $app, array $countries, int $periodMonths = 6, ?string $locale = null): ?AppInsight
     {
+        $this->locale = $locale ?? 'en';
+
         $periodStart = Carbon::now()->subMonths($periodMonths)->startOfDay();
         $periodEnd = Carbon::now()->endOfDay();
 
@@ -93,15 +109,18 @@ class InsightsService
 
     private function synthesizeChunks(App $app, array $analyses, int $totalReviews): ?array
     {
+        $language = self::LANGUAGE_NAMES[$this->locale] ?? 'English';
+
         $systemPrompt = <<<PROMPT
-Tu es un analyste ASO expert. Tu reçois plusieurs analyses partielles de reviews d'une même app.
-Synthétise-les en une analyse unique et cohérente.
-Réponds en JSON avec la même structure que les analyses partielles.
+You are an expert ASO analyst. You receive multiple partial analyses of reviews from the same app.
+Synthesize them into a single coherent analysis.
+Respond in JSON with the same structure as the partial analyses.
+IMPORTANT: Respond in {$language}.
 PROMPT;
 
         $userPrompt = "APP: {$app->name}\n";
         $userPrompt .= "TOTAL REVIEWS: {$totalReviews}\n\n";
-        $userPrompt .= "ANALYSES PARTIELLES:\n";
+        $userPrompt .= "PARTIAL ANALYSES:\n";
         $userPrompt .= json_encode($analyses, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         return $this->openRouter->chat($systemPrompt, $userPrompt);
@@ -109,40 +128,42 @@ PROMPT;
 
     private function buildSystemPrompt(): string
     {
-        return <<<PROMPT
-Tu es un analyste ASO expert. Analyse les reviews d'application mobile fournies.
+        $language = self::LANGUAGE_NAMES[$this->locale] ?? 'English';
 
-Réponds UNIQUEMENT en JSON valide avec cette structure exacte:
+        return <<<PROMPT
+You are an expert ASO analyst. Analyze the provided mobile app reviews.
+
+Respond ONLY with valid JSON using this exact structure:
 {
   "categories": {
-    "ux": { "score": <1-5>, "summary": "<résumé en 1-2 phrases>" },
-    "performance": { "score": <1-5>, "summary": "<résumé>" },
-    "features": { "score": <1-5>, "summary": "<résumé>" },
-    "pricing": { "score": <1-5>, "summary": "<résumé>" },
-    "support": { "score": <1-5>, "summary": "<résumé>" },
-    "onboarding": { "score": <1-5>, "summary": "<résumé>" }
+    "ux": { "score": <1-5>, "summary": "<1-2 sentence summary>" },
+    "performance": { "score": <1-5>, "summary": "<summary>" },
+    "features": { "score": <1-5>, "summary": "<summary>" },
+    "pricing": { "score": <1-5>, "summary": "<summary>" },
+    "support": { "score": <1-5>, "summary": "<summary>" },
+    "onboarding": { "score": <1-5>, "summary": "<summary>" }
   },
   "emergent_themes": [
     {
-      "label": "<nom court du thème>",
+      "label": "<short theme name>",
       "sentiment": "positive|negative|mixed",
-      "frequency": <nombre de mentions estimé>,
-      "summary": "<description en 1-2 phrases>",
-      "example_quotes": ["<citation 1>", "<citation 2>"]
+      "frequency": <estimated mention count>,
+      "summary": "<1-2 sentence description>",
+      "example_quotes": ["<quote 1>", "<quote 2>"]
     }
   ],
-  "overall_strengths": ["<force 1>", "<force 2>"],
-  "overall_weaknesses": ["<faiblesse 1>", "<faiblesse 2>"],
-  "opportunities": ["<opportunité 1>", "<opportunité 2>"]
+  "overall_strengths": ["<strength 1>", "<strength 2>"],
+  "overall_weaknesses": ["<weakness 1>", "<weakness 2>"],
+  "opportunities": ["<opportunity 1>", "<opportunity 2>"]
 }
 
-Règles:
-- Score 1 = très mauvais, 5 = excellent
-- Maximum 5 thèmes émergents, les plus significatifs
-- Maximum 5 items par liste (strengths, weaknesses, opportunities)
-- Sois concis et factuel
-- Réponds en français si les reviews sont majoritairement en français, sinon en anglais
-- IMPORTANT pour example_quotes: cite EXACTEMENT le texte des reviews (verbatim, copier-coller). Chaque citation doit venir d'une review DIFFÉRENTE. Si un thème n'a qu'une seule review, ne mets qu'une seule citation.
+Rules:
+- Score 1 = very bad, 5 = excellent
+- Maximum 5 emergent themes, the most significant ones
+- Maximum 5 items per list (strengths, weaknesses, opportunities)
+- Be concise and factual
+- IMPORTANT: Respond in {$language}. All summaries, theme labels, strengths, weaknesses, and opportunities must be written in {$language}.
+- IMPORTANT for example_quotes: quote EXACTLY the text from the reviews (verbatim, copy-paste). Each quote must come from a DIFFERENT review. If a theme has only one review, include only one quote.
 PROMPT;
     }
 

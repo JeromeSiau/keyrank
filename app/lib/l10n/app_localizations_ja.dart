@@ -280,4 +280,522 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get userMenu_logout => 'ログアウト';
+
+  @override
+  String get insights_compareTitle => 'インサイトを比較';
+
+  @override
+  String get insights_analyzingReviews => 'レビューを分析中...';
+
+  @override
+  String get insights_noInsightsAvailable => 'インサイトがありません';
+
+  @override
+  String get insights_strengths => '強み';
+
+  @override
+  String get insights_weaknesses => '弱み';
+
+  @override
+  String get insights_scores => 'スコア';
+
+  @override
+  String get insights_opportunities => '機会';
+
+  @override
+  String get insights_categoryUx => 'UX';
+
+  @override
+  String get insights_categoryPerf => '性能';
+
+  @override
+  String get insights_categoryFeatures => '機能';
+
+  @override
+  String get insights_categoryPricing => '価格';
+
+  @override
+  String get insights_categorySupport => 'サポート';
+
+  @override
+  String get insights_categoryOnboard => '導入';
+
+  @override
+  String get insights_categoryUxFull => 'UX / インターフェース';
+
+  @override
+  String get insights_categoryPerformance => 'パフォーマンス';
+
+  @override
+  String get insights_categoryOnboarding => 'オンボーディング';
+
+  @override
+  String get insights_reviewInsights => 'レビューインサイト';
+
+  @override
+  String get insights_generateFirst => 'まずインサイトを生成してください';
+
+  @override
+  String get insights_compareWithOther => '他のアプリと比較';
+
+  @override
+  String get insights_compare => '比較';
+
+  @override
+  String get insights_generateAnalysis => '分析を生成';
+
+  @override
+  String get insights_period => '期間:';
+
+  @override
+  String get insights_3months => '3ヶ月';
+
+  @override
+  String get insights_6months => '6ヶ月';
+
+  @override
+  String get insights_12months => '12ヶ月';
+
+  @override
+  String get insights_analyze => '分析';
+
+  @override
+  String insights_reviewsCount(int count) {
+    return '$count件のレビュー';
+  }
+
+  @override
+  String insights_analyzedAgo(String time) {
+    return '$time前に分析';
+  }
+
+  @override
+  String get insights_yourNotes => 'メモ';
+
+  @override
+  String get insights_save => '保存';
+
+  @override
+  String get insights_clickToAddNotes => 'クリックしてメモを追加...';
+
+  @override
+  String get insights_noteSaved => 'メモを保存しました';
+
+  @override
+  String get insights_noteHint => 'この分析に関するメモを追加...';
+
+  @override
+  String get insights_categoryScores => 'カテゴリスコア';
+
+  @override
+  String get insights_emergentThemes => '浮上するテーマ';
+
+  @override
+  String get insights_exampleQuotes => '引用例:';
+
+  @override
+  String get insights_selectCountryFirst => '少なくとも1つの国を選択してください';
+
+  @override
+  String compare_selectAppsToCompare(String appName) {
+    return '$appNameと比較する最大3つのアプリを選択';
+  }
+
+  @override
+  String get compare_searchApps => 'アプリを検索...';
+
+  @override
+  String get compare_noOtherApps => '比較するアプリがありません';
+
+  @override
+  String get compare_noMatchingApps => '一致するアプリがありません';
+
+  @override
+  String compare_appsSelected(int count) {
+    return '$count/3個のアプリを選択';
+  }
+
+  @override
+  String get compare_cancel => 'キャンセル';
+
+  @override
+  String compare_button(int count) {
+    return '$count個のアプリを比較';
+  }
+
+  @override
+  String get appDetail_deleteAppTitle => 'アプリを削除しますか？';
+
+  @override
+  String get appDetail_deleteAppConfirm => 'この操作は元に戻せません。';
+
+  @override
+  String get appDetail_cancel => 'キャンセル';
+
+  @override
+  String get appDetail_delete => '削除';
+
+  @override
+  String get appDetail_exporting => 'ランキングをエクスポート中...';
+
+  @override
+  String appDetail_savedFile(String filename) {
+    return '保存完了: $filename';
+  }
+
+  @override
+  String get appDetail_showInFinder => 'Finderで表示';
+
+  @override
+  String appDetail_exportFailed(String error) {
+    return 'エクスポート失敗: $error';
+  }
+
+  @override
+  String appDetail_importedKeywords(int imported, int skipped) {
+    return '$imported個のキーワードをインポート（$skipped個スキップ）';
+  }
+
+  @override
+  String get appDetail_favorite => 'お気に入り';
+
+  @override
+  String get appDetail_ratings => '評価';
+
+  @override
+  String get appDetail_insights => 'インサイト';
+
+  @override
+  String get appDetail_import => 'インポート';
+
+  @override
+  String get appDetail_export => 'エクスポート';
+
+  @override
+  String appDetail_reviewsCount(int count) {
+    return '$count件のレビュー';
+  }
+
+  @override
+  String get appDetail_keywords => 'キーワード';
+
+  @override
+  String get appDetail_addKeyword => 'キーワードを追加';
+
+  @override
+  String get appDetail_keywordHint => '例: フィットネストラッカー';
+
+  @override
+  String get appDetail_trackedKeywords => '追跡中のキーワード';
+
+  @override
+  String appDetail_selectedCount(int count) {
+    return '$count個選択';
+  }
+
+  @override
+  String get appDetail_allKeywords => 'すべてのキーワード';
+
+  @override
+  String get appDetail_hasTags => 'タグあり';
+
+  @override
+  String get appDetail_hasNotes => 'メモあり';
+
+  @override
+  String get appDetail_position => '順位';
+
+  @override
+  String get appDetail_select => '選択';
+
+  @override
+  String get appDetail_suggestions => '候補';
+
+  @override
+  String get appDetail_deleteKeywordsTitle => 'キーワードを削除';
+
+  @override
+  String appDetail_deleteKeywordsConfirm(int count) {
+    return '$count個のキーワードを削除しますか？';
+  }
+
+  @override
+  String get appDetail_tag => 'タグ';
+
+  @override
+  String appDetail_keywordAdded(String keyword, String flag) {
+    return 'キーワード「$keyword」を追加しました（$flag）';
+  }
+
+  @override
+  String appDetail_tagsAdded(int count) {
+    return '$count個のキーワードにタグを追加しました';
+  }
+
+  @override
+  String get appDetail_keywordsAddedSuccess => 'キーワードを追加しました';
+
+  @override
+  String get appDetail_noTagsAvailable => 'タグがありません。まずタグを作成してください。';
+
+  @override
+  String get appDetail_tagged => 'タグ付き';
+
+  @override
+  String get appDetail_withNotes => 'メモ付き';
+
+  @override
+  String get appDetail_nameAZ => '名前 A-Z';
+
+  @override
+  String get appDetail_nameZA => '名前 Z-A';
+
+  @override
+  String get appDetail_bestPosition => '最高順位';
+
+  @override
+  String get appDetail_recentlyTracked => '最近追跡';
+
+  @override
+  String get keywordSuggestions_title => 'キーワード候補';
+
+  @override
+  String keywordSuggestions_appInCountry(String appName, String country) {
+    return '$countryの$appName';
+  }
+
+  @override
+  String get keywordSuggestions_refresh => '候補を更新';
+
+  @override
+  String get keywordSuggestions_search => '候補を検索...';
+
+  @override
+  String get keywordSuggestions_selectAll => 'すべて選択';
+
+  @override
+  String get keywordSuggestions_clear => 'クリア';
+
+  @override
+  String get keywordSuggestions_analyzing => 'アプリのメタデータを分析中...';
+
+  @override
+  String get keywordSuggestions_mayTakeFewSeconds => '数秒かかる場合があります';
+
+  @override
+  String get keywordSuggestions_noSuggestions => '候補がありません';
+
+  @override
+  String get keywordSuggestions_noMatchingSuggestions => '一致する候補がありません';
+
+  @override
+  String get keywordSuggestions_headerKeyword => 'キーワード';
+
+  @override
+  String get keywordSuggestions_headerDifficulty => '難易度';
+
+  @override
+  String get keywordSuggestions_headerApps => 'アプリ数';
+
+  @override
+  String keywordSuggestions_rankedAt(int position) {
+    return '#$position位';
+  }
+
+  @override
+  String keywordSuggestions_keywordsSelected(int count) {
+    return '$count個のキーワードを選択';
+  }
+
+  @override
+  String keywordSuggestions_addKeywords(int count) {
+    return '$count個のキーワードを追加';
+  }
+
+  @override
+  String keywordSuggestions_errorAdding(String error) {
+    return 'キーワード追加エラー: $error';
+  }
+
+  @override
+  String get sidebar_favorites => 'お気に入り';
+
+  @override
+  String get sidebar_tooManyFavorites => 'お気に入りは5個以下をお勧めします';
+
+  @override
+  String get sidebar_iphone => 'iPHONE';
+
+  @override
+  String get sidebar_android => 'ANDROID';
+
+  @override
+  String get keywordSearch_title => 'キーワード調査';
+
+  @override
+  String get keywordSearch_searchPlaceholder => 'キーワードを検索...';
+
+  @override
+  String get keywordSearch_searchTitle => 'キーワードを検索';
+
+  @override
+  String get keywordSearch_searchSubtitle => '任意のキーワードでランクインしているアプリを発見';
+
+  @override
+  String keywordSearch_appsRanked(int count) {
+    return '$count個のアプリがランクイン';
+  }
+
+  @override
+  String get keywordSearch_popularity => '人気度';
+
+  @override
+  String keywordSearch_results(int count) {
+    return '$count件の結果';
+  }
+
+  @override
+  String get keywordSearch_headerRank => '順位';
+
+  @override
+  String get keywordSearch_headerApp => 'アプリ';
+
+  @override
+  String get keywordSearch_headerRating => '評価';
+
+  @override
+  String get keywordSearch_headerTrack => '追跡';
+
+  @override
+  String get keywordSearch_trackApp => 'このアプリを追跡';
+
+  @override
+  String reviews_reviewsFor(String appName) {
+    return '$appNameのレビュー';
+  }
+
+  @override
+  String get reviews_loading => 'レビューを読み込み中...';
+
+  @override
+  String get reviews_noReviews => 'レビューなし';
+
+  @override
+  String reviews_noReviewsFor(String countryName) {
+    return '$countryNameのレビューがありません';
+  }
+
+  @override
+  String reviews_showingRecent(int count) {
+    return 'App Storeから最新の$count件のレビューを表示中。';
+  }
+
+  @override
+  String get reviews_today => '今日';
+
+  @override
+  String get reviews_yesterday => '昨日';
+
+  @override
+  String reviews_daysAgo(int count) {
+    return '$count日前';
+  }
+
+  @override
+  String reviews_weeksAgo(int count) {
+    return '$count週間前';
+  }
+
+  @override
+  String reviews_monthsAgo(int count) {
+    return '$countヶ月前';
+  }
+
+  @override
+  String get ratings_byCountry => '国別評価';
+
+  @override
+  String get ratings_noRatingsAvailable => '評価がありません';
+
+  @override
+  String get ratings_noRatingsYet => 'このアプリにはまだ評価がありません';
+
+  @override
+  String get ratings_totalRatings => '総評価数';
+
+  @override
+  String get ratings_averageRating => '平均評価';
+
+  @override
+  String ratings_countriesCount(int count) {
+    return '$countヶ国';
+  }
+
+  @override
+  String ratings_updated(String date) {
+    return '更新日: $date';
+  }
+
+  @override
+  String get ratings_headerCountry => '国';
+
+  @override
+  String get ratings_headerRatings => '評価数';
+
+  @override
+  String get ratings_headerAverage => '平均';
+
+  @override
+  String time_minutesAgo(int count) {
+    return '$count分前';
+  }
+
+  @override
+  String time_hoursAgo(int count) {
+    return '$count時間前';
+  }
+
+  @override
+  String time_daysAgo(int count) {
+    return '$count日前';
+  }
+
+  @override
+  String get appDetail_noKeywordsTracked => '追跡中のキーワードがありません';
+
+  @override
+  String get appDetail_addKeywordHint => '上のフィールドにキーワードを追加して追跡を開始';
+
+  @override
+  String get appDetail_noKeywordsMatchFilter => 'フィルターに一致するキーワードがありません';
+
+  @override
+  String get appDetail_tryChangingFilter => 'フィルター条件を変更してください';
+
+  @override
+  String get appDetail_addTag => 'タグを追加';
+
+  @override
+  String get appDetail_addNote => 'メモを追加';
+
+  @override
+  String get appDetail_positionHistory => '順位履歴';
+
+  @override
+  String get appDetail_store => 'STORE';
+
+  @override
+  String get nav_overview => '概要';
+
+  @override
+  String get nav_dashboard => 'ダッシュボード';
+
+  @override
+  String get nav_myApps => 'マイアプリ';
+
+  @override
+  String get nav_research => 'リサーチ';
+
+  @override
+  String get nav_keywords => 'キーワード';
 }

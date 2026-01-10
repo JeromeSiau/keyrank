@@ -8,6 +8,8 @@ import 'core/providers/theme_provider.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/providers/auth_provider.dart';
+import 'features/auth/domain/user_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,14 +26,34 @@ void main() async {
   );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  bool _hasLoadedPreferences = false;
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+
+    // Load user preferences from backend when authenticated
+    ref.listen<AsyncValue<User?>>(authStateProvider, (previous, next) {
+      final wasAuthenticated = previous?.valueOrNull != null;
+      final isAuthenticated = next.valueOrNull != null;
+
+      if (!wasAuthenticated && isAuthenticated && !_hasLoadedPreferences) {
+        _hasLoadedPreferences = true;
+        ref.read(localeProvider.notifier).loadFromBackend();
+      } else if (wasAuthenticated && !isAuthenticated) {
+        _hasLoadedPreferences = false;
+      }
+    });
 
     return MaterialApp.router(
       title: 'keyrank.app',

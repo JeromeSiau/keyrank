@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/country_provider.dart' show Country, availableCountries, countriesProvider, selectedCountryProvider;
 import '../../../shared/widgets/states.dart';
@@ -83,10 +84,10 @@ class _KeywordSearchScreenState extends ConsumerState<KeywordSearchScreen> {
               error: (e, _) => ErrorView(message: e.toString()),
               data: (response) {
                 if (response == null) {
-                  return const EmptyStateView(
+                  return EmptyStateView(
                     icon: Icons.search_rounded,
-                    title: 'Search for a keyword',
-                    subtitle: 'Discover which apps rank for any keyword',
+                    title: context.l10n.keywordSearch_searchTitle,
+                    subtitle: context.l10n.keywordSearch_searchSubtitle,
                   );
                 }
                 return _ResultsView(response: response);
@@ -124,9 +125,9 @@ class _Toolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Text(
-            'Keyword Research',
-            style: TextStyle(
+          Text(
+            context.l10n.keywordSearch_title,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
@@ -145,12 +146,12 @@ class _Toolbar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _PlatformToggleButton(
-                  label: '🍎 iOS',
+                  label: '🍎 ${context.l10n.filter_ios}',
                   isSelected: selectedPlatform == 'ios',
                   onTap: () => onPlatformSelected('ios'),
                 ),
                 _PlatformToggleButton(
-                  label: '🤖 Android',
+                  label: '🤖 ${context.l10n.filter_android}',
                   isSelected: selectedPlatform == 'android',
                   onTap: () => onPlatformSelected('android'),
                 ),
@@ -293,11 +294,11 @@ class _SearchBar extends StatelessWidget {
                         fontSize: 14,
                         color: AppColors.textPrimary,
                       ),
-                      decoration: const InputDecoration(
-                        hintText: 'Search keywords...',
-                        hintStyle: TextStyle(color: AppColors.textMuted),
+                      decoration: InputDecoration(
+                        hintText: context.l10n.keywordSearch_searchPlaceholder,
+                        hintStyle: const TextStyle(color: AppColors.textMuted),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
@@ -383,7 +384,7 @@ class _KeywordInfoCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '$totalResults apps ranked',
+                  context.l10n.keywordSearch_appsRanked(totalResults),
                   style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textMuted,
@@ -410,7 +411,7 @@ class _KeywordInfoCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Popularity',
+                    context.l10n.keywordSearch_popularity,
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
@@ -457,7 +458,7 @@ class _ResultsTable extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${results.length} results',
+                  context.l10n.keywordSearch_results(results.length),
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -477,13 +478,13 @@ class _ResultsTable extends ConsumerWidget {
                 bottom: BorderSide(color: AppColors.glassBorder),
               ),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 SizedBox(
                   width: 60,
                   child: Text(
-                    'RANK',
-                    style: TextStyle(
+                    context.l10n.keywordSearch_headerRank,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -491,11 +492,11 @@ class _ResultsTable extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 52),
+                const SizedBox(width: 52),
                 Expanded(
                   child: Text(
-                    'APP',
-                    style: TextStyle(
+                    context.l10n.keywordSearch_headerApp,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -506,8 +507,8 @@ class _ResultsTable extends ConsumerWidget {
                 SizedBox(
                   width: 70,
                   child: Text(
-                    'RATING',
-                    style: TextStyle(
+                    context.l10n.keywordSearch_headerRating,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -515,12 +516,12 @@ class _ResultsTable extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 SizedBox(
                   width: 48,
                   child: Text(
-                    'TRACK',
-                    style: TextStyle(
+                    context.l10n.keywordSearch_headerTrack,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -761,7 +762,7 @@ class _ResultRowState extends ConsumerState<_ResultRow> {
       onPressed: _trackApp,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
-      tooltip: 'Track this app',
+      tooltip: context.l10n.keywordSearch_trackApp,
     );
   }
 }

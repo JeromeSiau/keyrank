@@ -647,6 +647,918 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log out'**
   String get userMenu_logout;
+
+  /// No description provided for @insights_compareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Insights'**
+  String get insights_compareTitle;
+
+  /// No description provided for @insights_analyzingReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing reviews...'**
+  String get insights_analyzingReviews;
+
+  /// No description provided for @insights_noInsightsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No insights available'**
+  String get insights_noInsightsAvailable;
+
+  /// No description provided for @insights_strengths.
+  ///
+  /// In en, this message translates to:
+  /// **'Strengths'**
+  String get insights_strengths;
+
+  /// No description provided for @insights_weaknesses.
+  ///
+  /// In en, this message translates to:
+  /// **'Weaknesses'**
+  String get insights_weaknesses;
+
+  /// No description provided for @insights_scores.
+  ///
+  /// In en, this message translates to:
+  /// **'Scores'**
+  String get insights_scores;
+
+  /// No description provided for @insights_opportunities.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunities'**
+  String get insights_opportunities;
+
+  /// No description provided for @insights_categoryUx.
+  ///
+  /// In en, this message translates to:
+  /// **'UX'**
+  String get insights_categoryUx;
+
+  /// No description provided for @insights_categoryPerf.
+  ///
+  /// In en, this message translates to:
+  /// **'Perf'**
+  String get insights_categoryPerf;
+
+  /// No description provided for @insights_categoryFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Features'**
+  String get insights_categoryFeatures;
+
+  /// No description provided for @insights_categoryPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing'**
+  String get insights_categoryPricing;
+
+  /// No description provided for @insights_categorySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get insights_categorySupport;
+
+  /// No description provided for @insights_categoryOnboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Onboard'**
+  String get insights_categoryOnboard;
+
+  /// No description provided for @insights_categoryUxFull.
+  ///
+  /// In en, this message translates to:
+  /// **'UX / Interface'**
+  String get insights_categoryUxFull;
+
+  /// No description provided for @insights_categoryPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance'**
+  String get insights_categoryPerformance;
+
+  /// No description provided for @insights_categoryOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Onboarding'**
+  String get insights_categoryOnboarding;
+
+  /// No description provided for @insights_reviewInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Insights'**
+  String get insights_reviewInsights;
+
+  /// No description provided for @insights_generateFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate insights first'**
+  String get insights_generateFirst;
+
+  /// No description provided for @insights_compareWithOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with other apps'**
+  String get insights_compareWithOther;
+
+  /// No description provided for @insights_compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get insights_compare;
+
+  /// No description provided for @insights_generateAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Analysis'**
+  String get insights_generateAnalysis;
+
+  /// No description provided for @insights_period.
+  ///
+  /// In en, this message translates to:
+  /// **'Period:'**
+  String get insights_period;
+
+  /// No description provided for @insights_3months.
+  ///
+  /// In en, this message translates to:
+  /// **'3 months'**
+  String get insights_3months;
+
+  /// No description provided for @insights_6months.
+  ///
+  /// In en, this message translates to:
+  /// **'6 months'**
+  String get insights_6months;
+
+  /// No description provided for @insights_12months.
+  ///
+  /// In en, this message translates to:
+  /// **'12 months'**
+  String get insights_12months;
+
+  /// No description provided for @insights_analyze.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze'**
+  String get insights_analyze;
+
+  /// No description provided for @insights_reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews'**
+  String insights_reviewsCount(int count);
+
+  /// No description provided for @insights_analyzedAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzed {time}'**
+  String insights_analyzedAgo(String time);
+
+  /// No description provided for @insights_yourNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Notes'**
+  String get insights_yourNotes;
+
+  /// No description provided for @insights_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get insights_save;
+
+  /// No description provided for @insights_clickToAddNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Click to add notes...'**
+  String get insights_clickToAddNotes;
+
+  /// No description provided for @insights_noteSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Note saved'**
+  String get insights_noteSaved;
+
+  /// No description provided for @insights_noteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your notes about this insight analysis...'**
+  String get insights_noteHint;
+
+  /// No description provided for @insights_categoryScores.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Scores'**
+  String get insights_categoryScores;
+
+  /// No description provided for @insights_emergentThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergent Themes'**
+  String get insights_emergentThemes;
+
+  /// No description provided for @insights_exampleQuotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Example quotes:'**
+  String get insights_exampleQuotes;
+
+  /// No description provided for @insights_selectCountryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one country'**
+  String get insights_selectCountryFirst;
+
+  /// No description provided for @compare_selectAppsToCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Select up to 3 apps to compare with {appName}'**
+  String compare_selectAppsToCompare(String appName);
+
+  /// No description provided for @compare_searchApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Search apps...'**
+  String get compare_searchApps;
+
+  /// No description provided for @compare_noOtherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'No other apps to compare'**
+  String get compare_noOtherApps;
+
+  /// No description provided for @compare_noMatchingApps.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching apps'**
+  String get compare_noMatchingApps;
+
+  /// No description provided for @compare_appsSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of 3 apps selected'**
+  String compare_appsSelected(int count);
+
+  /// No description provided for @compare_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get compare_cancel;
+
+  /// No description provided for @compare_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare {count} Apps'**
+  String compare_button(int count);
+
+  /// No description provided for @appDetail_deleteAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete app?'**
+  String get appDetail_deleteAppTitle;
+
+  /// No description provided for @appDetail_deleteAppConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get appDetail_deleteAppConfirm;
+
+  /// No description provided for @appDetail_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get appDetail_cancel;
+
+  /// No description provided for @appDetail_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get appDetail_delete;
+
+  /// No description provided for @appDetail_exporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting rankings...'**
+  String get appDetail_exporting;
+
+  /// No description provided for @appDetail_savedFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {filename}'**
+  String appDetail_savedFile(String filename);
+
+  /// No description provided for @appDetail_showInFinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Finder'**
+  String get appDetail_showInFinder;
+
+  /// No description provided for @appDetail_exportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String appDetail_exportFailed(String error);
+
+  /// No description provided for @appDetail_importedKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {imported} keywords ({skipped} skipped)'**
+  String appDetail_importedKeywords(int imported, int skipped);
+
+  /// No description provided for @appDetail_favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get appDetail_favorite;
+
+  /// No description provided for @appDetail_ratings.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings'**
+  String get appDetail_ratings;
+
+  /// No description provided for @appDetail_insights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get appDetail_insights;
+
+  /// No description provided for @appDetail_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get appDetail_import;
+
+  /// No description provided for @appDetail_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get appDetail_export;
+
+  /// No description provided for @appDetail_reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews'**
+  String appDetail_reviewsCount(int count);
+
+  /// No description provided for @appDetail_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'keywords'**
+  String get appDetail_keywords;
+
+  /// No description provided for @appDetail_addKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'Add keyword'**
+  String get appDetail_addKeyword;
+
+  /// No description provided for @appDetail_keywordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., fitness tracker'**
+  String get appDetail_keywordHint;
+
+  /// No description provided for @appDetail_trackedKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracked Keywords'**
+  String get appDetail_trackedKeywords;
+
+  /// No description provided for @appDetail_selectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String appDetail_selectedCount(int count);
+
+  /// No description provided for @appDetail_allKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'All Keywords'**
+  String get appDetail_allKeywords;
+
+  /// No description provided for @appDetail_hasTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Has Tags'**
+  String get appDetail_hasTags;
+
+  /// No description provided for @appDetail_hasNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Has Notes'**
+  String get appDetail_hasNotes;
+
+  /// No description provided for @appDetail_position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get appDetail_position;
+
+  /// No description provided for @appDetail_select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get appDetail_select;
+
+  /// No description provided for @appDetail_suggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestions'**
+  String get appDetail_suggestions;
+
+  /// No description provided for @appDetail_deleteKeywordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Keywords'**
+  String get appDetail_deleteKeywordsTitle;
+
+  /// No description provided for @appDetail_deleteKeywordsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {count} keywords?'**
+  String appDetail_deleteKeywordsConfirm(int count);
+
+  /// No description provided for @appDetail_tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag'**
+  String get appDetail_tag;
+
+  /// No description provided for @appDetail_keywordAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword \"{keyword}\" added ({flag})'**
+  String appDetail_keywordAdded(String keyword, String flag);
+
+  /// No description provided for @appDetail_tagsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags added to {count} keywords'**
+  String appDetail_tagsAdded(int count);
+
+  /// No description provided for @appDetail_keywordsAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords added successfully'**
+  String get appDetail_keywordsAddedSuccess;
+
+  /// No description provided for @appDetail_noTagsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags available. Create tags first.'**
+  String get appDetail_noTagsAvailable;
+
+  /// No description provided for @appDetail_tagged.
+  ///
+  /// In en, this message translates to:
+  /// **'Tagged'**
+  String get appDetail_tagged;
+
+  /// No description provided for @appDetail_withNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'With Notes'**
+  String get appDetail_withNotes;
+
+  /// No description provided for @appDetail_nameAZ.
+  ///
+  /// In en, this message translates to:
+  /// **'Name A-Z'**
+  String get appDetail_nameAZ;
+
+  /// No description provided for @appDetail_nameZA.
+  ///
+  /// In en, this message translates to:
+  /// **'Name Z-A'**
+  String get appDetail_nameZA;
+
+  /// No description provided for @appDetail_bestPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Position'**
+  String get appDetail_bestPosition;
+
+  /// No description provided for @appDetail_recentlyTracked.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently Tracked'**
+  String get appDetail_recentlyTracked;
+
+  /// No description provided for @keywordSuggestions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword Suggestions'**
+  String get keywordSuggestions_title;
+
+  /// No description provided for @keywordSuggestions_appInCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'{appName} in {country}'**
+  String keywordSuggestions_appInCountry(String appName, String country);
+
+  /// No description provided for @keywordSuggestions_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh suggestions'**
+  String get keywordSuggestions_refresh;
+
+  /// No description provided for @keywordSuggestions_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search suggestions...'**
+  String get keywordSuggestions_search;
+
+  /// No description provided for @keywordSuggestions_selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select All'**
+  String get keywordSuggestions_selectAll;
+
+  /// No description provided for @keywordSuggestions_clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get keywordSuggestions_clear;
+
+  /// No description provided for @keywordSuggestions_analyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing app metadata...'**
+  String get keywordSuggestions_analyzing;
+
+  /// No description provided for @keywordSuggestions_mayTakeFewSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'This may take a few seconds'**
+  String get keywordSuggestions_mayTakeFewSeconds;
+
+  /// No description provided for @keywordSuggestions_noSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No suggestions available'**
+  String get keywordSuggestions_noSuggestions;
+
+  /// No description provided for @keywordSuggestions_noMatchingSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching suggestions'**
+  String get keywordSuggestions_noMatchingSuggestions;
+
+  /// No description provided for @keywordSuggestions_headerKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'KEYWORD'**
+  String get keywordSuggestions_headerKeyword;
+
+  /// No description provided for @keywordSuggestions_headerDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'DIFFICULTY'**
+  String get keywordSuggestions_headerDifficulty;
+
+  /// No description provided for @keywordSuggestions_headerApps.
+  ///
+  /// In en, this message translates to:
+  /// **'APPS'**
+  String get keywordSuggestions_headerApps;
+
+  /// No description provided for @keywordSuggestions_rankedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked #{position}'**
+  String keywordSuggestions_rankedAt(int position);
+
+  /// No description provided for @keywordSuggestions_keywordsSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} keywords selected'**
+  String keywordSuggestions_keywordsSelected(int count);
+
+  /// No description provided for @keywordSuggestions_addKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {count} Keywords'**
+  String keywordSuggestions_addKeywords(int count);
+
+  /// No description provided for @keywordSuggestions_errorAdding.
+  ///
+  /// In en, this message translates to:
+  /// **'Error adding keywords: {error}'**
+  String keywordSuggestions_errorAdding(String error);
+
+  /// No description provided for @sidebar_favorites.
+  ///
+  /// In en, this message translates to:
+  /// **'FAVORITES'**
+  String get sidebar_favorites;
+
+  /// No description provided for @sidebar_tooManyFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Consider keeping 5 or fewer favorites'**
+  String get sidebar_tooManyFavorites;
+
+  /// No description provided for @sidebar_iphone.
+  ///
+  /// In en, this message translates to:
+  /// **'iPHONE'**
+  String get sidebar_iphone;
+
+  /// No description provided for @sidebar_android.
+  ///
+  /// In en, this message translates to:
+  /// **'ANDROID'**
+  String get sidebar_android;
+
+  /// No description provided for @keywordSearch_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword Research'**
+  String get keywordSearch_title;
+
+  /// No description provided for @keywordSearch_searchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search keywords...'**
+  String get keywordSearch_searchPlaceholder;
+
+  /// No description provided for @keywordSearch_searchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a keyword'**
+  String get keywordSearch_searchTitle;
+
+  /// No description provided for @keywordSearch_searchSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover which apps rank for any keyword'**
+  String get keywordSearch_searchSubtitle;
+
+  /// No description provided for @keywordSearch_appsRanked.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} apps ranked'**
+  String keywordSearch_appsRanked(int count);
+
+  /// No description provided for @keywordSearch_popularity.
+  ///
+  /// In en, this message translates to:
+  /// **'Popularity'**
+  String get keywordSearch_popularity;
+
+  /// No description provided for @keywordSearch_results.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} results'**
+  String keywordSearch_results(int count);
+
+  /// No description provided for @keywordSearch_headerRank.
+  ///
+  /// In en, this message translates to:
+  /// **'RANK'**
+  String get keywordSearch_headerRank;
+
+  /// No description provided for @keywordSearch_headerApp.
+  ///
+  /// In en, this message translates to:
+  /// **'APP'**
+  String get keywordSearch_headerApp;
+
+  /// No description provided for @keywordSearch_headerRating.
+  ///
+  /// In en, this message translates to:
+  /// **'RATING'**
+  String get keywordSearch_headerRating;
+
+  /// No description provided for @keywordSearch_headerTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'TRACK'**
+  String get keywordSearch_headerTrack;
+
+  /// No description provided for @keywordSearch_trackApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Track this app'**
+  String get keywordSearch_trackApp;
+
+  /// No description provided for @reviews_reviewsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews for {appName}'**
+  String reviews_reviewsFor(String appName);
+
+  /// No description provided for @reviews_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading reviews...'**
+  String get reviews_loading;
+
+  /// No description provided for @reviews_noReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews'**
+  String get reviews_noReviews;
+
+  /// No description provided for @reviews_noReviewsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews found for {countryName}'**
+  String reviews_noReviewsFor(String countryName);
+
+  /// No description provided for @reviews_showingRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the {count} most recent reviews from the App Store.'**
+  String reviews_showingRecent(int count);
+
+  /// No description provided for @reviews_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get reviews_today;
+
+  /// No description provided for @reviews_yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get reviews_yesterday;
+
+  /// No description provided for @reviews_daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String reviews_daysAgo(int count);
+
+  /// No description provided for @reviews_weeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} weeks ago'**
+  String reviews_weeksAgo(int count);
+
+  /// No description provided for @reviews_monthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} months ago'**
+  String reviews_monthsAgo(int count);
+
+  /// No description provided for @ratings_byCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings by Country'**
+  String get ratings_byCountry;
+
+  /// No description provided for @ratings_noRatingsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No ratings available'**
+  String get ratings_noRatingsAvailable;
+
+  /// No description provided for @ratings_noRatingsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'This app has no ratings yet'**
+  String get ratings_noRatingsYet;
+
+  /// No description provided for @ratings_totalRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Ratings'**
+  String get ratings_totalRatings;
+
+  /// No description provided for @ratings_averageRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Rating'**
+  String get ratings_averageRating;
+
+  /// No description provided for @ratings_countriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} countries'**
+  String ratings_countriesCount(int count);
+
+  /// No description provided for @ratings_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated: {date}'**
+  String ratings_updated(String date);
+
+  /// No description provided for @ratings_headerCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'COUNTRY'**
+  String get ratings_headerCountry;
+
+  /// No description provided for @ratings_headerRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'RATINGS'**
+  String get ratings_headerRatings;
+
+  /// No description provided for @ratings_headerAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'AVERAGE'**
+  String get ratings_headerAverage;
+
+  /// No description provided for @time_minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m ago'**
+  String time_minutesAgo(int count);
+
+  /// No description provided for @time_hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String time_hoursAgo(int count);
+
+  /// No description provided for @time_daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String time_daysAgo(int count);
+
+  /// No description provided for @appDetail_noKeywordsTracked.
+  ///
+  /// In en, this message translates to:
+  /// **'No keywords tracked'**
+  String get appDetail_noKeywordsTracked;
+
+  /// No description provided for @appDetail_addKeywordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a keyword above to start tracking'**
+  String get appDetail_addKeywordHint;
+
+  /// No description provided for @appDetail_noKeywordsMatchFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No keywords match filter'**
+  String get appDetail_noKeywordsMatchFilter;
+
+  /// No description provided for @appDetail_tryChangingFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Try changing the filter criteria'**
+  String get appDetail_tryChangingFilter;
+
+  /// No description provided for @appDetail_addTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tag'**
+  String get appDetail_addTag;
+
+  /// No description provided for @appDetail_addNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Add note'**
+  String get appDetail_addNote;
+
+  /// No description provided for @appDetail_positionHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Position History'**
+  String get appDetail_positionHistory;
+
+  /// No description provided for @appDetail_store.
+  ///
+  /// In en, this message translates to:
+  /// **'STORE'**
+  String get appDetail_store;
+
+  /// No description provided for @nav_overview.
+  ///
+  /// In en, this message translates to:
+  /// **'OVERVIEW'**
+  String get nav_overview;
+
+  /// No description provided for @nav_dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get nav_dashboard;
+
+  /// No description provided for @nav_myApps.
+  ///
+  /// In en, this message translates to:
+  /// **'My Apps'**
+  String get nav_myApps;
+
+  /// No description provided for @nav_research.
+  ///
+  /// In en, this message translates to:
+  /// **'RESEARCH'**
+  String get nav_research;
+
+  /// No description provided for @nav_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get nav_keywords;
 }
 
 class _AppLocalizationsDelegate

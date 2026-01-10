@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../data/reviews_repository.dart';
 import '../domain/review_model.dart';
 
@@ -76,7 +77,7 @@ class CountryReviewsScreen extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        'Reviews for $appName',
+                        context.l10n.reviews_reviewsFor(appName),
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textMuted,
@@ -92,15 +93,15 @@ class CountryReviewsScreen extends ConsumerWidget {
           // Content
           Expanded(
             child: reviewsAsync.when(
-              loading: () => const Center(
+              loading: () => Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(strokeWidth: 2),
-                    SizedBox(height: 16),
+                    const CircularProgressIndicator(strokeWidth: 2),
+                    const SizedBox(height: 16),
                     Text(
-                      'Loading reviews...',
-                      style: TextStyle(
+                      context.l10n.reviews_loading,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textMuted,
                       ),
@@ -127,7 +128,7 @@ class CountryReviewsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Error: $e',
+                      context.l10n.common_error(e.toString()),
                       style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -157,9 +158,9 @@ class CountryReviewsScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'No reviews',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.reviews_noReviews,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary,
@@ -167,7 +168,7 @@ class CountryReviewsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'No reviews found for $countryName',
+                          context.l10n.reviews_noReviewsFor(countryName),
                           style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textMuted,
@@ -197,7 +198,7 @@ class CountryReviewsScreen extends ConsumerWidget {
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                'Showing the ${response.reviews.length} most recent reviews from the App Store.',
+                                context.l10n.reviews_showingRecent(response.reviews.length),
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: AppColors.textSecondary.withAlpha(200),
@@ -319,7 +320,7 @@ class _ReviewCard extends StatelessWidget {
                       ),
                     ),
                   Text(
-                    _formatDate(review.reviewedAt),
+                    _formatDate(context, review.reviewedAt),
                     style: const TextStyle(
                       fontSize: 11,
                       color: AppColors.textMuted,
@@ -358,20 +359,20 @@ class _ReviewCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(BuildContext context, DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);
 
     if (diff.inDays == 0) {
-      return 'Today';
+      return context.l10n.reviews_today;
     } else if (diff.inDays == 1) {
-      return 'Yesterday';
+      return context.l10n.reviews_yesterday;
     } else if (diff.inDays < 7) {
-      return '${diff.inDays} days ago';
+      return context.l10n.reviews_daysAgo(diff.inDays);
     } else if (diff.inDays < 30) {
-      return '${(diff.inDays / 7).floor()} weeks ago';
+      return context.l10n.reviews_weeksAgo((diff.inDays / 7).floor());
     } else if (diff.inDays < 365) {
-      return '${(diff.inDays / 30).floor()} months ago';
+      return context.l10n.reviews_monthsAgo((diff.inDays / 30).floor());
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }

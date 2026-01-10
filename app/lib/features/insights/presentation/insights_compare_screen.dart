@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../data/insights_repository.dart';
 import '../domain/insight_model.dart';
 
@@ -165,9 +166,9 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
             child: const Icon(Icons.compare_arrows_rounded, size: 18, color: AppColors.accent),
           ),
           const SizedBox(width: 12),
-          const Text(
-            'Compare Insights',
-            style: TextStyle(
+          Text(
+            context.l10n.insights_compareTitle,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
@@ -253,16 +254,16 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         border: Border.all(color: AppColors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          SizedBox(height: 40),
-          CircularProgressIndicator(strokeWidth: 2),
-          SizedBox(height: 16),
+          const SizedBox(height: 40),
+          const CircularProgressIndicator(strokeWidth: 2),
+          const SizedBox(height: 16),
           Text(
-            'Analyzing reviews...',
-            style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            context.l10n.insights_analyzingReviews,
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -296,7 +297,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
               });
               _generateInsight(index);
             },
-            child: const Text('Retry'),
+            child: Text(context.l10n.common_retry),
           ),
           const SizedBox(height: 20),
         ],
@@ -312,16 +313,16 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         border: Border.all(color: AppColors.glassBorder),
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          SizedBox(height: 40),
-          Icon(Icons.analytics_outlined, size: 32, color: AppColors.textMuted),
-          SizedBox(height: 12),
+          const SizedBox(height: 40),
+          const Icon(Icons.analytics_outlined, size: 32, color: AppColors.textMuted),
+          const SizedBox(height: 12),
           Text(
-            'No insights available',
-            style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            context.l10n.insights_noInsightsAvailable,
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -333,7 +334,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
       children: [
         // Strengths
         _buildSectionCard(
-          title: 'Strengths',
+          title: context.l10n.insights_strengths,
           icon: Icons.thumb_up_rounded,
           iconColor: AppColors.green,
           bgColor: AppColors.greenMuted,
@@ -342,7 +343,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         const SizedBox(height: 12),
         // Weaknesses
         _buildSectionCard(
-          title: 'Weaknesses',
+          title: context.l10n.insights_weaknesses,
           icon: Icons.thumb_down_rounded,
           iconColor: AppColors.red,
           bgColor: AppColors.redMuted,
@@ -355,7 +356,7 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
         // Opportunities
         if (insight.opportunities.isNotEmpty)
           _buildSectionCard(
-            title: 'Opportunities',
+            title: context.l10n.insights_opportunities,
             icon: Icons.lightbulb_rounded,
             iconColor: AppColors.yellow,
             bgColor: AppColors.yellow.withAlpha(30),
@@ -420,12 +421,12 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
 
   Widget _buildCategoryScores(AppInsight insight) {
     final categoryLabels = {
-      'ux': 'UX',
-      'performance': 'Perf',
-      'features': 'Features',
-      'pricing': 'Pricing',
-      'support': 'Support',
-      'onboarding': 'Onboard',
+      'ux': context.l10n.insights_categoryUx,
+      'performance': context.l10n.insights_categoryPerf,
+      'features': context.l10n.insights_categoryFeatures,
+      'pricing': context.l10n.insights_categoryPricing,
+      'support': context.l10n.insights_categorySupport,
+      'onboarding': context.l10n.insights_categoryOnboard,
     };
 
     return Container(
@@ -438,9 +439,9 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Scores',
-            style: TextStyle(
+          Text(
+            context.l10n.insights_scores,
+            style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,

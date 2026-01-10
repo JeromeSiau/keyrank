@@ -98,5 +98,326 @@
   "sort_mostKeywords": "最多关键词",
   "sort_bestRank": "最佳排名",
 
-  "userMenu_logout": "退出登录"
+  "userMenu_logout": "退出登录",
+
+  "insights_compareTitle": "对比分析",
+  "insights_analyzingReviews": "正在分析评论...",
+  "insights_noInsightsAvailable": "暂无分析数据",
+  "insights_strengths": "优势",
+  "insights_weaknesses": "劣势",
+  "insights_scores": "评分",
+  "insights_opportunities": "机会",
+  "insights_categoryUx": "用户体验",
+  "insights_categoryPerf": "性能",
+  "insights_categoryFeatures": "功能",
+  "insights_categoryPricing": "定价",
+  "insights_categorySupport": "支持",
+  "insights_categoryOnboard": "引导",
+  "insights_categoryUxFull": "用户体验/界面",
+  "insights_categoryPerformance": "性能",
+  "insights_categoryOnboarding": "新手引导",
+  "insights_reviewInsights": "评论洞察",
+  "insights_generateFirst": "请先生成分析",
+  "insights_compareWithOther": "与其他应用对比",
+  "insights_compare": "对比",
+  "insights_generateAnalysis": "生成分析",
+  "insights_period": "时间范围：",
+  "insights_3months": "3个月",
+  "insights_6months": "6个月",
+  "insights_12months": "12个月",
+  "insights_analyze": "分析",
+  "insights_reviewsCount": "{count} 条评论",
+  "@insights_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_analyzedAgo": "{time}前分析",
+  "@insights_analyzedAgo": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "insights_yourNotes": "您的笔记",
+  "insights_save": "保存",
+  "insights_clickToAddNotes": "点击添加笔记...",
+  "insights_noteSaved": "笔记已保存",
+  "insights_noteHint": "添加您对此分析的笔记...",
+  "insights_categoryScores": "分类评分",
+  "insights_emergentThemes": "热门主题",
+  "insights_exampleQuotes": "示例引用：",
+  "insights_selectCountryFirst": "请至少选择一个国家",
+
+  "compare_selectAppsToCompare": "选择最多3个应用与 {appName} 进行对比",
+  "@compare_selectAppsToCompare": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "compare_searchApps": "搜索应用...",
+  "compare_noOtherApps": "没有其他应用可对比",
+  "compare_noMatchingApps": "没有匹配的应用",
+  "compare_appsSelected": "已选择 {count}/3 个应用",
+  "@compare_appsSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "compare_cancel": "取消",
+  "compare_button": "对比 {count} 个应用",
+  "@compare_button": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "appDetail_deleteAppTitle": "删除应用？",
+  "appDetail_deleteAppConfirm": "此操作无法撤销。",
+  "appDetail_cancel": "取消",
+  "appDetail_delete": "删除",
+  "appDetail_exporting": "正在导出排名...",
+  "appDetail_savedFile": "已保存：{filename}",
+  "@appDetail_savedFile": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "appDetail_showInFinder": "在访达中显示",
+  "appDetail_exportFailed": "导出失败：{error}",
+  "@appDetail_exportFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importedKeywords": "已导入 {imported} 个关键词（跳过 {skipped} 个）",
+  "@appDetail_importedKeywords": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "skipped": { "type": "int" }
+    }
+  },
+  "appDetail_favorite": "收藏",
+  "appDetail_ratings": "评分",
+  "appDetail_insights": "洞察",
+  "appDetail_import": "导入",
+  "appDetail_export": "导出",
+  "appDetail_reviewsCount": "{count} 条评论",
+  "@appDetail_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_keywords": "关键词",
+  "appDetail_addKeyword": "添加关键词",
+  "appDetail_keywordHint": "例如：健身追踪器",
+  "appDetail_trackedKeywords": "追踪的关键词",
+  "appDetail_selectedCount": "已选择 {count} 个",
+  "@appDetail_selectedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_allKeywords": "所有关键词",
+  "appDetail_hasTags": "有标签",
+  "appDetail_hasNotes": "有笔记",
+  "appDetail_position": "排名",
+  "appDetail_select": "选择",
+  "appDetail_suggestions": "建议",
+  "appDetail_deleteKeywordsTitle": "删除关键词",
+  "appDetail_deleteKeywordsConfirm": "确定要删除 {count} 个关键词吗？",
+  "@appDetail_deleteKeywordsConfirm": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_tag": "标签",
+  "appDetail_keywordAdded": "已添加关键词 \"{keyword}\"（{flag}）",
+  "@appDetail_keywordAdded": {
+    "placeholders": {
+      "keyword": { "type": "String" },
+      "flag": { "type": "String" }
+    }
+  },
+  "appDetail_tagsAdded": "已为 {count} 个关键词添加标签",
+  "@appDetail_tagsAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_keywordsAddedSuccess": "关键词添加成功",
+  "appDetail_noTagsAvailable": "暂无可用标签，请先创建标签。",
+  "appDetail_tagged": "已标记",
+  "appDetail_withNotes": "有笔记",
+  "appDetail_nameAZ": "名称 A-Z",
+  "appDetail_nameZA": "名称 Z-A",
+  "appDetail_bestPosition": "最佳排名",
+  "appDetail_recentlyTracked": "最近追踪",
+
+  "keywordSuggestions_title": "关键词建议",
+  "keywordSuggestions_appInCountry": "{appName}（{country}）",
+  "@keywordSuggestions_appInCountry": {
+    "placeholders": {
+      "appName": { "type": "String" },
+      "country": { "type": "String" }
+    }
+  },
+  "keywordSuggestions_refresh": "刷新建议",
+  "keywordSuggestions_search": "搜索建议...",
+  "keywordSuggestions_selectAll": "全选",
+  "keywordSuggestions_clear": "清除",
+  "keywordSuggestions_analyzing": "正在分析应用元数据...",
+  "keywordSuggestions_mayTakeFewSeconds": "这可能需要几秒钟",
+  "keywordSuggestions_noSuggestions": "暂无建议",
+  "keywordSuggestions_noMatchingSuggestions": "没有匹配的建议",
+  "keywordSuggestions_headerKeyword": "关键词",
+  "keywordSuggestions_headerDifficulty": "难度",
+  "keywordSuggestions_headerApps": "应用数",
+  "keywordSuggestions_rankedAt": "排名第 {position}",
+  "@keywordSuggestions_rankedAt": {
+    "placeholders": {
+      "position": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_keywordsSelected": "已选择 {count} 个关键词",
+  "@keywordSuggestions_keywordsSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_addKeywords": "添加 {count} 个关键词",
+  "@keywordSuggestions_addKeywords": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_errorAdding": "添加关键词时出错：{error}",
+  "@keywordSuggestions_errorAdding": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "sidebar_favorites": "收藏",
+  "sidebar_tooManyFavorites": "建议保留5个或更少的收藏",
+  "sidebar_iphone": "iPHONE",
+  "sidebar_android": "ANDROID",
+
+  "keywordSearch_title": "关键词研究",
+  "keywordSearch_searchPlaceholder": "搜索关键词...",
+  "keywordSearch_searchTitle": "搜索关键词",
+  "keywordSearch_searchSubtitle": "发现哪些应用在特定关键词上排名",
+  "keywordSearch_appsRanked": "{count} 个应用上榜",
+  "@keywordSearch_appsRanked": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSearch_popularity": "热度",
+  "keywordSearch_results": "{count} 个结果",
+  "@keywordSearch_results": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSearch_headerRank": "排名",
+  "keywordSearch_headerApp": "应用",
+  "keywordSearch_headerRating": "评分",
+  "keywordSearch_headerTrack": "追踪",
+  "keywordSearch_trackApp": "追踪此应用",
+
+  "reviews_reviewsFor": "{appName} 的评论",
+  "@reviews_reviewsFor": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "reviews_loading": "正在加载评论...",
+  "reviews_noReviews": "暂无评论",
+  "reviews_noReviewsFor": "未找到 {countryName} 的评论",
+  "@reviews_noReviewsFor": {
+    "placeholders": {
+      "countryName": { "type": "String" }
+    }
+  },
+  "reviews_showingRecent": "显示 App Store 最近的 {count} 条评论。",
+  "@reviews_showingRecent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_today": "今天",
+  "reviews_yesterday": "昨天",
+  "reviews_daysAgo": "{count} 天前",
+  "@reviews_daysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_weeksAgo": "{count} 周前",
+  "@reviews_weeksAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_monthsAgo": "{count} 个月前",
+  "@reviews_monthsAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "ratings_byCountry": "各国评分",
+  "ratings_noRatingsAvailable": "暂无评分数据",
+  "ratings_noRatingsYet": "此应用暂无评分",
+  "ratings_totalRatings": "总评分数",
+  "ratings_averageRating": "平均评分",
+  "ratings_countriesCount": "{count} 个国家",
+  "@ratings_countriesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "ratings_updated": "更新时间：{date}",
+  "@ratings_updated": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "ratings_headerCountry": "国家",
+  "ratings_headerRatings": "评分数",
+  "ratings_headerAverage": "平均分",
+
+  "time_minutesAgo": "{count}分钟前",
+  "@time_minutesAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "time_hoursAgo": "{count}小时前",
+  "@time_hoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "time_daysAgo": "{count}天前",
+  "@time_daysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "appDetail_noKeywordsTracked": "暂无追踪的关键词",
+  "appDetail_addKeywordHint": "在上方添加关键词以开始追踪",
+  "appDetail_noKeywordsMatchFilter": "没有符合筛选条件的关键词",
+  "appDetail_tryChangingFilter": "尝试更改筛选条件",
+  "appDetail_addTag": "添加标签",
+  "appDetail_addNote": "添加笔记",
+  "appDetail_positionHistory": "排名历史",
+  "appDetail_store": "STORE",
+
+  "nav_overview": "概览",
+  "nav_dashboard": "仪表盘",
+  "nav_myApps": "我的应用",
+  "nav_research": "研究",
+  "nav_keywords": "关键词"
 }

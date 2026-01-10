@@ -98,5 +98,326 @@
   "sort_mostKeywords": "キーワード数順",
   "sort_bestRank": "最高順位",
 
-  "userMenu_logout": "ログアウト"
+  "userMenu_logout": "ログアウト",
+
+  "insights_compareTitle": "インサイトを比較",
+  "insights_analyzingReviews": "レビューを分析中...",
+  "insights_noInsightsAvailable": "インサイトがありません",
+  "insights_strengths": "強み",
+  "insights_weaknesses": "弱み",
+  "insights_scores": "スコア",
+  "insights_opportunities": "機会",
+  "insights_categoryUx": "UX",
+  "insights_categoryPerf": "性能",
+  "insights_categoryFeatures": "機能",
+  "insights_categoryPricing": "価格",
+  "insights_categorySupport": "サポート",
+  "insights_categoryOnboard": "導入",
+  "insights_categoryUxFull": "UX / インターフェース",
+  "insights_categoryPerformance": "パフォーマンス",
+  "insights_categoryOnboarding": "オンボーディング",
+  "insights_reviewInsights": "レビューインサイト",
+  "insights_generateFirst": "まずインサイトを生成してください",
+  "insights_compareWithOther": "他のアプリと比較",
+  "insights_compare": "比較",
+  "insights_generateAnalysis": "分析を生成",
+  "insights_period": "期間:",
+  "insights_3months": "3ヶ月",
+  "insights_6months": "6ヶ月",
+  "insights_12months": "12ヶ月",
+  "insights_analyze": "分析",
+  "insights_reviewsCount": "{count}件のレビュー",
+  "@insights_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_analyzedAgo": "{time}前に分析",
+  "@insights_analyzedAgo": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "insights_yourNotes": "メモ",
+  "insights_save": "保存",
+  "insights_clickToAddNotes": "クリックしてメモを追加...",
+  "insights_noteSaved": "メモを保存しました",
+  "insights_noteHint": "この分析に関するメモを追加...",
+  "insights_categoryScores": "カテゴリスコア",
+  "insights_emergentThemes": "浮上するテーマ",
+  "insights_exampleQuotes": "引用例:",
+  "insights_selectCountryFirst": "少なくとも1つの国を選択してください",
+
+  "compare_selectAppsToCompare": "{appName}と比較する最大3つのアプリを選択",
+  "@compare_selectAppsToCompare": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "compare_searchApps": "アプリを検索...",
+  "compare_noOtherApps": "比較するアプリがありません",
+  "compare_noMatchingApps": "一致するアプリがありません",
+  "compare_appsSelected": "{count}/3個のアプリを選択",
+  "@compare_appsSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "compare_cancel": "キャンセル",
+  "compare_button": "{count}個のアプリを比較",
+  "@compare_button": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "appDetail_deleteAppTitle": "アプリを削除しますか？",
+  "appDetail_deleteAppConfirm": "この操作は元に戻せません。",
+  "appDetail_cancel": "キャンセル",
+  "appDetail_delete": "削除",
+  "appDetail_exporting": "ランキングをエクスポート中...",
+  "appDetail_savedFile": "保存完了: {filename}",
+  "@appDetail_savedFile": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "appDetail_showInFinder": "Finderで表示",
+  "appDetail_exportFailed": "エクスポート失敗: {error}",
+  "@appDetail_exportFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importedKeywords": "{imported}個のキーワードをインポート（{skipped}個スキップ）",
+  "@appDetail_importedKeywords": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "skipped": { "type": "int" }
+    }
+  },
+  "appDetail_favorite": "お気に入り",
+  "appDetail_ratings": "評価",
+  "appDetail_insights": "インサイト",
+  "appDetail_import": "インポート",
+  "appDetail_export": "エクスポート",
+  "appDetail_reviewsCount": "{count}件のレビュー",
+  "@appDetail_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_keywords": "キーワード",
+  "appDetail_addKeyword": "キーワードを追加",
+  "appDetail_keywordHint": "例: フィットネストラッカー",
+  "appDetail_trackedKeywords": "追跡中のキーワード",
+  "appDetail_selectedCount": "{count}個選択",
+  "@appDetail_selectedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_allKeywords": "すべてのキーワード",
+  "appDetail_hasTags": "タグあり",
+  "appDetail_hasNotes": "メモあり",
+  "appDetail_position": "順位",
+  "appDetail_select": "選択",
+  "appDetail_suggestions": "候補",
+  "appDetail_deleteKeywordsTitle": "キーワードを削除",
+  "appDetail_deleteKeywordsConfirm": "{count}個のキーワードを削除しますか？",
+  "@appDetail_deleteKeywordsConfirm": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_tag": "タグ",
+  "appDetail_keywordAdded": "キーワード「{keyword}」を追加しました（{flag}）",
+  "@appDetail_keywordAdded": {
+    "placeholders": {
+      "keyword": { "type": "String" },
+      "flag": { "type": "String" }
+    }
+  },
+  "appDetail_tagsAdded": "{count}個のキーワードにタグを追加しました",
+  "@appDetail_tagsAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_keywordsAddedSuccess": "キーワードを追加しました",
+  "appDetail_noTagsAvailable": "タグがありません。まずタグを作成してください。",
+  "appDetail_tagged": "タグ付き",
+  "appDetail_withNotes": "メモ付き",
+  "appDetail_nameAZ": "名前 A-Z",
+  "appDetail_nameZA": "名前 Z-A",
+  "appDetail_bestPosition": "最高順位",
+  "appDetail_recentlyTracked": "最近追跡",
+
+  "keywordSuggestions_title": "キーワード候補",
+  "keywordSuggestions_appInCountry": "{country}の{appName}",
+  "@keywordSuggestions_appInCountry": {
+    "placeholders": {
+      "appName": { "type": "String" },
+      "country": { "type": "String" }
+    }
+  },
+  "keywordSuggestions_refresh": "候補を更新",
+  "keywordSuggestions_search": "候補を検索...",
+  "keywordSuggestions_selectAll": "すべて選択",
+  "keywordSuggestions_clear": "クリア",
+  "keywordSuggestions_analyzing": "アプリのメタデータを分析中...",
+  "keywordSuggestions_mayTakeFewSeconds": "数秒かかる場合があります",
+  "keywordSuggestions_noSuggestions": "候補がありません",
+  "keywordSuggestions_noMatchingSuggestions": "一致する候補がありません",
+  "keywordSuggestions_headerKeyword": "キーワード",
+  "keywordSuggestions_headerDifficulty": "難易度",
+  "keywordSuggestions_headerApps": "アプリ数",
+  "keywordSuggestions_rankedAt": "#{position}位",
+  "@keywordSuggestions_rankedAt": {
+    "placeholders": {
+      "position": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_keywordsSelected": "{count}個のキーワードを選択",
+  "@keywordSuggestions_keywordsSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_addKeywords": "{count}個のキーワードを追加",
+  "@keywordSuggestions_addKeywords": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_errorAdding": "キーワード追加エラー: {error}",
+  "@keywordSuggestions_errorAdding": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "sidebar_favorites": "お気に入り",
+  "sidebar_tooManyFavorites": "お気に入りは5個以下をお勧めします",
+  "sidebar_iphone": "iPHONE",
+  "sidebar_android": "ANDROID",
+
+  "keywordSearch_title": "キーワード調査",
+  "keywordSearch_searchPlaceholder": "キーワードを検索...",
+  "keywordSearch_searchTitle": "キーワードを検索",
+  "keywordSearch_searchSubtitle": "任意のキーワードでランクインしているアプリを発見",
+  "keywordSearch_appsRanked": "{count}個のアプリがランクイン",
+  "@keywordSearch_appsRanked": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSearch_popularity": "人気度",
+  "keywordSearch_results": "{count}件の結果",
+  "@keywordSearch_results": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSearch_headerRank": "順位",
+  "keywordSearch_headerApp": "アプリ",
+  "keywordSearch_headerRating": "評価",
+  "keywordSearch_headerTrack": "追跡",
+  "keywordSearch_trackApp": "このアプリを追跡",
+
+  "reviews_reviewsFor": "{appName}のレビュー",
+  "@reviews_reviewsFor": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "reviews_loading": "レビューを読み込み中...",
+  "reviews_noReviews": "レビューなし",
+  "reviews_noReviewsFor": "{countryName}のレビューがありません",
+  "@reviews_noReviewsFor": {
+    "placeholders": {
+      "countryName": { "type": "String" }
+    }
+  },
+  "reviews_showingRecent": "App Storeから最新の{count}件のレビューを表示中。",
+  "@reviews_showingRecent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_today": "今日",
+  "reviews_yesterday": "昨日",
+  "reviews_daysAgo": "{count}日前",
+  "@reviews_daysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_weeksAgo": "{count}週間前",
+  "@reviews_weeksAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_monthsAgo": "{count}ヶ月前",
+  "@reviews_monthsAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "ratings_byCountry": "国別評価",
+  "ratings_noRatingsAvailable": "評価がありません",
+  "ratings_noRatingsYet": "このアプリにはまだ評価がありません",
+  "ratings_totalRatings": "総評価数",
+  "ratings_averageRating": "平均評価",
+  "ratings_countriesCount": "{count}ヶ国",
+  "@ratings_countriesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "ratings_updated": "更新日: {date}",
+  "@ratings_updated": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "ratings_headerCountry": "国",
+  "ratings_headerRatings": "評価数",
+  "ratings_headerAverage": "平均",
+
+  "time_minutesAgo": "{count}分前",
+  "@time_minutesAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "time_hoursAgo": "{count}時間前",
+  "@time_hoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "time_daysAgo": "{count}日前",
+  "@time_daysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "appDetail_noKeywordsTracked": "追跡中のキーワードがありません",
+  "appDetail_addKeywordHint": "上のフィールドにキーワードを追加して追跡を開始",
+  "appDetail_noKeywordsMatchFilter": "フィルターに一致するキーワードがありません",
+  "appDetail_tryChangingFilter": "フィルター条件を変更してください",
+  "appDetail_addTag": "タグを追加",
+  "appDetail_addNote": "メモを追加",
+  "appDetail_positionHistory": "順位履歴",
+  "appDetail_store": "STORE",
+
+  "nav_overview": "概要",
+  "nav_dashboard": "ダッシュボード",
+  "nav_myApps": "マイアプリ",
+  "nav_research": "リサーチ",
+  "nav_keywords": "キーワード"
 }

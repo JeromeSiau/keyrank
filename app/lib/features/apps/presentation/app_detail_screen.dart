@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../providers/apps_provider.dart';
 import '../../keywords/data/keywords_repository.dart';
@@ -77,7 +78,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Keyword "$keyword" added (${country.flag})'),
+            content: Text(context.l10n.appDetail_keywordAdded(keyword, country.flag)),
             backgroundColor: AppColors.green,
           ),
         );
@@ -117,8 +118,8 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
     if (tags.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No tags available. Create tags first.'),
+        SnackBar(
+          content: Text(context.l10n.appDetail_noTagsAvailable),
           backgroundColor: AppColors.yellow,
         ),
       );
@@ -137,7 +138,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Tags added to ${trackedKeywordIds.length} keywords'),
+              content: Text(context.l10n.appDetail_tagsAdded(trackedKeywordIds.length)),
               backgroundColor: AppColors.green,
             ),
           );
@@ -146,7 +147,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $e'),
+              content: Text(context.l10n.common_error(e.toString())),
               backgroundColor: AppColors.red,
             ),
           );
@@ -184,8 +185,8 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       ref.invalidate(appsNotifierProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Keywords added successfully'),
+          SnackBar(
+            content: Text(context.l10n.appDetail_keywordsAddedSuccess),
             backgroundColor: AppColors.green,
           ),
         );
@@ -196,29 +197,29 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
   Future<void> _deleteApp() async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: AppColors.glassPanel,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
           side: const BorderSide(color: AppColors.glassBorder),
         ),
-        title: const Text(
-          'Delete app?',
-          style: TextStyle(color: AppColors.textPrimary),
+        title: Text(
+          dialogContext.l10n.appDetail_deleteAppTitle,
+          style: const TextStyle(color: AppColors.textPrimary),
         ),
-        content: const Text(
-          'This action cannot be undone.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          dialogContext.l10n.appDetail_deleteAppConfirm,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.l10n.appDetail_cancel),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(dialogContext, true),
             style: FilledButton.styleFrom(backgroundColor: AppColors.red),
-            child: const Text('Delete'),
+            child: Text(dialogContext.l10n.appDetail_delete),
           ),
         ],
       ),
@@ -236,9 +237,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
     try {
       // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Exporting rankings...'),
-          duration: Duration(seconds: 1),
+        SnackBar(
+          content: Text(context.l10n.appDetail_exporting),
+          duration: const Duration(seconds: 1),
         ),
       );
 
@@ -259,11 +260,11 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Saved: $fileName'),
+            content: Text(context.l10n.appDetail_savedFile(fileName)),
             backgroundColor: AppColors.green,
             duration: const Duration(seconds: 4),
             action: Platform.isMacOS ? SnackBarAction(
-              label: 'Show in Finder',
+              label: context.l10n.appDetail_showInFinder,
               textColor: Colors.white,
               onPressed: () {
                 Process.run('open', ['-R', savePath]);
@@ -276,7 +277,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Export failed: ${e.toString()}'),
+            content: Text(context.l10n.appDetail_exportFailed(e.toString())),
             backgroundColor: AppColors.red,
           ),
         );
@@ -305,7 +306,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Imported ${result.imported} keywords (${result.skipped} skipped)'),
+          content: Text(context.l10n.appDetail_importedKeywords(result.imported, result.skipped)),
           backgroundColor: AppColors.green,
         ),
       );
@@ -504,38 +505,38 @@ class _Toolbar extends StatelessWidget {
           // Actions
           ToolbarButton(
             icon: isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
-            label: 'Favorite',
+            label: context.l10n.appDetail_favorite,
             iconColor: isFavorite ? AppColors.yellow : null,
             onTap: onToggleFavorite,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
             icon: Icons.bar_chart_rounded,
-            label: 'Ratings',
+            label: context.l10n.appDetail_ratings,
             onTap: onViewRatings,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
             icon: Icons.insights_rounded,
-            label: 'Insights',
+            label: context.l10n.appDetail_insights,
             onTap: onViewInsights,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
             icon: Icons.upload_rounded,
-            label: 'Import',
+            label: context.l10n.appDetail_import,
             onTap: onImport,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
             icon: Icons.download_rounded,
-            label: 'Export',
+            label: context.l10n.appDetail_export,
             onTap: onExport,
           ),
           const SizedBox(width: 10),
           ToolbarButton(
             icon: Icons.delete_outline_rounded,
-            label: 'Delete',
+            label: context.l10n.appDetail_delete,
             isDestructive: true,
             onTap: onDelete,
           ),
@@ -671,7 +672,7 @@ class _AppInfoCard extends StatelessWidget {
               icon: Icons.star_rounded,
               iconColor: AppColors.yellow,
               value: app.rating!.toStringAsFixed(1),
-              label: '${app.ratingCount} reviews',
+              label: context.l10n.appDetail_reviewsCount(app.ratingCount ?? 0),
               onTap: onViewRatings,
             ),
           const SizedBox(width: 12),
@@ -679,7 +680,7 @@ class _AppInfoCard extends StatelessWidget {
             icon: Icons.key_rounded,
             iconColor: AppColors.accent,
             value: '${app.trackedKeywordsCount ?? 0}',
-            label: 'keywords',
+            label: context.l10n.appDetail_keywords,
           ),
         ],
       ),
@@ -791,9 +792,9 @@ class _AddKeywordSection extends ConsumerWidget {
             child: const Icon(Icons.add_rounded, size: 18, color: AppColors.accent),
           ),
           const SizedBox(width: 12),
-          const Text(
-            'Add keyword',
-            style: TextStyle(
+          Text(
+            context.l10n.appDetail_addKeyword,
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -872,11 +873,11 @@ class _AddKeywordSection extends ConsumerWidget {
                   fontSize: 14,
                   color: AppColors.textPrimary,
                 ),
-                decoration: const InputDecoration(
-                  hintText: 'e.g., fitness tracker',
-                  hintStyle: TextStyle(color: AppColors.textMuted),
+                decoration: InputDecoration(
+                  hintText: context.l10n.appDetail_keywordHint,
+                  hintStyle: const TextStyle(color: AppColors.textMuted),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 ),
               ),
             ),
@@ -900,9 +901,9 @@ class _AddKeywordSection extends ConsumerWidget {
                           color: Colors.white,
                         ),
                       )
-                    : const Text(
-                        'Add',
-                        style: TextStyle(
+                    : Text(
+                        context.l10n.common_add,
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -998,35 +999,35 @@ class _KeywordsTableState extends State<_KeywordsTable> {
     return filtered;
   }
 
-  String get _filterLabel {
+  String _filterLabel(BuildContext context) {
     switch (_filter) {
       case KeywordFilter.all:
-        return 'All';
+        return context.l10n.filter_all;
       case KeywordFilter.favorites:
-        return 'Favorites';
+        return context.l10n.filter_favorites;
       case KeywordFilter.hasTags:
-        return 'Tagged';
+        return context.l10n.appDetail_tagged;
       case KeywordFilter.hasNotes:
-        return 'With Notes';
+        return context.l10n.appDetail_withNotes;
       case KeywordFilter.ios:
-        return 'iOS';
+        return context.l10n.filter_ios;
       case KeywordFilter.android:
-        return 'Android';
+        return context.l10n.filter_androidOnly;
     }
   }
 
-  String get _sortLabel {
+  String _sortLabel(BuildContext context) {
     switch (_sort) {
       case KeywordSort.nameAsc:
-        return 'A-Z';
+        return context.l10n.sort_nameAZ;
       case KeywordSort.nameDesc:
-        return 'Z-A';
+        return context.l10n.sort_nameZA;
       case KeywordSort.positionBest:
-        return 'Position';
+        return context.l10n.appDetail_position;
       case KeywordSort.popularity:
-        return 'Popularity';
+        return context.l10n.keywordSearch_popularity;
       case KeywordSort.recentlyTracked:
-        return 'Recent';
+        return context.l10n.sort_recent;
     }
   }
 
@@ -1043,19 +1044,19 @@ class _KeywordsTableState extends State<_KeywordsTable> {
         offset.dy + button.size.height + 300,
       ),
       items: [
-        _buildFilterItem(KeywordFilter.all, 'All Keywords'),
-        _buildFilterItem(KeywordFilter.favorites, 'Favorites'),
-        _buildFilterItem(KeywordFilter.hasTags, 'Has Tags'),
-        _buildFilterItem(KeywordFilter.hasNotes, 'Has Notes'),
-        if (widget.hasIos) _buildFilterItem(KeywordFilter.ios, 'iOS Only'),
-        if (widget.hasAndroid) _buildFilterItem(KeywordFilter.android, 'Android Only'),
+        _buildFilterItem(context, KeywordFilter.all, context.l10n.appDetail_allKeywords),
+        _buildFilterItem(context, KeywordFilter.favorites, context.l10n.filter_favorites),
+        _buildFilterItem(context, KeywordFilter.hasTags, context.l10n.appDetail_hasTags),
+        _buildFilterItem(context, KeywordFilter.hasNotes, context.l10n.appDetail_hasNotes),
+        if (widget.hasIos) _buildFilterItem(context, KeywordFilter.ios, context.l10n.filter_iosOnly),
+        if (widget.hasAndroid) _buildFilterItem(context, KeywordFilter.android, context.l10n.filter_androidOnly),
       ],
     ).then((value) {
       if (value != null) setState(() => _filter = value);
     });
   }
 
-  PopupMenuItem<KeywordFilter> _buildFilterItem(KeywordFilter filter, String label) {
+  PopupMenuItem<KeywordFilter> _buildFilterItem(BuildContext context, KeywordFilter filter, String label) {
     return PopupMenuItem<KeywordFilter>(
       value: filter,
       child: Row(
@@ -1084,18 +1085,18 @@ class _KeywordsTableState extends State<_KeywordsTable> {
         offset.dy + button.size.height + 250,
       ),
       items: [
-        _buildSortItem(KeywordSort.nameAsc, 'Name A-Z'),
-        _buildSortItem(KeywordSort.nameDesc, 'Name Z-A'),
-        _buildSortItem(KeywordSort.positionBest, 'Best Position'),
-        _buildSortItem(KeywordSort.popularity, 'Popularity'),
-        _buildSortItem(KeywordSort.recentlyTracked, 'Recently Tracked'),
+        _buildSortItem(context, KeywordSort.nameAsc, context.l10n.appDetail_nameAZ),
+        _buildSortItem(context, KeywordSort.nameDesc, context.l10n.appDetail_nameZA),
+        _buildSortItem(context, KeywordSort.positionBest, context.l10n.appDetail_bestPosition),
+        _buildSortItem(context, KeywordSort.popularity, context.l10n.keywordSearch_popularity),
+        _buildSortItem(context, KeywordSort.recentlyTracked, context.l10n.appDetail_recentlyTracked),
       ],
     ).then((value) {
       if (value != null) setState(() => _sort = value);
     });
   }
 
-  PopupMenuItem<KeywordSort> _buildSortItem(KeywordSort sort, String label) {
+  PopupMenuItem<KeywordSort> _buildSortItem(BuildContext context, KeywordSort sort, String label) {
     return PopupMenuItem<KeywordSort>(
       value: sort,
       child: Row(
@@ -1141,18 +1142,18 @@ class _KeywordsTableState extends State<_KeywordsTable> {
   Future<void> _handleBulkDelete() async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Keywords'),
-        content: Text('Are you sure you want to delete ${_selectedIds.length} keywords?'),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(dialogContext.l10n.appDetail_deleteKeywordsTitle),
+        content: Text(dialogContext.l10n.appDetail_deleteKeywordsConfirm(_selectedIds.length)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.l10n.appDetail_cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.red),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(dialogContext.l10n.appDetail_delete),
           ),
         ],
       ),
@@ -1192,7 +1193,7 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '${_selectedIds.length} selected',
+                    context.l10n.appDetail_selectedCount(_selectedIds.length),
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -1203,13 +1204,13 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   // Bulk action buttons
                   _BulkActionButton(
                     icon: Icons.select_all_rounded,
-                    label: 'All',
+                    label: context.l10n.filter_all,
                     onTap: _selectAll,
                   ),
                   const SizedBox(width: 6),
                   _BulkActionButton(
                     icon: Icons.star_outline_rounded,
-                    label: 'Favorite',
+                    label: context.l10n.appDetail_favorite,
                     onTap: _selectedIds.isEmpty
                         ? null
                         : () async {
@@ -1220,7 +1221,7 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   const SizedBox(width: 6),
                   _BulkActionButton(
                     icon: Icons.label_outline_rounded,
-                    label: 'Tag',
+                    label: context.l10n.appDetail_tag,
                     onTap: _selectedIds.isEmpty
                         ? null
                         : () async {
@@ -1231,14 +1232,14 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   const SizedBox(width: 6),
                   _BulkActionButton(
                     icon: Icons.delete_outline_rounded,
-                    label: 'Delete',
+                    label: context.l10n.appDetail_delete,
                     isDestructive: true,
                     onTap: _selectedIds.isEmpty ? null : _handleBulkDelete,
                   ),
                 ] else ...[
                   // Normal mode header
                   Text(
-                    'Tracked Keywords${_filter != KeywordFilter.all ? ' ($_filterLabel)' : ''}',
+                    '${context.l10n.appDetail_trackedKeywords}${_filter != KeywordFilter.all ? ' (${_filterLabel(context)})' : ''}',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -1266,7 +1267,7 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   // Select button
                   if (displayedKeywords.isNotEmpty) ...[
                     _KeywordFilterSortButton(
-                      label: 'Select',
+                      label: context.l10n.appDetail_select,
                       icon: Icons.check_box_outline_blank_rounded,
                       isActive: false,
                       onTap: () => setState(() => _isSelectionMode = true),
@@ -1274,20 +1275,20 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                     const SizedBox(width: 6),
                   ],
                   Builder(
-                    builder: (context) => _KeywordFilterSortButton(
-                      label: _filterLabel,
+                    builder: (ctx) => _KeywordFilterSortButton(
+                      label: _filterLabel(context),
                       icon: Icons.filter_list_rounded,
                       isActive: _filter != KeywordFilter.all,
-                      onTap: () => _showFilterMenu(context),
+                      onTap: () => _showFilterMenu(ctx),
                     ),
                   ),
                   const SizedBox(width: 6),
                   Builder(
-                    builder: (context) => _KeywordFilterSortButton(
-                      label: _sortLabel,
+                    builder: (ctx) => _KeywordFilterSortButton(
+                      label: _sortLabel(context),
                       icon: Icons.sort_rounded,
                       isActive: _sort != KeywordSort.nameAsc,
-                      onTap: () => _showSortMenu(context),
+                      onTap: () => _showSortMenu(ctx),
                     ),
                   ),
                   if (widget.onSuggestions != null) ...[
@@ -1298,20 +1299,20 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                       child: InkWell(
                         onTap: widget.onSuggestions,
                         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.lightbulb_outline_rounded,
                                 size: 16,
                                 color: AppColors.green,
                               ),
-                              SizedBox(width: 6),
+                              const SizedBox(width: 6),
                               Text(
-                                'Suggestions',
-                                style: TextStyle(
+                                context.l10n.appDetail_suggestions,
+                                style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.green,
@@ -1339,11 +1340,11 @@ class _KeywordsTableState extends State<_KeywordsTable> {
             ),
             child: Row(
               children: [
-                const SizedBox(
+                SizedBox(
                   width: 50,
                   child: Text(
-                    'STORE',
-                    style: TextStyle(
+                    context.l10n.appDetail_store,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -1351,10 +1352,10 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                     ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'KEYWORD',
-                    style: TextStyle(
+                    context.l10n.keywordSuggestions_headerKeyword,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -1363,11 +1364,11 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                   ),
                 ),
                 if (widget.hasIos)
-                  const SizedBox(
+                  SizedBox(
                     width: 80,
                     child: Text(
-                      'iOS',
-                      style: TextStyle(
+                      context.l10n.filter_ios,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -1461,18 +1462,18 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                 child: const Icon(Icons.key_off_rounded, size: 28, color: AppColors.textMuted),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'No keywords tracked',
-                style: TextStyle(
+              Text(
+                context.l10n.appDetail_noKeywordsTracked,
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Add a keyword above to start tracking',
-                style: TextStyle(
+              Text(
+                context.l10n.appDetail_addKeywordHint,
+                style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.textMuted,
                 ),
@@ -1499,18 +1500,18 @@ class _KeywordsTableState extends State<_KeywordsTable> {
                 child: const Icon(Icons.filter_list_off_rounded, size: 28, color: AppColors.textMuted),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'No keywords match filter',
-                style: TextStyle(
+              Text(
+                context.l10n.appDetail_noKeywordsMatchFilter,
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Try changing the filter criteria',
-                style: TextStyle(
+              Text(
+                context.l10n.appDetail_tryChangingFilter,
+                style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.textMuted,
                 ),
@@ -1817,13 +1818,13 @@ class _KeywordRowState extends State<_KeywordRow> {
               // Tags
               Expanded(
                 flex: 2,
-                child: _buildTagsSection(keyword),
+                child: _buildTagsSection(context, keyword),
               ),
               const SizedBox(width: 8),
               // Note
               Expanded(
                 flex: 3,
-                child: _buildNoteSection(keyword),
+                child: _buildNoteSection(context, keyword),
               ),
               // Delete button
               SizedBox(
@@ -1849,7 +1850,7 @@ class _KeywordRowState extends State<_KeywordRow> {
     );
   }
 
-  Widget _buildTagsSection(Keyword keyword) {
+  Widget _buildTagsSection(BuildContext context, Keyword keyword) {
     if (keyword.tags.isEmpty) {
       return Material(
         color: Colors.transparent,
@@ -1865,7 +1866,7 @@ class _KeywordRowState extends State<_KeywordRow> {
                 Icon(Icons.add_rounded, size: 14, color: AppColors.textMuted.withAlpha(150)),
                 const SizedBox(width: 4),
                 Text(
-                  'Add tag',
+                  context.l10n.appDetail_addTag,
                   style: TextStyle(
                     fontSize: 11,
                     color: AppColors.textMuted.withAlpha(150),
@@ -1904,7 +1905,7 @@ class _KeywordRowState extends State<_KeywordRow> {
     );
   }
 
-  Widget _buildNoteSection(Keyword keyword) {
+  Widget _buildNoteSection(BuildContext context, Keyword keyword) {
     if (_isEditingNote) {
       return Row(
         children: [
@@ -1977,7 +1978,7 @@ class _KeywordRowState extends State<_KeywordRow> {
                 Icon(Icons.edit_note_rounded, size: 14, color: AppColors.textMuted.withAlpha(150)),
                 const SizedBox(width: 4),
                 Text(
-                  'Add note',
+                  context.l10n.appDetail_addNote,
                   style: TextStyle(
                     fontSize: 11,
                     color: AppColors.textMuted.withAlpha(150),
@@ -2279,7 +2280,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                'Position History',
+                                context.l10n.appDetail_positionHistory,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.textMuted,
@@ -2384,11 +2385,11 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
               child: InkWell(
                 onTap: _loadHistory,
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(
-                    'Retry',
-                    style: TextStyle(
+                    context.l10n.common_retry,
+                    style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -2753,7 +2754,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.red),
+          SnackBar(content: Text(context.l10n.common_error(e.toString())), backgroundColor: AppColors.red),
         );
       }
     } finally {
@@ -2906,7 +2907,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
             const SizedBox(height: 8),
             tagsState.when(
               loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-              error: (e, _) => Text('Error: $e', style: const TextStyle(color: AppColors.red)),
+              error: (e, _) => Text(context.l10n.common_error(e.toString()), style: const TextStyle(color: AppColors.red)),
               data: (tags) {
                 if (tags.isEmpty) {
                   return Container(
@@ -2979,7 +2980,7 @@ class _TagsManagementDialogState extends ConsumerState<_TagsManagementDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.appDetail_cancel),
         ),
         FilledButton(
           onPressed: _save,
@@ -3085,7 +3086,7 @@ class _BulkTagsDialogState extends State<_BulkTagsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.appDetail_cancel),
         ),
         FilledButton(
           onPressed: _selectedTagIds.isEmpty
@@ -3256,7 +3257,7 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.appDetail_cancel),
         ),
         FilledButton(
           onPressed: _isLoading || _keywordCount == 0 ? null : _import,

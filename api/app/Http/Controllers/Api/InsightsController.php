@@ -63,7 +63,8 @@ class InsightsController extends Controller
             ]);
         }
 
-        $insight = $this->insightsService->generateInsights($app, $countries, $periodMonths);
+        $userLocale = $request->user()->locale;
+        $insight = $this->insightsService->generateInsights($app, $countries, $periodMonths, $userLocale);
 
         if (!$insight) {
             return response()->json([

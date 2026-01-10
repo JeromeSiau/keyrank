@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_colors.dart';
+import '../utils/l10n_extension.dart';
 import '../widgets/keyrank_logo.dart';
 import '../widgets/user_menu.dart';
 import '../../features/auth/presentation/login_screen.dart';
@@ -249,18 +250,18 @@ class _GlassSidebar extends StatelessWidget {
                       _buildNavSection(
                         context,
                         isDark: isDark,
-                        label: 'OVERVIEW',
+                        label: context.l10n.nav_overview,
                         items: [
                           _NavItemData(
                             icon: Icons.dashboard_outlined,
                             selectedIcon: Icons.dashboard,
-                            label: 'Dashboard',
+                            label: context.l10n.nav_dashboard,
                             index: 0,
                           ),
                           _NavItemData(
                             icon: Icons.apps_outlined,
                             selectedIcon: Icons.apps,
-                            label: 'My Apps',
+                            label: context.l10n.nav_myApps,
                             index: 1,
                           ),
                         ],
@@ -271,12 +272,12 @@ class _GlassSidebar extends StatelessWidget {
                       _buildNavSection(
                         context,
                         isDark: isDark,
-                        label: 'RESEARCH',
+                        label: context.l10n.nav_research,
                         items: [
                           _NavItemData(
                             icon: Icons.search_outlined,
                             selectedIcon: Icons.search,
-                            label: 'Keywords',
+                            label: context.l10n.nav_keywords,
                             index: 2,
                           ),
                         ],

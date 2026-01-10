@@ -285,4 +285,534 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get userMenu_logout => 'Cerrar sesión';
+
+  @override
+  String get insights_compareTitle => 'Comparar Insights';
+
+  @override
+  String get insights_analyzingReviews => 'Analizando reseñas...';
+
+  @override
+  String get insights_noInsightsAvailable => 'No hay insights disponibles';
+
+  @override
+  String get insights_strengths => 'Fortalezas';
+
+  @override
+  String get insights_weaknesses => 'Debilidades';
+
+  @override
+  String get insights_scores => 'Puntuaciones';
+
+  @override
+  String get insights_opportunities => 'Oportunidades';
+
+  @override
+  String get insights_categoryUx => 'UX';
+
+  @override
+  String get insights_categoryPerf => 'Rend.';
+
+  @override
+  String get insights_categoryFeatures => 'Funciones';
+
+  @override
+  String get insights_categoryPricing => 'Precios';
+
+  @override
+  String get insights_categorySupport => 'Soporte';
+
+  @override
+  String get insights_categoryOnboard => 'Inicio';
+
+  @override
+  String get insights_categoryUxFull => 'UX / Interfaz';
+
+  @override
+  String get insights_categoryPerformance => 'Rendimiento';
+
+  @override
+  String get insights_categoryOnboarding => 'Incorporación';
+
+  @override
+  String get insights_reviewInsights => 'Insights de reseñas';
+
+  @override
+  String get insights_generateFirst => 'Genera insights primero';
+
+  @override
+  String get insights_compareWithOther => 'Comparar con otras apps';
+
+  @override
+  String get insights_compare => 'Comparar';
+
+  @override
+  String get insights_generateAnalysis => 'Generar análisis';
+
+  @override
+  String get insights_period => 'Período:';
+
+  @override
+  String get insights_3months => '3 meses';
+
+  @override
+  String get insights_6months => '6 meses';
+
+  @override
+  String get insights_12months => '12 meses';
+
+  @override
+  String get insights_analyze => 'Analizar';
+
+  @override
+  String insights_reviewsCount(int count) {
+    return '$count reseñas';
+  }
+
+  @override
+  String insights_analyzedAgo(String time) {
+    return 'Analizado $time';
+  }
+
+  @override
+  String get insights_yourNotes => 'Tus notas';
+
+  @override
+  String get insights_save => 'Guardar';
+
+  @override
+  String get insights_clickToAddNotes => 'Haz clic para agregar notas...';
+
+  @override
+  String get insights_noteSaved => 'Nota guardada';
+
+  @override
+  String get insights_noteHint =>
+      'Agrega tus notas sobre este análisis de insights...';
+
+  @override
+  String get insights_categoryScores => 'Puntuaciones por categoría';
+
+  @override
+  String get insights_emergentThemes => 'Temas emergentes';
+
+  @override
+  String get insights_exampleQuotes => 'Citas de ejemplo:';
+
+  @override
+  String get insights_selectCountryFirst => 'Selecciona al menos un país';
+
+  @override
+  String compare_selectAppsToCompare(String appName) {
+    return 'Selecciona hasta 3 apps para comparar con $appName';
+  }
+
+  @override
+  String get compare_searchApps => 'Buscar apps...';
+
+  @override
+  String get compare_noOtherApps => 'No hay otras apps para comparar';
+
+  @override
+  String get compare_noMatchingApps => 'No hay apps que coincidan';
+
+  @override
+  String compare_appsSelected(int count) {
+    return '$count de 3 apps seleccionadas';
+  }
+
+  @override
+  String get compare_cancel => 'Cancelar';
+
+  @override
+  String compare_button(int count) {
+    return 'Comparar $count apps';
+  }
+
+  @override
+  String get appDetail_deleteAppTitle => '¿Eliminar app?';
+
+  @override
+  String get appDetail_deleteAppConfirm => 'Esta acción no se puede deshacer.';
+
+  @override
+  String get appDetail_cancel => 'Cancelar';
+
+  @override
+  String get appDetail_delete => 'Eliminar';
+
+  @override
+  String get appDetail_exporting => 'Exportando rankings...';
+
+  @override
+  String appDetail_savedFile(String filename) {
+    return 'Guardado: $filename';
+  }
+
+  @override
+  String get appDetail_showInFinder => 'Mostrar en Finder';
+
+  @override
+  String appDetail_exportFailed(String error) {
+    return 'Error al exportar: $error';
+  }
+
+  @override
+  String appDetail_importedKeywords(int imported, int skipped) {
+    return '$imported palabras clave importadas ($skipped omitidas)';
+  }
+
+  @override
+  String get appDetail_favorite => 'Favorito';
+
+  @override
+  String get appDetail_ratings => 'Calificaciones';
+
+  @override
+  String get appDetail_insights => 'Insights';
+
+  @override
+  String get appDetail_import => 'Importar';
+
+  @override
+  String get appDetail_export => 'Exportar';
+
+  @override
+  String appDetail_reviewsCount(int count) {
+    return '$count reseñas';
+  }
+
+  @override
+  String get appDetail_keywords => 'palabras clave';
+
+  @override
+  String get appDetail_addKeyword => 'Agregar palabra clave';
+
+  @override
+  String get appDetail_keywordHint => 'ej., rastreador fitness';
+
+  @override
+  String get appDetail_trackedKeywords => 'Palabras clave rastreadas';
+
+  @override
+  String appDetail_selectedCount(int count) {
+    return '$count seleccionadas';
+  }
+
+  @override
+  String get appDetail_allKeywords => 'Todas las palabras clave';
+
+  @override
+  String get appDetail_hasTags => 'Con etiquetas';
+
+  @override
+  String get appDetail_hasNotes => 'Con notas';
+
+  @override
+  String get appDetail_position => 'Posición';
+
+  @override
+  String get appDetail_select => 'Seleccionar';
+
+  @override
+  String get appDetail_suggestions => 'Sugerencias';
+
+  @override
+  String get appDetail_deleteKeywordsTitle => 'Eliminar palabras clave';
+
+  @override
+  String appDetail_deleteKeywordsConfirm(int count) {
+    return '¿Estás seguro de que deseas eliminar $count palabras clave?';
+  }
+
+  @override
+  String get appDetail_tag => 'Etiqueta';
+
+  @override
+  String appDetail_keywordAdded(String keyword, String flag) {
+    return 'Palabra clave \"$keyword\" agregada ($flag)';
+  }
+
+  @override
+  String appDetail_tagsAdded(int count) {
+    return 'Etiquetas agregadas a $count palabras clave';
+  }
+
+  @override
+  String get appDetail_keywordsAddedSuccess =>
+      'Palabras clave agregadas exitosamente';
+
+  @override
+  String get appDetail_noTagsAvailable =>
+      'No hay etiquetas disponibles. Crea etiquetas primero.';
+
+  @override
+  String get appDetail_tagged => 'Etiquetadas';
+
+  @override
+  String get appDetail_withNotes => 'Con notas';
+
+  @override
+  String get appDetail_nameAZ => 'Nombre A-Z';
+
+  @override
+  String get appDetail_nameZA => 'Nombre Z-A';
+
+  @override
+  String get appDetail_bestPosition => 'Mejor posición';
+
+  @override
+  String get appDetail_recentlyTracked => 'Rastreadas recientemente';
+
+  @override
+  String get keywordSuggestions_title => 'Sugerencias de palabras clave';
+
+  @override
+  String keywordSuggestions_appInCountry(String appName, String country) {
+    return '$appName en $country';
+  }
+
+  @override
+  String get keywordSuggestions_refresh => 'Actualizar sugerencias';
+
+  @override
+  String get keywordSuggestions_search => 'Buscar sugerencias...';
+
+  @override
+  String get keywordSuggestions_selectAll => 'Seleccionar todo';
+
+  @override
+  String get keywordSuggestions_clear => 'Limpiar';
+
+  @override
+  String get keywordSuggestions_analyzing =>
+      'Analizando metadatos de la app...';
+
+  @override
+  String get keywordSuggestions_mayTakeFewSeconds =>
+      'Esto puede tardar unos segundos';
+
+  @override
+  String get keywordSuggestions_noSuggestions =>
+      'No hay sugerencias disponibles';
+
+  @override
+  String get keywordSuggestions_noMatchingSuggestions =>
+      'No hay sugerencias que coincidan';
+
+  @override
+  String get keywordSuggestions_headerKeyword => 'PALABRA CLAVE';
+
+  @override
+  String get keywordSuggestions_headerDifficulty => 'DIFICULTAD';
+
+  @override
+  String get keywordSuggestions_headerApps => 'APPS';
+
+  @override
+  String keywordSuggestions_rankedAt(int position) {
+    return 'Posición #$position';
+  }
+
+  @override
+  String keywordSuggestions_keywordsSelected(int count) {
+    return '$count palabras clave seleccionadas';
+  }
+
+  @override
+  String keywordSuggestions_addKeywords(int count) {
+    return 'Agregar $count palabras clave';
+  }
+
+  @override
+  String keywordSuggestions_errorAdding(String error) {
+    return 'Error al agregar palabras clave: $error';
+  }
+
+  @override
+  String get sidebar_favorites => 'FAVORITOS';
+
+  @override
+  String get sidebar_tooManyFavorites =>
+      'Considera mantener 5 o menos favoritos';
+
+  @override
+  String get sidebar_iphone => 'iPHONE';
+
+  @override
+  String get sidebar_android => 'ANDROID';
+
+  @override
+  String get keywordSearch_title => 'Investigación de palabras clave';
+
+  @override
+  String get keywordSearch_searchPlaceholder => 'Buscar palabras clave...';
+
+  @override
+  String get keywordSearch_searchTitle => 'Buscar una palabra clave';
+
+  @override
+  String get keywordSearch_searchSubtitle =>
+      'Descubre qué apps rankean para cualquier palabra clave';
+
+  @override
+  String keywordSearch_appsRanked(int count) {
+    return '$count apps rankeadas';
+  }
+
+  @override
+  String get keywordSearch_popularity => 'Popularidad';
+
+  @override
+  String keywordSearch_results(int count) {
+    return '$count resultados';
+  }
+
+  @override
+  String get keywordSearch_headerRank => 'POSICIÓN';
+
+  @override
+  String get keywordSearch_headerApp => 'APP';
+
+  @override
+  String get keywordSearch_headerRating => 'CALIFICACIÓN';
+
+  @override
+  String get keywordSearch_headerTrack => 'RASTREAR';
+
+  @override
+  String get keywordSearch_trackApp => 'Rastrear esta app';
+
+  @override
+  String reviews_reviewsFor(String appName) {
+    return 'Reseñas de $appName';
+  }
+
+  @override
+  String get reviews_loading => 'Cargando reseñas...';
+
+  @override
+  String get reviews_noReviews => 'Sin reseñas';
+
+  @override
+  String reviews_noReviewsFor(String countryName) {
+    return 'No se encontraron reseñas para $countryName';
+  }
+
+  @override
+  String reviews_showingRecent(int count) {
+    return 'Mostrando las $count reseñas más recientes de App Store.';
+  }
+
+  @override
+  String get reviews_today => 'Hoy';
+
+  @override
+  String get reviews_yesterday => 'Ayer';
+
+  @override
+  String reviews_daysAgo(int count) {
+    return 'Hace $count días';
+  }
+
+  @override
+  String reviews_weeksAgo(int count) {
+    return 'Hace $count semanas';
+  }
+
+  @override
+  String reviews_monthsAgo(int count) {
+    return 'Hace $count meses';
+  }
+
+  @override
+  String get ratings_byCountry => 'Calificaciones por país';
+
+  @override
+  String get ratings_noRatingsAvailable => 'No hay calificaciones disponibles';
+
+  @override
+  String get ratings_noRatingsYet => 'Esta app aún no tiene calificaciones';
+
+  @override
+  String get ratings_totalRatings => 'Total de calificaciones';
+
+  @override
+  String get ratings_averageRating => 'Calificación promedio';
+
+  @override
+  String ratings_countriesCount(int count) {
+    return '$count países';
+  }
+
+  @override
+  String ratings_updated(String date) {
+    return 'Actualizado: $date';
+  }
+
+  @override
+  String get ratings_headerCountry => 'PAÍS';
+
+  @override
+  String get ratings_headerRatings => 'CALIFICACIONES';
+
+  @override
+  String get ratings_headerAverage => 'PROMEDIO';
+
+  @override
+  String time_minutesAgo(int count) {
+    return 'Hace ${count}m';
+  }
+
+  @override
+  String time_hoursAgo(int count) {
+    return 'Hace ${count}h';
+  }
+
+  @override
+  String time_daysAgo(int count) {
+    return 'Hace ${count}d';
+  }
+
+  @override
+  String get appDetail_noKeywordsTracked => 'No hay palabras clave rastreadas';
+
+  @override
+  String get appDetail_addKeywordHint =>
+      'Agrega una palabra clave arriba para comenzar a rastrear';
+
+  @override
+  String get appDetail_noKeywordsMatchFilter =>
+      'Ninguna palabra clave coincide con el filtro';
+
+  @override
+  String get appDetail_tryChangingFilter =>
+      'Intenta cambiar los criterios del filtro';
+
+  @override
+  String get appDetail_addTag => 'Agregar etiqueta';
+
+  @override
+  String get appDetail_addNote => 'Agregar nota';
+
+  @override
+  String get appDetail_positionHistory => 'Historial de posiciones';
+
+  @override
+  String get appDetail_store => 'STORE';
+
+  @override
+  String get nav_overview => 'RESUMEN';
+
+  @override
+  String get nav_dashboard => 'Panel de control';
+
+  @override
+  String get nav_myApps => 'Mis Apps';
+
+  @override
+  String get nav_research => 'INVESTIGACIÓN';
+
+  @override
+  String get nav_keywords => 'Palabras clave';
 }

@@ -284,4 +284,532 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get userMenu_logout => 'Çıkış yap';
+
+  @override
+  String get insights_compareTitle => 'İçgörüleri Karşılaştır';
+
+  @override
+  String get insights_analyzingReviews => 'Yorumlar analiz ediliyor...';
+
+  @override
+  String get insights_noInsightsAvailable => 'İçgörü mevcut değil';
+
+  @override
+  String get insights_strengths => 'Güçlü Yönler';
+
+  @override
+  String get insights_weaknesses => 'Zayıf Yönler';
+
+  @override
+  String get insights_scores => 'Puanlar';
+
+  @override
+  String get insights_opportunities => 'Fırsatlar';
+
+  @override
+  String get insights_categoryUx => 'KD';
+
+  @override
+  String get insights_categoryPerf => 'Perf';
+
+  @override
+  String get insights_categoryFeatures => 'Özellikler';
+
+  @override
+  String get insights_categoryPricing => 'Fiyatlandırma';
+
+  @override
+  String get insights_categorySupport => 'Destek';
+
+  @override
+  String get insights_categoryOnboard => 'Başlangıç';
+
+  @override
+  String get insights_categoryUxFull => 'KD / Arayüz';
+
+  @override
+  String get insights_categoryPerformance => 'Performans';
+
+  @override
+  String get insights_categoryOnboarding => 'İlk Kullanım';
+
+  @override
+  String get insights_reviewInsights => 'Yorum İçgörüleri';
+
+  @override
+  String get insights_generateFirst => 'Önce içgörü oluşturun';
+
+  @override
+  String get insights_compareWithOther => 'Diğer uygulamalarla karşılaştır';
+
+  @override
+  String get insights_compare => 'Karşılaştır';
+
+  @override
+  String get insights_generateAnalysis => 'Analiz Oluştur';
+
+  @override
+  String get insights_period => 'Dönem:';
+
+  @override
+  String get insights_3months => '3 ay';
+
+  @override
+  String get insights_6months => '6 ay';
+
+  @override
+  String get insights_12months => '12 ay';
+
+  @override
+  String get insights_analyze => 'Analiz Et';
+
+  @override
+  String insights_reviewsCount(int count) {
+    return '$count yorum';
+  }
+
+  @override
+  String insights_analyzedAgo(String time) {
+    return '$time önce analiz edildi';
+  }
+
+  @override
+  String get insights_yourNotes => 'Notlarınız';
+
+  @override
+  String get insights_save => 'Kaydet';
+
+  @override
+  String get insights_clickToAddNotes => 'Not eklemek için tıklayın...';
+
+  @override
+  String get insights_noteSaved => 'Not kaydedildi';
+
+  @override
+  String get insights_noteHint =>
+      'Bu içgörü analizi hakkında notlarınızı ekleyin...';
+
+  @override
+  String get insights_categoryScores => 'Kategori Puanları';
+
+  @override
+  String get insights_emergentThemes => 'Öne Çıkan Temalar';
+
+  @override
+  String get insights_exampleQuotes => 'Örnek alıntılar:';
+
+  @override
+  String get insights_selectCountryFirst => 'En az bir ülke seçin';
+
+  @override
+  String compare_selectAppsToCompare(String appName) {
+    return '$appName ile karşılaştırmak için en fazla 3 uygulama seçin';
+  }
+
+  @override
+  String get compare_searchApps => 'Uygulama ara...';
+
+  @override
+  String get compare_noOtherApps => 'Karşılaştırılacak başka uygulama yok';
+
+  @override
+  String get compare_noMatchingApps => 'Eşleşen uygulama yok';
+
+  @override
+  String compare_appsSelected(int count) {
+    return '3 uygulamadan $count tanesi seçildi';
+  }
+
+  @override
+  String get compare_cancel => 'İptal';
+
+  @override
+  String compare_button(int count) {
+    return '$count Uygulamayı Karşılaştır';
+  }
+
+  @override
+  String get appDetail_deleteAppTitle => 'Uygulama silinsin mi?';
+
+  @override
+  String get appDetail_deleteAppConfirm => 'Bu işlem geri alınamaz.';
+
+  @override
+  String get appDetail_cancel => 'İptal';
+
+  @override
+  String get appDetail_delete => 'Sil';
+
+  @override
+  String get appDetail_exporting => 'Sıralamalar dışa aktarılıyor...';
+
+  @override
+  String appDetail_savedFile(String filename) {
+    return 'Kaydedildi: $filename';
+  }
+
+  @override
+  String get appDetail_showInFinder => 'Finder\'da Göster';
+
+  @override
+  String appDetail_exportFailed(String error) {
+    return 'Dışa aktarma başarısız: $error';
+  }
+
+  @override
+  String appDetail_importedKeywords(int imported, int skipped) {
+    return '$imported anahtar kelime içe aktarıldı ($skipped atlandı)';
+  }
+
+  @override
+  String get appDetail_favorite => 'Favori';
+
+  @override
+  String get appDetail_ratings => 'Puanlar';
+
+  @override
+  String get appDetail_insights => 'İçgörüler';
+
+  @override
+  String get appDetail_import => 'İçe Aktar';
+
+  @override
+  String get appDetail_export => 'Dışa Aktar';
+
+  @override
+  String appDetail_reviewsCount(int count) {
+    return '$count yorum';
+  }
+
+  @override
+  String get appDetail_keywords => 'anahtar kelimeler';
+
+  @override
+  String get appDetail_addKeyword => 'Anahtar kelime ekle';
+
+  @override
+  String get appDetail_keywordHint => 'örn. fitness takipçisi';
+
+  @override
+  String get appDetail_trackedKeywords => 'Takip Edilen Anahtar Kelimeler';
+
+  @override
+  String appDetail_selectedCount(int count) {
+    return '$count seçildi';
+  }
+
+  @override
+  String get appDetail_allKeywords => 'Tüm Anahtar Kelimeler';
+
+  @override
+  String get appDetail_hasTags => 'Etiketli';
+
+  @override
+  String get appDetail_hasNotes => 'Notlu';
+
+  @override
+  String get appDetail_position => 'Sıralama';
+
+  @override
+  String get appDetail_select => 'Seç';
+
+  @override
+  String get appDetail_suggestions => 'Öneriler';
+
+  @override
+  String get appDetail_deleteKeywordsTitle => 'Anahtar Kelimeleri Sil';
+
+  @override
+  String appDetail_deleteKeywordsConfirm(int count) {
+    return '$count anahtar kelimeyi silmek istediğinizden emin misiniz?';
+  }
+
+  @override
+  String get appDetail_tag => 'Etiket';
+
+  @override
+  String appDetail_keywordAdded(String keyword, String flag) {
+    return '\"$keyword\" anahtar kelimesi eklendi ($flag)';
+  }
+
+  @override
+  String appDetail_tagsAdded(int count) {
+    return '$count anahtar kelimeye etiket eklendi';
+  }
+
+  @override
+  String get appDetail_keywordsAddedSuccess =>
+      'Anahtar kelimeler başarıyla eklendi';
+
+  @override
+  String get appDetail_noTagsAvailable =>
+      'Etiket mevcut değil. Önce etiket oluşturun.';
+
+  @override
+  String get appDetail_tagged => 'Etiketli';
+
+  @override
+  String get appDetail_withNotes => 'Notlu';
+
+  @override
+  String get appDetail_nameAZ => 'İsim A-Z';
+
+  @override
+  String get appDetail_nameZA => 'İsim Z-A';
+
+  @override
+  String get appDetail_bestPosition => 'En İyi Sıralama';
+
+  @override
+  String get appDetail_recentlyTracked => 'Son Takip Edilen';
+
+  @override
+  String get keywordSuggestions_title => 'Anahtar Kelime Önerileri';
+
+  @override
+  String keywordSuggestions_appInCountry(String appName, String country) {
+    return '$country için $appName';
+  }
+
+  @override
+  String get keywordSuggestions_refresh => 'Önerileri yenile';
+
+  @override
+  String get keywordSuggestions_search => 'Önerilerde ara...';
+
+  @override
+  String get keywordSuggestions_selectAll => 'Tümünü Seç';
+
+  @override
+  String get keywordSuggestions_clear => 'Temizle';
+
+  @override
+  String get keywordSuggestions_analyzing =>
+      'Uygulama meta verileri analiz ediliyor...';
+
+  @override
+  String get keywordSuggestions_mayTakeFewSeconds =>
+      'Bu birkaç saniye sürebilir';
+
+  @override
+  String get keywordSuggestions_noSuggestions => 'Öneri mevcut değil';
+
+  @override
+  String get keywordSuggestions_noMatchingSuggestions => 'Eşleşen öneri yok';
+
+  @override
+  String get keywordSuggestions_headerKeyword => 'ANAHTAR KELİME';
+
+  @override
+  String get keywordSuggestions_headerDifficulty => 'ZORLUK';
+
+  @override
+  String get keywordSuggestions_headerApps => 'UYGULAMALAR';
+
+  @override
+  String keywordSuggestions_rankedAt(int position) {
+    return '#$position. sırada';
+  }
+
+  @override
+  String keywordSuggestions_keywordsSelected(int count) {
+    return '$count anahtar kelime seçildi';
+  }
+
+  @override
+  String keywordSuggestions_addKeywords(int count) {
+    return '$count Anahtar Kelime Ekle';
+  }
+
+  @override
+  String keywordSuggestions_errorAdding(String error) {
+    return 'Anahtar kelime eklenirken hata oluştu: $error';
+  }
+
+  @override
+  String get sidebar_favorites => 'FAVORİLER';
+
+  @override
+  String get sidebar_tooManyFavorites =>
+      '5 veya daha az favori tutmayı düşünün';
+
+  @override
+  String get sidebar_iphone => 'iPHONE';
+
+  @override
+  String get sidebar_android => 'ANDROID';
+
+  @override
+  String get keywordSearch_title => 'Anahtar Kelime Araştırması';
+
+  @override
+  String get keywordSearch_searchPlaceholder => 'Anahtar kelime ara...';
+
+  @override
+  String get keywordSearch_searchTitle => 'Anahtar kelime ara';
+
+  @override
+  String get keywordSearch_searchSubtitle =>
+      'Hangi uygulamaların anahtar kelimeler için sıralandığını keşfedin';
+
+  @override
+  String keywordSearch_appsRanked(int count) {
+    return '$count uygulama sıralandı';
+  }
+
+  @override
+  String get keywordSearch_popularity => 'Popülerlik';
+
+  @override
+  String keywordSearch_results(int count) {
+    return '$count sonuç';
+  }
+
+  @override
+  String get keywordSearch_headerRank => 'SIRALAMA';
+
+  @override
+  String get keywordSearch_headerApp => 'UYGULAMA';
+
+  @override
+  String get keywordSearch_headerRating => 'PUAN';
+
+  @override
+  String get keywordSearch_headerTrack => 'TAKİP';
+
+  @override
+  String get keywordSearch_trackApp => 'Bu uygulamayı takip et';
+
+  @override
+  String reviews_reviewsFor(String appName) {
+    return '$appName için yorumlar';
+  }
+
+  @override
+  String get reviews_loading => 'Yorumlar yükleniyor...';
+
+  @override
+  String get reviews_noReviews => 'Yorum yok';
+
+  @override
+  String reviews_noReviewsFor(String countryName) {
+    return '$countryName için yorum bulunamadı';
+  }
+
+  @override
+  String reviews_showingRecent(int count) {
+    return 'App Store\'dan en son $count yorum gösteriliyor.';
+  }
+
+  @override
+  String get reviews_today => 'Bugün';
+
+  @override
+  String get reviews_yesterday => 'Dün';
+
+  @override
+  String reviews_daysAgo(int count) {
+    return '$count gün önce';
+  }
+
+  @override
+  String reviews_weeksAgo(int count) {
+    return '$count hafta önce';
+  }
+
+  @override
+  String reviews_monthsAgo(int count) {
+    return '$count ay önce';
+  }
+
+  @override
+  String get ratings_byCountry => 'Ülkeye Göre Puanlar';
+
+  @override
+  String get ratings_noRatingsAvailable => 'Puan mevcut değil';
+
+  @override
+  String get ratings_noRatingsYet => 'Bu uygulamanın henüz puanı yok';
+
+  @override
+  String get ratings_totalRatings => 'Toplam Puanlar';
+
+  @override
+  String get ratings_averageRating => 'Ortalama Puan';
+
+  @override
+  String ratings_countriesCount(int count) {
+    return '$count ülke';
+  }
+
+  @override
+  String ratings_updated(String date) {
+    return 'Güncellendi: $date';
+  }
+
+  @override
+  String get ratings_headerCountry => 'ÜLKE';
+
+  @override
+  String get ratings_headerRatings => 'PUANLAR';
+
+  @override
+  String get ratings_headerAverage => 'ORTALAMA';
+
+  @override
+  String time_minutesAgo(int count) {
+    return '${count}dk önce';
+  }
+
+  @override
+  String time_hoursAgo(int count) {
+    return '${count}sa önce';
+  }
+
+  @override
+  String time_daysAgo(int count) {
+    return '${count}g önce';
+  }
+
+  @override
+  String get appDetail_noKeywordsTracked => 'Takip edilen anahtar kelime yok';
+
+  @override
+  String get appDetail_addKeywordHint =>
+      'Takibe başlamak için yukarıya bir anahtar kelime ekleyin';
+
+  @override
+  String get appDetail_noKeywordsMatchFilter =>
+      'Filtreyle eşleşen anahtar kelime yok';
+
+  @override
+  String get appDetail_tryChangingFilter =>
+      'Filtre kriterlerini değiştirmeyi deneyin';
+
+  @override
+  String get appDetail_addTag => 'Etiket ekle';
+
+  @override
+  String get appDetail_addNote => 'Not ekle';
+
+  @override
+  String get appDetail_positionHistory => 'Sıralama Gecmisi';
+
+  @override
+  String get appDetail_store => 'STORE';
+
+  @override
+  String get nav_overview => 'GENEL BAKIŞ';
+
+  @override
+  String get nav_dashboard => 'Kontrol Paneli';
+
+  @override
+  String get nav_myApps => 'Uygulamalarım';
+
+  @override
+  String get nav_research => 'ARAŞTIRMA';
+
+  @override
+  String get nav_keywords => 'Anahtar Kelimeler';
 }

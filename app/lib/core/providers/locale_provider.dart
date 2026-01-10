@@ -47,6 +47,21 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     _updateLocale(preference);
   }
 
+  /// Load locale preference from backend (call after login)
+  Future<void> loadFromBackend() async {
+    try {
+      final dio = _ref.read(dioProvider);
+      final response = await dio.get('/user/preferences');
+      final locale = response.data['data']['locale'] as String?;
+      if (locale != null) {
+        _ref.read(localePreferenceProvider.notifier).state = locale;
+        _updateLocale(locale);
+      }
+    } catch (_) {
+      // Silently fail - use local preference
+    }
+  }
+
   void _updateLocale(String preference) {
     if (preference == 'system') {
       state = _getSystemLocale();
@@ -68,10 +83,11 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     _ref.read(localePreferenceProvider.notifier).state = localeCode;
     _updateLocale(localeCode);
 
-    // Save to backend
+    // Save to backend (null for system to clear preference)
     try {
       final dio = _ref.read(dioProvider);
-      await dio.put('/user/preferences', data: {'locale': localeCode});
+      final backendLocale = localeCode == 'system' ? null : localeCode;
+      await dio.put('/user/preferences', data: {'locale': backendLocale});
     } catch (_) {
       // Silently fail - locale is already applied locally
     }

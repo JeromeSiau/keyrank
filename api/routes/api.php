@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\RatingsController;
 use App\Http\Controllers\Api\ReviewsController;
 use App\Http\Controllers\Api\NotesController;
 use App\Http\Controllers\Api\TagsController;
+use App\Http\Controllers\Api\UserPreferencesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
+    });
+
+    // User Preferences
+    Route::prefix('user')->group(function () {
+        Route::get('preferences', [UserPreferencesController::class, 'show']);
+        Route::put('preferences', [UserPreferencesController::class, 'update']);
     });
 
     // Dashboard

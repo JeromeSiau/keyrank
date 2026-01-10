@@ -113,5 +113,326 @@
   "sort_mostKeywords": "Most Keywords",
   "sort_bestRank": "Best Rank",
 
-  "userMenu_logout": "Log out"
+  "userMenu_logout": "Log out",
+
+  "insights_compareTitle": "Compare Insights",
+  "insights_analyzingReviews": "Analyzing reviews...",
+  "insights_noInsightsAvailable": "No insights available",
+  "insights_strengths": "Strengths",
+  "insights_weaknesses": "Weaknesses",
+  "insights_scores": "Scores",
+  "insights_opportunities": "Opportunities",
+  "insights_categoryUx": "UX",
+  "insights_categoryPerf": "Perf",
+  "insights_categoryFeatures": "Features",
+  "insights_categoryPricing": "Pricing",
+  "insights_categorySupport": "Support",
+  "insights_categoryOnboard": "Onboard",
+  "insights_categoryUxFull": "UX / Interface",
+  "insights_categoryPerformance": "Performance",
+  "insights_categoryOnboarding": "Onboarding",
+  "insights_reviewInsights": "Review Insights",
+  "insights_generateFirst": "Generate insights first",
+  "insights_compareWithOther": "Compare with other apps",
+  "insights_compare": "Compare",
+  "insights_generateAnalysis": "Generate Analysis",
+  "insights_period": "Period:",
+  "insights_3months": "3 months",
+  "insights_6months": "6 months",
+  "insights_12months": "12 months",
+  "insights_analyze": "Analyze",
+  "insights_reviewsCount": "{count} reviews",
+  "@insights_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_analyzedAgo": "Analyzed {time}",
+  "@insights_analyzedAgo": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "insights_yourNotes": "Your Notes",
+  "insights_save": "Save",
+  "insights_clickToAddNotes": "Click to add notes...",
+  "insights_noteSaved": "Note saved",
+  "insights_noteHint": "Add your notes about this insight analysis...",
+  "insights_categoryScores": "Category Scores",
+  "insights_emergentThemes": "Emergent Themes",
+  "insights_exampleQuotes": "Example quotes:",
+  "insights_selectCountryFirst": "Select at least one country",
+
+  "compare_selectAppsToCompare": "Select up to 3 apps to compare with {appName}",
+  "@compare_selectAppsToCompare": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "compare_searchApps": "Search apps...",
+  "compare_noOtherApps": "No other apps to compare",
+  "compare_noMatchingApps": "No matching apps",
+  "compare_appsSelected": "{count} of 3 apps selected",
+  "@compare_appsSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "compare_cancel": "Cancel",
+  "compare_button": "Compare {count} Apps",
+  "@compare_button": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "appDetail_deleteAppTitle": "Delete app?",
+  "appDetail_deleteAppConfirm": "This action cannot be undone.",
+  "appDetail_cancel": "Cancel",
+  "appDetail_delete": "Delete",
+  "appDetail_exporting": "Exporting rankings...",
+  "appDetail_savedFile": "Saved: {filename}",
+  "@appDetail_savedFile": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "appDetail_showInFinder": "Show in Finder",
+  "appDetail_exportFailed": "Export failed: {error}",
+  "@appDetail_exportFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importedKeywords": "Imported {imported} keywords ({skipped} skipped)",
+  "@appDetail_importedKeywords": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "skipped": { "type": "int" }
+    }
+  },
+  "appDetail_favorite": "Favorite",
+  "appDetail_ratings": "Ratings",
+  "appDetail_insights": "Insights",
+  "appDetail_import": "Import",
+  "appDetail_export": "Export",
+  "appDetail_reviewsCount": "{count} reviews",
+  "@appDetail_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_keywords": "keywords",
+  "appDetail_addKeyword": "Add keyword",
+  "appDetail_keywordHint": "e.g., fitness tracker",
+  "appDetail_trackedKeywords": "Tracked Keywords",
+  "appDetail_selectedCount": "{count} selected",
+  "@appDetail_selectedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_allKeywords": "All Keywords",
+  "appDetail_hasTags": "Has Tags",
+  "appDetail_hasNotes": "Has Notes",
+  "appDetail_position": "Position",
+  "appDetail_select": "Select",
+  "appDetail_suggestions": "Suggestions",
+  "appDetail_deleteKeywordsTitle": "Delete Keywords",
+  "appDetail_deleteKeywordsConfirm": "Are you sure you want to delete {count} keywords?",
+  "@appDetail_deleteKeywordsConfirm": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_tag": "Tag",
+  "appDetail_keywordAdded": "Keyword \"{keyword}\" added ({flag})",
+  "@appDetail_keywordAdded": {
+    "placeholders": {
+      "keyword": { "type": "String" },
+      "flag": { "type": "String" }
+    }
+  },
+  "appDetail_tagsAdded": "Tags added to {count} keywords",
+  "@appDetail_tagsAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_keywordsAddedSuccess": "Keywords added successfully",
+  "appDetail_noTagsAvailable": "No tags available. Create tags first.",
+  "appDetail_tagged": "Tagged",
+  "appDetail_withNotes": "With Notes",
+  "appDetail_nameAZ": "Name A-Z",
+  "appDetail_nameZA": "Name Z-A",
+  "appDetail_bestPosition": "Best Position",
+  "appDetail_recentlyTracked": "Recently Tracked",
+
+  "keywordSuggestions_title": "Keyword Suggestions",
+  "keywordSuggestions_appInCountry": "{appName} in {country}",
+  "@keywordSuggestions_appInCountry": {
+    "placeholders": {
+      "appName": { "type": "String" },
+      "country": { "type": "String" }
+    }
+  },
+  "keywordSuggestions_refresh": "Refresh suggestions",
+  "keywordSuggestions_search": "Search suggestions...",
+  "keywordSuggestions_selectAll": "Select All",
+  "keywordSuggestions_clear": "Clear",
+  "keywordSuggestions_analyzing": "Analyzing app metadata...",
+  "keywordSuggestions_mayTakeFewSeconds": "This may take a few seconds",
+  "keywordSuggestions_noSuggestions": "No suggestions available",
+  "keywordSuggestions_noMatchingSuggestions": "No matching suggestions",
+  "keywordSuggestions_headerKeyword": "KEYWORD",
+  "keywordSuggestions_headerDifficulty": "DIFFICULTY",
+  "keywordSuggestions_headerApps": "APPS",
+  "keywordSuggestions_rankedAt": "Ranked #{position}",
+  "@keywordSuggestions_rankedAt": {
+    "placeholders": {
+      "position": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_keywordsSelected": "{count} keywords selected",
+  "@keywordSuggestions_keywordsSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_addKeywords": "Add {count} Keywords",
+  "@keywordSuggestions_addKeywords": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSuggestions_errorAdding": "Error adding keywords: {error}",
+  "@keywordSuggestions_errorAdding": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "sidebar_favorites": "FAVORITES",
+  "sidebar_tooManyFavorites": "Consider keeping 5 or fewer favorites",
+  "sidebar_iphone": "iPHONE",
+  "sidebar_android": "ANDROID",
+
+  "keywordSearch_title": "Keyword Research",
+  "keywordSearch_searchPlaceholder": "Search keywords...",
+  "keywordSearch_searchTitle": "Search for a keyword",
+  "keywordSearch_searchSubtitle": "Discover which apps rank for any keyword",
+  "keywordSearch_appsRanked": "{count} apps ranked",
+  "@keywordSearch_appsRanked": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSearch_popularity": "Popularity",
+  "keywordSearch_results": "{count} results",
+  "@keywordSearch_results": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywordSearch_headerRank": "RANK",
+  "keywordSearch_headerApp": "APP",
+  "keywordSearch_headerRating": "RATING",
+  "keywordSearch_headerTrack": "TRACK",
+  "keywordSearch_trackApp": "Track this app",
+
+  "reviews_reviewsFor": "Reviews for {appName}",
+  "@reviews_reviewsFor": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "reviews_loading": "Loading reviews...",
+  "reviews_noReviews": "No reviews",
+  "reviews_noReviewsFor": "No reviews found for {countryName}",
+  "@reviews_noReviewsFor": {
+    "placeholders": {
+      "countryName": { "type": "String" }
+    }
+  },
+  "reviews_showingRecent": "Showing the {count} most recent reviews from the App Store.",
+  "@reviews_showingRecent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_today": "Today",
+  "reviews_yesterday": "Yesterday",
+  "reviews_daysAgo": "{count} days ago",
+  "@reviews_daysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_weeksAgo": "{count} weeks ago",
+  "@reviews_weeksAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviews_monthsAgo": "{count} months ago",
+  "@reviews_monthsAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "ratings_byCountry": "Ratings by Country",
+  "ratings_noRatingsAvailable": "No ratings available",
+  "ratings_noRatingsYet": "This app has no ratings yet",
+  "ratings_totalRatings": "Total Ratings",
+  "ratings_averageRating": "Average Rating",
+  "ratings_countriesCount": "{count} countries",
+  "@ratings_countriesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "ratings_updated": "Updated: {date}",
+  "@ratings_updated": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "ratings_headerCountry": "COUNTRY",
+  "ratings_headerRatings": "RATINGS",
+  "ratings_headerAverage": "AVERAGE",
+
+  "time_minutesAgo": "{count}m ago",
+  "@time_minutesAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "time_hoursAgo": "{count}h ago",
+  "@time_hoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "time_daysAgo": "{count}d ago",
+  "@time_daysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "appDetail_noKeywordsTracked": "No keywords tracked",
+  "appDetail_addKeywordHint": "Add a keyword above to start tracking",
+  "appDetail_noKeywordsMatchFilter": "No keywords match filter",
+  "appDetail_tryChangingFilter": "Try changing the filter criteria",
+  "appDetail_addTag": "Add tag",
+  "appDetail_addNote": "Add note",
+  "appDetail_positionHistory": "Position History",
+  "appDetail_store": "STORE",
+
+  "nav_overview": "OVERVIEW",
+  "nav_dashboard": "Dashboard",
+  "nav_myApps": "My Apps",
+  "nav_research": "RESEARCH",
+  "nav_keywords": "Keywords"
 }

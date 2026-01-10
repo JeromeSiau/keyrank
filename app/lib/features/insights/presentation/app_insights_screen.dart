@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../domain/insight_model.dart';
 import '../data/insights_repository.dart';
 import 'widgets/compare_app_selector_modal.dart';
@@ -68,7 +69,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
   Future<void> _generateInsights() async {
     if (_selectedCountries.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select at least one country')),
+        SnackBar(content: Text(context.l10n.insights_selectCountryFirst)),
       );
       return;
     }
@@ -183,16 +184,16 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                const Text(
-                  'Review Insights',
-                  style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                Text(
+                  context.l10n.insights_reviewInsights,
+                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
                 ),
               ],
             ),
           ),
           // Compare button
           Tooltip(
-            message: _insight == null ? 'Generate insights first' : 'Compare with other apps',
+            message: _insight == null ? context.l10n.insights_generateFirst : context.l10n.insights_compareWithOther,
             child: Material(
               color: _insight != null ? AppColors.bgActive : Colors.transparent,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -212,7 +213,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'Compare',
+                        context.l10n.insights_compare,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -257,9 +258,9 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Generate Analysis',
-            style: TextStyle(
+          Text(
+            context.l10n.insights_generateAnalysis,
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -301,16 +302,16 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
           // Period selector
           Row(
             children: [
-              const Text(
-                'Period:',
-                style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+              Text(
+                context.l10n.insights_period,
+                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
               ),
               const SizedBox(width: 12),
-              _PeriodChip(label: '3 months', value: 3, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 3)),
+              _PeriodChip(label: context.l10n.insights_3months, value: 3, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 3)),
               const SizedBox(width: 8),
-              _PeriodChip(label: '6 months', value: 6, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 6)),
+              _PeriodChip(label: context.l10n.insights_6months, value: 6, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 6)),
               const SizedBox(width: 8),
-              _PeriodChip(label: '12 months', value: 12, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 12)),
+              _PeriodChip(label: context.l10n.insights_12months, value: 12, selected: _periodMonths, onTap: () => setState(() => _periodMonths = 12)),
               const Spacer(),
               // Generate button - hidden if insight < 24h
               if (!_isInsightRecent)
@@ -328,14 +329,14 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                               height: 16,
                               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
-                          : const Row(
+                          : Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.auto_awesome, size: 16, color: Colors.white),
-                                SizedBox(width: 8),
+                                const Icon(Icons.auto_awesome, size: 16, color: Colors.white),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'Analyze',
-                                  style: TextStyle(
+                                  context.l10n.insights_analyze,
+                                  style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
@@ -423,7 +424,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
           const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.textMuted),
           const SizedBox(width: 8),
           Text(
-            '${insight.reviewsCount} reviews',
+            context.l10n.insights_reviewsCount(insight.reviewsCount),
             style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
           const SizedBox(width: 12),
@@ -438,7 +439,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
           ),
           const Spacer(),
           Text(
-            'Analyzed ${_timeAgo(insight.analyzedAt)}',
+            context.l10n.insights_analyzedAgo(_timeAgo(context, insight.analyzedAt)),
             style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
           ),
         ],
@@ -458,10 +459,10 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
             _isEditingNote = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Note saved'),
+            SnackBar(
+              content: Text(context.l10n.insights_noteSaved),
               backgroundColor: AppColors.green,
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
             ),
           );
         }
@@ -489,9 +490,9 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
               children: [
                 const Icon(Icons.edit_note_rounded, size: 16, color: AppColors.accent),
                 const SizedBox(width: 8),
-                const Text(
-                  'Your Notes',
-                  style: TextStyle(
+                Text(
+                  context.l10n.insights_yourNotes,
+                  style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
@@ -504,11 +505,11 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                   child: InkWell(
                     onTap: saveNote,
                     borderRadius: BorderRadius.circular(6),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       child: Text(
-                        'Save',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                        context.l10n.insights_save,
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
                       ),
                     ),
                   ),
@@ -542,11 +543,11 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                 controller: _noteController,
                 maxLines: 3,
                 style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
-                decoration: const InputDecoration(
-                  hintText: 'Add your notes about this insight analysis...',
-                  hintStyle: TextStyle(color: AppColors.textMuted),
+                decoration: InputDecoration(
+                  hintText: context.l10n.insights_noteHint,
+                  hintStyle: const TextStyle(color: AppColors.textMuted),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(12),
+                  contentPadding: const EdgeInsets.all(12),
                 ),
               ),
             ),
@@ -590,7 +591,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                         ),
                       )
                     : Text(
-                        'Click to add notes...',
+                        context.l10n.insights_clickToAddNotes,
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textMuted.withAlpha(150),
@@ -612,7 +613,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
 
   Widget _buildStrengthsCard(AppInsight insight) {
     return _buildListCard(
-      title: 'Strengths',
+      title: context.l10n.insights_strengths,
       icon: Icons.thumb_up_rounded,
       iconColor: AppColors.green,
       items: insight.overallStrengths,
@@ -622,7 +623,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
 
   Widget _buildWeaknessesCard(AppInsight insight) {
     return _buildListCard(
-      title: 'Weaknesses',
+      title: context.l10n.insights_weaknesses,
       icon: Icons.thumb_down_rounded,
       iconColor: AppColors.red,
       items: insight.overallWeaknesses,
@@ -694,9 +695,9 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Category Scores',
-            style: TextStyle(
+          Text(
+            context.l10n.insights_categoryScores,
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -711,6 +712,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
                 category: entry.key,
                 score: entry.value.score,
                 summary: entry.value.summary,
+                categoryLabel: _getCategoryLabel(entry.key),
               );
             }).toList(),
           ),
@@ -730,16 +732,19 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Emergent Themes',
-            style: TextStyle(
+          Text(
+            context.l10n.insights_emergentThemes,
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 16),
-          ...insight.emergentThemes.map((theme) => _EmergentThemeCard(theme: theme)),
+          ...insight.emergentThemes.map((theme) => _EmergentThemeCard(
+                theme: theme,
+                exampleQuotesLabel: context.l10n.insights_exampleQuotes,
+              )),
         ],
       ),
     );
@@ -747,7 +752,7 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
 
   Widget _buildOpportunities(AppInsight insight) {
     return _buildListCard(
-      title: 'Opportunities',
+      title: context.l10n.insights_opportunities,
       icon: Icons.lightbulb_rounded,
       iconColor: AppColors.yellow,
       items: insight.opportunities,
@@ -755,11 +760,30 @@ class _AppInsightsScreenState extends ConsumerState<AppInsightsScreen> {
     );
   }
 
-  String _timeAgo(DateTime date) {
+  String _timeAgo(BuildContext context, DateTime date) {
     final diff = DateTime.now().difference(date);
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
+    if (diff.inMinutes < 60) return context.l10n.time_minutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return context.l10n.time_hoursAgo(diff.inHours);
+    return context.l10n.time_daysAgo(diff.inDays);
+  }
+
+  String _getCategoryLabel(String category) {
+    switch (category) {
+      case 'ux':
+        return context.l10n.insights_categoryUxFull;
+      case 'performance':
+        return context.l10n.insights_categoryPerformance;
+      case 'features':
+        return context.l10n.insights_categoryFeatures;
+      case 'pricing':
+        return context.l10n.insights_categoryPricing;
+      case 'support':
+        return context.l10n.insights_categorySupport;
+      case 'onboarding':
+        return context.l10n.insights_categoryOnboarding;
+      default:
+        return category;
+    }
   }
 }
 
@@ -805,11 +829,13 @@ class _CategoryScoreCard extends StatelessWidget {
   final String category;
   final double score;
   final String summary;
+  final String categoryLabel;
 
   const _CategoryScoreCard({
     required this.category,
     required this.score,
     required this.summary,
+    required this.categoryLabel,
   });
 
   @override
@@ -819,15 +845,6 @@ class _CategoryScoreCard extends StatelessWidget {
         : score >= 3
             ? AppColors.yellow
             : AppColors.red;
-
-    final categoryLabels = {
-      'ux': 'UX / Interface',
-      'performance': 'Performance',
-      'features': 'Features',
-      'pricing': 'Pricing',
-      'support': 'Support',
-      'onboarding': 'Onboarding',
-    };
 
     return Container(
       width: 180,
@@ -843,7 +860,7 @@ class _CategoryScoreCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                categoryLabels[category] ?? category,
+                categoryLabel,
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -885,8 +902,12 @@ class _CategoryScoreCard extends StatelessWidget {
 
 class _EmergentThemeCard extends StatefulWidget {
   final EmergentTheme theme;
+  final String exampleQuotesLabel;
 
-  const _EmergentThemeCard({required this.theme});
+  const _EmergentThemeCard({
+    required this.theme,
+    required this.exampleQuotesLabel,
+  });
 
   @override
   State<_EmergentThemeCard> createState() => _EmergentThemeCardState();
@@ -974,9 +995,9 @@ class _EmergentThemeCardState extends State<_EmergentThemeCard> {
                   const SizedBox(height: 12),
                   const Divider(color: AppColors.glassBorder, height: 1),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Example quotes:',
-                    style: TextStyle(
+                  Text(
+                    widget.exampleQuotesLabel,
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textMuted,

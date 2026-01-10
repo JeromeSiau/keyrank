@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/l10n_extension.dart';
 import '../../providers/apps_provider.dart';
 import '../../providers/sidebar_apps_provider.dart';
 import 'collapsible_section.dart';
@@ -70,9 +71,9 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
-                const Text(
-                  'FAVORITES',
-                  style: TextStyle(
+                Text(
+                  context.l10n.sidebar_favorites,
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
@@ -82,7 +83,7 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
                 if (sidebarApps.hasTooManyFavorites) ...[
                   const SizedBox(width: 6),
                   Tooltip(
-                    message: 'Consider keeping 5 or fewer favorites',
+                    message: context.l10n.sidebar_tooManyFavorites,
                     child: Icon(
                       Icons.info_outline_rounded,
                       size: 12,
@@ -115,7 +116,7 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
         // iOS section
         if (sidebarApps.iosList.isNotEmpty)
           CollapsibleSection(
-            label: 'iPHONE',
+            label: context.l10n.sidebar_iphone,
             count: sidebarApps.iosList.length,
             isExpanded: _iosExpanded,
             onToggle: _toggleIos,
@@ -132,7 +133,7 @@ class _SidebarAppsListState extends ConsumerState<SidebarAppsList> {
         // Android section
         if (sidebarApps.androidList.isNotEmpty)
           CollapsibleSection(
-            label: 'ANDROID',
+            label: context.l10n.sidebar_android,
             count: sidebarApps.androidList.length,
             isExpanded: _androidExpanded,
             onToggle: _toggleAndroid,
