@@ -9,12 +9,12 @@ class Review with _$Review {
 
   const factory Review({
     required int id,
-    required String author,
+    @Default('Anonymous') String author,
     String? title,
-    required String content,
+    @Default('') String content,
     required int rating,
     String? version,
-    required String country,
+    @Default('US') String country,
     String? sentiment,
     @JsonKey(name: 'our_response') String? ourResponse,
     @JsonKey(name: 'responded_at') DateTime? respondedAt,
@@ -90,8 +90,8 @@ class ReviewsResponse {
 
   factory ReviewsResponse.fromJson(Map<String, dynamic> json) {
     return ReviewsResponse(
-      appId: json['app_id'] as int,
-      country: json['country'] as String,
+      appId: json['app_id'] as int? ?? 0,
+      country: json['country'] as String? ?? '',
       reviews: (json['reviews'] as List<dynamic>?)
               ?.map((e) => Review.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -116,7 +116,7 @@ class CountryReviewSummary {
 
   factory CountryReviewSummary.fromJson(Map<String, dynamic> json) {
     return CountryReviewSummary(
-      country: json['country'] as String,
+      country: json['country'] as String? ?? '',
       reviewCount: json['review_count'] as int? ?? 0,
       avgRating: (json['avg_rating'] as num?)?.toDouble() ?? 0.0,
       latestReview: json['latest_review'] as String?,

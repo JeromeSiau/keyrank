@@ -8,12 +8,12 @@ part of 'review_model.dart';
 
 _$ReviewImpl _$$ReviewImplFromJson(Map<String, dynamic> json) => _$ReviewImpl(
   id: (json['id'] as num).toInt(),
-  author: json['author'] as String,
+  author: json['author'] as String? ?? 'Anonymous',
   title: json['title'] as String?,
-  content: json['content'] as String,
+  content: json['content'] as String? ?? '',
   rating: (json['rating'] as num).toInt(),
   version: json['version'] as String?,
-  country: json['country'] as String,
+  country: json['country'] as String? ?? 'US',
   sentiment: json['sentiment'] as String?,
   ourResponse: json['our_response'] as String?,
   respondedAt: json['responded_at'] == null

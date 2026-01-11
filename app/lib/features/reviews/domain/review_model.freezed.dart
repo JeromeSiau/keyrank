@@ -295,12 +295,12 @@ class __$$ReviewImplCopyWithImpl<$Res>
 class _$ReviewImpl extends _Review {
   const _$ReviewImpl({
     required this.id,
-    required this.author,
+    this.author = 'Anonymous',
     this.title,
-    required this.content,
+    this.content = '',
     required this.rating,
     this.version,
-    required this.country,
+    this.country = 'US',
     this.sentiment,
     @JsonKey(name: 'our_response') this.ourResponse,
     @JsonKey(name: 'responded_at') this.respondedAt,
@@ -315,16 +315,19 @@ class _$ReviewImpl extends _Review {
   @override
   final int id;
   @override
+  @JsonKey()
   final String author;
   @override
   final String? title;
   @override
+  @JsonKey()
   final String content;
   @override
   final int rating;
   @override
   final String? version;
   @override
+  @JsonKey()
   final String country;
   @override
   final String? sentiment;
@@ -409,12 +412,12 @@ class _$ReviewImpl extends _Review {
 abstract class _Review extends Review {
   const factory _Review({
     required final int id,
-    required final String author,
+    final String author,
     final String? title,
-    required final String content,
+    final String content,
     required final int rating,
     final String? version,
-    required final String country,
+    final String country,
     final String? sentiment,
     @JsonKey(name: 'our_response') final String? ourResponse,
     @JsonKey(name: 'responded_at') final DateTime? respondedAt,

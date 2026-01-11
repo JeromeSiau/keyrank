@@ -2551,7 +2551,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
       final history = await repository.getRankingHistory(
         widget.appId,
         keywordId: widget.keyword!.id,
-        days: _selectedDays,
+        from: DateTime.now().subtract(Duration(days: _selectedDays)),
       );
       if (mounted) {
         setState(() {
@@ -2691,6 +2691,15 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                             _loadHistory();
                           },
                         ),
+                        const SizedBox(width: 8),
+                        _PeriodChip(
+                          label: '1Y',
+                          isSelected: _selectedDays == 365,
+                          onTap: () {
+                            setState(() => _selectedDays = 365);
+                            _loadHistory();
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -2813,9 +2822,9 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
 
   Widget _buildCurrentStats() {
     final colors = context.colors;
-    final current = _history!.isNotEmpty ? _history!.last.position : null;
-    final first = _history!.isNotEmpty ? _history!.first.position : null;
-    int? change;
+    final current = _history!.isNotEmpty ? _history!.last.displayPosition : null;
+    final first = _history!.isNotEmpty ? _history!.first.displayPosition : null;
+    double? change;
     if (current != null && first != null) {
       change = first - current; // positive = improved
     }
@@ -2833,7 +2842,9 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
             child: Column(
               children: [
                 Text(
-                  current != null ? '#$current' : '--',
+                  current != null
+                      ? '#${current == current.roundToDouble() ? current.toInt() : current.toStringAsFixed(1)}'
+                      : '--',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
@@ -2841,7 +2852,7 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                   ),
                 ),
                 Text(
-                  'Current',
+                  _history!.last.isAggregate ? 'Avg Position' : 'Current',
                   style: TextStyle(fontSize: 12, color: colors.textMuted),
                 ),
               ],
@@ -2861,7 +2872,11 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
                         color: change > 0 ? colors.green : colors.red,
                       ),
                     Text(
-                      change != null ? change.abs().toString() : '--',
+                      change != null
+                          ? (change.abs() == change.abs().roundToDouble()
+                              ? change.abs().toInt().toString()
+                              : change.abs().toStringAsFixed(1))
+                          : '--',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
@@ -2891,9 +2906,10 @@ class _KeywordHistoryPanelState extends ConsumerState<_KeywordHistoryPanel> {
 
     for (var i = 0; i < _history!.length; i++) {
       final point = _history![i];
-      if (point.position != null) {
-        spots.add(FlSpot(i.toDouble(), point.position!.toDouble()));
-        dates[i.toDouble()] = point.recordedAt;
+      final pos = point.displayPosition;
+      if (pos != null) {
+        spots.add(FlSpot(i.toDouble(), pos));
+        dates[i.toDouble()] = point.effectiveDate;
       }
     }
 

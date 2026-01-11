@@ -29,6 +29,12 @@ Schedule::command('reviews:sync-connected')
     ->withoutOverlapping()
     ->runInBackground();
 
+// Sync public reviews (iTunes/Google Play) for all apps daily at 4 AM
+Schedule::command('reviews:sync-all')
+    ->dailyAt('04:00')
+    ->withoutOverlapping()
+    ->runInBackground();
+
 // Sync analytics from App Store Connect and Google Play daily at 6 AM
 Schedule::command('analytics:sync-daily')
     ->dailyAt('06:00')

@@ -1,11 +1,19 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/star_histogram.dart';
-import '../../../shared/widgets/country_distribution.dart';
 import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
+import '../providers/ratings_provider.dart';
+import '../domain/rating_model.dart';
+
+/// Selected app for ratings analysis (null = aggregate all apps)
+final ratingsAnalysisAppProvider = StateProvider<int?>((ref) => null);
+
+/// Selected period for trend chart
+final ratingsAnalysisPeriodProvider = StateProvider<int>((ref) => 30);
 
 class RatingsAnalysisScreen extends ConsumerWidget {
   const RatingsAnalysisScreen({super.key});
@@ -34,7 +42,7 @@ class RatingsAnalysisScreen extends ConsumerWidget {
                   style: TextStyle(color: colors.textPrimary),
                 ),
               ),
-              data: (apps) => _buildContent(context, apps),
+              data: (apps) => _RatingsContent(apps: apps),
             ),
           ),
         ],
@@ -72,27 +80,31 @@ class RatingsAnalysisScreen extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildContent(BuildContext context, List<AppModel> apps) {
+class _RatingsContent extends ConsumerWidget {
+  final List<AppModel> apps;
+
+  const _RatingsContent({required this.apps});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedAppId = ref.watch(ratingsAnalysisAppProvider);
+
     // Calculate aggregate stats from apps
-    final totalRatings =
-        apps.fold<int>(0, (sum, app) => sum + app.ratingCount);
+    final totalRatings = apps.fold<int>(0, (sum, app) => sum + app.ratingCount);
     final avgRating = apps.isEmpty
         ? 0.0
-        : apps.fold<double>(0, (sum, app) => sum + (app.rating ?? 0)) /
-            apps.length;
+        : apps.where((a) => a.rating != null).fold<double>(0, (sum, app) => sum + app.rating!) /
+            apps.where((a) => a.rating != null).length;
 
-    // Mock distribution (would come from API aggregation)
-    final mockDistribution = _getMockDistribution(totalRatings);
+    // Find selected app or use aggregate
+    final selectedApp = selectedAppId != null
+        ? apps.firstWhere((a) => a.id == selectedAppId, orElse: () => apps.first)
+        : null;
 
-    // Mock country data
-    final mockCountries = [
-      CountryData(code: 'us', name: 'United States', percent: 38.5),
-      CountryData(code: 'gb', name: 'United Kingdom', percent: 12.3),
-      CountryData(code: 'de', name: 'Germany', percent: 9.8),
-      CountryData(code: 'fr', name: 'France', percent: 7.2),
-      CountryData(code: 'jp', name: 'Japan', percent: 5.6),
-    ];
+    final displayRating = selectedApp?.rating ?? avgRating;
+    final displayCount = selectedApp?.ratingCount ?? totalRatings;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -103,49 +115,54 @@ class RatingsAnalysisScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // App selector
+              _AppSelector(apps: apps),
+              const SizedBox(height: 20),
+
               if (isWide)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Left column
+                    // Left column - Summary cards
                     Expanded(
-                      child: _buildCurrentRatingCard(
-                          context, avgRating, totalRatings),
+                      child: Column(
+                        children: [
+                          _buildSummaryCards(context, apps, displayRating, displayCount),
+                          const SizedBox(height: 20),
+                          _buildCurrentRatingCard(context, displayRating, displayCount),
+                        ],
+                      ),
                     ),
                     const SizedBox(width: 20),
-                    // Right column
+                    // Right column - Distribution + Trend
                     Expanded(
                       flex: 2,
-                      child: _buildDistributionCard(context, mockDistribution),
+                      child: Column(
+                        children: [
+                          _buildDistributionCard(context, displayRating, displayCount),
+                          const SizedBox(height: 20),
+                          _RatingTrendCard(appId: selectedAppId),
+                        ],
+                      ),
                     ),
                   ],
                 )
               else
                 Column(
                   children: [
-                    _buildCurrentRatingCard(context, avgRating, totalRatings),
+                    _buildSummaryCards(context, apps, displayRating, displayCount),
                     const SizedBox(height: 20),
-                    _buildDistributionCard(context, mockDistribution),
+                    _buildCurrentRatingCard(context, displayRating, displayCount),
+                    const SizedBox(height: 20),
+                    _buildDistributionCard(context, displayRating, displayCount),
+                    const SizedBox(height: 20),
+                    _RatingTrendCard(appId: selectedAppId),
                   ],
                 ),
+
               const SizedBox(height: 20),
-              if (isWide)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: _buildByCountryCard(context, mockCountries)),
-                    const SizedBox(width: 20),
-                    Expanded(child: _buildTrendCard(context)),
-                  ],
-                )
-              else
-                Column(
-                  children: [
-                    _buildByCountryCard(context, mockCountries),
-                    const SizedBox(height: 20),
-                    _buildTrendCard(context),
-                  ],
-                ),
+              // Apps comparison table
+              _AppsRatingsTable(apps: apps),
             ],
           ),
         );
@@ -153,20 +170,73 @@ class RatingsAnalysisScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCurrentRatingCard(
-      BuildContext context, double avgRating, int totalRatings) {
+  Widget _buildSummaryCards(BuildContext context, List<AppModel> apps, double avgRating, int totalRatings) {
+    final colors = context.colors;
+
+    // Calculate stats
+    final highRatedApps = apps.where((a) => (a.rating ?? 0) >= 4.5).length;
+    final lowRatedApps = apps.where((a) => (a.rating ?? 0) < 3.0 && a.rating != null).length;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _StatCard(
+            icon: Icons.star_rounded,
+            iconColor: colors.yellow,
+            label: 'Average',
+            value: avgRating.toStringAsFixed(2),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _StatCard(
+            icon: Icons.reviews_rounded,
+            iconColor: colors.accent,
+            label: 'Total Ratings',
+            value: _formatNumber(totalRatings),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _StatCard(
+            icon: Icons.thumb_up_rounded,
+            iconColor: colors.green,
+            label: 'High Rated (4.5+)',
+            value: highRatedApps.toString(),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _StatCard(
+            icon: Icons.warning_rounded,
+            iconColor: colors.red,
+            label: 'Low Rated (<3)',
+            value: lowRatedApps.toString(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCurrentRatingCard(BuildContext context, double avgRating, int totalRatings) {
     final colors = context.colors;
     return _GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Current Rating',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: colors.textMuted,
-            ),
+          Row(
+            children: [
+              Icon(Icons.star_rounded, size: 18, color: colors.yellow),
+              const SizedBox(width: 8),
+              Text(
+                'Current Rating',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textMuted,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           RatingSummary(
@@ -178,20 +248,27 @@ class RatingsAnalysisScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDistributionCard(
-      BuildContext context, Map<int, int> distribution) {
+  Widget _buildDistributionCard(BuildContext context, double avgRating, int totalRatings) {
     final colors = context.colors;
+    final distribution = _estimateDistribution(avgRating, totalRatings);
+
     return _GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Distribution',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: colors.textMuted,
-            ),
+          Row(
+            children: [
+              Icon(Icons.bar_chart_rounded, size: 18, color: colors.accent),
+              const SizedBox(width: 8),
+              Text(
+                'Rating Distribution',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textMuted,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           StarHistogram(
@@ -201,41 +278,218 @@ class RatingsAnalysisScreen extends ConsumerWidget {
             twoStars: distribution[2] ?? 0,
             oneStar: distribution[1] ?? 0,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildByCountryCard(BuildContext context, List<CountryData> countries) {
-    final colors = context.colors;
-    return _GlassCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+          const SizedBox(height: 8),
           Text(
-            'By Country',
+            'Distribution estimated based on average rating',
             style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: colors.textMuted,
+              fontSize: 10,
+              fontStyle: FontStyle.italic,
+              color: colors.textMuted.withAlpha(150),
             ),
           ),
-          const SizedBox(height: 16),
-          CountryDistribution(countries: countries),
         ],
       ),
     );
   }
 
-  Widget _buildTrendCard(BuildContext context) {
+  Map<int, int> _estimateDistribution(double avgRating, int totalRatings) {
+    if (totalRatings == 0) return {5: 0, 4: 0, 3: 0, 2: 0, 1: 0};
+
+    // More realistic distribution based on average
+    double w5, w4, w3, w2, w1;
+
+    if (avgRating >= 4.5) {
+      w5 = 0.70; w4 = 0.18; w3 = 0.07; w2 = 0.03; w1 = 0.02;
+    } else if (avgRating >= 4.0) {
+      w5 = 0.50; w4 = 0.28; w3 = 0.12; w2 = 0.06; w1 = 0.04;
+    } else if (avgRating >= 3.5) {
+      w5 = 0.30; w4 = 0.30; w3 = 0.20; w2 = 0.12; w1 = 0.08;
+    } else if (avgRating >= 3.0) {
+      w5 = 0.15; w4 = 0.25; w3 = 0.30; w2 = 0.18; w1 = 0.12;
+    } else {
+      w5 = 0.08; w4 = 0.12; w3 = 0.20; w2 = 0.25; w1 = 0.35;
+    }
+
+    return {
+      5: (totalRatings * w5).round(),
+      4: (totalRatings * w4).round(),
+      3: (totalRatings * w3).round(),
+      2: (totalRatings * w2).round(),
+      1: (totalRatings * w1).round(),
+    };
+  }
+
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
+  }
+}
+
+class _AppSelector extends ConsumerWidget {
+  final List<AppModel> apps;
+
+  const _AppSelector({required this.apps});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedAppId = ref.watch(ratingsAnalysisAppProvider);
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          // "All Apps" option
+          _buildChip(
+            context,
+            ref,
+            label: 'All Apps',
+            isSelected: selectedAppId == null,
+            onTap: () => ref.read(ratingsAnalysisAppProvider.notifier).state = null,
+          ),
+          const SizedBox(width: 8),
+          // Individual apps
+          ...apps.map((app) => Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: _buildChip(
+              context,
+              ref,
+              label: app.name,
+              iconUrl: app.iconUrl,
+              isSelected: selectedAppId == app.id,
+              onTap: () => ref.read(ratingsAnalysisAppProvider.notifier).state = app.id,
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChip(
+    BuildContext context,
+    WidgetRef ref, {
+    required String label,
+    String? iconUrl,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
     final colors = context.colors;
+    return Material(
+      color: isSelected ? colors.accent : colors.bgActive,
+      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (iconUrl != null) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: Image.network(
+                    iconUrl,
+                    width: 20,
+                    height: 20,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Icon(
+                      Icons.apps,
+                      size: 20,
+                      color: isSelected ? Colors.white : colors.textMuted,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isSelected ? Colors.white : colors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RatingTrendCard extends ConsumerWidget {
+  final int? appId;
+
+  const _RatingTrendCard({this.appId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final selectedPeriod = ref.watch(ratingsAnalysisPeriodProvider);
+
+    // If no specific app, show a message or aggregate
+    if (appId == null) {
+      return _GlassCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.show_chart_rounded, size: 18, color: colors.yellow),
+                const SizedBox(width: 8),
+                Text(
+                  'Rating Trend',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textMuted,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              height: 180,
+              decoration: BoxDecoration(
+                color: colors.bgActive.withAlpha(50),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.touch_app_rounded, size: 32, color: colors.textMuted),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Select an app to view rating trend',
+                      style: TextStyle(color: colors.textMuted, fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Watch the history for the selected app
+    final historyAsync = ref.watch(
+      ratingHistoryProvider((appId: appId!, country: 'us', days: selectedPeriod)),
+    );
+
     return _GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Icon(Icons.show_chart_rounded, size: 18, color: colors.yellow),
+              const SizedBox(width: 8),
               Text(
                 'Rating Trend',
                 style: TextStyle(
@@ -244,47 +498,27 @@ class RatingsAnalysisScreen extends ConsumerWidget {
                   color: colors.textMuted,
                 ),
               ),
+              const Spacer(),
               // Period selector
-              Row(
-                children: ['7D', '30D', '90D'].map((period) {
-                  final isSelected = period == '30D';
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? colors.accent.withAlpha(30)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        period,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: isSelected ? colors.accent : colors.textMuted,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+              _PeriodSelector(),
             ],
           ),
           const SizedBox(height: 16),
-          // Placeholder for chart
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              color: colors.bgHover,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: Text(
-                'Rating trend chart',
-                style: TextStyle(color: colors.textMuted),
+          SizedBox(
+            height: 180,
+            child: historyAsync.when(
+              data: (history) => _buildChart(context, history),
+              loading: () => Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+                ),
+              ),
+              error: (_, __) => Center(
+                child: Text(
+                  'Unable to load rating history',
+                  style: TextStyle(color: colors.textMuted),
+                ),
               ),
             ),
           ),
@@ -293,15 +527,436 @@ class RatingsAnalysisScreen extends ConsumerWidget {
     );
   }
 
-  Map<int, int> _getMockDistribution(int total) {
-    // Generate realistic distribution based on total
-    return {
-      5: (total * 0.65).round(),
-      4: (total * 0.18).round(),
-      3: (total * 0.08).round(),
-      2: (total * 0.04).round(),
-      1: (total * 0.05).round(),
-    };
+  Widget _buildChart(BuildContext context, List<CountryRating> history) {
+    final colors = context.colors;
+
+    if (history.isEmpty) {
+      return Center(
+        child: Text(
+          'No historical data available',
+          style: TextStyle(color: colors.textMuted),
+        ),
+      );
+    }
+
+    final sortedHistory = List.of(history)
+      ..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
+
+    final spots = sortedHistory.asMap().entries.map((entry) {
+      return FlSpot(
+        entry.key.toDouble(),
+        (entry.value.rating ?? 0).clamp(0, 5).toDouble(),
+      );
+    }).toList();
+
+    if (spots.length < 2) {
+      return Center(
+        child: Text(
+          'Not enough data points',
+          style: TextStyle(color: colors.textMuted),
+        ),
+      );
+    }
+
+    final firstRating = spots.first.y;
+    final lastRating = spots.last.y;
+    final lineColor = lastRating > firstRating
+        ? colors.green
+        : lastRating < firstRating
+            ? colors.red
+            : colors.yellow;
+
+    return LineChart(
+      LineChartData(
+        minY: 0,
+        maxY: 5,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: 1,
+          getDrawingHorizontalLine: (value) {
+            return FlLine(color: colors.glassBorder, strokeWidth: 1);
+          },
+        ),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              interval: 1,
+              getTitlesWidget: (value, meta) {
+                if (value % 1 != 0) return const SizedBox.shrink();
+                return Text(
+                  value.toInt().toString(),
+                  style: TextStyle(fontSize: 10, color: colors.textMuted),
+                );
+              },
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 22,
+              interval: (sortedHistory.length / 5).ceil().toDouble().clamp(1, double.infinity),
+              getTitlesWidget: (value, meta) {
+                final index = value.toInt();
+                if (index < 0 || index >= sortedHistory.length) {
+                  return const SizedBox.shrink();
+                }
+                final date = sortedHistory[index].recordedAt;
+                return Text(
+                  '${date.day}/${date.month}',
+                  style: TextStyle(fontSize: 9, color: colors.textMuted),
+                );
+              },
+            ),
+          ),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: false),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            curveSmoothness: 0.3,
+            color: lineColor,
+            barWidth: 2.5,
+            isStrokeCapRound: true,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) {
+                return FlDotCirclePainter(
+                  radius: 3,
+                  color: lineColor,
+                  strokeWidth: 1,
+                  strokeColor: Colors.white,
+                );
+              },
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  lineColor.withAlpha(60),
+                  lineColor.withAlpha(5),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PeriodSelector extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final currentPeriod = ref.watch(ratingsAnalysisPeriodProvider);
+
+    final periods = [(7, '7d'), (30, '30d'), (90, '90d')];
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: periods.map((period) {
+        final isSelected = period.$1 == currentPeriod;
+        return Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Material(
+            color: isSelected ? colors.accent : colors.bgActive,
+            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+            child: InkWell(
+              onTap: () => ref.read(ratingsAnalysisPeriodProvider.notifier).state = period.$1,
+              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Text(
+                  period.$2,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: isSelected ? Colors.white : colors.textSecondary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _AppsRatingsTable extends StatelessWidget {
+  final List<AppModel> apps;
+
+  const _AppsRatingsTable({required this.apps});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    // Sort apps by rating descending
+    final sortedApps = List.of(apps)
+      ..sort((a, b) => (b.rating ?? 0).compareTo(a.rating ?? 0));
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.leaderboard_rounded, size: 18, color: colors.accent),
+              const SizedBox(width: 8),
+              Text(
+                'Apps Ranking by Rating',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textMuted,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: colors.glassBorder)),
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 40, child: Text('#', style: TextStyle(fontWeight: FontWeight.w600))),
+                const Expanded(flex: 3, child: Text('App', style: TextStyle(fontWeight: FontWeight.w600))),
+                const Expanded(child: Text('Rating', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w600))),
+                const Expanded(child: Text('Reviews', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.w600))),
+              ],
+            ),
+          ),
+          // Rows
+          ...sortedApps.asMap().entries.map((entry) {
+            final index = entry.key;
+            final app = entry.value;
+            return _AppRatingRow(rank: index + 1, app: app);
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+class _AppRatingRow extends StatelessWidget {
+  final int rank;
+  final AppModel app;
+
+  const _AppRatingRow({required this.rank, required this.app});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final ratingColor = (app.rating ?? 0) >= 4.5
+        ? colors.green
+        : (app.rating ?? 0) >= 3.5
+            ? colors.yellow
+            : colors.red;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder.withAlpha(80))),
+      ),
+      child: Row(
+        children: [
+          // Rank
+          SizedBox(
+            width: 40,
+            child: Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                color: rank <= 3 ? colors.accent.withAlpha(30) : colors.bgActive,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Center(
+                child: Text(
+                  '$rank',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: rank <= 3 ? colors.accent : colors.textMuted,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // App info
+          Expanded(
+            flex: 3,
+            child: Row(
+              children: [
+                if (app.iconUrl != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      app.iconUrl!,
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 32,
+                        height: 32,
+                        color: colors.bgActive,
+                        child: Icon(Icons.apps, size: 18, color: colors.textMuted),
+                      ),
+                    ),
+                  )
+                else
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: colors.bgActive,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(Icons.apps, size: 18, color: colors.textMuted),
+                  ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        app.name,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: colors.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        app.isIos ? 'iOS' : 'Android',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Rating
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.star_rounded, size: 16, color: colors.yellow),
+                const SizedBox(width: 4),
+                Text(
+                  app.rating?.toStringAsFixed(1) ?? '-',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: ratingColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Reviews count
+          Expanded(
+            child: Text(
+              _formatNumber(app.ratingCount),
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 13,
+                color: colors.textSecondary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String value;
+
+  const _StatCard({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.glassPanelAlpha,
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        border: Border.all(color: colors.glassBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: iconColor.withAlpha(30),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Icon(icon, size: 16, color: iconColor),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: colors.textMuted,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: colors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

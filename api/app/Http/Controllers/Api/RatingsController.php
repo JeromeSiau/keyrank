@@ -195,6 +195,7 @@ class RatingsController extends Controller
                 'country' => $country,
                 'platform' => $app->platform,
                 'history' => $history->map(fn($r) => [
+                    'country' => $country,
                     'rating' => $r->rating,
                     'rating_count' => $r->rating_count,
                     'recorded_at' => $r->recorded_at->toIso8601String(),

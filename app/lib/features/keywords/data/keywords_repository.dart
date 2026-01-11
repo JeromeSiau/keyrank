@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/constants/api_constants.dart';
 import '../domain/keyword_model.dart';
+import '../domain/ranking_history_point.dart';
 
 final keywordsRepositoryProvider = Provider<KeywordsRepository>((ref) {
   return KeywordsRepository(dio: ref.watch(dioProvider));
@@ -68,21 +69,35 @@ class KeywordsRepository {
     }
   }
 
+  /// Get ranking history for a keyword.
+  /// Supports both daily and aggregated data (weekly/monthly).
+  /// Use [from] and [to] to specify the date range.
   Future<List<RankingHistoryPoint>> getRankingHistory(
     int appId, {
     required int keywordId,
-    int days = 30,
+    DateTime? from,
+    DateTime? to,
   }) async {
     try {
+      final queryParams = <String, dynamic>{
+        'keyword_id': keywordId,
+      };
+
+      if (from != null) {
+        queryParams['from'] = from.toIso8601String().split('T').first;
+      }
+      if (to != null) {
+        queryParams['to'] = to.toIso8601String().split('T').first;
+      }
+
       final response = await dio.get(
         '${ApiConstants.apps}/$appId/rankings/history',
-        queryParameters: {
-          'keyword_id': keywordId,
-          'days': days,
-        },
+        queryParameters: queryParams,
       );
       final data = response.data['data'] as List;
-      return data.map((e) => RankingHistoryPoint.fromJson(e as Map<String, dynamic>)).toList();
+      return data
+          .map((e) => RankingHistoryPoint.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -237,23 +252,6 @@ class ImportResult {
       skipped: json['skipped'] as int,
       errors: json['errors'] as int,
       total: json['total'] as int,
-    );
-  }
-}
-
-class RankingHistoryPoint {
-  final int? position;
-  final DateTime recordedAt;
-
-  RankingHistoryPoint({
-    required this.position,
-    required this.recordedAt,
-  });
-
-  factory RankingHistoryPoint.fromJson(Map<String, dynamic> json) {
-    return RankingHistoryPoint(
-      position: json['position'] as int?,
-      recordedAt: DateTime.parse(json['recorded_at'] as String),
     );
   }
 }
