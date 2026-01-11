@@ -32,6 +32,11 @@ import '../../features/store_connections/presentation/store_connections_screen.d
 import '../../features/store_connections/presentation/connect_apple_screen.dart';
 import '../../features/store_connections/presentation/connect_google_screen.dart';
 import '../../features/analytics/presentation/app_analytics_screen.dart';
+import '../../features/chat/presentation/chat_screen.dart';
+import '../../features/chat/presentation/chat_conversation_screen.dart';
+import '../../features/ratings/presentation/ratings_analysis_screen.dart';
+import '../../features/keywords/presentation/top_charts_screen.dart';
+import '../../features/keywords/presentation/competitors_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -179,6 +184,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const ReviewsInboxScreen(),
           ),
           GoRoute(
+            path: '/ratings',
+            builder: (context, state) => const RatingsAnalysisScreen(),
+          ),
+          GoRoute(
+            path: '/top-charts',
+            builder: (context, state) => const TopChartsScreen(),
+          ),
+          GoRoute(
+            path: '/competitors',
+            builder: (context, state) => const CompetitorsScreen(),
+          ),
+          GoRoute(
             path: '/alerts',
             builder: (context, state) => const AlertsScreen(),
           ),
@@ -188,6 +205,19 @@ final routerProvider = Provider<GoRouter>((ref) {
               final existingRule = state.extra as AlertRuleModel?;
               return AlertRuleBuilderScreen(existingRule: existingRule);
             },
+          ),
+          GoRoute(
+            path: '/chat',
+            builder: (context, state) => const ChatScreen(),
+            routes: [
+              GoRoute(
+                path: ':id',
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  return ChatConversationScreen(conversationId: id);
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -222,6 +252,7 @@ class MainShell extends ConsumerWidget {
     if (location.startsWith('/apps')) return 1;
     if (location.startsWith('/discover')) return 2;
     if (location.startsWith('/reviews')) return 3;
+    if (location.startsWith('/chat')) return 4;
     return 0;
   }
 
@@ -247,6 +278,9 @@ class MainShell extends ConsumerWidget {
         break;
       case 3:
         context.go('/reviews');
+        break;
+      case 4:
+        context.go('/chat');
         break;
     }
   }
@@ -351,6 +385,12 @@ class _GlassSidebar extends ConsumerWidget {
                             selectedIcon: Icons.inbox_rounded,
                             label: context.l10n.nav_reviewsInbox,
                             index: 3,
+                          ),
+                          _NavItemData(
+                            icon: Icons.chat_bubble_outline,
+                            selectedIcon: Icons.chat_bubble,
+                            label: context.l10n.nav_chat,
+                            index: 4,
                           ),
                         ],
                       ),
