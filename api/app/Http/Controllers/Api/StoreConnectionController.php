@@ -9,6 +9,7 @@ use App\Services\GooglePlayDeveloperService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class StoreConnectionController extends Controller
@@ -51,38 +52,32 @@ class StoreConnectionController extends Controller
 
         // Validate credentials with the appropriate service
         if (!$this->validateWithService($validated['platform'], $credentials)) {
-            $message = $validated['platform'] === 'ios'
-                ? 'Invalid credentials. Please verify your App Store Connect API key.'
-                : 'Invalid credentials. Please verify your Google Play Console OAuth credentials.';
-
-            return response()->json(['message' => $message], 422);
+            return response()->json(['error' => $this->getInvalidCredentialsMessage($validated['platform'])], 422);
         }
 
-        $connection = StoreConnection::create([
-            'user_id' => $request->user()->id,
-            'platform' => $validated['platform'],
-            'credentials' => $credentials,
-            'connected_at' => now(),
-            'status' => 'active',
-        ]);
+        return DB::transaction(function () use ($request, $validated, $credentials) {
+            $connection = StoreConnection::create([
+                'user_id' => $request->user()->id,
+                'platform' => $validated['platform'],
+                'credentials' => $credentials,
+                'connected_at' => now(),
+                'status' => 'active',
+            ]);
 
-        return response()->json(['data' => $connection], 201);
+            return response()->json(['data' => $connection], 201);
+        });
     }
 
     public function show(Request $request, StoreConnection $storeConnection): JsonResponse
     {
-        if ($storeConnection->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], 403);
-        }
+        $this->authorizeConnection($storeConnection);
 
         return response()->json(['data' => $storeConnection]);
     }
 
     public function update(Request $request, StoreConnection $storeConnection): JsonResponse
     {
-        if ($storeConnection->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], 403);
-        }
+        $this->authorizeConnection($storeConnection);
 
         $rules = [
             'name' => 'sometimes|string|max:255',
@@ -126,11 +121,7 @@ class StoreConnectionController extends Controller
 
         // Validate updated credentials
         if (!$this->validateWithService($storeConnection->platform, $newCredentials)) {
-            $message = $storeConnection->platform === 'ios'
-                ? 'Invalid credentials. Please verify your App Store Connect API key.'
-                : 'Invalid credentials. Please verify your Google Play Console OAuth credentials.';
-
-            return response()->json(['message' => $message], 422);
+            return response()->json(['error' => $this->getInvalidCredentialsMessage($storeConnection->platform)], 422);
         }
 
         $storeConnection->update([
@@ -141,11 +132,9 @@ class StoreConnectionController extends Controller
         return response()->json(['data' => $storeConnection->fresh()]);
     }
 
-    public function destroy(Request $request, StoreConnection $storeConnection): Response|JsonResponse
+    public function destroy(Request $request, StoreConnection $storeConnection): Response
     {
-        if ($storeConnection->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], 403);
-        }
+        $this->authorizeConnection($storeConnection);
 
         $storeConnection->delete();
 
@@ -154,9 +143,7 @@ class StoreConnectionController extends Controller
 
     public function validateConnection(Request $request, StoreConnection $storeConnection): JsonResponse
     {
-        if ($storeConnection->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], 403);
-        }
+        $this->authorizeConnection($storeConnection);
 
         $isValid = $this->validateWithService($storeConnection->platform, $storeConnection->credentials);
 
@@ -198,5 +185,19 @@ class StoreConnectionController extends Controller
         }
 
         return $this->googlePlayService->validateCredentials($credentials);
+    }
+
+    private function authorizeConnection(StoreConnection $connection): void
+    {
+        if ($connection->user_id !== auth()->id()) {
+            abort(403, 'Forbidden');
+        }
+    }
+
+    private function getInvalidCredentialsMessage(string $platform): string
+    {
+        return $platform === 'ios'
+            ? 'Invalid credentials. Please verify your App Store Connect API key.'
+            : 'Invalid credentials. Please verify your Google Play Console OAuth credentials.';
     }
 }

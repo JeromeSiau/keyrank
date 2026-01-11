@@ -99,7 +99,7 @@ class StoreConnectionsTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonPath('message', 'Invalid credentials. Please verify your App Store Connect API key.');
+        $response->assertJsonPath('error', 'Invalid credentials. Please verify your App Store Connect API key.');
     }
 
     public function test_create_connection_fails_with_invalid_android_credentials(): void
@@ -119,7 +119,7 @@ class StoreConnectionsTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonPath('message', 'Invalid credentials. Please verify your Google Play Console OAuth credentials.');
+        $response->assertJsonPath('error', 'Invalid credentials. Please verify your Google Play Console OAuth credentials.');
     }
 
     public function test_ios_connection_requires_ios_credentials(): void
