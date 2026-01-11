@@ -10,6 +10,7 @@ class MigrateToAggregates extends Command
     protected $signature = 'aso:migrate-to-aggregates
                             {--days=90 : Daily data retention in days}
                             {--dry-run : Show what would be done without making changes}';
+
     protected $description = 'One-time migration: aggregate existing historical data';
 
     public function __construct(private AggregationService $aggregationService)
@@ -31,14 +32,16 @@ class MigrateToAggregates extends Command
         $this->info('Weekly retention: 365 days');
         $this->info('Monthly retention: unlimited');
 
-        if (!$dryRun && !$this->confirm('This will permanently transform old daily data into aggregates. Continue?')) {
+        if (! $dryRun && ! $this->confirm('This will permanently transform old daily data into aggregates. Continue?')) {
             $this->info('Aborted.');
+
             return 1;
         }
 
         if ($dryRun) {
             $this->info('Would aggregate data older than 365 days into monthly aggregates.');
             $this->info("Would aggregate data between {$days} and 365 days into weekly aggregates.");
+
             return 0;
         }
 

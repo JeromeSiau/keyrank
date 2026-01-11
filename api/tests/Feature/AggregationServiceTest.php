@@ -21,7 +21,7 @@ class AggregationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new AggregationService();
+        $this->service = new AggregationService;
     }
 
     public function test_aggregates_daily_rankings_to_weekly(): void

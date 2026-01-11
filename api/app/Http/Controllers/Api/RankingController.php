@@ -51,7 +51,7 @@ class RankingController extends Controller
         foreach ($rankingsByKeyword as $keywordId => $entries) {
             $keyword = $keywords->get($keywordId);
             $latest = $entries[0] ?? null;
-            if (!$keyword || !$latest) {
+            if (! $keyword || ! $latest) {
                 continue;
             }
             $previous = $entries[1] ?? null;
@@ -104,6 +104,7 @@ class RankingController extends Controller
         if ($latestRanking) {
             // Data is fresh, set cache and return
             Cache::put($cacheKey, now(), now()->addHours(12));
+
             return;
         }
 

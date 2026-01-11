@@ -29,7 +29,7 @@ class RankingHistoryTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=" . now()->subDays(30)->toDateString());
+            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=".now()->subDays(30)->toDateString());
 
         $response->assertOk();
         $response->assertJsonPath('data.0.type', 'daily');
@@ -55,7 +55,7 @@ class RankingHistoryTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=" . now()->subDays(150)->toDateString());
+            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=".now()->subDays(150)->toDateString());
 
         $response->assertOk();
         $response->assertJsonPath('data.0.type', 'weekly');
@@ -83,7 +83,7 @@ class RankingHistoryTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=" . now()->subMonths(16)->toDateString());
+            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=".now()->subMonths(16)->toDateString());
 
         $response->assertOk();
         $response->assertJsonPath('data.0.type', 'monthly');
@@ -129,7 +129,7 @@ class RankingHistoryTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=" . now()->subMonths(16)->toDateString());
+            ->getJson("/api/apps/{$app->id}/rankings/history?keyword_id={$keyword->id}&from=".now()->subMonths(16)->toDateString());
 
         $response->assertOk();
         $data = $response->json('data');
