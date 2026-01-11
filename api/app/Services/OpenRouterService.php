@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Log;
 
 class OpenRouterService
 {
-    private string $apiKey;
+    private ?string $apiKey;
     private string $baseUrl;
     private string $model;
 
     public function __construct()
     {
         $this->apiKey = config('services.openrouter.api_key');
-        $this->baseUrl = config('services.openrouter.base_url');
-        $this->model = config('services.openrouter.model');
+        $this->baseUrl = config('services.openrouter.base_url', 'https://openrouter.ai/api/v1');
+        $this->model = config('services.openrouter.model', 'openai/gpt-5-nano');
     }
 
     /**
