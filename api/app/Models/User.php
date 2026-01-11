@@ -104,4 +104,28 @@ class User extends Authenticatable
     {
         return $this->notifications()->unread()->count();
     }
+
+    /**
+     * Get user's store connections
+     */
+    public function storeConnections(): HasMany
+    {
+        return $this->hasMany(StoreConnection::class);
+    }
+
+    /**
+     * Get active store connection for a platform
+     */
+    public function getStoreConnection(string $platform): ?StoreConnection
+    {
+        return $this->storeConnections()->where('platform', $platform)->where('status', 'active')->first();
+    }
+
+    /**
+     * Check if user has an active store connection for a platform
+     */
+    public function hasStoreConnection(string $platform): bool
+    {
+        return $this->getStoreConnection($platform) !== null;
+    }
 }

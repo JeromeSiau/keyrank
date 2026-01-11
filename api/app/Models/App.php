@@ -108,4 +108,14 @@ class App extends Model
     {
         return $this->hasOne(AppInsight::class)->latestOfMany();
     }
+
+    public function voiceSettings(): HasMany
+    {
+        return $this->hasMany(AppVoiceSetting::class);
+    }
+
+    public function getVoiceSettingForUser(int $userId): ?AppVoiceSetting
+    {
+        return $this->voiceSettings()->where('user_id', $userId)->first();
+    }
 }
