@@ -26,6 +26,8 @@ import 'tabs/app_keywords_tab.dart';
 import 'tabs/app_reviews_tab.dart';
 import 'tabs/app_ratings_tab.dart';
 import 'tabs/app_insights_tab.dart';
+import '../../../shared/widgets/floating_chat_button.dart';
+import '../../chat/presentation/app_chat_drawer.dart';
 
 enum KeywordFilter { all, favorites, hasTags, hasNotes, ios, android }
 enum KeywordSort { nameAsc, nameDesc, positionBest, popularity, recentlyTracked }
@@ -67,6 +69,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen>
   bool _isLoadingPreview = false;
   String? _previewError;
   bool _isAddingApp = false;
+
+  // Chat drawer state
+  bool _isChatOpen = false;
 
   // Helper getter for tracked mode
   int get appId => widget.appId!;
@@ -644,6 +649,27 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen>
               keyword: _selectedKeyword,
               appId: appId,
               onClose: _hideKeywordHistory,
+            ),
+          // Chat drawer (slides in from right)
+          if (_isChatOpen && !isPreview)
+            Positioned(
+              top: 0,
+              right: 0,
+              bottom: 0,
+              child: AppChatDrawer(
+                app: appData,
+                onClose: () => setState(() => _isChatOpen = false),
+              ),
+            ),
+          // Floating chat button (only for tracked apps, not preview)
+          if (!isPreview)
+            Positioned(
+              right: _isChatOpen ? 400 : 20,
+              bottom: 20,
+              child: FloatingChatButton(
+                onTap: () => setState(() => _isChatOpen = !_isChatOpen),
+                isExpanded: !_isChatOpen,
+              ),
             ),
         ],
       ),
