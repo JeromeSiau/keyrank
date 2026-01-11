@@ -27,6 +27,9 @@ import '../../features/alerts/presentation/alert_rule_builder_screen.dart';
 import '../../features/alerts/presentation/alerts_screen.dart';
 import '../../features/alerts/domain/alert_rule_model.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/store_connections/presentation/store_connections_screen.dart';
+import '../../features/store_connections/presentation/connect_apple_screen.dart';
+import '../../features/store_connections/presentation/connect_google_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -140,6 +143,22 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
+            routes: [
+              GoRoute(
+                path: 'connections',
+                builder: (context, state) => const StoreConnectionsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'apple',
+                    builder: (context, state) => const ConnectAppleScreen(),
+                  ),
+                  GoRoute(
+                    path: 'google',
+                    builder: (context, state) => const ConnectGoogleScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
           GoRoute(
             path: '/notifications',
