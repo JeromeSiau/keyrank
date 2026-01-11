@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AlertRulesController;
 use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\AppController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
@@ -186,5 +187,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('{storeConnection}', [StoreConnectionController::class, 'destroy']);
         Route::post('{storeConnection}/validate', [StoreConnectionController::class, 'validateConnection'])->middleware('throttle:30,1');
         Route::post('{storeConnection}/sync-apps', [StoreConnectionController::class, 'syncApps'])->middleware('throttle:10,1');
+    });
+
+    // Chat (AI Assistant)
+    Route::prefix('chat')->group(function () {
+        Route::get('conversations', [ChatController::class, 'index']);
+        Route::post('conversations', [ChatController::class, 'store']);
+        Route::get('conversations/{conversation}', [ChatController::class, 'show']);
+        Route::post('conversations/{conversation}/messages', [ChatController::class, 'sendMessage'])
+            ->middleware('throttle:12,1'); // Max 1 question per 5 seconds
+        Route::delete('conversations/{conversation}', [ChatController::class, 'destroy']);
+        Route::get('quota', [ChatController::class, 'quota']);
+    });
+
+    // App-specific chat (within apps prefix)
+    Route::prefix('apps')->middleware('owns.app')->group(function () {
+        Route::get('{app}/chat', [ChatController::class, 'forApp']);
+        Route::post('{app}/chat/ask', [ChatController::class, 'quickAsk'])
+            ->middleware('throttle:12,1');
+        Route::get('{app}/chat/suggestions', [ChatController::class, 'suggestedQuestions']);
     });
 });
