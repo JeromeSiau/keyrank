@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 
 class SyncConnectedReviews extends Command
 {
+    private const RATE_LIMIT_MS = 300;
+
     protected $signature = 'reviews:sync-connected {--user= : Sync for specific user}';
     protected $description = 'Sync reviews from connected App Store Connect and Google Play accounts';
 
@@ -89,30 +91,42 @@ class SyncConnectedReviews extends Command
         }
 
         $synced = 0;
+        $hasErrors = false;
 
         foreach ($apps as $app) {
-            $this->line("  Fetching reviews for: {$app->name}");
+            try {
+                $this->line("  Syncing app: {$app->name}");
 
-            $reviews = $connection->platform === 'ios'
-                ? $this->fetchIOSReviews($connection, $app)
-                : $this->fetchAndroidReviews($connection, $app);
+                $reviews = $connection->platform === 'ios'
+                    ? $this->fetchIOSReviews($connection, $app)
+                    : $this->fetchAndroidReviews($connection, $app);
 
-            if ($reviews === null) {
+                if ($reviews === null) {
+                    continue;
+                }
+
+                foreach ($reviews as $reviewData) {
+                    $review = $this->saveReview($app, $reviewData);
+                    if ($review->wasRecentlyCreated) {
+                        $synced++;
+                    }
+                }
+
+                // Update app's reviews_fetched_at
+                $app->update(['reviews_fetched_at' => now()]);
+
+                // Rate limiting
+                usleep(self::RATE_LIMIT_MS * 1000);
+            } catch (\Exception $e) {
+                $hasErrors = true;
+                Log::error("Failed to sync app reviews", [
+                    'app_id' => $app->id,
+                    'app_name' => $app->name,
+                    'error' => $e->getMessage(),
+                ]);
+                $this->error("  Error: {$e->getMessage()}");
                 continue;
             }
-
-            foreach ($reviews as $reviewData) {
-                $review = $this->saveReview($app, $reviewData);
-                if ($review->wasRecentlyCreated) {
-                    $synced++;
-                }
-            }
-
-            // Update app's reviews_fetched_at
-            $app->update(['reviews_fetched_at' => now()]);
-
-            // Rate limiting
-            usleep(300000);
         }
 
         return $synced;
@@ -157,6 +171,9 @@ class SyncConnectedReviews extends Command
 
         $reviews = [];
         foreach ($response['reviews'] as $item) {
+            if (!isset($item['comments']) || empty($item['comments'])) {
+                continue;
+            }
             $comment = $item['comments'][0]['userComment'] ?? [];
             $lastModified = $comment['lastModified'] ?? [];
 
@@ -181,7 +198,7 @@ class SyncConnectedReviews extends Command
         // Determine sentiment based on rating
         $sentiment = $this->determineSentiment($data['rating'], $data['content']);
 
-        return AppReview::updateOrCreate(
+        $review = AppReview::updateOrCreate(
             [
                 'app_id' => $app->id,
                 'review_id' => $data['review_id'],
@@ -196,6 +213,12 @@ class SyncConnectedReviews extends Command
                 'sentiment' => $sentiment,
             ]
         );
+
+        if ($review->wasRecentlyCreated) {
+            Log::debug("Created new review", ['review_id' => $data['review_id'], 'app_id' => $app->id]);
+        }
+
+        return $review;
     }
 
     private function determineSentiment(int $rating, string $content): string
