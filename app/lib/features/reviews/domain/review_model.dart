@@ -51,16 +51,16 @@ class PaginatedReviews with _$PaginatedReviews {
   }) = _PaginatedReviews;
 
   factory PaginatedReviews.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as List<dynamic>;
-    final meta = json['meta'] as Map<String, dynamic>;
+    final data = (json['data'] as List<dynamic>?) ?? [];
+    final meta = (json['meta'] as Map<String, dynamic>?) ?? {};
 
     return PaginatedReviews(
       reviews:
           data.map((e) => Review.fromJson(e as Map<String, dynamic>)).toList(),
-      currentPage: meta['current_page'] as int,
-      lastPage: meta['last_page'] as int,
-      perPage: meta['per_page'] as int,
-      total: meta['total'] as int,
+      currentPage: (meta['current_page'] as int?) ?? 1,
+      lastPage: (meta['last_page'] as int?) ?? 1,
+      perPage: (meta['per_page'] as int?) ?? 20,
+      total: (meta['total'] as int?) ?? 0,
     );
   }
 }

@@ -102,7 +102,8 @@ class ReviewsRepository {
         '${ApiConstants.apps}/$appId/reviews/$reviewId/suggest-reply',
       );
 
-      return response.data['data']['suggestion'] as String;
+      final data = response.data?['data'] as Map<String, dynamic>?;
+      return (data?['suggestion'] as String?) ?? '';
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
