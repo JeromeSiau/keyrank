@@ -396,10 +396,11 @@ class _KeywordResultsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _KeywordInfoCard(
+          _KeywordInsightsPanel(
             keyword: response.keyword.keyword,
             popularity: response.keyword.popularity,
             totalResults: response.totalResults,
+            results: response.results,
           ),
           const SizedBox(height: 16),
           _KeywordResultsTable(results: response.results),
@@ -409,13 +410,107 @@ class _KeywordResultsView extends StatelessWidget {
   }
 }
 
-class _KeywordInfoCard extends StatelessWidget {
+/// Two-column insights panel showing keyword metrics and top 10 performance
+class _KeywordInsightsPanel extends StatelessWidget {
   final String keyword;
   final int? popularity;
   final int totalResults;
+  final List<KeywordSearchResult> results;
 
-  const _KeywordInfoCard({
+  const _KeywordInsightsPanel({
     required this.keyword,
+    required this.popularity,
+    required this.totalResults,
+    required this.results,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Keyword header
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        keyword,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        context.l10n.keywordSearch_appsRanked(totalResults),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Divider
+          Container(
+            height: 1,
+            color: colors.glassBorder,
+          ),
+          // Two-column layout
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Left: Insights panel
+                Expanded(
+                  child: _InsightsSection(
+                    popularity: popularity,
+                    totalResults: totalResults,
+                  ),
+                ),
+                // Vertical divider
+                Container(
+                  width: 1,
+                  color: colors.glassBorder,
+                ),
+                // Right: Top 10 Performance panel
+                Expanded(
+                  child: _Top10PerformanceSection(
+                    results: results,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Left section: Insights with popularity and competitiveness
+class _InsightsSection extends StatelessWidget {
+  final int? popularity;
+  final int totalResults;
+
+  const _InsightsSection({
     required this.popularity,
     required this.totalResults,
   });
@@ -423,76 +518,366 @@ class _KeywordInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return Container(
+    final competitiveness = _calculateCompetitiveness(totalResults);
+
+    return Padding(
       padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'INSIGHTS',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+              color: colors.textMuted,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Popularity
+          _MetricRow(
+            label: context.l10n.keywordSearch_popularity,
+            value: popularity ?? 0,
+            maxValue: 100,
+            colorMode: _ColorMode.higherIsBetter,
+          ),
+          const SizedBox(height: 16),
+          // Competitiveness
+          _MetricRow(
+            label: 'Competitiveness',
+            value: competitiveness,
+            maxValue: 100,
+            colorMode: _ColorMode.lowerIsBetter,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Calculate competitiveness based on number of results
+  /// More results = more competitive
+  int _calculateCompetitiveness(int results) {
+    if (results <= 10) return 20;
+    if (results <= 25) return 40;
+    if (results <= 50) return 60;
+    if (results <= 100) return 80;
+    return 100;
+  }
+}
+
+/// Right section: Top 10 Performance metrics
+class _Top10PerformanceSection extends StatelessWidget {
+  final List<KeywordSearchResult> results;
+
+  const _Top10PerformanceSection({
+    required this.results,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final top10 = results.take(10).toList();
+    final metrics = _calculateTop10Metrics(top10);
+
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'TOP 10 PERFORMANCE',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+              color: colors.textMuted,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Metrics grid
+          Row(
+            children: [
+              Expanded(
+                child: _StatCard(
+                  label: 'Avg Rating',
+                  value: metrics.avgRating != null
+                      ? metrics.avgRating!.toStringAsFixed(1)
+                      : '--',
+                  icon: Icons.star_rounded,
+                  iconColor: colors.yellow,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _StatCard(
+                  label: 'Est. Engagement',
+                  value: _formatNumber(metrics.totalRatingCount),
+                  icon: Icons.people_rounded,
+                  iconColor: colors.accent,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _StatCard(
+                  label: 'DPR',
+                  value: 'N/A',
+                  icon: Icons.download_rounded,
+                  iconColor: colors.green,
+                  tooltip: 'Downloads per rating - requires App Store Connect',
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _StatCard(
+                  label: 'Apps Rated',
+                  value: '${metrics.appsWithRating}/${top10.length}',
+                  icon: Icons.apps_rounded,
+                  iconColor: colors.purple,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  _Top10Metrics _calculateTop10Metrics(List<KeywordSearchResult> top10) {
+    if (top10.isEmpty) {
+      return _Top10Metrics(
+        avgRating: null,
+        totalRatingCount: 0,
+        appsWithRating: 0,
+      );
+    }
+
+    final ratingsWithValue = top10.where((r) => r.rating != null).toList();
+    final avgRating = ratingsWithValue.isNotEmpty
+        ? ratingsWithValue.map((r) => r.rating!).reduce((a, b) => a + b) /
+            ratingsWithValue.length
+        : null;
+
+    final totalRatingCount =
+        top10.fold<int>(0, (sum, r) => sum + r.ratingCount);
+
+    return _Top10Metrics(
+      avgRating: avgRating,
+      totalRatingCount: totalRatingCount,
+      appsWithRating: ratingsWithValue.length,
+    );
+  }
+
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
+  }
+}
+
+class _Top10Metrics {
+  final double? avgRating;
+  final int totalRatingCount;
+  final int appsWithRating;
+
+  _Top10Metrics({
+    required this.avgRating,
+    required this.totalRatingCount,
+    required this.appsWithRating,
+  });
+}
+
+enum _ColorMode { higherIsBetter, lowerIsBetter }
+
+/// A metric row with label, value, and progress bar
+class _MetricRow extends StatelessWidget {
+  final String label;
+  final int value;
+  final int maxValue;
+  final _ColorMode colorMode;
+
+  const _MetricRow({
+    required this.label,
+    required this.value,
+    required this.maxValue,
+    required this.colorMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final color = _getColor(colors);
+    final percentage = (value / maxValue).clamp(0.0, 1.0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: colors.textSecondary,
+              ),
+            ),
+            Text(
+              '$value',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _ProgressBar(
+          value: percentage,
+          color: color,
+          backgroundColor: colors.bgActive,
+        ),
+      ],
+    );
+  }
+
+  Color _getColor(AppColorsExtension colors) {
+    if (colorMode == _ColorMode.higherIsBetter) {
+      // Green >= 70, Yellow >= 40, Red < 40
+      if (value >= 70) return colors.green;
+      if (value >= 40) return colors.yellow;
+      return colors.red;
+    } else {
+      // Inverse: Green <= 30, Yellow <= 60, Red > 60
+      if (value <= 30) return colors.green;
+      if (value <= 60) return colors.yellow;
+      return colors.red;
+    }
+  }
+}
+
+/// Custom progress bar widget
+class _ProgressBar extends StatelessWidget {
+  final double value;
+  final Color color;
+  final Color backgroundColor;
+
+  const _ProgressBar({
+    required this.value,
+    required this.color,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 6,
       decoration: BoxDecoration(
-        color: colors.bgActive.withAlpha(50),
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: FractionallySizedBox(
+        alignment: Alignment.centerLeft,
+        widthFactor: value,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+            boxShadow: [
+              BoxShadow(
+                color: color.withAlpha(100),
+                blurRadius: 4,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Small stat card for displaying metrics
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color iconColor;
+  final String? tooltip;
+
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.iconColor,
+    this.tooltip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    Widget card = Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colors.bgActive.withAlpha(80),
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         border: Border.all(color: colors.glassBorder),
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       child: Row(
         children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: iconColor.withAlpha(25),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(icon, size: 14, color: iconColor),
+          ),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  keyword,
+                  value,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: colors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 6),
                 Text(
-                  context.l10n.keywordSearch_appsRanked(totalResults),
+                  label,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 10,
                     color: colors.textMuted,
                   ),
                 ),
               ],
             ),
           ),
-          if (popularity != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              decoration: BoxDecoration(
-                color: _getPopularityColor(context, popularity!).withAlpha(25),
-                borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    '$popularity',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: _getPopularityColor(context, popularity!),
-                    ),
-                  ),
-                  Text(
-                    context.l10n.keywordSearch_popularity,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: _getPopularityColor(context, popularity!),
-                    ),
-                  ),
-                ],
-              ),
-            ),
         ],
       ),
     );
-  }
 
-  Color _getPopularityColor(BuildContext context, int popularity) {
-    final colors = context.colors;
-    if (popularity >= 70) return colors.green;
-    if (popularity >= 40) return colors.yellow;
-    return colors.red;
+    if (tooltip != null) {
+      return Tooltip(
+        message: tooltip!,
+        child: card,
+      );
+    }
+
+    return card;
   }
 }
 
