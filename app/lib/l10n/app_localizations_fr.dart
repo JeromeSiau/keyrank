@@ -997,6 +997,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nav_discover => 'Découvrir';
 
   @override
+  String get nav_engagement => 'ENGAGEMENT';
+
+  @override
+  String get nav_reviewsInbox => 'Boîte de réception';
+
+  @override
   String get nav_notifications => 'Alertes';
 
   @override
@@ -1141,104 +1147,162 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notifications_empty => 'Aucune notification pour le moment';
 
   @override
-  String get alerts_title => 'Regles d\'alerte';
+  String get alerts_title => 'Règles d\'alerte';
 
   @override
-  String get alerts_templatesTitle => 'Modeles rapides';
+  String get alerts_templatesTitle => 'Modèles rapides';
 
   @override
   String get alerts_templatesSubtitle =>
       'Activez les alertes courantes en un clic';
 
   @override
-  String get alerts_myRulesTitle => 'Mes regles';
+  String get alerts_myRulesTitle => 'Mes règles';
 
   @override
-  String get alerts_createRule => 'Creer une regle';
+  String get alerts_createRule => 'Créer une règle';
 
   @override
-  String get alerts_editRule => 'Modifier la regle';
+  String get alerts_editRule => 'Modifier la règle';
 
   @override
-  String get alerts_noRulesYet => 'Aucune regle pour le moment';
+  String get alerts_noRulesYet => 'Aucune règle pour le moment';
 
   @override
-  String get alerts_deleteConfirm => 'Supprimer la regle ?';
+  String get alerts_deleteConfirm => 'Supprimer la règle ?';
 
   @override
   String get settings_notifications => 'NOTIFICATIONS';
 
   @override
-  String get settings_manageAlerts => 'Gerer les regles d\'alerte';
+  String get settings_manageAlerts => 'Gérer les règles d\'alerte';
 
   @override
   String get settings_manageAlertsDesc =>
       'Configurez les alertes que vous recevez';
 
   @override
-  String get reviewsInbox_title => 'Reviews Inbox';
+  String get settings_storeConnections => 'Connexions aux stores';
 
   @override
-  String get reviewsInbox_filterUnanswered => 'Unanswered';
+  String get settings_storeConnectionsDesc =>
+      'Connectez vos comptes App Store et Google Play';
 
   @override
-  String get reviewsInbox_filterNegative => 'Negative';
+  String get storeConnections_title => 'Connexions aux stores';
 
   @override
-  String get reviewsInbox_noReviews => 'No reviews found';
+  String get storeConnections_description =>
+      'Connectez vos comptes App Store et Google Play pour activer des fonctionnalités avancées comme les données de ventes et les analyses d\'applications.';
 
   @override
-  String get reviewsInbox_noReviewsDesc => 'Try adjusting your filters';
+  String get storeConnections_appStoreConnect => 'App Store Connect';
 
   @override
-  String get reviewsInbox_reply => 'Reply';
+  String get storeConnections_appStoreConnectDesc =>
+      'Connectez votre compte développeur Apple';
 
   @override
-  String get reviewsInbox_responded => 'Response';
+  String get storeConnections_googlePlayConsole => 'Google Play Console';
+
+  @override
+  String get storeConnections_googlePlayConsoleDesc =>
+      'Connectez votre compte Google Play';
+
+  @override
+  String get storeConnections_connect => 'Connecter';
+
+  @override
+  String get storeConnections_disconnect => 'Déconnecter';
+
+  @override
+  String get storeConnections_connected => 'Connecté';
+
+  @override
+  String get storeConnections_disconnectConfirm => 'Déconnecter ?';
+
+  @override
+  String storeConnections_disconnectMessage(String platform) {
+    return 'Êtes-vous sûr de vouloir déconnecter ce compte $platform ?';
+  }
+
+  @override
+  String get storeConnections_disconnectSuccess => 'Déconnecté avec succès';
+
+  @override
+  String storeConnections_lastSynced(String date) {
+    return 'Dernière sync : $date';
+  }
+
+  @override
+  String storeConnections_connectedOn(String date) {
+    return 'Connecté le $date';
+  }
+
+  @override
+  String get reviewsInbox_title => 'Boîte de réception';
+
+  @override
+  String get reviewsInbox_filterUnanswered => 'Sans réponse';
+
+  @override
+  String get reviewsInbox_filterNegative => 'Négatif';
+
+  @override
+  String get reviewsInbox_noReviews => 'Aucun avis trouvé';
+
+  @override
+  String get reviewsInbox_noReviewsDesc => 'Essayez d\'ajuster vos filtres';
+
+  @override
+  String get reviewsInbox_reply => 'Répondre';
+
+  @override
+  String get reviewsInbox_responded => 'Réponse';
 
   @override
   String reviewsInbox_respondedAt(String date) {
-    return 'Responded $date';
+    return 'Répondu le $date';
   }
 
   @override
-  String get reviewsInbox_replyModalTitle => 'Reply to Review';
+  String get reviewsInbox_replyModalTitle => 'Répondre à l\'avis';
 
   @override
-  String get reviewsInbox_generateAi => 'Generate AI suggestion';
+  String get reviewsInbox_generateAi => 'Générer une suggestion IA';
 
   @override
-  String get reviewsInbox_generating => 'Generating...';
+  String get reviewsInbox_generating => 'Génération...';
 
   @override
-  String get reviewsInbox_sendReply => 'Send Reply';
+  String get reviewsInbox_sendReply => 'Envoyer la réponse';
 
   @override
-  String get reviewsInbox_sending => 'Sending...';
+  String get reviewsInbox_sending => 'Envoi...';
 
   @override
-  String get reviewsInbox_replyPlaceholder => 'Write your response...';
+  String get reviewsInbox_replyPlaceholder => 'Écrivez votre réponse...';
 
   @override
   String reviewsInbox_charLimit(int count) {
-    return '$count/5970 characters';
+    return '$count/5970 caractères';
   }
 
   @override
-  String get reviewsInbox_replySent => 'Reply sent successfully';
+  String get reviewsInbox_replySent => 'Réponse envoyée avec succès';
 
   @override
   String reviewsInbox_replyError(String error) {
-    return 'Failed to send reply: $error';
+    return 'Échec de l\'envoi de la réponse : $error';
   }
 
   @override
   String reviewsInbox_aiError(String error) {
-    return 'Failed to generate suggestion: $error';
+    return 'Échec de la génération de suggestion : $error';
   }
 
   @override
   String reviewsInbox_stars(int count) {
-    return '$count stars';
+    return '$count étoiles';
   }
 }

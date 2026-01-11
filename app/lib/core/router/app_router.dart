@@ -212,6 +212,7 @@ class MainShell extends ConsumerWidget {
     final location = GoRouterState.of(context).matchedLocation;
     if (location.startsWith('/apps')) return 1;
     if (location.startsWith('/discover')) return 2;
+    if (location.startsWith('/reviews')) return 3;
     return 0;
   }
 
@@ -234,6 +235,9 @@ class MainShell extends ConsumerWidget {
         break;
       case 2:
         context.go('/discover');
+        break;
+      case 3:
+        context.go('/reviews');
         break;
     }
   }
@@ -324,6 +328,20 @@ class _GlassSidebar extends ConsumerWidget {
                             selectedIcon: Icons.explore,
                             label: context.l10n.nav_discover,
                             index: 2,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _buildNavSection(
+                        context,
+                        isDark: isDark,
+                        label: context.l10n.nav_engagement,
+                        items: [
+                          _NavItemData(
+                            icon: Icons.inbox_outlined,
+                            selectedIcon: Icons.inbox_rounded,
+                            label: context.l10n.nav_reviewsInbox,
+                            index: 3,
                           ),
                         ],
                       ),

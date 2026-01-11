@@ -1920,6 +1920,18 @@ abstract class AppLocalizations {
   /// **'Discover'**
   String get nav_discover;
 
+  /// No description provided for @nav_engagement.
+  ///
+  /// In en, this message translates to:
+  /// **'ENGAGEMENT'**
+  String get nav_engagement;
+
+  /// No description provided for @nav_reviewsInbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews Inbox'**
+  String get nav_reviewsInbox;
+
   /// No description provided for @nav_notifications.
   ///
   /// In en, this message translates to:
@@ -2231,6 +2243,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Configure what alerts you receive'**
   String get settings_manageAlertsDesc;
+
+  /// No description provided for @settings_storeConnections.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Connections'**
+  String get settings_storeConnections;
+
+  /// No description provided for @settings_storeConnectionsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your App Store and Google Play accounts'**
+  String get settings_storeConnectionsDesc;
+
+  /// No description provided for @storeConnections_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Connections'**
+  String get storeConnections_title;
+
+  /// No description provided for @storeConnections_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your App Store and Google Play accounts to enable advanced features like sales data and app analytics.'**
+  String get storeConnections_description;
+
+  /// No description provided for @storeConnections_appStoreConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store Connect'**
+  String get storeConnections_appStoreConnect;
+
+  /// No description provided for @storeConnections_appStoreConnectDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Apple Developer account'**
+  String get storeConnections_appStoreConnectDesc;
+
+  /// No description provided for @storeConnections_googlePlayConsole.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play Console'**
+  String get storeConnections_googlePlayConsole;
+
+  /// No description provided for @storeConnections_googlePlayConsoleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Google Play account'**
+  String get storeConnections_googlePlayConsoleDesc;
+
+  /// No description provided for @storeConnections_connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get storeConnections_connect;
+
+  /// No description provided for @storeConnections_disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get storeConnections_disconnect;
+
+  /// No description provided for @storeConnections_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get storeConnections_connected;
+
+  /// No description provided for @storeConnections_disconnectConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect?'**
+  String get storeConnections_disconnectConfirm;
+
+  /// No description provided for @storeConnections_disconnectMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disconnect this {platform} account?'**
+  String storeConnections_disconnectMessage(String platform);
+
+  /// No description provided for @storeConnections_disconnectSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected successfully'**
+  String get storeConnections_disconnectSuccess;
+
+  /// No description provided for @storeConnections_lastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced: {date}'**
+  String storeConnections_lastSynced(String date);
+
+  /// No description provided for @storeConnections_connectedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected on {date}'**
+  String storeConnections_connectedOn(String date);
 
   /// No description provided for @reviewsInbox_title.
   ///

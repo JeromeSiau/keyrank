@@ -1001,6 +1001,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nav_discover => 'Descubrir';
 
   @override
+  String get nav_engagement => 'ENGAGEMENT';
+
+  @override
+  String get nav_reviewsInbox => 'Reviews Inbox';
+
+  @override
   String get nav_notifications => 'Alertas';
 
   @override
@@ -1175,6 +1181,64 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settings_manageAlertsDesc => 'Configura que alertas recibes';
+
+  @override
+  String get settings_storeConnections => 'Store Connections';
+
+  @override
+  String get settings_storeConnectionsDesc =>
+      'Connect your App Store and Google Play accounts';
+
+  @override
+  String get storeConnections_title => 'Store Connections';
+
+  @override
+  String get storeConnections_description =>
+      'Connect your App Store and Google Play accounts to enable advanced features like sales data and app analytics.';
+
+  @override
+  String get storeConnections_appStoreConnect => 'App Store Connect';
+
+  @override
+  String get storeConnections_appStoreConnectDesc =>
+      'Connect your Apple Developer account';
+
+  @override
+  String get storeConnections_googlePlayConsole => 'Google Play Console';
+
+  @override
+  String get storeConnections_googlePlayConsoleDesc =>
+      'Connect your Google Play account';
+
+  @override
+  String get storeConnections_connect => 'Connect';
+
+  @override
+  String get storeConnections_disconnect => 'Disconnect';
+
+  @override
+  String get storeConnections_connected => 'Connected';
+
+  @override
+  String get storeConnections_disconnectConfirm => 'Disconnect?';
+
+  @override
+  String storeConnections_disconnectMessage(String platform) {
+    return 'Are you sure you want to disconnect this $platform account?';
+  }
+
+  @override
+  String get storeConnections_disconnectSuccess => 'Disconnected successfully';
+
+  @override
+  String storeConnections_lastSynced(String date) {
+    return 'Last synced: $date';
+  }
+
+  @override
+  String storeConnections_connectedOn(String date) {
+    return 'Connected on $date';
+  }
 
   @override
   String get reviewsInbox_title => 'Reviews Inbox';

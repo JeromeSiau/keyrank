@@ -508,6 +508,8 @@
   "nav_research": "RESEARCH",
   "nav_keywords": "Keywords",
   "nav_discover": "Discover",
+  "nav_engagement": "ENGAGEMENT",
+  "nav_reviewsInbox": "Reviews Inbox",
   "nav_notifications": "Alerts",
 
   "common_save": "Save",
@@ -592,6 +594,38 @@
   "settings_notifications": "NOTIFICATIONS",
   "settings_manageAlerts": "Manage Alert Rules",
   "settings_manageAlertsDesc": "Configure what alerts you receive",
+  "settings_storeConnections": "Store Connections",
+  "settings_storeConnectionsDesc": "Connect your App Store and Google Play accounts",
+
+  "storeConnections_title": "Store Connections",
+  "storeConnections_description": "Connect your App Store and Google Play accounts to enable advanced features like sales data and app analytics.",
+  "storeConnections_appStoreConnect": "App Store Connect",
+  "storeConnections_appStoreConnectDesc": "Connect your Apple Developer account",
+  "storeConnections_googlePlayConsole": "Google Play Console",
+  "storeConnections_googlePlayConsoleDesc": "Connect your Google Play account",
+  "storeConnections_connect": "Connect",
+  "storeConnections_disconnect": "Disconnect",
+  "storeConnections_connected": "Connected",
+  "storeConnections_disconnectConfirm": "Disconnect?",
+  "storeConnections_disconnectMessage": "Are you sure you want to disconnect this {platform} account?",
+  "@storeConnections_disconnectMessage": {
+    "placeholders": {
+      "platform": { "type": "String" }
+    }
+  },
+  "storeConnections_disconnectSuccess": "Disconnected successfully",
+  "storeConnections_lastSynced": "Last synced: {date}",
+  "@storeConnections_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_connectedOn": "Connected on {date}",
+  "@storeConnections_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "reviewsInbox_title": "Reviews Inbox",
   "reviewsInbox_filterUnanswered": "Unanswered",
