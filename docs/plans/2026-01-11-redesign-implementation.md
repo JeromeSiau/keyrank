@@ -1944,6 +1944,61 @@ git commit -m "feat(dashboard): implement new Appfigures-style layout"
 
 ---
 
+### Task 4.2: Floating Chat Button (Chat with your app)
+
+**Description:** Ajouter un bouton flottant en bas à droite de l'écran App Detail qui ouvre une interface de chat AI pour discuter avec les données de l'app (reviews, rankings, insights).
+
+**Files:**
+- Create: `app/lib/shared/widgets/floating_chat_button.dart`
+- Create: `app/lib/features/chat/presentation/chat_drawer.dart`
+- Create: `app/lib/features/chat/presentation/chat_message_bubble.dart`
+- Create: `app/lib/features/chat/data/chat_repository.dart`
+- Create: `app/lib/features/chat/domain/chat_message_model.dart`
+- Create: `app/lib/features/chat/providers/chat_provider.dart`
+- Modify: `app/lib/features/apps/presentation/app_detail_screen.dart` (add Stack with FAB)
+
+**Layout:**
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  [App Detail content with tabs...]                                  │
+│                                                                     │
+│                                                                     │
+│                                                     ┌─────────────┐ │
+│                                                     │     💬      │ │
+│                                                     │   Chat AI   │ │
+│                                                     └─────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+
+Click opens slide-in drawer from right:
+┌─────────────────────────────────────────────────────────────────────┐
+│  [App Detail]                          │  Chat with App Name        │
+│                                        │  ─────────────────────────│
+│                                        │  🤖 How can I help you    │
+│                                        │     analyze this app?      │
+│                                        │                            │
+│                                        │  👤 What are the main      │
+│                                        │     complaints in reviews? │
+│                                        │                            │
+│                                        │  🤖 Based on the reviews...│
+│                                        │                            │
+│                                        │  ┌──────────────────────┐ │
+│                                        │  │ Ask a question...    │ │
+│                                        │  └──────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Backend route:** `POST /api/apps/{id}/chat` (conversations stockées dans `chat_conversations`)
+
+**Notes:**
+- FAB visible uniquement sur les apps connectées (owned apps)
+- Historique des conversations persisté
+- Contexte AI inclut : app metadata, recent reviews, rankings, keywords
+
+*(Détails d'implémentation fournis lors de l'exécution)*
+
+---
+
 ## Phase 5: Reviews & Ratings enrichis
 
 ### Task 5.1: Enrichir Reviews Inbox
