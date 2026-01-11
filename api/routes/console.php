@@ -22,3 +22,9 @@ Schedule::command('aso:cleanup --days=90')
 // Sync categories every Sunday at 3 AM
 Schedule::command('categories:sync')
     ->weeklyOn(0, '03:00');
+
+// Sync reviews from connected store accounts every 12 hours
+Schedule::command('reviews:sync-connected')
+    ->twiceDaily(3, 15)
+    ->withoutOverlapping()
+    ->runInBackground();
