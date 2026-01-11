@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppRanking;
+use App\Models\AppRankingAggregate;
 use App\Services\GooglePlayService;
 use App\Services\iTunesService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -138,25 +140,74 @@ class RankingController extends Controller
     }
 
     /**
-     * Get ranking history for a keyword
+     * Get ranking history for a keyword (combines daily + weekly + monthly)
      */
     public function history(Request $request, App $app): JsonResponse
     {
         $validated = $request->validate([
             'keyword_id' => 'required|integer|exists:keywords,id',
-            'days' => 'nullable|integer|min:7|max:365',
+            'from' => 'nullable|date',
+            'to' => 'nullable|date',
         ]);
 
-        $days = $validated['days'] ?? 30;
+        $keywordId = $validated['keyword_id'];
+        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : now()->subDays(30);
+        $to = isset($validated['to']) ? Carbon::parse($validated['to']) : now();
 
-        $history = $app->rankings()
-            ->where('keyword_id', $validated['keyword_id'])
-            ->where('recorded_at', '>=', now()->subDays($days))
+        $result = collect();
+
+        // Get daily data
+        $daily = $app->rankings()
+            ->where('keyword_id', $keywordId)
+            ->whereBetween('recorded_at', [$from, $to])
             ->orderBy('recorded_at')
-            ->get(['position', 'recorded_at']);
+            ->get(['position', 'recorded_at'])
+            ->map(fn ($r) => [
+                'date' => $r->recorded_at->toDateString(),
+                'position' => $r->position,
+                'type' => 'daily',
+            ]);
+        $result = $result->concat($daily);
+
+        // Get weekly aggregates
+        $weekly = AppRankingAggregate::where('app_id', $app->id)
+            ->where('keyword_id', $keywordId)
+            ->where('period_type', 'weekly')
+            ->whereBetween('period_start', [$from, $to])
+            ->orderBy('period_start')
+            ->get()
+            ->map(fn ($a) => [
+                'period_start' => $a->period_start->toDateString(),
+                'avg' => $a->avg_position,
+                'min' => $a->min_position,
+                'max' => $a->max_position,
+                'data_points' => $a->data_points,
+                'type' => 'weekly',
+            ]);
+        $result = $result->concat($weekly);
+
+        // Get monthly aggregates
+        $monthly = AppRankingAggregate::where('app_id', $app->id)
+            ->where('keyword_id', $keywordId)
+            ->where('period_type', 'monthly')
+            ->whereBetween('period_start', [$from, $to])
+            ->orderBy('period_start')
+            ->get()
+            ->map(fn ($a) => [
+                'period_start' => $a->period_start->toDateString(),
+                'avg' => $a->avg_position,
+                'min' => $a->min_position,
+                'max' => $a->max_position,
+                'data_points' => $a->data_points,
+                'type' => 'monthly',
+            ]);
+        $result = $result->concat($monthly);
+
+        // Sort by date (use 'date' for daily, 'period_start' for aggregates)
+        $sorted = $result->sortBy(fn ($item) => $item['date'] ?? $item['period_start'])->values();
 
         return response()->json([
-            'data' => $history,
+            'data' => $sorted,
         ]);
     }
 
