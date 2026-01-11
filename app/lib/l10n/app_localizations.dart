@@ -1938,6 +1938,42 @@ abstract class AppLocalizations {
   /// **'Alerts'**
   String get nav_notifications;
 
+  /// No description provided for @nav_optimization.
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIMIZATION'**
+  String get nav_optimization;
+
+  /// No description provided for @nav_keywordInspector.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword Inspector'**
+  String get nav_keywordInspector;
+
+  /// No description provided for @nav_ratingsAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings Analysis'**
+  String get nav_ratingsAnalysis;
+
+  /// No description provided for @nav_intelligence.
+  ///
+  /// In en, this message translates to:
+  /// **'INTELLIGENCE'**
+  String get nav_intelligence;
+
+  /// No description provided for @nav_topCharts.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Charts'**
+  String get nav_topCharts;
+
+  /// No description provided for @nav_competitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitors'**
+  String get nav_competitors;
+
   /// No description provided for @common_save.
   ///
   /// In en, this message translates to:
@@ -2531,6 +2567,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export CSV'**
   String get analytics_export;
+
+  /// No description provided for @nav_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get nav_chat;
+
+  /// No description provided for @chat_title.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get chat_title;
+
+  /// No description provided for @chat_newConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'New Chat'**
+  String get chat_newConversation;
+
+  /// No description provided for @chat_loadingConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading conversations...'**
+  String get chat_loadingConversations;
+
+  /// No description provided for @chat_loadingMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading messages...'**
+  String get chat_loadingMessages;
+
+  /// No description provided for @chat_noConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet'**
+  String get chat_noConversations;
+
+  /// No description provided for @chat_noConversationsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new conversation to get AI-powered insights about your apps'**
+  String get chat_noConversationsDesc;
+
+  /// No description provided for @chat_startConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Conversation'**
+  String get chat_startConversation;
+
+  /// No description provided for @chat_deleteConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Conversation'**
+  String get chat_deleteConversation;
+
+  /// No description provided for @chat_deleteConversationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this conversation?'**
+  String get chat_deleteConversationConfirm;
+
+  /// No description provided for @chat_askAnything.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything'**
+  String get chat_askAnything;
+
+  /// No description provided for @chat_askAnythingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'I can help you understand your app\'s reviews, rankings, and analytics'**
+  String get chat_askAnythingDesc;
+
+  /// No description provided for @chat_typeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your question...'**
+  String get chat_typeMessage;
+
+  /// No description provided for @chat_suggestedQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested Questions'**
+  String get chat_suggestedQuestions;
+
+  /// No description provided for @common_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get common_cancel;
+
+  /// No description provided for @common_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get common_delete;
 }
 
 class _AppLocalizationsDelegate

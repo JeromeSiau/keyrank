@@ -496,6 +496,12 @@
   "nav_engagement": "ENGAGEMENT",
   "nav_reviewsInbox": "Boîte de réception",
   "nav_notifications": "Alertes",
+  "nav_optimization": "OPTIMISATION",
+  "nav_keywordInspector": "Inspecteur de mots-clés",
+  "nav_ratingsAnalysis": "Analyse des notes",
+  "nav_intelligence": "INTELLIGENCE",
+  "nav_topCharts": "Top Charts",
+  "nav_competitors": "Concurrents",
 
   "common_save": "Enregistrer",
 

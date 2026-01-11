@@ -250,9 +250,11 @@ class MainShell extends ConsumerWidget {
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
     if (location.startsWith('/apps')) return 1;
-    if (location.startsWith('/discover')) return 2;
+    if (location.startsWith('/discover')) return 2; // Keyword Inspector also uses /discover
     if (location.startsWith('/reviews')) return 3;
-    if (location.startsWith('/chat')) return 4;
+    if (location.startsWith('/ratings')) return 4;
+    if (location.startsWith('/top-charts')) return 6;
+    if (location.startsWith('/competitors')) return 7;
     return 0;
   }
 
@@ -274,13 +276,22 @@ class MainShell extends ConsumerWidget {
         context.go('/apps');
         break;
       case 2:
-        context.go('/discover');
+        context.go('/discover'); // Keyword Inspector
         break;
       case 3:
         context.go('/reviews');
         break;
       case 4:
-        context.go('/chat');
+        context.go('/ratings');
+        break;
+      case 5:
+        context.go('/discover');
+        break;
+      case 6:
+        context.go('/top-charts');
+        break;
+      case 7:
+        context.go('/competitors');
         break;
     }
   }
@@ -339,6 +350,7 @@ class _GlassSidebar extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // OVERVIEW section (only Dashboard now)
                       _buildNavSection(
                         context,
                         isDark: isDark,
@@ -350,31 +362,37 @@ class _GlassSidebar extends ConsumerWidget {
                             label: context.l10n.nav_dashboard,
                             index: 0,
                           ),
-                          _NavItemData(
-                            icon: Icons.apps_outlined,
-                            selectedIcon: Icons.apps,
-                            label: context.l10n.nav_myApps,
-                            index: 1,
-                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      SidebarAppsList(selectedAppId: selectedAppId),
-                      const SizedBox(height: 20),
+
+                      // MY APPS section with app list (no menu items, just label + list)
                       _buildNavSection(
                         context,
                         isDark: isDark,
-                        label: context.l10n.nav_research,
+                        label: context.l10n.nav_myApps,
+                        items: [],
+                      ),
+                      SidebarAppsList(selectedAppId: selectedAppId),
+                      const SizedBox(height: 20),
+
+                      // OPTIMIZATION section
+                      _buildNavSection(
+                        context,
+                        isDark: isDark,
+                        label: context.l10n.nav_optimization,
                         items: [
                           _NavItemData(
-                            icon: Icons.explore_outlined,
-                            selectedIcon: Icons.explore,
-                            label: context.l10n.nav_discover,
+                            icon: Icons.search_outlined,
+                            selectedIcon: Icons.search,
+                            label: context.l10n.nav_keywordInspector,
                             index: 2,
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
+
+                      // ENGAGEMENT section
                       _buildNavSection(
                         context,
                         isDark: isDark,
@@ -387,10 +405,38 @@ class _GlassSidebar extends ConsumerWidget {
                             index: 3,
                           ),
                           _NavItemData(
-                            icon: Icons.chat_bubble_outline,
-                            selectedIcon: Icons.chat_bubble,
-                            label: context.l10n.nav_chat,
+                            icon: Icons.star_outline,
+                            selectedIcon: Icons.star,
+                            label: context.l10n.nav_ratingsAnalysis,
                             index: 4,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      // INTELLIGENCE section
+                      _buildNavSection(
+                        context,
+                        isDark: isDark,
+                        label: context.l10n.nav_intelligence,
+                        items: [
+                          _NavItemData(
+                            icon: Icons.explore_outlined,
+                            selectedIcon: Icons.explore,
+                            label: context.l10n.nav_discover,
+                            index: 5,
+                          ),
+                          _NavItemData(
+                            icon: Icons.leaderboard_outlined,
+                            selectedIcon: Icons.leaderboard,
+                            label: context.l10n.nav_topCharts,
+                            index: 6,
+                          ),
+                          _NavItemData(
+                            icon: Icons.people_outline,
+                            selectedIcon: Icons.people,
+                            label: context.l10n.nav_competitors,
+                            index: 7,
                           ),
                         ],
                       ),

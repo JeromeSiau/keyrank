@@ -1011,6 +1011,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nav_notifications => 'Benachr.';
 
   @override
+  String get nav_optimization => 'OPTIMIZATION';
+
+  @override
+  String get nav_keywordInspector => 'Keyword Inspector';
+
+  @override
+  String get nav_ratingsAnalysis => 'Ratings Analysis';
+
+  @override
+  String get nav_intelligence => 'INTELLIGENCE';
+
+  @override
+  String get nav_topCharts => 'Top Charts';
+
+  @override
+  String get nav_competitors => 'Competitors';
+
+  @override
   String get common_save => 'Speichern';
 
   @override
@@ -1352,4 +1370,55 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get analytics_export => 'CSV exportieren';
+
+  @override
+  String get nav_chat => 'AI Assistant';
+
+  @override
+  String get chat_title => 'AI Assistant';
+
+  @override
+  String get chat_newConversation => 'New Chat';
+
+  @override
+  String get chat_loadingConversations => 'Loading conversations...';
+
+  @override
+  String get chat_loadingMessages => 'Loading messages...';
+
+  @override
+  String get chat_noConversations => 'No conversations yet';
+
+  @override
+  String get chat_noConversationsDesc =>
+      'Start a new conversation to get AI-powered insights about your apps';
+
+  @override
+  String get chat_startConversation => 'Start Conversation';
+
+  @override
+  String get chat_deleteConversation => 'Delete Conversation';
+
+  @override
+  String get chat_deleteConversationConfirm =>
+      'Are you sure you want to delete this conversation?';
+
+  @override
+  String get chat_askAnything => 'Ask me anything';
+
+  @override
+  String get chat_askAnythingDesc =>
+      'I can help you understand your app\'s reviews, rankings, and analytics';
+
+  @override
+  String get chat_typeMessage => 'Type your question...';
+
+  @override
+  String get chat_suggestedQuestions => 'Suggested Questions';
+
+  @override
+  String get common_cancel => 'Cancel';
+
+  @override
+  String get common_delete => 'Delete';
 }

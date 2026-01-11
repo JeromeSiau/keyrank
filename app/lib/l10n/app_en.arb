@@ -511,6 +511,12 @@
   "nav_engagement": "ENGAGEMENT",
   "nav_reviewsInbox": "Reviews Inbox",
   "nav_notifications": "Alerts",
+  "nav_optimization": "OPTIMIZATION",
+  "nav_keywordInspector": "Keyword Inspector",
+  "nav_ratingsAnalysis": "Ratings Analysis",
+  "nav_intelligence": "INTELLIGENCE",
+  "nav_topCharts": "Top Charts",
+  "nav_competitors": "Competitors",
 
   "common_save": "Save",
 
@@ -689,5 +695,24 @@
       "date": { "type": "String" }
     }
   },
-  "analytics_export": "Export CSV"
+  "analytics_export": "Export CSV",
+
+  "nav_chat": "AI Assistant",
+
+  "chat_title": "AI Assistant",
+  "chat_newConversation": "New Chat",
+  "chat_loadingConversations": "Loading conversations...",
+  "chat_loadingMessages": "Loading messages...",
+  "chat_noConversations": "No conversations yet",
+  "chat_noConversationsDesc": "Start a new conversation to get AI-powered insights about your apps",
+  "chat_startConversation": "Start Conversation",
+  "chat_deleteConversation": "Delete Conversation",
+  "chat_deleteConversationConfirm": "Are you sure you want to delete this conversation?",
+  "chat_askAnything": "Ask me anything",
+  "chat_askAnythingDesc": "I can help you understand your app's reviews, rankings, and analytics",
+  "chat_typeMessage": "Type your question...",
+  "chat_suggestedQuestions": "Suggested Questions",
+
+  "common_cancel": "Cancel",
+  "common_delete": "Delete"
 }
