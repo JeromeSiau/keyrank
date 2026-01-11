@@ -1,31 +1,66 @@
-class Review {
-  final int id;
-  final String author;
-  final String? title;
-  final String content;
-  final int rating;
-  final String? version;
-  final DateTime reviewedAt;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Review({
-    required this.id,
-    required this.author,
-    this.title,
-    required this.content,
-    required this.rating,
-    this.version,
-    required this.reviewedAt,
-  });
+part 'review_model.freezed.dart';
+part 'review_model.g.dart';
 
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
-      id: json['id'] as int,
-      author: json['author'] as String,
-      title: json['title'] as String?,
-      content: json['content'] as String? ?? '',
-      rating: json['rating'] as int,
-      version: json['version'] as String?,
-      reviewedAt: DateTime.parse(json['reviewed_at'] as String),
+@freezed
+class Review with _$Review {
+  const Review._();
+
+  const factory Review({
+    required int id,
+    required String author,
+    String? title,
+    required String content,
+    required int rating,
+    String? version,
+    required String country,
+    String? sentiment,
+    @JsonKey(name: 'our_response') String? ourResponse,
+    @JsonKey(name: 'responded_at') DateTime? respondedAt,
+    @JsonKey(name: 'reviewed_at') required DateTime reviewedAt,
+    ReviewApp? app,
+  }) = _Review;
+
+  factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);
+
+  bool get isAnswered => ourResponse != null && ourResponse!.isNotEmpty;
+}
+
+@freezed
+class ReviewApp with _$ReviewApp {
+  const factory ReviewApp({
+    required int id,
+    required String name,
+    @JsonKey(name: 'icon_url') String? iconUrl,
+    required String platform,
+  }) = _ReviewApp;
+
+  factory ReviewApp.fromJson(Map<String, dynamic> json) =>
+      _$ReviewAppFromJson(json);
+}
+
+@freezed
+class PaginatedReviews with _$PaginatedReviews {
+  const factory PaginatedReviews({
+    required List<Review> reviews,
+    required int currentPage,
+    required int lastPage,
+    required int perPage,
+    required int total,
+  }) = _PaginatedReviews;
+
+  factory PaginatedReviews.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as List<dynamic>;
+    final meta = json['meta'] as Map<String, dynamic>;
+
+    return PaginatedReviews(
+      reviews:
+          data.map((e) => Review.fromJson(e as Map<String, dynamic>)).toList(),
+      currentPage: meta['current_page'] as int,
+      lastPage: meta['last_page'] as int,
+      perPage: meta['per_page'] as int,
+      total: meta['total'] as int,
     );
   }
 }
