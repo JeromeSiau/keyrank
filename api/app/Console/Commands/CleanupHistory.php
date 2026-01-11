@@ -2,29 +2,36 @@
 
 namespace App\Console\Commands;
 
-use App\Models\AppRanking;
-use App\Models\KeywordPopularityHistory;
+use App\Services\AggregationService;
 use Illuminate\Console\Command;
 
 class CleanupHistory extends Command
 {
-    protected $signature = 'aso:cleanup {--days=90 : Keep history for this many days}';
-    protected $description = 'Clean up old ranking and popularity history data';
+    protected $signature = 'aso:cleanup {--days=90 : Keep daily history for this many days}';
+    protected $description = 'Aggregate old data and clean up history';
+
+    public function __construct(private AggregationService $aggregationService)
+    {
+        parent::__construct();
+    }
 
     public function handle(): int
     {
         $days = (int) $this->option('days');
-        $cutoff = now()->subDays($days);
 
-        $this->info("Cleaning up history older than {$days} days...");
+        $this->info("Processing history older than {$days} days...");
 
-        // Clean ranking history
-        $rankingsDeleted = AppRanking::where('recorded_at', '<', $cutoff)->delete();
-        $this->info("Deleted {$rankingsDeleted} old ranking records.");
+        // Step 1: Weekly → Monthly (data older than 1 year)
+        $this->info('Aggregating weekly to monthly (> 1 year)...');
+        $monthlyStats = $this->aggregationService->aggregateWeeklyToMonthly(365);
+        $this->info("Created {$monthlyStats['rankings']} monthly ranking aggregates.");
+        $this->info("Created {$monthlyStats['popularity']} monthly popularity aggregates.");
 
-        // Clean popularity history
-        $popularityDeleted = KeywordPopularityHistory::where('recorded_at', '<', $cutoff)->delete();
-        $this->info("Deleted {$popularityDeleted} old popularity records.");
+        // Step 2: Daily → Weekly (data older than $days)
+        $this->info("Aggregating daily to weekly (> {$days} days)...");
+        $weeklyStats = $this->aggregationService->aggregateDailyToWeekly($days);
+        $this->info("Created {$weeklyStats['rankings']} weekly ranking aggregates.");
+        $this->info("Created {$weeklyStats['popularity']} weekly popularity aggregates.");
 
         $this->info('Cleanup complete.');
 
