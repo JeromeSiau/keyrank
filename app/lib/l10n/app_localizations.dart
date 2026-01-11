@@ -2231,6 +2231,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Configure what alerts you receive'**
   String get settings_manageAlertsDesc;
+
+  /// No description provided for @reviewsInbox_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews Inbox'**
+  String get reviewsInbox_title;
+
+  /// No description provided for @reviewsInbox_filterUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get reviewsInbox_filterUnanswered;
+
+  /// No description provided for @reviewsInbox_filterNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative'**
+  String get reviewsInbox_filterNegative;
+
+  /// No description provided for @reviewsInbox_noReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews found'**
+  String get reviewsInbox_noReviews;
+
+  /// No description provided for @reviewsInbox_noReviewsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your filters'**
+  String get reviewsInbox_noReviewsDesc;
+
+  /// No description provided for @reviewsInbox_reply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get reviewsInbox_reply;
+
+  /// No description provided for @reviewsInbox_responded.
+  ///
+  /// In en, this message translates to:
+  /// **'Response'**
+  String get reviewsInbox_responded;
+
+  /// No description provided for @reviewsInbox_respondedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Responded {date}'**
+  String reviewsInbox_respondedAt(String date);
+
+  /// No description provided for @reviewsInbox_replyModalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply to Review'**
+  String get reviewsInbox_replyModalTitle;
+
+  /// No description provided for @reviewsInbox_generateAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate AI suggestion'**
+  String get reviewsInbox_generateAi;
+
+  /// No description provided for @reviewsInbox_generating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating...'**
+  String get reviewsInbox_generating;
+
+  /// No description provided for @reviewsInbox_sendReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reply'**
+  String get reviewsInbox_sendReply;
+
+  /// No description provided for @reviewsInbox_sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get reviewsInbox_sending;
+
+  /// No description provided for @reviewsInbox_replyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your response...'**
+  String get reviewsInbox_replyPlaceholder;
+
+  /// No description provided for @reviewsInbox_charLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/5970 characters'**
+  String reviewsInbox_charLimit(int count);
+
+  /// No description provided for @reviewsInbox_replySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply sent successfully'**
+  String get reviewsInbox_replySent;
+
+  /// No description provided for @reviewsInbox_replyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send reply: {error}'**
+  String reviewsInbox_replyError(String error);
+
+  /// No description provided for @reviewsInbox_aiError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to generate suggestion: {error}'**
+  String reviewsInbox_aiError(String error);
+
+  /// No description provided for @reviewsInbox_stars.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stars'**
+  String reviewsInbox_stars(int count);
 }
 
 class _AppLocalizationsDelegate

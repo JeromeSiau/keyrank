@@ -591,5 +591,50 @@
 
   "settings_notifications": "NOTIFICATIONS",
   "settings_manageAlerts": "Manage Alert Rules",
-  "settings_manageAlertsDesc": "Configure what alerts you receive"
+  "settings_manageAlertsDesc": "Configure what alerts you receive",
+
+  "reviewsInbox_title": "Reviews Inbox",
+  "reviewsInbox_filterUnanswered": "Unanswered",
+  "reviewsInbox_filterNegative": "Negative",
+  "reviewsInbox_noReviews": "No reviews found",
+  "reviewsInbox_noReviewsDesc": "Try adjusting your filters",
+  "reviewsInbox_reply": "Reply",
+  "reviewsInbox_responded": "Response",
+  "reviewsInbox_respondedAt": "Responded {date}",
+  "@reviewsInbox_respondedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "reviewsInbox_replyModalTitle": "Reply to Review",
+  "reviewsInbox_generateAi": "Generate AI suggestion",
+  "reviewsInbox_generating": "Generating...",
+  "reviewsInbox_sendReply": "Send Reply",
+  "reviewsInbox_sending": "Sending...",
+  "reviewsInbox_replyPlaceholder": "Write your response...",
+  "reviewsInbox_charLimit": "{count}/5970 characters",
+  "@reviewsInbox_charLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_replySent": "Reply sent successfully",
+  "reviewsInbox_replyError": "Failed to send reply: {error}",
+  "@reviewsInbox_replyError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_aiError": "Failed to generate suggestion: {error}",
+  "@reviewsInbox_aiError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_stars": "{count} stars",
+  "@reviewsInbox_stars": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }

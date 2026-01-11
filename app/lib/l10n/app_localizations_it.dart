@@ -1174,4 +1174,71 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_manageAlertsDesc => 'Configura quali avvisi ricevi';
+
+  @override
+  String get reviewsInbox_title => 'Reviews Inbox';
+
+  @override
+  String get reviewsInbox_filterUnanswered => 'Unanswered';
+
+  @override
+  String get reviewsInbox_filterNegative => 'Negative';
+
+  @override
+  String get reviewsInbox_noReviews => 'No reviews found';
+
+  @override
+  String get reviewsInbox_noReviewsDesc => 'Try adjusting your filters';
+
+  @override
+  String get reviewsInbox_reply => 'Reply';
+
+  @override
+  String get reviewsInbox_responded => 'Response';
+
+  @override
+  String reviewsInbox_respondedAt(String date) {
+    return 'Responded $date';
+  }
+
+  @override
+  String get reviewsInbox_replyModalTitle => 'Reply to Review';
+
+  @override
+  String get reviewsInbox_generateAi => 'Generate AI suggestion';
+
+  @override
+  String get reviewsInbox_generating => 'Generating...';
+
+  @override
+  String get reviewsInbox_sendReply => 'Send Reply';
+
+  @override
+  String get reviewsInbox_sending => 'Sending...';
+
+  @override
+  String get reviewsInbox_replyPlaceholder => 'Write your response...';
+
+  @override
+  String reviewsInbox_charLimit(int count) {
+    return '$count/5970 characters';
+  }
+
+  @override
+  String get reviewsInbox_replySent => 'Reply sent successfully';
+
+  @override
+  String reviewsInbox_replyError(String error) {
+    return 'Failed to send reply: $error';
+  }
+
+  @override
+  String reviewsInbox_aiError(String error) {
+    return 'Failed to generate suggestion: $error';
+  }
+
+  @override
+  String reviewsInbox_stars(int count) {
+    return '$count stars';
+  }
 }

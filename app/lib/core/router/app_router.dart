@@ -18,6 +18,7 @@ import '../../features/apps/presentation/add_app_screen.dart';
 import '../../features/keywords/presentation/discover_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
+import '../../features/reviews/presentation/reviews_inbox_screen.dart';
 import '../../features/insights/presentation/app_insights_screen.dart';
 import '../../features/insights/presentation/insights_compare_screen.dart';
 import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
@@ -163,6 +164,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/notifications',
             builder: (context, state) => const NotificationsScreen(),
+          ),
+          GoRoute(
+            path: '/reviews',
+            builder: (context, state) => const ReviewsInboxScreen(),
           ),
           GoRoute(
             path: '/alerts',
