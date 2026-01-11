@@ -402,6 +402,66 @@ abstract class AppLocalizations {
   /// **'Try changing the filter criteria'**
   String get dashboard_changeFilterCriteria;
 
+  /// No description provided for @dashboard_reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get dashboard_reviews;
+
+  /// No description provided for @dashboard_avgRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Rating'**
+  String get dashboard_avgRating;
+
+  /// No description provided for @dashboard_topPerformingApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Performing Apps'**
+  String get dashboard_topPerformingApps;
+
+  /// No description provided for @dashboard_topCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Countries'**
+  String get dashboard_topCountries;
+
+  /// No description provided for @dashboard_sentimentOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Sentiment Overview'**
+  String get dashboard_sentimentOverview;
+
+  /// No description provided for @dashboard_overallSentiment.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Sentiment'**
+  String get dashboard_overallSentiment;
+
+  /// No description provided for @dashboard_positive.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive'**
+  String get dashboard_positive;
+
+  /// No description provided for @dashboard_positiveReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive'**
+  String get dashboard_positiveReviews;
+
+  /// No description provided for @dashboard_negativeReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative'**
+  String get dashboard_negativeReviews;
+
+  /// No description provided for @dashboard_viewReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'View reviews'**
+  String get dashboard_viewReviews;
+
   /// No description provided for @apps_title.
   ///
   /// In en, this message translates to:

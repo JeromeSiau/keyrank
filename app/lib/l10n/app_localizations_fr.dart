@@ -159,6 +159,36 @@ class AppLocalizationsFr extends AppLocalizations {
       'Essayez de modifier les critères de filtre';
 
   @override
+  String get dashboard_reviews => 'Avis';
+
+  @override
+  String get dashboard_avgRating => 'Note moyenne';
+
+  @override
+  String get dashboard_topPerformingApps => 'Apps les plus performantes';
+
+  @override
+  String get dashboard_topCountries => 'Principaux pays';
+
+  @override
+  String get dashboard_sentimentOverview => 'Apercu du sentiment';
+
+  @override
+  String get dashboard_overallSentiment => 'Sentiment global';
+
+  @override
+  String get dashboard_positive => 'Positif';
+
+  @override
+  String get dashboard_positiveReviews => 'Positif';
+
+  @override
+  String get dashboard_negativeReviews => 'Negatif';
+
+  @override
+  String get dashboard_viewReviews => 'Voir les avis';
+
+  @override
   String get apps_title => 'Mes Apps';
 
   @override
