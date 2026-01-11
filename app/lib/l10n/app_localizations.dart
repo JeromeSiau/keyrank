@@ -2550,6 +2550,36 @@ abstract class AppLocalizations {
   /// **'{count} stars'**
   String reviewsInbox_stars(int count);
 
+  /// No description provided for @reviewsInbox_totalReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Reviews'**
+  String get reviewsInbox_totalReviews;
+
+  /// No description provided for @reviewsInbox_unanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get reviewsInbox_unanswered;
+
+  /// No description provided for @reviewsInbox_positive.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive'**
+  String get reviewsInbox_positive;
+
+  /// No description provided for @reviewsInbox_avgRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Rating'**
+  String get reviewsInbox_avgRating;
+
+  /// No description provided for @reviewsInbox_sentimentOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Sentiment Overview'**
+  String get reviewsInbox_sentimentOverview;
+
   /// No description provided for @analytics_title.
   ///
   /// In en, this message translates to:

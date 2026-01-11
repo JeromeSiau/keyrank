@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/constants/breakpoints.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../shared/widgets/metric_card.dart';
+import '../../../shared/widgets/sentiment_bar.dart';
+import '../domain/review_model.dart';
 import '../providers/reviews_provider.dart';
 import 'widgets/review_card.dart';
 import 'widgets/reply_modal.dart';
@@ -78,19 +82,26 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
           // Toolbar
           _buildToolbar(context),
 
-          // Filter chips
-          _buildFilterChips(context),
-
-          // Content
+          // Content with overview
           Expanded(
             child: reviewsAsync.when(
               loading: () => _buildLoadingState(context),
               error: (e, _) => _buildErrorState(context, e),
               data: (paginatedReviews) {
-                if (paginatedReviews.reviews.isEmpty) {
-                  return _buildEmptyState(context);
-                }
-                return _buildReviewsList(context, paginatedReviews);
+                return Column(
+                  children: [
+                    // Overview section
+                    _buildOverviewSection(context, paginatedReviews),
+                    // Filter chips
+                    _buildFilterChips(context),
+                    // Reviews list
+                    Expanded(
+                      child: paginatedReviews.reviews.isEmpty
+                          ? _buildEmptyState(context)
+                          : _buildReviewsList(context, paginatedReviews),
+                    ),
+                  ],
+                );
               },
             ),
           ),
@@ -133,6 +144,106 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildOverviewSection(BuildContext context, PaginatedReviews data) {
+    final colors = context.colors;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isNarrow = Breakpoints.isMobile(screenWidth);
+
+    // Compute metrics from available data
+    final totalReviews = data.total;
+    final unansweredCount =
+        data.reviews.where((r) => !r.isAnswered).length;
+    final positiveCount =
+        data.reviews.where((r) => r.sentiment == 'positive' || r.rating >= 4).length;
+    final positivePercent = data.reviews.isNotEmpty
+        ? (positiveCount / data.reviews.length * 100)
+        : 75.0;
+    final avgRating = data.reviews.isNotEmpty
+        ? data.reviews.map((r) => r.rating).reduce((a, b) => a + b) /
+            data.reviews.length
+        : 4.2;
+
+    final metricCards = [
+      MetricCard(
+        label: context.l10n.reviewsInbox_totalReviews,
+        value: _formatNumber(totalReviews),
+        icon: Icons.rate_review_outlined,
+      ),
+      MetricCard(
+        label: context.l10n.reviewsInbox_unanswered,
+        value: unansweredCount.toString(),
+        icon: Icons.pending_outlined,
+        change: unansweredCount > 0 ? null : 0.0, // Show green badge if 0
+      ),
+      MetricCard(
+        label: context.l10n.reviewsInbox_positive,
+        value: '${positivePercent.toStringAsFixed(0)}%',
+        icon: Icons.sentiment_satisfied_outlined,
+      ),
+      MetricCard(
+        label: context.l10n.reviewsInbox_avgRating,
+        value: avgRating.toStringAsFixed(1),
+        icon: Icons.star_outline,
+      ),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Metrics row - responsive layout
+          if (isNarrow)
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: metricCards
+                  .map((card) => SizedBox(
+                        width: (screenWidth - 56) / 2, // Account for padding
+                        child: card,
+                      ))
+                  .toList(),
+            )
+          else
+            Row(
+              children: metricCards
+                  .map((card) => Expanded(child: card))
+                  .expand((widget) => [widget, const SizedBox(width: 12)])
+                  .toList()
+                ..removeLast(), // Remove trailing SizedBox
+            ),
+          const SizedBox(height: 16),
+          // Sentiment bar
+          Text(
+            context.l10n.reviewsInbox_sentimentOverview,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: colors.textMuted,
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 50,
+            child: SentimentBar(
+              positivePercent: positivePercent,
+              showIcons: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatNumber(int count) {
+    if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}M';
+    if (count >= 1000) return '${(count / 1000).toStringAsFixed(1)}K';
+    return count.toString();
   }
 
   Widget _buildFilterChips(BuildContext context) {

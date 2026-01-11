@@ -1330,6 +1330,21 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get reviewsInbox_totalReviews => 'Total Reviews';
+
+  @override
+  String get reviewsInbox_unanswered => 'Unanswered';
+
+  @override
+  String get reviewsInbox_positive => 'Positive';
+
+  @override
+  String get reviewsInbox_avgRating => 'Avg Rating';
+
+  @override
+  String get reviewsInbox_sentimentOverview => 'Sentiment Overview';
+
+  @override
   String get analytics_title => '分析';
 
   @override

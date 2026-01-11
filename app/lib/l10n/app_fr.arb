@@ -607,6 +607,11 @@
   "reviewsInbox_replyError": "Échec de l'envoi de la réponse : {error}",
   "reviewsInbox_aiError": "Échec de la génération de suggestion : {error}",
   "reviewsInbox_stars": "{count} étoiles",
+  "reviewsInbox_totalReviews": "Total des avis",
+  "reviewsInbox_unanswered": "Sans réponse",
+  "reviewsInbox_positive": "Positifs",
+  "reviewsInbox_avgRating": "Note moyenne",
+  "reviewsInbox_sentimentOverview": "Aperçu du sentiment",
 
   "analytics_title": "Analytiques",
   "analytics_downloads": "Téléchargements",

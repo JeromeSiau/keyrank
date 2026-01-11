@@ -1355,6 +1355,21 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get reviewsInbox_totalReviews => 'Total des avis';
+
+  @override
+  String get reviewsInbox_unanswered => 'Sans réponse';
+
+  @override
+  String get reviewsInbox_positive => 'Positifs';
+
+  @override
+  String get reviewsInbox_avgRating => 'Note moyenne';
+
+  @override
+  String get reviewsInbox_sentimentOverview => 'Aperçu du sentiment';
+
+  @override
   String get analytics_title => 'Analytiques';
 
   @override

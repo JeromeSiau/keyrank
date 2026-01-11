@@ -687,6 +687,11 @@
       "count": { "type": "int" }
     }
   },
+  "reviewsInbox_totalReviews": "Total Reviews",
+  "reviewsInbox_unanswered": "Unanswered",
+  "reviewsInbox_positive": "Positive",
+  "reviewsInbox_avgRating": "Avg Rating",
+  "reviewsInbox_sentimentOverview": "Sentiment Overview",
 
   "analytics_title": "Analytics",
   "analytics_downloads": "Downloads",
