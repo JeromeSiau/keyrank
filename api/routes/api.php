@@ -36,6 +36,9 @@ Route::get('countries', [DashboardController::class, 'countries']);
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
 
+    // Reviews inbox (all apps)
+    Route::get('reviews/inbox', [ReviewsController::class, 'inbox']);
+
     // Auth
     Route::prefix('auth')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -94,6 +97,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Reviews for app (auto-fetches if stale)
         Route::get('{app}/reviews/summary', [ReviewsController::class, 'summary']);
         Route::get('{app}/reviews/{country}', [ReviewsController::class, 'forCountry']);
+        Route::post('{app}/reviews/{review}/reply', [ReviewsController::class, 'reply']);
+        Route::post('{app}/reviews/{review}/suggest', [ReviewsController::class, 'suggestReply'])
+            ->middleware('throttle:10,1');
 
         // Insights for app
         Route::get('{app}/insights', [InsightsController::class, 'show']);
