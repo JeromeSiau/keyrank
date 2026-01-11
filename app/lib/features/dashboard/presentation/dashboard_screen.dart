@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
-import '../../../shared/widgets/metric_card.dart';
 import '../../../shared/widgets/sentiment_bar.dart';
 import '../../../shared/widgets/country_distribution.dart';
 import '../../../shared/widgets/sparkline.dart';
 import '../../../shared/widgets/data_table_enhanced.dart';
 import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
+import '../../integrations/providers/integrations_provider.dart';
+import 'widgets/hero_metrics_section.dart';
+import 'widgets/ranking_movers_section.dart';
+import 'widgets/insights_section.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -87,43 +91,34 @@ class _Toolbar extends StatelessWidget {
   }
 }
 
-class _DashboardContent extends StatelessWidget {
+class _DashboardContent extends ConsumerWidget {
   final List<AppModel> apps;
 
   const _DashboardContent({required this.apps});
 
   @override
-  Widget build(BuildContext context) {
-    final totalKeywords = apps.fold<int>(
-      0,
-      (sum, app) => sum + (app.trackedKeywordsCount ?? 0),
-    );
-    final avgRating = apps.isEmpty
-        ? 0.0
-        : apps.fold<double>(0, (sum, app) => sum + (app.rating ?? 0)) /
-            apps.where((app) => app.rating != null).length.clamp(1, apps.length);
-    final avgPosition = _calculateAvgPosition(apps);
-    final totalReviews = apps.fold<int>(0, (sum, app) => sum + app.ratingCount);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final integrationsAsync = ref.watch(integrationsProvider);
+    final hasIntegrations = integrationsAsync.valueOrNull?.isNotEmpty ?? false;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth >= 1000;
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.screenPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Metrics Row
-              _MetricsBar(
-                appsCount: apps.length,
-                keywordsCount: totalKeywords,
-                avgPosition: avgPosition,
-                reviewsCount: totalReviews,
-                avgRating: avgRating,
-              ),
-              const SizedBox(height: 20),
-              // Grid content
+              // Connect stores banner (if no integrations)
+              if (!hasIntegrations) ...[
+                const _ConnectStoresBanner(),
+                const SizedBox(height: AppSpacing.sectionSpacing),
+              ],
+              // Hero Metrics - fetches from API
+              const HeroMetricsSection(),
+              const SizedBox(height: AppSpacing.sectionSpacing),
+              // Main content grid
               if (isWide)
                 _buildWideLayout(context, apps)
               else
@@ -135,38 +130,47 @@ class _DashboardContent extends StatelessWidget {
     );
   }
 
-  double? _calculateAvgPosition(List<AppModel> apps) {
-    final appsWithRank = apps.where((app) => app.bestRank != null).toList();
-    if (appsWithRank.isEmpty) return null;
-    return appsWithRank.fold<int>(0, (sum, app) => sum + app.bestRank!) /
-        appsWithRank.length;
-  }
-
   Widget _buildWideLayout(BuildContext context, List<AppModel> apps) {
     return Column(
       children: [
-        // Top row: Top Apps + Top Countries
+        // Row 1: Ranking Movers + Insights
+        const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: RankingMoversSection(),
+            ),
+            SizedBox(width: AppSpacing.gridGapLarge),
+            Expanded(
+              flex: 2,
+              child: InsightsSection(),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sectionSpacing),
+        // Row 2: Top Apps + Top Countries
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _TopPerformingAppsPanel(apps: apps),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: AppSpacing.gridGapLarge),
             Expanded(
               child: _TopCountriesPanel(),
             ),
           ],
         ),
-        const SizedBox(height: 20),
-        // Bottom row: Sentiment + Quick Actions
+        const SizedBox(height: AppSpacing.sectionSpacing),
+        // Row 3: Sentiment + Quick Actions
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _SentimentOverviewPanel(),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: AppSpacing.gridGapLarge),
             Expanded(
               child: _QuickActionsPanel(),
             ),
@@ -180,104 +184,19 @@ class _DashboardContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const RankingMoversSection(),
+        const SizedBox(height: AppSpacing.sectionSpacing),
+        const InsightsSection(),
+        const SizedBox(height: AppSpacing.sectionSpacing),
         _TopPerformingAppsPanel(apps: apps),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.sectionSpacing),
         _TopCountriesPanel(),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.sectionSpacing),
         _SentimentOverviewPanel(),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.sectionSpacing),
         _QuickActionsPanel(),
       ],
     );
-  }
-}
-
-class _MetricsBar extends StatelessWidget {
-  final int appsCount;
-  final int keywordsCount;
-  final double? avgPosition;
-  final int reviewsCount;
-  final double avgRating;
-
-  const _MetricsBar({
-    required this.appsCount,
-    required this.keywordsCount,
-    required this.avgPosition,
-    required this.reviewsCount,
-    required this.avgRating,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isNarrow = constraints.maxWidth < 600;
-
-        final metrics = [
-          MetricCard(
-            label: context.l10n.dashboard_appsTracked,
-            value: appsCount.toString(),
-            change: appsCount > 0 ? 12.0 : null,
-            icon: Icons.apps_rounded,
-          ),
-          MetricCard(
-            label: context.l10n.dashboard_keywords,
-            value: keywordsCount.toString(),
-            change: keywordsCount > 0 ? 8.5 : null,
-            icon: Icons.key_rounded,
-          ),
-          MetricCard(
-            label: context.l10n.dashboard_avgPosition,
-            value: avgPosition?.toStringAsFixed(1) ?? '--',
-            change: avgPosition != null ? -3.2 : null,
-            icon: Icons.trending_up_rounded,
-          ),
-          MetricCard(
-            label: context.l10n.dashboard_reviews,
-            value: _formatCount(reviewsCount),
-            change: reviewsCount > 0 ? 29.0 : null,
-            icon: Icons.rate_review_rounded,
-          ),
-          MetricCard(
-            label: context.l10n.dashboard_avgRating,
-            value: avgRating > 0 ? avgRating.toStringAsFixed(1) : '--',
-            change: avgRating > 0 ? 2.1 : null,
-            icon: Icons.star_rounded,
-          ),
-        ];
-
-        if (isNarrow) {
-          return Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: metrics.map((m) => SizedBox(
-              width: (constraints.maxWidth - 12) / 2,
-              child: m,
-            )).toList(),
-          );
-        }
-
-        return Row(
-          children: metrics.map((m) => Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                right: m == metrics.last ? 0 : 12,
-              ),
-              child: m,
-            ),
-          )).toList(),
-        );
-      },
-    );
-  }
-
-  String _formatCount(int count) {
-    if (count >= 1000000) {
-      return '${(count / 1000000).toStringAsFixed(1)}M';
-    } else if (count >= 1000) {
-      return '${(count / 1000).toStringAsFixed(1)}K';
-    }
-    return count.toString();
   }
 }
 
@@ -400,7 +319,7 @@ class _AppNameCell extends StatelessWidget {
                   child: Image.network(
                     app.iconUrl!,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, error, stack) => const Center(
+                    errorBuilder: (_, e, s) => const Center(
                       child: Icon(Icons.apps, size: 16, color: Colors.white),
                     ),
                   ),
@@ -456,7 +375,7 @@ class _TopCountriesPanel extends StatelessWidget {
     return _GlassPanel(
       title: context.l10n.dashboard_topCountries,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
         child: CountryDistribution(countries: _mockCountries),
       ),
     );
@@ -470,7 +389,7 @@ class _SentimentOverviewPanel extends StatelessWidget {
     return _GlassPanel(
       title: context.l10n.dashboard_sentimentOverview,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -666,7 +585,10 @@ class _QuickActionItem extends StatelessWidget {
         onTap: onTap,
         hoverColor: colors.bgHover,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.cardPadding,
+            vertical: 12,
+          ),
           child: Row(
             children: [
               Container(
@@ -724,7 +646,10 @@ class _GlassPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.cardPadding,
+              vertical: 14,
+            ),
             child: Text(
               title,
               style: TextStyle(
@@ -783,6 +708,79 @@ class _EmptyStateMessage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ConnectStoresBanner extends StatelessWidget {
+  const _ConnectStoresBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.cardPaddingLarge),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colors.accent.withAlpha(25),
+            colors.purple.withAlpha(15),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        border: Border.all(color: colors.accent.withAlpha(50)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: colors.accent.withAlpha(30),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.link_rounded, size: 24, color: colors.accent),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Connect Your Stores',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Link App Store Connect or Google Play to import your apps and reply to reviews.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: colors.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          FilledButton.icon(
+            onPressed: () => context.go('/settings/integrations'),
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Connect'),
+            style: FilledButton.styleFrom(
+              backgroundColor: colors.accent,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+          ),
+        ],
       ),
     );
   }

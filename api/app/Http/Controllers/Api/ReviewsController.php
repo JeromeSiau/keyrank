@@ -7,17 +7,14 @@ use App\Models\App;
 use App\Models\AppReview;
 use App\Services\AppStoreConnectService;
 use App\Services\GooglePlayDeveloperService;
-use App\Services\iTunesService;
 use App\Services\OpenRouterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 
 class ReviewsController extends Controller
 {
     public function __construct(
-        private iTunesService $iTunesService,
         private AppStoreConnectService $appStoreConnect,
         private GooglePlayDeveloperService $googlePlay,
         private OpenRouterService $openRouter,
@@ -304,7 +301,7 @@ class ReviewsController extends Controller
 
     /**
      * Get reviews for an app from a specific country
-     * Auto-fetches from store if data is stale (> 24h) or missing
+     * Data is collected by background collectors - no on-demand fetching
      */
     public function forCountry(Request $request, App $app, string $country): JsonResponse
     {
@@ -315,8 +312,8 @@ class ReviewsController extends Controller
             return response()->json(['message' => 'App has no platform'], 400);
         }
 
-        // Get stored reviews for this country
-        $reviewsQuery = $app->reviews()
+        // Get stored reviews from database (no on-demand fetching)
+        $reviews = $app->reviews()
             ->select([
                 'id',
                 'author',
@@ -324,43 +321,13 @@ class ReviewsController extends Controller
                 'content',
                 'rating',
                 'version',
+                'sentiment',
                 'reviewed_at',
             ])
-            ->where('country', $country);
-        $reviews = $reviewsQuery
+            ->where('country', $country)
             ->orderByDesc('reviewed_at')
             ->limit(100)
             ->get();
-
-        // Check if data is stale
-        $lastFetch = $app->reviews_fetched_at;
-        $isStale = !$lastFetch || $lastFetch->lt(now()->subHours(24));
-        $hasAnyReviews = $reviews->isNotEmpty() || $app->reviews()->exists();
-        $hasReviewsForCountry = $reviews->isNotEmpty();
-
-        // Fetch if:
-        // 1. Never fetched OR stale (> 24h) → always fetch
-        // 2. We have reviews for OTHER countries but not this one → fetch this country
-        $shouldFetch = $isStale || ($hasAnyReviews && !$hasReviewsForCountry);
-
-        if ($shouldFetch) {
-            if ($platform === 'ios') {
-                $this->fetchAndStoreIosReviews($app, $country);
-            } else {
-                $this->fetchAndStoreAndroidReviews($app, $country);
-            }
-
-            // Only update timestamp on stale refresh (not per-country fills)
-            if ($isStale) {
-                $app->update(['reviews_fetched_at' => now()]);
-            }
-
-            // Re-fetch reviews after storing
-            $reviews = $reviewsQuery
-                ->orderByDesc('reviewed_at')
-                ->limit(100)
-                ->get();
-        }
 
         return response()->json([
             'data' => [
@@ -374,107 +341,12 @@ class ReviewsController extends Controller
                     'content' => $r->content,
                     'rating' => $r->rating,
                     'version' => $r->version,
+                    'sentiment' => $r->sentiment,
                     'reviewed_at' => $r->reviewed_at->toIso8601String(),
                 ]),
                 'total' => $reviews->count(),
             ],
         ]);
-    }
-
-    /**
-     * Fetch reviews from iTunes and store in database
-     */
-    private function fetchAndStoreIosReviews(App $app, string $country): void
-    {
-        $countryLower = strtolower($country);
-        $reviews = $this->iTunesService->getAllAppReviews($app->store_id, $countryLower, 5);
-
-        if (!$reviews) {
-            return;
-        }
-
-        $now = now();
-        $rows = array_map(function ($review) use ($app, $country, $now) {
-            return [
-                'app_id' => $app->id,
-                'country' => strtoupper($country),
-                'review_id' => $review['review_id'],
-                'author' => $review['author'],
-                'title' => $review['title'],
-                'content' => $review['content'],
-                'rating' => $review['rating'],
-                'version' => $review['version'],
-                'reviewed_at' => $review['reviewed_at'],
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        }, $reviews);
-
-        AppReview::upsert(
-            $rows,
-            ['app_id', 'country', 'review_id'],
-            ['author', 'title', 'content', 'rating', 'version', 'reviewed_at', 'updated_at']
-        );
-    }
-
-    /**
-     * Fetch reviews from Google Play and store in database
-     */
-    private function fetchAndStoreAndroidReviews(App $app, string $country): void
-    {
-        $countryLower = strtolower($country);
-        $scraperUrl = config('services.gplay_scraper.url', 'http://localhost:3001');
-
-        try {
-            $response = Http::timeout(15)
-                ->get("{$scraperUrl}/reviews/{$app->store_id}", [
-                    'country' => $countryLower,
-                    'num' => 100,
-                ]);
-
-            if ($response->successful()) {
-                $reviews = $response->json('reviews', []);
-
-                if (!$reviews) {
-                    return;
-                }
-
-                $now = now();
-                $rows = [];
-                foreach ($reviews as $review) {
-                    $reviewId = $review['review_id'] ?? sha1(implode('|', [
-                        $app->store_id,
-                        $countryLower,
-                        $review['author'] ?? '',
-                        $review['rating'] ?? '',
-                        $review['reviewed_at'] ?? '',
-                        $review['content'] ?? '',
-                    ]));
-
-                    $rows[] = [
-                        'app_id' => $app->id,
-                        'country' => strtoupper($country),
-                        'review_id' => $reviewId,
-                        'author' => $review['author'] ?? 'Anonymous',
-                        'title' => $review['title'] ?? null,
-                        'content' => $review['content'] ?? '',
-                        'rating' => $review['rating'] ?? 0,
-                        'version' => $review['version'] ?? null,
-                        'reviewed_at' => isset($review['reviewed_at']) ? \Carbon\Carbon::parse($review['reviewed_at']) : $now,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    ];
-                }
-
-                AppReview::upsert(
-                    $rows,
-                    ['app_id', 'country', 'review_id'],
-                    ['author', 'title', 'content', 'rating', 'version', 'reviewed_at', 'updated_at']
-                );
-            }
-        } catch (\Exception $e) {
-            \Log::warning("Failed to fetch Android reviews for app {$app->id}: " . $e->getMessage());
-        }
     }
 
     /**

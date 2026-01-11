@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 class InsightsService
 {
     private const CHUNK_SIZE = 100;
+    private const MAX_REVIEWS = 500; // Cap to avoid timeout and cost explosion
     private const CATEGORIES = ['ux', 'performance', 'features', 'pricing', 'support', 'onboarding'];
     private const LANGUAGE_NAMES = [
         'en' => 'English',
@@ -41,8 +42,8 @@ class InsightsService
         $periodStart = Carbon::now()->subMonths($periodMonths)->startOfDay();
         $periodEnd = Carbon::now()->endOfDay();
 
-        // Fetch reviews
-        $reviews = $this->fetchReviews($app, $countries, $periodStart, $periodEnd);
+        // Fetch reviews (with sampling if too many)
+        [$reviews, $totalCount] = $this->fetchReviews($app, $countries, $periodStart, $periodEnd);
 
         if ($reviews->isEmpty()) {
             return null;
@@ -66,7 +67,7 @@ class InsightsService
         // Synthesize if multiple chunks
         $finalAnalysis = count($chunkAnalyses) === 1
             ? $chunkAnalyses[0]
-            : $this->synthesizeChunks($app, $chunkAnalyses, $reviews->count());
+            : $this->synthesizeChunks($app, $chunkAnalyses, $totalCount);
 
         if (!$finalAnalysis) {
             return null;
@@ -76,7 +77,7 @@ class InsightsService
         return AppInsight::create([
             'app_id' => $app->id,
             'analysis_type' => 'full',
-            'reviews_count' => $reviews->count(),
+            'reviews_count' => $totalCount,
             'countries' => $countries,
             'period_start' => $periodStart,
             'period_end' => $periodEnd,
@@ -90,13 +91,45 @@ class InsightsService
         ]);
     }
 
-    private function fetchReviews(App $app, array $countries, Carbon $start, Carbon $end)
+    /**
+     * Fetch reviews with stratified sampling if too many
+     * @return array [Collection $reviews, int $totalCount]
+     */
+    private function fetchReviews(App $app, array $countries, Carbon $start, Carbon $end): array
     {
-        return AppReview::where('app_id', $app->id)
+        $query = AppReview::where('app_id', $app->id)
             ->whereIn('country', array_map('strtoupper', $countries))
-            ->whereBetween('reviewed_at', [$start, $end])
-            ->orderByDesc('reviewed_at')
-            ->get(['rating', 'title', 'content', 'reviewed_at', 'country']);
+            ->whereBetween('reviewed_at', [$start, $end]);
+
+        $totalCount = $query->count();
+
+        // If under the limit, fetch all
+        if ($totalCount <= self::MAX_REVIEWS) {
+            $reviews = $query->orderByDesc('reviewed_at')
+                ->get(['rating', 'title', 'content', 'reviewed_at', 'country']);
+            return [$reviews, $totalCount];
+        }
+
+        // Stratified sampling: proportional to rating distribution
+        // This ensures we get a representative sample across all ratings
+        Log::info("Sampling {$totalCount} reviews down to " . self::MAX_REVIEWS . " for app {$app->id}");
+
+        $reviews = collect();
+        $perRating = (int) ceil(self::MAX_REVIEWS / 5);
+
+        for ($rating = 1; $rating <= 5; $rating++) {
+            $ratingReviews = AppReview::where('app_id', $app->id)
+                ->whereIn('country', array_map('strtoupper', $countries))
+                ->whereBetween('reviewed_at', [$start, $end])
+                ->where('rating', $rating)
+                ->inRandomOrder()
+                ->limit($perRating)
+                ->get(['rating', 'title', 'content', 'reviewed_at', 'country']);
+
+            $reviews = $reviews->merge($ratingReviews);
+        }
+
+        return [$reviews->shuffle()->take(self::MAX_REVIEWS), $totalCount];
     }
 
     private function analyzeChunk(App $app, array $reviews): ?array

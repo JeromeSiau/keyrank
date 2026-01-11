@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -129,9 +131,16 @@ return [
     |--------------------------------------------------------------------------
     |
     | Priority countries for fetching ratings and rankings data.
+    | All supported App Store countries for maximum data coverage.
     |
     */
 
-    'priority_countries' => ['us', 'gb', 'fr', 'de', 'jp', 'cn', 'kr', 'au', 'br', 'mx'],
+    'priority_countries' => [
+        'us', 'gb', 'fr', 'de', 'jp', 'cn', 'kr', 'au', 'ca', 'it',
+        'es', 'nl', 'br', 'mx', 'ru', 'in', 'se', 'no', 'dk', 'fi',
+        'ch', 'at', 'be', 'pt', 'pl', 'sg', 'hk', 'tw', 'th', 'id',
+        'my', 'ph', 'vn', 'za', 'ae', 'sa', 'tr', 'il', 'eg', 'ar',
+        'cl', 'co', 'pe', 'nz',
+    ],
 
 ];

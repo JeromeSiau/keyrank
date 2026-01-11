@@ -20,6 +20,10 @@ class AppReview extends Model
         'version',
         'reviewed_at',
         'sentiment',
+        'sentiment_score',
+        'themes',
+        'language',
+        'enriched_at',
         'our_response',
         'responded_at',
         'store_response_id',
@@ -29,6 +33,9 @@ class AppReview extends Model
         'rating' => 'integer',
         'reviewed_at' => 'datetime',
         'responded_at' => 'datetime',
+        'enriched_at' => 'datetime',
+        'sentiment_score' => 'decimal:2',
+        'themes' => 'array',
     ];
 
     public function app(): BelongsTo
@@ -59,5 +66,25 @@ class AppReview extends Model
     public function scopeBySentiment($query, string $sentiment)
     {
         return $query->where('sentiment', $sentiment);
+    }
+
+    public function scopeUnenriched($query)
+    {
+        return $query->whereNull('enriched_at');
+    }
+
+    public function scopeEnriched($query)
+    {
+        return $query->whereNotNull('enriched_at');
+    }
+
+    public function scopeWithTheme($query, string $theme)
+    {
+        return $query->whereJsonContains('themes', $theme);
+    }
+
+    public function isEnriched(): bool
+    {
+        return $this->enriched_at !== null;
     }
 }

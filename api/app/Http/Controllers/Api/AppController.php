@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateKeywordSuggestionsJob;
 use App\Models\App;
+use App\Models\AppRating;
+use App\Models\AppReview;
 use App\Models\TrackedKeyword;
 use App\Services\iTunesService;
 use App\Services\GooglePlayService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class AppController extends Controller
 {
@@ -189,6 +193,12 @@ class AppController extends Controller
                 }
             }
 
+            // Fetch initial ratings and reviews immediately
+            $this->fetchInitialData($app);
+
+            // Generate keyword suggestions in background
+            GenerateKeywordSuggestionsJob::dispatch($app->id, strtoupper($country));
+
             return response()->json([
                 'message' => 'App added successfully',
                 'data' => $app,
@@ -249,6 +259,12 @@ class AppController extends Controller
 
         // Attach user to newly created app
         $app->users()->attach($user->id);
+
+        // Fetch initial ratings and reviews immediately
+        $this->fetchInitialData($app);
+
+        // Generate keyword suggestions in background
+        GenerateKeywordSuggestionsJob::dispatch($app->id, strtoupper($country));
 
         return response()->json([
             'message' => 'App added successfully',
@@ -349,6 +365,18 @@ class AppController extends Controller
     }
 
     /**
+     * Refresh ratings and reviews data for an app
+     */
+    public function refreshData(Request $request, App $app): JsonResponse
+    {
+        $this->fetchInitialData($app);
+
+        return response()->json([
+            'message' => 'App data refreshed successfully',
+        ]);
+    }
+
+    /**
      * Toggle app favorite status
      */
     public function toggleFavorite(Request $request, App $app): JsonResponse
@@ -368,6 +396,138 @@ class AppController extends Controller
             'is_favorite' => $isFavorite,
             'favorited_at' => $isFavorite ? now()->toIso8601String() : null,
         ]);
+    }
+
+    /**
+     * Get apps from the same developer
+     */
+    public function developerApps(Request $request, App $app): JsonResponse
+    {
+        if (empty($app->developer)) {
+            return response()->json([
+                'data' => [],
+                'message' => 'Developer information not available',
+            ]);
+        }
+
+        // Get apps from the same developer (from our database)
+        $apps = App::where('developer', $app->developer)
+            ->where('platform', $app->platform)
+            ->where('id', '!=', $app->id)
+            ->orderByDesc('rating_count')
+            ->limit(50)
+            ->get([
+                'id',
+                'platform',
+                'store_id',
+                'name',
+                'icon_url',
+                'developer',
+                'rating',
+                'rating_count',
+                'category_id',
+            ]);
+
+        // If we don't have many apps, try to fetch from store
+        if ($apps->count() < 5) {
+            $this->discoverDeveloperApps($app);
+
+            // Re-query after discovery
+            $apps = App::where('developer', $app->developer)
+                ->where('platform', $app->platform)
+                ->where('id', '!=', $app->id)
+                ->orderByDesc('rating_count')
+                ->limit(50)
+                ->get([
+                    'id',
+                    'platform',
+                    'store_id',
+                    'name',
+                    'icon_url',
+                    'developer',
+                    'rating',
+                    'rating_count',
+                    'category_id',
+                ]);
+        }
+
+        return response()->json([
+            'data' => $apps,
+            'developer' => $app->developer,
+            'total' => $apps->count(),
+        ]);
+    }
+
+    /**
+     * Discover apps from the same developer
+     */
+    private function discoverDeveloperApps(App $app): void
+    {
+        if ($app->platform === 'ios') {
+            // iTunes lookup with entity=software returns all apps by developer
+            $response = Http::timeout(15)->get('https://itunes.apple.com/lookup', [
+                'id' => $app->store_id,
+                'entity' => 'software',
+                'limit' => 50,
+            ]);
+
+            if ($response->successful()) {
+                $results = $response->json('results', []);
+
+                foreach (array_slice($results, 1) as $appData) {
+                    $storeId = (string) ($appData['trackId'] ?? '');
+                    if (empty($storeId) || $storeId === $app->store_id) continue;
+
+                    App::updateOrCreate(
+                        ['platform' => 'ios', 'store_id' => $storeId],
+                        [
+                            'name' => $appData['trackName'] ?? 'Unknown',
+                            'developer' => $appData['artistName'] ?? $app->developer,
+                            'icon_url' => $appData['artworkUrl100'] ?? null,
+                            'rating' => $appData['averageUserRating'] ?? null,
+                            'rating_count' => $appData['userRatingCount'] ?? 0,
+                            'category_id' => $appData['primaryGenreId'] ?? null,
+                            'discovered_from_app_id' => $app->id,
+                            'discovery_source' => 'same_developer',
+                        ]
+                    );
+                }
+            }
+        } else {
+            // Try Google Play scraper
+            $scraperUrl = config('services.gplay_scraper.url', 'http://localhost:3001');
+
+            try {
+                $response = Http::timeout(30)->get("{$scraperUrl}/developer", [
+                    'devId' => $app->developer,
+                    'num' => 50,
+                ]);
+
+                if ($response->successful()) {
+                    $results = $response->json('results', $response->json());
+
+                    foreach ($results as $appData) {
+                        $storeId = $appData['appId'] ?? $appData['google_play_id'] ?? null;
+                        if (empty($storeId) || $storeId === $app->store_id) continue;
+
+                        App::updateOrCreate(
+                            ['platform' => 'android', 'store_id' => $storeId],
+                            [
+                                'name' => $appData['title'] ?? $appData['name'] ?? 'Unknown',
+                                'developer' => $appData['developer'] ?? $app->developer,
+                                'icon_url' => $appData['icon'] ?? $appData['icon_url'] ?? null,
+                                'rating' => $appData['score'] ?? $appData['rating'] ?? null,
+                                'rating_count' => $appData['ratings'] ?? $appData['rating_count'] ?? 0,
+                                'discovered_from_app_id' => $app->id,
+                                'discovery_source' => 'same_developer',
+                            ]
+                        );
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::debug("Failed to fetch developer apps: " . $e->getMessage());
+            }
+        }
     }
 
     /**
@@ -416,5 +576,233 @@ class AppController extends Controller
                 'category_id' => $details['category_id'] ?? $details['genre_id'] ?? null,
             ],
         ]);
+    }
+
+    /**
+     * Fetch initial ratings and reviews for a newly tracked app.
+     * Called immediately when an app is added to provide instant data.
+     * Automatically detects all countries where the app is available.
+     */
+    private function fetchInitialData(App $app): void
+    {
+        // Use all supported countries - we'll only store data for countries where the app exists
+        $countries = config('countries');
+        $now = now();
+
+        if ($app->platform === 'ios') {
+            $this->fetchIosRatings($app, $countries, $now);
+            $this->fetchIosReviews($app, $countries, $now);
+        } else {
+            $this->fetchAndroidRatings($app, $countries, $now);
+            $this->fetchAndroidReviews($app, $countries, $now);
+        }
+    }
+
+    /**
+     * Fetch iOS ratings from iTunes API
+     */
+    private function fetchIosRatings(App $app, array $countries, $now): void
+    {
+        // Fetch all countries in parallel
+        $responses = Http::pool(fn ($pool) =>
+            collect($countries)->map(fn ($country) =>
+                $pool->as($country)
+                    ->timeout(10)
+                    ->get('https://itunes.apple.com/lookup', [
+                        'id' => $app->store_id,
+                        'country' => $country,
+                    ])
+            )->toArray()
+        );
+
+        $ratings = [];
+
+        foreach ($countries as $country) {
+            $response = $responses[$country] ?? null;
+
+            if ($response && $response->successful()) {
+                $results = $response->json('results', []);
+
+                if (!empty($results)) {
+                    $appData = $results[0];
+                    $ratingCount = $appData['userRatingCount'] ?? 0;
+
+                    if ($ratingCount > 0) {
+                        $ratings[] = [
+                            'app_id' => $app->id,
+                            'country' => strtoupper($country),
+                            'rating' => $appData['averageUserRating'] ?? null,
+                            'rating_count' => $ratingCount,
+                            'recorded_at' => $now,
+                        ];
+                    }
+                }
+            }
+        }
+
+        if (!empty($ratings)) {
+            AppRating::upsert(
+                $ratings,
+                ['app_id', 'country', 'recorded_at'],
+                ['rating', 'rating_count']
+            );
+        }
+    }
+
+    /**
+     * Fetch Android ratings from Google Play scraper
+     */
+    private function fetchAndroidRatings(App $app, array $countries, $now): void
+    {
+        $scraperUrl = config('services.gplay_scraper.url', 'http://localhost:3001');
+
+        $responses = Http::pool(fn ($pool) =>
+            collect($countries)->map(fn ($country) =>
+                $pool->as($country)
+                    ->timeout(15)
+                    ->get("{$scraperUrl}/app/{$app->store_id}", [
+                        'country' => $country,
+                    ])
+            )->toArray()
+        );
+
+        $ratings = [];
+
+        foreach ($countries as $country) {
+            $response = $responses[$country] ?? null;
+
+            if ($response && $response->successful()) {
+                $appData = $response->json();
+
+                if ($appData) {
+                    $ratingCount = $appData['rating_count'] ?? $appData['ratings'] ?? 0;
+
+                    if ($ratingCount > 0) {
+                        $ratings[] = [
+                            'app_id' => $app->id,
+                            'country' => strtoupper($country),
+                            'rating' => $appData['rating'] ?? $appData['score'] ?? null,
+                            'rating_count' => $ratingCount,
+                            'recorded_at' => $now,
+                        ];
+                    }
+                }
+            }
+        }
+
+        if (!empty($ratings)) {
+            AppRating::upsert(
+                $ratings,
+                ['app_id', 'country', 'recorded_at'],
+                ['rating', 'rating_count']
+            );
+        }
+    }
+
+    /**
+     * Fetch iOS reviews from iTunes RSS
+     */
+    private function fetchIosReviews(App $app, array $countries, $now): void
+    {
+        foreach ($countries as $country) {
+            $reviews = $this->iTunesService->getAllAppReviews($app->store_id, strtolower($country), 3);
+
+            if (empty($reviews)) {
+                continue;
+            }
+
+            $rows = [];
+
+            foreach ($reviews as $review) {
+                $rows[] = [
+                    'app_id' => $app->id,
+                    'country' => strtoupper($country),
+                    'review_id' => $review['review_id'],
+                    'author' => $review['author'],
+                    'title' => $review['title'],
+                    'content' => $review['content'],
+                    'rating' => $review['rating'],
+                    'version' => $review['version'],
+                    'reviewed_at' => $review['reviewed_at'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+
+            AppReview::upsert(
+                $rows,
+                ['app_id', 'country', 'review_id'],
+                ['author', 'title', 'content', 'rating', 'version', 'reviewed_at', 'updated_at']
+            );
+
+            usleep(100000); // 0.1s delay between countries
+        }
+    }
+
+    /**
+     * Fetch Android reviews from Google Play scraper
+     */
+    private function fetchAndroidReviews(App $app, array $countries, $now): void
+    {
+        $scraperUrl = config('services.gplay_scraper.url', 'http://localhost:3001');
+
+        foreach ($countries as $country) {
+            try {
+                $response = Http::timeout(20)
+                    ->get("{$scraperUrl}/reviews/{$app->store_id}", [
+                        'country' => strtolower($country),
+                        'num' => 50,
+                    ]);
+
+                if (!$response->successful()) {
+                    continue;
+                }
+
+                $reviews = $response->json('reviews', []);
+
+                if (empty($reviews)) {
+                    continue;
+                }
+
+                $rows = [];
+
+                foreach ($reviews as $review) {
+                    $reviewId = $review['review_id'] ?? $review['id'] ?? sha1(implode('|', [
+                        $app->store_id,
+                        $country,
+                        $review['author'] ?? '',
+                        $review['rating'] ?? '',
+                        $review['reviewed_at'] ?? $review['date'] ?? '',
+                        substr($review['content'] ?? $review['text'] ?? '', 0, 100),
+                    ]));
+
+                    $rows[] = [
+                        'app_id' => $app->id,
+                        'country' => strtoupper($country),
+                        'review_id' => $reviewId,
+                        'author' => $review['author'] ?? $review['userName'] ?? 'Anonymous',
+                        'title' => $review['title'] ?? null,
+                        'content' => $review['content'] ?? $review['text'] ?? '',
+                        'rating' => $review['rating'] ?? $review['score'] ?? 0,
+                        'version' => $review['version'] ?? $review['appVersion'] ?? null,
+                        'reviewed_at' => isset($review['reviewed_at'])
+                            ? \Carbon\Carbon::parse($review['reviewed_at'])
+                            : (isset($review['date']) ? \Carbon\Carbon::parse($review['date']) : $now),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+
+                AppReview::upsert(
+                    $rows,
+                    ['app_id', 'country', 'review_id'],
+                    ['author', 'title', 'content', 'rating', 'version', 'reviewed_at', 'updated_at']
+                );
+
+                usleep(200000); // 0.2s delay between countries
+            } catch (\Exception $e) {
+                \Log::warning("Failed to fetch Android reviews for app {$app->id}: " . $e->getMessage());
+            }
+        }
     }
 }

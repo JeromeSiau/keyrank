@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'owns.app' => \App\Http\Middleware\EnsureUserOwnsApp::class,
+            'plan.limit' => \App\Http\Middleware\CheckPlanLimit::class,
+            'plan.feature' => \App\Http\Middleware\CheckPlanFeature::class,
+            'api.key' => \App\Http\Middleware\AuthenticateApiKey::class,
         ]);
 
         // Return JSON 401 for unauthenticated API requests instead of redirecting

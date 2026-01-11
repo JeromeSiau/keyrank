@@ -100,6 +100,16 @@ class KeywordsNotifier extends StateNotifier<KeywordsState> {
     state = state.copyWith(keywords: updatedKeywords);
   }
 
+  Future<Keyword> addKeyword(String keyword, {String storefront = 'US'}) async {
+    try {
+      final newKeyword = await _repository.addKeywordToApp(appId, keyword, storefront: storefront);
+      state = state.copyWith(keywords: [...state.keywords, newKeyword]);
+      return newKeyword;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> deleteKeyword(Keyword keyword) async {
     final oldKeywords = state.keywords;
 

@@ -266,14 +266,16 @@ class KeywordSuggestionsResponse {
   final String appId;
   final String country;
   final int total;
-  final DateTime generatedAt;
+  final DateTime? generatedAt;
+  final bool isGenerating;
 
   KeywordSuggestionsResponse({
     required this.suggestions,
     required this.appId,
     required this.country,
     required this.total,
-    required this.generatedAt,
+    this.generatedAt,
+    this.isGenerating = false,
   });
 
   factory KeywordSuggestionsResponse.fromJson(Map<String, dynamic> json) {
@@ -285,7 +287,10 @@ class KeywordSuggestionsResponse {
       appId: meta['app_id'] as String,
       country: meta['country'] as String,
       total: meta['total'] as int,
-      generatedAt: DateTime.parse(meta['generated_at'] as String),
+      generatedAt: meta['generated_at'] != null
+          ? DateTime.parse(meta['generated_at'] as String)
+          : null,
+      isGenerating: meta['is_generating'] as bool? ?? false,
     );
   }
 }

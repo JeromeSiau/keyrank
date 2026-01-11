@@ -170,6 +170,59 @@ class GooglePlayService
     }
 
     /**
+     * Get list of supported country codes for Google Play
+     * Google Play supports most countries, using same ISO codes as App Store
+     */
+    public static function getSupportedCountries(): array
+    {
+        return [
+            'us' => 'United States',
+            'gb' => 'United Kingdom',
+            'fr' => 'France',
+            'de' => 'Germany',
+            'jp' => 'Japan',
+            'kr' => 'South Korea',
+            'au' => 'Australia',
+            'ca' => 'Canada',
+            'it' => 'Italy',
+            'es' => 'Spain',
+            'nl' => 'Netherlands',
+            'br' => 'Brazil',
+            'mx' => 'Mexico',
+            'ru' => 'Russia',
+            'in' => 'India',
+            'se' => 'Sweden',
+            'no' => 'Norway',
+            'dk' => 'Denmark',
+            'fi' => 'Finland',
+            'ch' => 'Switzerland',
+            'at' => 'Austria',
+            'be' => 'Belgium',
+            'pt' => 'Portugal',
+            'pl' => 'Poland',
+            'sg' => 'Singapore',
+            'hk' => 'Hong Kong',
+            'tw' => 'Taiwan',
+            'th' => 'Thailand',
+            'id' => 'Indonesia',
+            'my' => 'Malaysia',
+            'ph' => 'Philippines',
+            'vn' => 'Vietnam',
+            'za' => 'South Africa',
+            'ae' => 'United Arab Emirates',
+            'sa' => 'Saudi Arabia',
+            'tr' => 'Turkey',
+            'il' => 'Israel',
+            'eg' => 'Egypt',
+            'ar' => 'Argentina',
+            'cl' => 'Chile',
+            'co' => 'Colombia',
+            'pe' => 'Peru',
+            'nz' => 'New Zealand',
+        ];
+    }
+
+    /**
      * Get available Android app categories
      *
      * @return array

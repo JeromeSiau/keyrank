@@ -21,7 +21,7 @@ class SuggestedQuestionsWidget extends ConsumerWidget {
 
     return suggestionsAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
       data: (suggestions) {
         if (suggestions.isEmpty) return const SizedBox.shrink();
 

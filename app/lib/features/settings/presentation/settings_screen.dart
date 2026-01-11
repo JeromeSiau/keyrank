@@ -114,21 +114,21 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 16),
 
-            // Store Connections section
+            // Integrations section
             _SectionCard(
               isDark: isDark,
-              title: 'STORE CONNECTIONS',
+              title: 'INTEGRATIONS',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
-                      Icons.store,
+                      Icons.link,
                       color: isDark ? AppColors.accent : AppColorsLight.accent,
                     ),
                     title: Text(
-                      'Manage Store Connections',
+                      'Manage Integrations',
                       style: TextStyle(
                         color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
                       ),
@@ -144,7 +144,45 @@ class SettingsScreen extends ConsumerWidget {
                       Icons.chevron_right,
                       color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
                     ),
-                    onTap: () => context.push('/settings/connections'),
+                    onTap: () => context.push('/settings/integrations'),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Billing section
+            _SectionCard(
+              isDark: isDark,
+              title: 'BILLING',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.credit_card,
+                      color: isDark ? AppColors.accent : AppColorsLight.accent,
+                    ),
+                    title: Text(
+                      'Plans & Billing',
+                      style: TextStyle(
+                        color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Manage your subscription and payment',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+                    ),
+                    onTap: () => context.push('/settings/billing'),
                   ),
                 ],
               ),

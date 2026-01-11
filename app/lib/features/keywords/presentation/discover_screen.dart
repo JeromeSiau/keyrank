@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/widgets/platform_tabs.dart';
@@ -149,8 +151,8 @@ class _Toolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: AppSpacing.toolbarHeight,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
@@ -158,19 +160,15 @@ class _Toolbar extends StatelessWidget {
         children: [
           Text(
             context.l10n.discover_title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: colors.textPrimary,
-            ),
+            style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           // Tab selector
           _TabSelector(
             selectedTab: selectedTab,
             onTabChanged: onTabChanged,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           // Platform toggle
           SizedBox(
             width: 240,
@@ -180,7 +178,7 @@ class _Toolbar extends StatelessWidget {
               onPlatformChanged: onPlatformSelected,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm + 4),
           // Country selector
           CountryPickerButton(
             selectedCountry: selectedCountry,
@@ -211,7 +209,7 @@ class _TabSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         border: Border.all(color: colors.glassBorder),
       ),
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(AppSpacing.xs),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -248,15 +246,14 @@ class _TabButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? colors.glassPanel : Colors.transparent,
           borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
         ),
         child: Text(
           label,
-          style: TextStyle(
-            fontSize: 13,
+          style: AppTypography.body.copyWith(
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             color: isSelected ? colors.textPrimary : colors.textMuted,
           ),
@@ -330,7 +327,7 @@ class _SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
@@ -346,22 +343,19 @@ class _SearchBar extends StatelessWidget {
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 6),
                     child: Icon(Icons.search_rounded, size: 20, color: colors.textMuted),
                   ),
                   Expanded(
                     child: TextField(
                       controller: controller,
                       onChanged: onChanged,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: colors.textPrimary,
-                      ),
+                      style: AppTypography.body.copyWith(color: colors.textPrimary),
                       decoration: InputDecoration(
                         hintText: context.l10n.keywordSearch_searchPlaceholder,
-                        hintStyle: TextStyle(color: colors.textMuted),
+                        hintStyle: AppTypography.body.copyWith(color: colors.textMuted),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.sm + 4),
                       ),
                     ),
                   ),
@@ -370,10 +364,10 @@ class _SearchBar extends StatelessWidget {
                       icon: const Icon(Icons.clear_rounded, size: 18),
                       color: colors.textMuted,
                       onPressed: onClear,
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(AppSpacing.sm),
                       constraints: const BoxConstraints(),
                     ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                 ],
               ),
             ),
@@ -392,7 +386,7 @@ class _KeywordResultsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -402,7 +396,7 @@ class _KeywordResultsView extends StatelessWidget {
             totalResults: response.totalResults,
             results: response.results,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           _KeywordResultsTable(results: response.results),
         ],
       ),
@@ -439,7 +433,7 @@ class _KeywordInsightsPanel extends StatelessWidget {
         children: [
           // Keyword header
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.screenPadding),
             child: Row(
               children: [
                 Expanded(
@@ -448,19 +442,12 @@ class _KeywordInsightsPanel extends StatelessWidget {
                     children: [
                       Text(
                         keyword,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: colors.textPrimary,
-                        ),
+                        style: AppTypography.title.copyWith(color: colors.textPrimary),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         context.l10n.keywordSearch_appsRanked(totalResults),
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.textMuted,
-                        ),
+                        style: AppTypography.caption.copyWith(color: colors.textMuted),
                       ),
                     ],
                   ),
@@ -521,20 +508,15 @@ class _InsightsSection extends StatelessWidget {
     final competitiveness = _calculateCompetitiveness(totalResults);
 
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.screenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'INSIGHTS',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-              color: colors.textMuted,
-            ),
+            style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           // Popularity
           _MetricRow(
             label: context.l10n.keywordSearch_popularity,
@@ -542,7 +524,7 @@ class _InsightsSection extends StatelessWidget {
             maxValue: 100,
             colorMode: _ColorMode.higherIsBetter,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           // Competitiveness
           _MetricRow(
             label: 'Competitiveness',
@@ -581,20 +563,15 @@ class _Top10PerformanceSection extends StatelessWidget {
     final metrics = _calculateTop10Metrics(top10);
 
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.screenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'TOP 10 PERFORMANCE',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-              color: colors.textMuted,
-            ),
+            style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           // Metrics grid
           Row(
             children: [
@@ -608,7 +585,7 @@ class _Top10PerformanceSection extends StatelessWidget {
                   iconColor: colors.yellow,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm + 4),
               Expanded(
                 child: _StatCard(
                   label: 'Est. Engagement',
@@ -619,7 +596,7 @@ class _Top10PerformanceSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm + 4),
           Row(
             children: [
               Expanded(
@@ -631,7 +608,7 @@ class _Top10PerformanceSection extends StatelessWidget {
                   tooltip: 'Downloads per rating - requires App Store Connect',
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm + 4),
               Expanded(
                 child: _StatCard(
                   label: 'Apps Rated',
@@ -724,23 +701,15 @@ class _MetricRow extends StatelessWidget {
           children: [
             Text(
               label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: colors.textSecondary,
-              ),
+              style: AppTypography.body.copyWith(color: colors.textSecondary),
             ),
             Text(
               '$value',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
+              style: AppTypography.bodyMedium.copyWith(color: color),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         _ProgressBar(
           value: percentage,
           color: color,
@@ -827,7 +796,7 @@ class _StatCard extends StatelessWidget {
     final colors = context.colors;
 
     Widget card = Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.sm + 4),
       decoration: BoxDecoration(
         color: colors.bgActive.withAlpha(80),
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -843,25 +812,18 @@ class _StatCard extends StatelessWidget {
             ),
             child: Icon(icon, size: 14, color: iconColor),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.sm + 2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   value,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: colors.textPrimary,
-                  ),
+                  style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
                 ),
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: colors.textMuted,
-                  ),
+                  style: AppTypography.micro.copyWith(color: colors.textMuted),
                 ),
               ],
             ),
@@ -901,23 +863,19 @@ class _KeywordResultsTable extends ConsumerWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   context.l10n.keywordSearch_results(results.length),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: colors.textSecondary,
-                  ),
+                  style: AppTypography.body.copyWith(color: colors.textSecondary),
                 ),
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 2),
             decoration: BoxDecoration(
               color: colors.bgActive.withAlpha(80),
               border: Border(
@@ -931,49 +889,29 @@ class _KeywordResultsTable extends ConsumerWidget {
                   width: 60,
                   child: Text(
                     context.l10n.keywordSearch_headerRank,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
-                    ),
+                    style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                   ),
                 ),
                 const SizedBox(width: 52),
                 Expanded(
                   child: Text(
                     context.l10n.keywordSearch_headerApp,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
-                    ),
+                    style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                   ),
                 ),
                 SizedBox(
                   width: 70,
                   child: Text(
                     context.l10n.keywordSearch_headerRating,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
-                    ),
+                    style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm + 4),
                 SizedBox(
                   width: 48,
                   child: Text(
                     context.l10n.keywordSearch_headerTrack,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
-                    ),
+                    style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -1072,7 +1010,7 @@ class _CategoryToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
@@ -1082,7 +1020,7 @@ class _CategoryToolbar extends StatelessWidget {
           Expanded(
             child: categoriesAsync.when(
               loading: () => const SizedBox(height: 40),
-              error: (_, __) => const SizedBox(height: 40),
+              error: (e, s) => const SizedBox(height: 40),
               data: (categories) {
                 final categoryList = platform == 'ios' ? categories.ios : categories.android;
                 return _CategoryDropdown(
@@ -1093,7 +1031,7 @@ class _CategoryToolbar extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           // Collection toggle (Top Free / Top Paid)
           _CollectionToggle(
             selectedCollection: selectedCollection,
@@ -1120,7 +1058,7 @@ class _CategoryDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4),
       decoration: BoxDecoration(
         color: colors.bgBase,
         border: Border.all(color: colors.glassBorder),
@@ -1131,7 +1069,7 @@ class _CategoryDropdown extends StatelessWidget {
           value: selectedCategory,
           hint: Text(
             context.l10n.discover_selectCategory,
-            style: TextStyle(color: colors.textMuted),
+            style: AppTypography.body.copyWith(color: colors.textMuted),
           ),
           isExpanded: true,
           icon: Icon(Icons.keyboard_arrow_down_rounded, color: colors.textMuted),
@@ -1141,7 +1079,7 @@ class _CategoryDropdown extends StatelessWidget {
               value: category,
               child: Text(
                 category.name,
-                style: TextStyle(color: colors.textPrimary),
+                style: AppTypography.body.copyWith(color: colors.textPrimary),
               ),
             );
           }).toList(),
@@ -1170,7 +1108,7 @@ class _CollectionToggle extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         border: Border.all(color: colors.glassBorder),
       ),
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(AppSpacing.xs),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1207,7 +1145,7 @@ class _TopAppsResultsView extends ConsumerWidget {
     final selectedCountry = ref.watch(selectedCountryProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
       child: Container(
         decoration: BoxDecoration(
           color: colors.bgActive.withAlpha(50),
@@ -1217,23 +1155,19 @@ class _TopAppsResultsView extends ConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     context.l10n.discover_appsCount(apps.length),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: colors.textSecondary,
-                    ),
+                    style: AppTypography.body.copyWith(color: colors.textSecondary),
                   ),
                 ],
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 2),
               decoration: BoxDecoration(
                 color: colors.bgActive.withAlpha(80),
                 border: Border(
@@ -1247,36 +1181,21 @@ class _TopAppsResultsView extends ConsumerWidget {
                     width: 60,
                     child: Text(
                       context.l10n.keywordSearch_headerRank,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
                   const SizedBox(width: 52),
                   Expanded(
                     child: Text(
                       context.l10n.keywordSearch_headerApp,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
                   SizedBox(
                     width: 48,
                     child: Text(
                       context.l10n.keywordSearch_headerTrack,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -1361,7 +1280,7 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
     return InkWell(
       onTap: _openPreview,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 4),
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: colors.glassBorder)),
         ),
@@ -1371,15 +1290,14 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
             SizedBox(
               width: 60,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: AppSpacing.xs),
                 decoration: BoxDecoration(
                   color: isTopRank ? colors.greenMuted : colors.bgActive,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '#${widget.app.position}',
-                  style: TextStyle(
-                    fontSize: 13,
+                  style: AppTypography.tableCell.copyWith(
                     fontWeight: FontWeight.w700,
                     color: isTopRank ? colors.green : colors.textSecondary,
                   ),
@@ -1387,7 +1305,7 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm + 4),
             // Icon
             Container(
               width: 40,
@@ -1402,7 +1320,7 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
                       child: Image.network(
                         widget.app.iconUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Center(
+                        errorBuilder: (_, e, s) => const Center(
                           child: Icon(Icons.apps, size: 20, color: Colors.white),
                         ),
                       ),
@@ -1411,7 +1329,7 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
                       child: Icon(Icons.apps, size: 20, color: Colors.white),
                     ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm + 4),
             // App info
             Expanded(
               child: Column(
@@ -1419,20 +1337,13 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
                 children: [
                   Text(
                     widget.app.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textPrimary,
-                    ),
+                    style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (widget.app.developer != null)
                     Text(
                       widget.app.developer!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.caption.copyWith(color: colors.textMuted),
                       overflow: TextOverflow.ellipsis,
                     ),
                 ],
@@ -1575,7 +1486,7 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
     return InkWell(
       onTap: _openPreview,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 4),
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: colors.glassBorder)),
         ),
@@ -1585,15 +1496,14 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
             SizedBox(
               width: 60,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: AppSpacing.xs),
                 decoration: BoxDecoration(
                   color: isTopRank ? colors.greenMuted : colors.bgActive,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '#${widget.app.position}',
-                  style: TextStyle(
-                    fontSize: 13,
+                  style: AppTypography.tableCell.copyWith(
                     fontWeight: FontWeight.w700,
                     color: isTopRank ? colors.green : colors.textSecondary,
                   ),
@@ -1601,7 +1511,7 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm + 4),
             // Icon
             Container(
               width: 40,
@@ -1616,7 +1526,7 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
                       child: Image.network(
                         widget.app.iconUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Center(
+                        errorBuilder: (_, e, s) => const Center(
                           child: Icon(Icons.apps, size: 20, color: Colors.white),
                         ),
                       ),
@@ -1625,7 +1535,7 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
                       child: Icon(Icons.apps, size: 20, color: Colors.white),
                     ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm + 4),
             // App info
             Expanded(
               child: Column(
@@ -1633,20 +1543,13 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
                 children: [
                   Text(
                     widget.app.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textPrimary,
-                    ),
+                    style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (widget.app.developer != null)
                     Text(
                       widget.app.developer!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.caption.copyWith(color: colors.textMuted),
                       overflow: TextOverflow.ellipsis,
                     ),
                 ],
@@ -1659,26 +1562,19 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
                   ? Row(
                       children: [
                         Icon(Icons.star_rounded, size: 16, color: colors.yellow),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           widget.app.rating!.toStringAsFixed(1),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: colors.textSecondary,
-                          ),
+                          style: AppTypography.tableCell.copyWith(color: colors.textSecondary),
                         ),
                       ],
                     )
                   : Text(
                       '--',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableCell.copyWith(color: colors.textMuted),
                     ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm + 4),
             // Track button
             SizedBox(
               width: 48,

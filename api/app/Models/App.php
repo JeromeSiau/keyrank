@@ -36,6 +36,15 @@ class App extends Model
         'secondary_category_id',
         'ratings_fetched_at',
         'reviews_fetched_at',
+        // Discovery tracking
+        'discovered_from_app_id',
+        'discovery_source',
+        // Metadata tracking
+        'current_version',
+        'current_price',
+        'current_size_bytes',
+        'current_screenshots',
+        'metadata_checked_at',
     ];
 
     protected $casts = [
@@ -48,6 +57,10 @@ class App extends Model
         'price' => 'decimal:2',
         'ratings_fetched_at' => 'datetime',
         'reviews_fetched_at' => 'datetime',
+        'current_price' => 'decimal:2',
+        'current_size_bytes' => 'integer',
+        'current_screenshots' => 'array',
+        'metadata_checked_at' => 'datetime',
     ];
 
     public function users(): BelongsToMany
@@ -132,5 +145,43 @@ class App extends Model
     public function getAnalyticsSummary(string $period = '30d'): ?AppAnalyticsSummary
     {
         return $this->analyticsSummaries()->where('period', $period)->first();
+    }
+
+    public function keywordSuggestions(): HasMany
+    {
+        return $this->hasMany(KeywordSuggestion::class);
+    }
+
+    public function metadataHistory(): HasMany
+    {
+        return $this->hasMany(AppMetadataHistory::class);
+    }
+
+    public function topChartEntries(): HasMany
+    {
+        return $this->hasMany(TopAppEntry::class);
+    }
+
+    public function discoveredFrom(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(App::class, 'discovered_from_app_id');
+    }
+
+    public function discoveredApps(): HasMany
+    {
+        return $this->hasMany(App::class, 'discovered_from_app_id');
+    }
+
+    public function scopeDiscoveredVia($query, string $source)
+    {
+        return $query->where('discovery_source', $source);
+    }
+
+    public function scopeWithRecentVersionChange($query, int $days = 7)
+    {
+        return $query->whereHas('metadataHistory', function ($q) use ($days) {
+            $q->where('field', 'version')
+                ->where('changed_at', '>=', now()->subDays($days));
+        });
     }
 }

@@ -396,7 +396,7 @@ class _AppSelector extends ConsumerWidget {
                     width: 20,
                     height: 20,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Icon(
+                    errorBuilder: (_, _, _) => Icon(
                       Icons.apps,
                       size: 20,
                       color: isSelected ? Colors.white : colors.textMuted,
@@ -514,7 +514,7 @@ class _RatingTrendCard extends ConsumerWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
                 ),
               ),
-              error: (_, __) => Center(
+              error: (_, _) => Center(
                 child: Text(
                   'Unable to load rating history',
                   style: TextStyle(color: colors.textMuted),
@@ -807,7 +807,7 @@ class _AppRatingRow extends StatelessWidget {
                       width: 32,
                       height: 32,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (_, _, _) => Container(
                         width: 32,
                         height: 32,
                         color: colors.bgActive,

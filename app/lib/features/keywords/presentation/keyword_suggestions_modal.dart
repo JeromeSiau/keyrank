@@ -29,6 +29,7 @@ class KeywordSuggestionsModal extends ConsumerStatefulWidget {
 class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModal> {
   List<KeywordSuggestion>? _suggestions;
   bool _isLoading = true;
+  bool _isGenerating = false;
   String? _error;
   final Set<String> _selectedKeywords = {};
   String _searchQuery = '';
@@ -58,6 +59,7 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
           _suggestions = response.suggestions
               .where((s) => !widget.existingKeywords.contains(s.keyword.toLowerCase()))
               .toList();
+          _isGenerating = response.isGenerating;
           _isLoading = false;
         });
       }
@@ -330,6 +332,50 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
     }
 
     final suggestions = _filteredSuggestions;
+
+    // Show generating state when no suggestions and generation is in progress
+    if (suggestions.isEmpty && _isGenerating) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: colors.accentMuted,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(Icons.auto_awesome_rounded, size: 28, color: colors.accent),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Generating suggestions...',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: colors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'This may take a few minutes. Please check back later.',
+              style: TextStyle(
+                fontSize: 13,
+                color: colors.textMuted,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: _loadSuggestions,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: const Text('Check again'),
+            ),
+          ],
+        ),
+      );
+    }
 
     if (suggestions.isEmpty) {
       return Center(

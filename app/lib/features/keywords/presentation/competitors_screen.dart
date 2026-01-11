@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../../apps/domain/app_model.dart';
@@ -110,8 +112,8 @@ class _MainToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: AppSpacing.toolbarHeight,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
@@ -119,7 +121,7 @@ class _MainToolbar extends StatelessWidget {
         children: [
           // Groups icon
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: colors.accent.withAlpha(25),
               borderRadius: BorderRadius.circular(8),
@@ -130,15 +132,11 @@ class _MainToolbar extends StatelessWidget {
               color: colors.accent,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm + 4),
           // Title
           Text(
             context.l10n.nav_competitors,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: colors.textPrimary,
-            ),
+            style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
           const Spacer(),
           // Add apps button
@@ -149,7 +147,7 @@ class _MainToolbar extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               hoverColor: colors.bgHover,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4, vertical: AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: colors.accent,
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -165,8 +163,7 @@ class _MainToolbar extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       'Add Apps',
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: AppTypography.body.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -176,7 +173,7 @@ class _MainToolbar extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm + 4),
           // Refresh button
           Material(
             color: Colors.transparent,
@@ -185,7 +182,7 @@ class _MainToolbar extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               hoverColor: colors.bgHover,
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   border: Border.all(color: colors.glassBorder),
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -220,7 +217,7 @@ class _EmptyState extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: colors.accent.withAlpha(15),
               shape: BoxShape.circle,
@@ -231,31 +228,24 @@ class _EmptyState extends StatelessWidget {
               color: colors.accent.withAlpha(150),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Select apps to compare',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: colors.textPrimary,
-            ),
+            style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Compare metrics and rankings across your tracked apps',
-            style: TextStyle(
-              fontSize: 14,
-              color: colors.textMuted,
-            ),
+            style: AppTypography.body.copyWith(color: colors.textMuted),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: onAddApps,
               borderRadius: BorderRadius.circular(AppColors.radiusSmall),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding, vertical: AppSpacing.sm + 4),
                 decoration: BoxDecoration(
                   color: colors.accent,
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -268,14 +258,10 @@ class _EmptyState extends StatelessWidget {
                       size: 20,
                       color: Colors.white,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Add Apps to Compare',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                      style: AppTypography.bodyMedium.copyWith(color: Colors.white),
                     ),
                   ],
                 ),
@@ -335,7 +321,7 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.screenPadding),
               decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: colors.glassBorder)),
               ),
@@ -349,14 +335,10 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                         size: 24,
                         color: colors.accent,
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm + 4),
                       Text(
                         'Select Apps to Compare',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: colors.textPrimary,
-                        ),
+                        style: AppTypography.headline.copyWith(color: colors.textPrimary),
                       ),
                       const Spacer(),
                       IconButton(
@@ -368,20 +350,17 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Select 2-4 apps from your tracked apps',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colors.textMuted,
-                    ),
+                    style: AppTypography.caption.copyWith(color: colors.textMuted),
                   ),
                 ],
               ),
             ),
             // Search bar
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.cardPadding),
               child: Container(
                 decoration: BoxDecoration(
                   color: colors.bgActive,
@@ -390,10 +369,10 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                 ),
                 child: TextField(
                   onChanged: (value) => setState(() => _searchQuery = value),
-                  style: TextStyle(color: colors.textPrimary, fontSize: 14),
+                  style: AppTypography.body.copyWith(color: colors.textPrimary),
                   decoration: InputDecoration(
                     hintText: context.l10n.compare_searchApps,
-                    hintStyle: TextStyle(color: colors.textMuted),
+                    hintStyle: AppTypography.body.copyWith(color: colors.textMuted),
                     prefixIcon: Icon(
                       Icons.search_rounded,
                       color: colors.textMuted,
@@ -401,8 +380,8 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                     ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                      horizontal: AppSpacing.cardPadding,
+                      vertical: AppSpacing.sm + 4,
                     ),
                   ),
                 ),
@@ -410,14 +389,12 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
             ),
             // Selection count
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding),
               child: Row(
                 children: [
                   Text(
                     '${_selectedIds.length} of 4 apps selected',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                    style: AppTypography.body.copyWith(
                       color: _selectedIds.length >= 2 ? colors.green : colors.textMuted,
                     ),
                   ),
@@ -427,31 +404,28 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                       onPressed: () => setState(() => _selectedIds.clear()),
                       child: Text(
                         context.l10n.keywordSuggestions_clear,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.textMuted,
-                        ),
+                        style: AppTypography.body.copyWith(color: colors.textMuted),
                       ),
                     ),
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             // App list
             Flexible(
               child: filteredApps.isEmpty
                   ? Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(32),
+                        padding: const EdgeInsets.all(AppSpacing.xl),
                         child: Text(
                           context.l10n.compare_noMatchingApps,
-                          style: TextStyle(color: colors.textMuted),
+                          style: AppTypography.body.copyWith(color: colors.textMuted),
                         ),
                       ),
                     )
                   : ListView.builder(
                       shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding),
                       itemCount: filteredApps.length,
                       itemBuilder: (context, index) {
                         final app = filteredApps[index];
@@ -477,7 +451,7 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
             ),
             // Footer buttons
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.cardPadding),
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: colors.glassBorder)),
               ),
@@ -488,10 +462,10 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                     onPressed: () => Navigator.of(context).pop(),
                     child: Text(
                       context.l10n.compare_cancel,
-                      style: TextStyle(color: colors.textMuted),
+                      style: AppTypography.body.copyWith(color: colors.textMuted),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm + 4),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -504,8 +478,8 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                       borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
+                          horizontal: AppSpacing.cardPadding,
+                          vertical: AppSpacing.sm + 2,
                         ),
                         decoration: BoxDecoration(
                           color: _selectedIds.length >= 2
@@ -515,9 +489,7 @@ class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
                         ),
                         child: Text(
                           context.l10n.compare_button(_selectedIds.length),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                          style: AppTypography.bodyMedium.copyWith(
                             color: _selectedIds.length >= 2
                                 ? Colors.white
                                 : colors.textMuted,
@@ -558,8 +530,8 @@ class _AppSelectionTile extends StatelessWidget {
         onTap: canSelect ? onTap : null,
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          margin: const EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4, vertical: AppSpacing.sm + 2),
+          margin: const EdgeInsets.only(bottom: AppSpacing.xs),
           decoration: BoxDecoration(
             color: isSelected ? colors.accent.withAlpha(15) : Colors.transparent,
             borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -589,7 +561,7 @@ class _AppSelectionTile extends StatelessWidget {
                       )
                     : null,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm + 4),
               // App icon
               Container(
                 width: 36,
@@ -603,7 +575,7 @@ class _AppSelectionTile extends StatelessWidget {
                     ? Image.network(
                         app.iconUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => Icon(
+                        errorBuilder: (_, e, s) => Icon(
                           app.isIos ? Icons.apple : Icons.android,
                           size: 18,
                           color: colors.textMuted,
@@ -615,7 +587,7 @@ class _AppSelectionTile extends StatelessWidget {
                         color: colors.textMuted,
                       ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm + 4),
               // App name and platform
               Expanded(
                 child: Column(
@@ -623,9 +595,7 @@ class _AppSelectionTile extends StatelessWidget {
                   children: [
                     Text(
                       app.name,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      style: AppTypography.bodyMedium.copyWith(
                         color: canSelect ? colors.textPrimary : colors.textMuted,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -638,13 +608,10 @@ class _AppSelectionTile extends StatelessWidget {
                           size: 12,
                           color: colors.textMuted,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           app.isIos ? 'iOS' : 'Android',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colors.textMuted,
-                          ),
+                          style: AppTypography.caption.copyWith(color: colors.textMuted),
                         ),
                       ],
                     ),
@@ -660,14 +627,10 @@ class _AppSelectionTile extends StatelessWidget {
                       size: 14,
                       color: colors.yellow,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       app.rating!.toStringAsFixed(1),
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: colors.textSecondary,
-                      ),
+                      style: AppTypography.tableCell.copyWith(color: colors.textSecondary),
                     ),
                   ],
                 ),
@@ -687,7 +650,7 @@ class _ComparisonView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.screenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -700,10 +663,10 @@ class _ComparisonView extends ConsumerWidget {
                   Set.from(currentIds)..remove(appId);
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.screenPadding),
           // Metrics comparison table
           _MetricsComparisonCard(apps: selectedApps),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.screenPadding),
           // Ranking trend chart
           _RankingTrendCard(apps: selectedApps),
         ],
@@ -725,12 +688,12 @@ class _SelectedAppsChips extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
       children: apps.map((app) {
         final chipColor = _getAppColor(apps.indexOf(app));
         return Container(
-          padding: const EdgeInsets.only(left: 4, right: 8, top: 4, bottom: 4),
+          padding: const EdgeInsets.only(left: AppSpacing.xs, right: AppSpacing.sm, top: AppSpacing.xs, bottom: AppSpacing.xs),
           decoration: BoxDecoration(
             color: chipColor.withAlpha(20),
             borderRadius: BorderRadius.circular(20),
@@ -752,7 +715,7 @@ class _SelectedAppsChips extends StatelessWidget {
                     ? Image.network(
                         app.iconUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => Icon(
+                        errorBuilder: (_, e, s) => Icon(
                           app.isIos ? Icons.apple : Icons.android,
                           size: 14,
                           color: colors.textMuted,
@@ -764,17 +727,13 @@ class _SelectedAppsChips extends StatelessWidget {
                         color: colors.textMuted,
                       ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               // App name
               Text(
                 app.name,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: colors.textPrimary,
-                ),
+                style: AppTypography.body.copyWith(color: colors.textPrimary),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               // Remove button
               GestureDetector(
                 onTap: () => onRemove(app.id),
@@ -818,7 +777,7 @@ class _MetricsComparisonCard extends StatelessWidget {
         children: [
           // Section header
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.cardPadding),
             child: Row(
               children: [
                 Icon(
@@ -826,14 +785,10 @@ class _MetricsComparisonCard extends StatelessWidget {
                   size: 20,
                   color: colors.accent,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.sm + 2),
                 Text(
                   'Metrics Comparison',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
-                  ),
+                  style: AppTypography.titleSmall.copyWith(color: colors.textPrimary),
                 ),
               ],
             ),
@@ -841,7 +796,7 @@ class _MetricsComparisonCard extends StatelessWidget {
           Divider(height: 1, color: colors.glassBorder),
           // Table header
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 4),
             color: colors.bgActive.withAlpha(80),
             child: Row(
               children: [
@@ -849,23 +804,13 @@ class _MetricsComparisonCard extends StatelessWidget {
                   width: 140,
                   child: Text(
                     'METRIC',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: colors.textMuted,
-                    ),
+                    style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                   ),
                 ),
                 ...apps.map((app) => Expanded(
                       child: Text(
                         app.name,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                          color: colors.textMuted,
-                        ),
+                        style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                       ),
@@ -934,7 +879,7 @@ class _MetricRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 6),
       decoration: BoxDecoration(
         border: isLast
             ? null
@@ -947,14 +892,10 @@ class _MetricRow extends StatelessWidget {
             child: Row(
               children: [
                 Icon(icon, size: 16, color: iconColor),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: colors.textSecondary,
-                  ),
+                  style: AppTypography.body.copyWith(color: colors.textSecondary),
                 ),
               ],
             ),
@@ -977,24 +918,17 @@ class _RatingValue extends StatelessWidget {
     if (rating == null) {
       return Text(
         '--',
-        style: TextStyle(
-          fontSize: 14,
-          color: colors.textMuted,
-        ),
+        style: AppTypography.bodyMedium.copyWith(color: colors.textMuted),
       );
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(Icons.star_rounded, size: 16, color: colors.yellow),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           rating!.toStringAsFixed(1),
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: colors.textPrimary,
-          ),
+          style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
         ),
       ],
     );
@@ -1012,11 +946,7 @@ class _NumberValue extends StatelessWidget {
     final colors = context.colors;
     return Text(
       _formatNumber(value) + (suffix ?? ''),
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: colors.textPrimary,
-      ),
+      style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
     );
   }
 
@@ -1040,10 +970,7 @@ class _TextValue extends StatelessWidget {
     final colors = context.colors;
     return Text(
       text,
-      style: TextStyle(
-        fontSize: 13,
-        color: colors.textSecondary,
-      ),
+      style: AppTypography.body.copyWith(color: colors.textSecondary),
       textAlign: TextAlign.center,
     );
   }
@@ -1070,7 +997,7 @@ class _RankingTrendCard extends ConsumerWidget {
         children: [
           // Section header with period selector
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.cardPadding),
             child: Row(
               children: [
                 Icon(
@@ -1078,14 +1005,10 @@ class _RankingTrendCard extends ConsumerWidget {
                   size: 20,
                   color: colors.green,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.sm + 2),
                 Text(
                   'Ranking Trends',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
-                  ),
+                  style: AppTypography.titleSmall.copyWith(color: colors.textPrimary),
                 ),
                 const Spacer(),
                 // Period selector
@@ -1101,12 +1024,12 @@ class _RankingTrendCard extends ConsumerWidget {
           Divider(height: 1, color: colors.glassBorder),
           // Chart area
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.screenPadding),
             child: Column(
               children: [
                 // Multi-line chart placeholder
                 _MultiLineChart(apps: apps, period: selectedPeriod),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.screenPadding),
                 // Legend
                 _ChartLegend(apps: apps),
               ],
@@ -1144,15 +1067,14 @@ class _PeriodSelector extends StatelessWidget {
           return GestureDetector(
             onTap: () => onChanged(period),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4, vertical: 6),
               decoration: BoxDecoration(
                 color: isSelected ? colors.glassPanel : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
               ),
               child: Text(
                 period.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 12,
+                style: AppTypography.caption.copyWith(
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   color: isSelected ? colors.textPrimary : colors.textMuted,
                 ),
@@ -1333,8 +1255,8 @@ class _ChartLegend extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Wrap(
-      spacing: 20,
-      runSpacing: 8,
+      spacing: AppSpacing.screenPadding,
+      runSpacing: AppSpacing.sm,
       alignment: WrapAlignment.center,
       children: apps.asMap().entries.map((entry) {
         final index = entry.key;
@@ -1354,10 +1276,7 @@ class _ChartLegend extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               app.name,
-              style: TextStyle(
-                fontSize: 12,
-                color: colors.textSecondary,
-              ),
+              style: AppTypography.caption.copyWith(color: colors.textSecondary),
             ),
           ],
         );

@@ -6,30 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppRanking;
 use App\Models\AppRankingAggregate;
-use App\Services\GooglePlayService;
-use App\Services\iTunesService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class RankingController extends Controller
 {
-    public function __construct(
-        private iTunesService $iTunesService,
-        private GooglePlayService $googlePlayService
-    ) {}
-
     /**
      * Get current rankings for an app
-     * Auto-fetches from iTunes if data is stale (> 12h)
+     * Data is collected by background collectors - no on-demand fetching
      */
     public function index(Request $request, App $app): JsonResponse
     {
-        // Check if we need to fetch fresh data
-        $this->fetchRankingsIfStale($app);
-
         $keywords = $app->keywords()
             ->get(['keywords.id', 'keywords.keyword', 'keywords.storefront', 'keywords.popularity'])
             ->keyBy('id');
@@ -75,69 +64,6 @@ class RankingController extends Controller
         return response()->json([
             'data' => $result,
         ]);
-    }
-
-    /**
-     * Fetch rankings from store if data is stale (> 12h)
-     */
-    private function fetchRankingsIfStale(App $app): void
-    {
-        $trackedKeywords = $app->keywords;
-
-        if ($trackedKeywords->isEmpty()) {
-            return;
-        }
-
-        // Check cache to see if we've fetched recently
-        $cacheKey = "rankings_fetched_{$app->id}";
-        $lastFetched = Cache::get($cacheKey);
-
-        if ($lastFetched) {
-            return; // Already fetched within cache duration
-        }
-
-        // Check if we have fresh rankings (within 12 hours)
-        $latestRanking = $app->rankings()
-            ->where('recorded_at', '>=', now()->subHours(12))
-            ->first();
-
-        if ($latestRanking) {
-            // Data is fresh, set cache and return
-            Cache::put($cacheKey, now(), now()->addHours(12));
-
-            return;
-        }
-
-        // Fetch fresh rankings using appropriate service based on platform
-        foreach ($trackedKeywords as $keyword) {
-            if ($app->platform === 'ios') {
-                $position = $this->iTunesService->getAppRankForKeyword(
-                    $app->store_id,
-                    $keyword->keyword,
-                    strtolower($keyword->storefront)
-                );
-            } else {
-                $position = $this->googlePlayService->getAppRankForKeyword(
-                    $app->store_id,
-                    $keyword->keyword,
-                    strtolower($keyword->storefront)
-                );
-            }
-
-            $app->rankings()->updateOrCreate(
-                [
-                    'keyword_id' => $keyword->id,
-                    'recorded_at' => today(),
-                ],
-                ['position' => $position]
-            );
-
-            // Small delay to avoid rate limiting
-            usleep(300000); // 0.3 seconds
-        }
-
-        // Cache that we've fetched
-        Cache::put($cacheKey, now(), now()->addHours(12));
     }
 
     /**
@@ -252,7 +178,7 @@ class RankingController extends Controller
                 'keywords.storefront',
                 'today.position as current_position',
                 'yesterday.position as previous_position',
-                DB::raw('(yesterday.position - today.position) as change'),
+                DB::raw('(yesterday.position - today.position) as `change`'),
             ])
             ->get();
 

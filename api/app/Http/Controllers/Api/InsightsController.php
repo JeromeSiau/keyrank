@@ -39,6 +39,9 @@ class InsightsController extends Controller
      */
     public function generate(Request $request, App $app): JsonResponse
     {
+        // Extend execution time for LLM calls (multiple chunks can take a while)
+        set_time_limit(300);
+
         $validated = $request->validate([
             'countries' => 'required|array|min:1',
             'countries.*' => 'string|size:2',

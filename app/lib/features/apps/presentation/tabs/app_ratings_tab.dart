@@ -397,7 +397,7 @@ class _RatingTrendChart extends ConsumerWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
                 ),
               ),
-              error: (_, __) => Center(
+              error: (_, _) => Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

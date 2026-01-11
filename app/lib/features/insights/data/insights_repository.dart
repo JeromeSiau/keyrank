@@ -53,9 +53,7 @@ class InsightsRepository {
     try {
       final response = await dio.get(
         ApiConstants.insightsCompare,
-        queryParameters: {
-          for (var i = 0; i < appIds.length; i++) 'app_ids[$i]': appIds[i],
-        },
+        queryParameters: {'app_ids': appIds},
       );
       final data = response.data['data'] as List<dynamic>;
       return data

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateKeywordSuggestionsJob;
 use App\Models\App;
 use App\Models\AppRanking;
 use App\Models\Keyword;
+use App\Models\KeywordSuggestion;
 use App\Models\Tag;
 use App\Models\TrackedKeyword;
 use App\Services\iTunesService;
@@ -135,6 +137,7 @@ class KeywordController extends Controller
 
     /**
      * Add a keyword to track for an app
+     * Fetches initial ranking immediately for instant feedback
      */
     public function addToApp(Request $request, App $app): JsonResponse
     {
@@ -171,31 +174,43 @@ class KeywordController extends Controller
             'created_at' => now(),
         ]);
 
-        $country = strtolower($storefront);
+        // Fetch current ranking immediately
+        $position = null;
+        $now = now();
 
-        // Check if ranking already exists for today (from another user)
-        $existingRanking = $app->rankings()
-            ->where('keyword_id', $keyword->id)
-            ->where('recorded_at', today())
-            ->first();
+        try {
+            if ($app->platform === 'android') {
+                $results = $this->googlePlayService->searchApps($keywordText, strtolower($storefront), 100);
+            } else {
+                $results = $this->iTunesService->searchApps($keywordText, strtolower($storefront), 100);
+            }
 
-        if ($existingRanking) {
-            // Ranking already exists (shared), use it
-            $position = $existingRanking->position;
-        } else {
-            // Fetch ranking based on app's platform
-            $service = $app->platform === 'ios' ? $this->iTunesService : $this->googlePlayService;
-            $position = $service->getAppRankForKeyword(
-                $app->store_id,
-                $keywordText,
-                $country
+            // Find app position in results
+            foreach ($results as $result) {
+                $resultId = $app->platform === 'android'
+                    ? ($result['google_play_id'] ?? null)
+                    : ($result['apple_id'] ?? null);
+
+                if ($resultId === $app->store_id) {
+                    $position = $result['position'];
+                    break;
+                }
+            }
+
+            // Save ranking to database
+            AppRanking::updateOrCreate(
+                [
+                    'app_id' => $app->id,
+                    'keyword_id' => $keyword->id,
+                    'recorded_at' => $now->toDateString(),
+                ],
+                [
+                    'position' => $position,
+                ]
             );
-
-            $app->rankings()->create([
-                'keyword_id' => $keyword->id,
-                'recorded_at' => today(),
-                'position' => $position,
-            ]);
+        } catch (\Exception $e) {
+            // Log but don't fail - ranking will be collected by background job
+            \Log::warning("Failed to fetch initial ranking for keyword {$keywordText}: " . $e->getMessage());
         }
 
         return response()->json([
@@ -204,7 +219,9 @@ class KeywordController extends Controller
                 'id' => $keyword->id,
                 'keyword' => $keyword->keyword,
                 'storefront' => $keyword->storefront,
+                'popularity' => $keyword->popularity,
                 'position' => $position,
+                'last_updated' => $now->toIso8601String(),
             ],
         ], 201);
     }
@@ -280,7 +297,7 @@ class KeywordController extends Controller
     }
 
     /**
-     * Get keyword suggestions for an app
+     * Get keyword suggestions for an app (from pre-generated cache)
      */
     public function suggestions(Request $request, App $app): JsonResponse
     {
@@ -292,43 +309,42 @@ class KeywordController extends Controller
         $country = strtoupper($validated['country'] ?? 'US');
         $limit = $validated['limit'] ?? 30;
 
-        if ($app->platform === 'android') {
-            $response = $this->googlePlayService->getSuggestionsForApp(
-                $app->store_id,
-                $country,
-                $limit
-            );
+        // Get cached suggestions from database
+        $suggestions = KeywordSuggestion::where('app_id', $app->id)
+            ->where('country', $country)
+            ->orderByOpportunity()
+            ->limit($limit)
+            ->get();
 
-            // Response already has correct format from scraper
-            if (empty($response)) {
-                return response()->json([
-                    'data' => [],
-                    'meta' => [
-                        'app_id' => $app->store_id,
-                        'country' => $country,
-                        'total' => 0,
-                        'generated_at' => now()->toIso8601String(),
-                    ],
-                ]);
-            }
+        $generatedAt = $suggestions->first()?->generated_at;
+        $needsRefresh = $suggestions->isEmpty() || ($generatedAt && $generatedAt->diffInDays(now()) >= 7);
 
-            return response()->json($response);
+        // If no suggestions or stale, dispatch job to generate them
+        if ($needsRefresh) {
+            GenerateKeywordSuggestionsJob::dispatch($app->id, $country, 50);
         }
 
-        // iOS - use KeywordDiscoveryService
-        $suggestions = $this->keywordDiscoveryService->getSuggestionsForApp(
-            $app->store_id,
-            $country,
-            $limit
-        );
+        // Format response
+        $formattedSuggestions = $suggestions->map(fn($s) => [
+            'keyword' => $s->keyword,
+            'source' => $s->source,
+            'metrics' => [
+                'position' => $s->position,
+                'competition' => $s->competition,
+                'difficulty' => $s->difficulty,
+                'difficulty_label' => $s->difficulty_label,
+            ],
+            'top_competitors' => $s->top_competitors ?? [],
+        ]);
 
         return response()->json([
-            'data' => $suggestions,
+            'data' => $formattedSuggestions,
             'meta' => [
                 'app_id' => $app->store_id,
                 'country' => $country,
-                'total' => count($suggestions),
-                'generated_at' => now()->toIso8601String(),
+                'total' => $suggestions->count(),
+                'generated_at' => $generatedAt?->toIso8601String(),
+                'is_generating' => $needsRefresh,
             ],
         ]);
     }

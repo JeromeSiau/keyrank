@@ -40,7 +40,7 @@ class AppOverviewTab extends ConsumerWidget {
           summaryAsync.when(
             data: (summary) => _buildMetricsGrid(context, summary, keywordsState),
             loading: () => _buildMetricsGridLoading(context),
-            error: (_, __) => _buildMetricsGridFallback(context, keywordsState),
+            error: (_, _) => _buildMetricsGridFallback(context, keywordsState),
           ),
           const SizedBox(height: 20),
 
@@ -48,7 +48,7 @@ class AppOverviewTab extends ConsumerWidget {
           downloadsAsync.when(
             data: (data) => _DownloadsChart(data: data),
             loading: () => _ChartLoading(),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 20),
 
@@ -58,7 +58,7 @@ class AppOverviewTab extends ConsumerWidget {
                 ? _CountryBreakdown(countries: countries)
                 : const SizedBox.shrink(),
             loading: () => _SectionLoading(title: 'By Country'),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 20),
 
@@ -1021,7 +1021,6 @@ class _TopKeywordRow extends StatelessWidget {
     final colors = context.colors;
     final change = keyword.change as int?;
     final isPositive = change != null && change > 0;
-    final isNegative = change != null && change < 0;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),

@@ -49,8 +49,15 @@ return new class extends Migration
         ");
 
         // Step 3: Drop old table and rename new one
+        // Disable FK checks for MySQL to allow dropping table with references
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        }
         Schema::drop('apps');
         Schema::rename('apps_new', 'apps');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        }
 
         // Step 4: Update child tables - drop platform column
         // app_ratings: drop platform column and update unique constraint

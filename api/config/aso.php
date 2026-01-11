@@ -13,13 +13,47 @@ return [
 
     'top_apps' => [
         // Countries to track (ISO 3166-1 alpha-2 codes)
-        // These are markets with significant app developer communities
+        // Major app markets worldwide
         'countries' => [
+            // Tier 1 - Major markets
             'us', // United States - largest market
-            'fr', // France
             'gb', // United Kingdom
             'de', // Germany
-            'tr', // Turkey - growing dev community
+            'fr', // France
+            'jp', // Japan - 3rd largest market
+            'kr', // South Korea
+            'cn', // China
+
+            // Tier 2 - Large markets
+            'ca', // Canada
+            'au', // Australia
+            'it', // Italy
+            'es', // Spain
+            'br', // Brazil - largest LATAM
+            'mx', // Mexico
+            'in', // India - massive growth
+            'ru', // Russia
+
+            // Tier 3 - Growing markets
+            'nl', // Netherlands
+            'se', // Sweden
+            'no', // Norway
+            'dk', // Denmark
+            'pl', // Poland
+            'tr', // Turkey
+            'sa', // Saudi Arabia
+            'ae', // UAE
+            'sg', // Singapore
+            'hk', // Hong Kong
+            'tw', // Taiwan
+            'th', // Thailand
+            'id', // Indonesia
+            'vn', // Vietnam
+            'ph', // Philippines
+            'my', // Malaysia
+            'ar', // Argentina
+            'cl', // Chile
+            'co', // Colombia
         ],
 
         // Collection types to track
@@ -30,6 +64,7 @@ return [
         ],
 
         // Number of apps to fetch per category/country/collection
+        // iTunes RSS max is 100, Google Play scraper can do more
         'limit' => 100,
     ],
 

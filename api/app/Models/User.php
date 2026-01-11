@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +30,8 @@ class User extends Authenticatable
         'fcm_token',
         'quiet_hours_start',
         'quiet_hours_end',
+        'onboarding_step',
+        'onboarding_completed_at',
     ];
 
     /**
@@ -53,6 +56,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'quiet_hours_start' => 'datetime:H:i:s',
             'quiet_hours_end' => 'datetime:H:i:s',
+            'onboarding_completed_at' => 'datetime',
         ];
     }
 
@@ -62,15 +66,50 @@ class User extends Authenticatable
     public function apps(): BelongsToMany
     {
         return $this->belongsToMany(App::class, 'user_apps')
-            ->withPivot('is_owner', 'is_favorite', 'favorited_at', 'created_at');
+            ->withPivot('is_owner', 'ownership_type', 'integration_id', 'tag', 'is_favorite', 'favorited_at', 'created_at');
     }
 
     /**
-     * Get user's owned apps (where they have store connection)
+     * Get user's owned apps (via store connection)
      */
     public function ownedApps(): BelongsToMany
     {
-        return $this->apps()->wherePivot('is_owner', true);
+        return $this->apps()->wherePivot('ownership_type', 'owned');
+    }
+
+    /**
+     * Get user's watched apps (competitors, inspiration, etc.)
+     */
+    public function watchedApps(): BelongsToMany
+    {
+        return $this->apps()->wherePivot('ownership_type', 'watched');
+    }
+
+    /**
+     * Get user's integrations
+     */
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(Integration::class);
+    }
+
+    /**
+     * Get active integration for a specific type
+     */
+    public function getIntegration(string $type): ?Integration
+    {
+        return $this->integrations()
+            ->where('type', $type)
+            ->where('status', Integration::STATUS_ACTIVE)
+            ->first();
+    }
+
+    /**
+     * Check if user has an active integration of a specific type
+     */
+    public function hasIntegration(string $type): bool
+    {
+        return $this->getIntegration($type) !== null;
     }
 
     /**

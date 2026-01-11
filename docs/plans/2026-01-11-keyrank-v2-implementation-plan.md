@@ -139,7 +139,7 @@
           'app_store_connect',
           'google_play_console',
           'apple_search_ads',
-          'stripe',
+          'w',
           'slack',
           'webhook'
       ]);

@@ -4,30 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\App;
-use App\Models\AppRating;
-use App\Services\iTunesService;
-use App\Services\GooglePlayService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class RatingsController extends Controller
 {
-    public function __construct(
-        private iTunesService $iTunesService,
-        private GooglePlayService $googlePlayService
-    ) {}
-
     /**
      * Get ratings for an app across all countries
-     * Auto-fetches from stores if data is stale (> 24h)
+     * Data is collected by background collectors - no on-demand fetching
      */
     public function forApp(Request $request, App $app): JsonResponse
     {
-        // Auto-fetch if stale
-        $this->fetchRatingsIfStale($app);
-
-        // Get latest ratings from database
+        // Get latest ratings from database (no on-demand fetching)
         $latestRatings = $app->latestRatings()
             ->orderByDesc('rating_count')
             ->get();
@@ -52,122 +40,6 @@ class RatingsController extends Controller
                 'last_updated' => $latestRatings->max('recorded_at')?->toIso8601String(),
             ],
         ]);
-    }
-
-    /**
-     * Fetch ratings if data is stale (> 24h)
-     */
-    private function fetchRatingsIfStale(App $app): void
-    {
-        // Check if we've fetched within the last 24 hours
-        if ($app->ratings_fetched_at && $app->ratings_fetched_at->gt(now()->subHours(24))) {
-            return;
-        }
-
-        // Fetch fresh ratings based on app's platform
-        if ($app->platform === 'ios') {
-            $this->fetchAndStoreIosRatings($app);
-        } else {
-            $this->fetchAndStoreAndroidRatings($app);
-        }
-
-        // Update fetch timestamp
-        $app->update(['ratings_fetched_at' => now()]);
-    }
-
-    /**
-     * Fetch ratings from iTunes and store in database
-     */
-    private function fetchAndStoreIosRatings(App $app): void
-    {
-        // Priority countries from config
-        $priorityCountries = config('app.priority_countries');
-
-        $now = now();
-        $storeId = $app->store_id;
-
-        // Fetch all countries in parallel using Http::pool
-        $responses = Http::pool(fn ($pool) =>
-            collect($priorityCountries)->map(fn ($country) =>
-                $pool->as($country)
-                    ->timeout(5)
-                    ->get('https://itunes.apple.com/lookup', [
-                        'id' => $storeId,
-                        'country' => $country,
-                    ])
-            )->toArray()
-        );
-
-        // Process responses
-        foreach ($priorityCountries as $country) {
-            $response = $responses[$country] ?? null;
-
-            if ($response && $response->successful()) {
-                $results = $response->json('results', []);
-
-                if (!empty($results)) {
-                    $appData = $results[0];
-                    $ratingCount = $appData['userRatingCount'] ?? 0;
-
-                    if ($ratingCount > 0) {
-                        AppRating::create([
-                            'app_id' => $app->id,
-                            'country' => strtoupper($country),
-                            'rating' => $appData['averageUserRating'] ?? null,
-                            'rating_count' => $ratingCount,
-                            'recorded_at' => $now,
-                        ]);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Fetch ratings from Google Play and store in database
-     */
-    private function fetchAndStoreAndroidRatings(App $app): void
-    {
-        // Priority countries from config
-        $priorityCountries = config('app.priority_countries');
-
-        $now = now();
-        $storeId = $app->store_id;
-        $scraperUrl = config('services.gplay_scraper.url', 'http://localhost:3001');
-
-        // Fetch all countries in parallel using Http::pool
-        $responses = Http::pool(fn ($pool) =>
-            collect($priorityCountries)->map(fn ($country) =>
-                $pool->as($country)
-                    ->timeout(10)
-                    ->get("{$scraperUrl}/app/{$storeId}", [
-                        'country' => $country,
-                    ])
-            )->toArray()
-        );
-
-        // Process responses
-        foreach ($priorityCountries as $country) {
-            $response = $responses[$country] ?? null;
-
-            if ($response && $response->successful()) {
-                $appData = $response->json();
-
-                if ($appData) {
-                    $ratingCount = $appData['rating_count'] ?? 0;
-
-                    if ($ratingCount > 0) {
-                        AppRating::create([
-                            'app_id' => $app->id,
-                            'country' => strtoupper($country),
-                            'rating' => $appData['rating'] ?? null,
-                            'rating_count' => $ratingCount,
-                            'recorded_at' => $now,
-                        ]);
-                    }
-                }
-            }
-        }
     }
 
     /**

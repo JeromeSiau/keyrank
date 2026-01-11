@@ -1,12 +1,20 @@
+import 'dart:io';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import '../../../../core/api/api_client.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/l10n_extension.dart';
+import '../../../../core/providers/country_provider.dart';
 import '../../../keywords/providers/keywords_provider.dart';
 import '../../../keywords/domain/keyword_model.dart';
 import '../../../keywords/domain/ranking_history_point.dart';
 import '../../../keywords/data/keywords_repository.dart';
+import '../../../keywords/presentation/keyword_suggestions_modal.dart';
 import '../../domain/app_model.dart';
 
 /// Provider for fetching keyword ranking history (cached).
@@ -22,7 +30,7 @@ final keywordRankingHistoryProvider = FutureProvider.family<
   );
 });
 
-class AppKeywordsTab extends ConsumerWidget {
+class AppKeywordsTab extends ConsumerStatefulWidget {
   final int appId;
   final AppModel app;
 
@@ -33,10 +41,223 @@ class AppKeywordsTab extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    final keywordsState = ref.watch(keywordsNotifierProvider(appId));
+  ConsumerState<AppKeywordsTab> createState() => _AppKeywordsTabState();
+}
 
+class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
+  bool _isExporting = false;
+
+  Future<void> _showAddKeywordDialog() async {
+    final controller = TextEditingController();
+    final country = ref.read(selectedCountryProvider);
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => _AddKeywordDialog(
+        controller: controller,
+        storefront: country.code.toUpperCase(),
+      ),
+    );
+
+    if (result != null && result.isNotEmpty && mounted) {
+      try {
+        await ref.read(keywordsNotifierProvider(widget.appId).notifier)
+            .addKeyword(result, storefront: country.code.toUpperCase());
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.appDetail_keywordAdded(result, country.code.toUpperCase())),
+              backgroundColor: AppColors.green,
+            ),
+          );
+        }
+      } on ApiException catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.message), backgroundColor: AppColors.red),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _showSuggestionsModal() async {
+    final keywordsState = ref.read(keywordsNotifierProvider(widget.appId));
+    final country = ref.read(selectedCountryProvider);
+    final existingKeywords = keywordsState.keywords.map((k) => k.keyword.toLowerCase()).toList();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => KeywordSuggestionsModal(
+        appId: widget.appId,
+        appName: widget.app.name,
+        country: country.code.toUpperCase(),
+        existingKeywords: existingKeywords,
+        onAddKeywords: (keywords) async {
+          for (final keyword in keywords) {
+            await ref.read(keywordsNotifierProvider(widget.appId).notifier)
+                .addKeyword(keyword, storefront: country.code.toUpperCase());
+          }
+        },
+      ),
+    );
+
+    if (result == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.appDetail_keywordsAddedSuccess),
+          backgroundColor: AppColors.green,
+        ),
+      );
+    }
+  }
+
+  Future<void> _showImportDialog() async {
+    final country = ref.read(selectedCountryProvider);
+
+    final result = await showDialog<ImportResult>(
+      context: context,
+      builder: (ctx) => _ImportKeywordsDialog(
+        appId: widget.appId,
+        initialStorefront: country.code.toUpperCase(),
+        onImport: (keywords, storefront) async {
+          return await ref.read(keywordsRepositoryProvider).importKeywords(
+            widget.appId,
+            keywords,
+            storefront: storefront,
+          );
+        },
+      ),
+    );
+
+    if (result != null && mounted) {
+      ref.invalidate(keywordsNotifierProvider(widget.appId));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.appDetail_importedKeywords(result.imported, result.skipped)),
+          backgroundColor: AppColors.green,
+        ),
+      );
+    }
+  }
+
+  Future<void> _exportKeywords() async {
+    setState(() => _isExporting = true);
+
+    try {
+      final csv = await ref.read(keywordsRepositoryProvider).exportRankingsCsv(widget.appId);
+
+      // Save to downloads
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = '${widget.app.name.replaceAll(RegExp(r'[^\w\s-]'), '')}_keywords_${DateTime.now().toIso8601String().split('T').first}.csv';
+      final file = File('${directory.path}/$fileName');
+      await file.writeAsString(csv);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.appDetail_savedFile(fileName)),
+            backgroundColor: AppColors.green,
+            action: SnackBarAction(
+              label: context.l10n.appDetail_showInFinder,
+              textColor: Colors.white,
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: file.path));
+              },
+            ),
+          ),
+        );
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: AppColors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isExporting = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final keywordsState = ref.watch(keywordsNotifierProvider(widget.appId));
+
+    return Column(
+      children: [
+        // Toolbar
+        _buildToolbar(colors, keywordsState),
+        // Content
+        Expanded(
+          child: _buildContent(colors, keywordsState),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildToolbar(AppColorsExtension colors, KeywordsState keywordsState) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: colors.glassPanelAlpha,
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+      ),
+      child: Row(
+        children: [
+          // Stats
+          if (!keywordsState.isLoading && keywordsState.keywords.isNotEmpty) ...[
+            _ToolbarStat(
+              label: 'Total',
+              value: '${keywordsState.keywords.length}',
+              color: colors.accent,
+            ),
+            const SizedBox(width: 16),
+            _ToolbarStat(
+              label: 'Ranked',
+              value: '${keywordsState.keywords.where((k) => k.isRanked).length}',
+              color: colors.green,
+            ),
+            const SizedBox(width: 16),
+          ],
+          const Spacer(),
+          // Action buttons
+          _ToolbarButton(
+            icon: Icons.add_rounded,
+            label: context.l10n.appDetail_addKeyword,
+            color: colors.accent,
+            onTap: _showAddKeywordDialog,
+          ),
+          const SizedBox(width: 8),
+          _ToolbarButton(
+            icon: Icons.lightbulb_outline_rounded,
+            label: context.l10n.appDetail_suggestions,
+            color: colors.green,
+            onTap: _showSuggestionsModal,
+          ),
+          const SizedBox(width: 8),
+          _ToolbarButton(
+            icon: Icons.file_upload_outlined,
+            label: context.l10n.appDetail_import,
+            color: colors.yellow,
+            onTap: _showImportDialog,
+          ),
+          const SizedBox(width: 8),
+          _ToolbarButton(
+            icon: _isExporting ? null : Icons.file_download_outlined,
+            label: context.l10n.appDetail_export,
+            color: colors.textSecondary,
+            isLoading: _isExporting,
+            onTap: _isExporting ? null : _exportKeywords,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContent(AppColorsExtension colors, KeywordsState keywordsState) {
     if (keywordsState.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -55,7 +276,7 @@ class AppKeywordsTab extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             TextButton.icon(
-              onPressed: () => ref.read(keywordsNotifierProvider(appId).notifier).load(),
+              onPressed: () => ref.read(keywordsNotifierProvider(widget.appId).notifier).load(),
               icon: const Icon(Icons.refresh_rounded),
               label: Text(context.l10n.common_retry),
             ),
@@ -71,20 +292,41 @@ class AppKeywordsTab extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.key_off_rounded, size: 48, color: colors.textMuted),
-            const SizedBox(height: 12),
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: colors.accentMuted,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(Icons.key_off_rounded, size: 32, color: colors.accent),
+            ),
+            const SizedBox(height: 16),
             Text(
               context.l10n.appDetail_noKeywordsTracked,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: colors.textPrimary,
-              ),
+              style: AppTypography.titleSmall.copyWith(color: colors.textPrimary),
             ),
             const SizedBox(height: 8),
             Text(
               context.l10n.appDetail_addKeywordHint,
-              style: TextStyle(color: colors.textMuted),
+              style: AppTypography.body.copyWith(color: colors.textMuted),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FilledButton.icon(
+                  onPressed: _showAddKeywordDialog,
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: Text(context.l10n.appDetail_addKeyword),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton.icon(
+                  onPressed: _showSuggestionsModal,
+                  icon: Icon(Icons.lightbulb_outline_rounded, size: 18, color: colors.green),
+                  label: Text(context.l10n.appDetail_suggestions),
+                ),
+              ],
             ),
           ],
         ),
@@ -260,10 +502,10 @@ class AppKeywordsTab extends ConsumerWidget {
           ),
           // Rows
           ...sortedKeywords.map((keyword) => _KeywordRow(
-                appId: appId,
+                appId: widget.appId,
                 keyword: keyword,
                 onToggleFavorite: () {
-                  ref.read(keywordsNotifierProvider(appId).notifier).toggleFavorite(keyword);
+                  ref.read(keywordsNotifierProvider(widget.appId).notifier).toggleFavorite(keyword);
                 },
               )),
         ],
@@ -271,6 +513,371 @@ class AppKeywordsTab extends ConsumerWidget {
     );
   }
 }
+
+// =============================================================================
+// Toolbar Widgets
+// =============================================================================
+
+class _ToolbarStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _ToolbarStat({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: AppTypography.caption.copyWith(color: colors.textMuted),
+        ),
+        const SizedBox(width: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withAlpha(30),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            value,
+            style: AppTypography.bodyMedium.copyWith(color: color),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ToolbarButton extends StatelessWidget {
+  final IconData? icon;
+  final String label;
+  final Color color;
+  final VoidCallback? onTap;
+  final bool isLoading;
+
+  const _ToolbarButton({
+    this.icon,
+    required this.label,
+    required this.color,
+    this.onTap,
+    this.isLoading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withAlpha(20),
+      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isLoading)
+                SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(color),
+                  ),
+                )
+              else if (icon != null)
+                Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: AppTypography.bodyMedium.copyWith(color: color),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Dialogs
+// =============================================================================
+
+class _AddKeywordDialog extends StatefulWidget {
+  final TextEditingController controller;
+  final String storefront;
+
+  const _AddKeywordDialog({
+    required this.controller,
+    required this.storefront,
+  });
+
+  @override
+  State<_AddKeywordDialog> createState() => _AddKeywordDialogState();
+}
+
+class _AddKeywordDialogState extends State<_AddKeywordDialog> {
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return AlertDialog(
+      backgroundColor: colors.glassPanel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        side: BorderSide(color: colors.glassBorder),
+      ),
+      title: Text(
+        context.l10n.appDetail_addKeyword,
+        style: AppTypography.title.copyWith(color: colors.textPrimary),
+      ),
+      content: SizedBox(
+        width: 350,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.appDetail_addKeywordHint,
+              style: AppTypography.caption.copyWith(color: colors.textSecondary),
+            ),
+            const SizedBox(height: AppSpacing.sm + 4),
+            TextField(
+              controller: widget.controller,
+              autofocus: true,
+              style: AppTypography.body.copyWith(color: colors.textPrimary),
+              decoration: InputDecoration(
+                hintText: context.l10n.appDetail_keywordHint,
+                hintStyle: AppTypography.body.copyWith(color: colors.textMuted),
+                filled: true,
+                fillColor: colors.bgActive,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: colors.glassBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: colors.glassBorder),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: colors.accent),
+                ),
+                prefixIcon: Icon(Icons.search_rounded, color: colors.textMuted),
+              ),
+              onSubmitted: (value) {
+                if (value.trim().isNotEmpty) {
+                  Navigator.pop(context, value.trim());
+                }
+              },
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              '${context.l10n.appDetail_storefront}: ${widget.storefront}',
+              style: AppTypography.micro.copyWith(color: colors.textMuted),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(context.l10n.appDetail_cancel),
+        ),
+        FilledButton(
+          onPressed: widget.controller.text.trim().isEmpty
+              ? null
+              : () => Navigator.pop(context, widget.controller.text.trim()),
+          child: Text(context.l10n.appDetail_addKeyword),
+        ),
+      ],
+    );
+  }
+}
+
+class _ImportKeywordsDialog extends StatefulWidget {
+  final int appId;
+  final String initialStorefront;
+  final Future<ImportResult> Function(String keywords, String storefront) onImport;
+
+  const _ImportKeywordsDialog({
+    required this.appId,
+    required this.initialStorefront,
+    required this.onImport,
+  });
+
+  @override
+  State<_ImportKeywordsDialog> createState() => _ImportKeywordsDialogState();
+}
+
+class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
+  final _controller = TextEditingController();
+  late String _storefront;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _storefront = widget.initialStorefront;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _import() async {
+    if (_controller.text.trim().isEmpty) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final result = await widget.onImport(_controller.text, _storefront);
+      if (mounted) {
+        Navigator.pop(context, result);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.appDetail_importFailed(e.toString())),
+            backgroundColor: context.colors.red,
+          ),
+        );
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  int get _keywordCount {
+    return _controller.text
+        .split('\n')
+        .where((line) => line.trim().length >= 2)
+        .length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return AlertDialog(
+      backgroundColor: colors.glassPanel,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        side: BorderSide(color: colors.glassBorder),
+      ),
+      title: Text(
+        context.l10n.appDetail_importKeywordsTitle,
+        style: AppTypography.title.copyWith(color: colors.textPrimary),
+      ),
+      content: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.appDetail_pasteKeywordsHint,
+              style: AppTypography.caption.copyWith(color: colors.textSecondary),
+            ),
+            const SizedBox(height: AppSpacing.sm + 4),
+            TextField(
+              controller: _controller,
+              maxLines: 10,
+              style: AppTypography.caption.copyWith(
+                color: colors.textPrimary,
+                fontFamily: 'monospace',
+              ),
+              decoration: InputDecoration(
+                hintText: context.l10n.appDetail_keywordPlaceholder,
+                hintStyle: AppTypography.caption.copyWith(
+                  color: colors.textMuted.withAlpha(100),
+                ),
+                filled: true,
+                fillColor: colors.bgActive,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: colors.glassBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: colors.glassBorder),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: colors.accent),
+                ),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: AppSpacing.sm + 4),
+            Row(
+              children: [
+                Text(
+                  context.l10n.appDetail_storefront,
+                  style: AppTypography.caption.copyWith(color: colors.textSecondary),
+                ),
+                const SizedBox(width: AppSpacing.sm + 4),
+                DropdownButton<String>(
+                  value: _storefront,
+                  dropdownColor: colors.glassPanel,
+                  style: AppTypography.caption.copyWith(color: colors.textPrimary),
+                  items: const [
+                    DropdownMenuItem(value: 'US', child: Text('🇺🇸 US')),
+                    DropdownMenuItem(value: 'GB', child: Text('🇬🇧 UK')),
+                    DropdownMenuItem(value: 'FR', child: Text('🇫🇷 FR')),
+                    DropdownMenuItem(value: 'DE', child: Text('🇩🇪 DE')),
+                    DropdownMenuItem(value: 'CA', child: Text('🇨🇦 CA')),
+                    DropdownMenuItem(value: 'AU', child: Text('🇦🇺 AU')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _storefront = value);
+                    }
+                  },
+                ),
+                const Spacer(),
+                Text(
+                  context.l10n.appDetail_keywordsCount(_keywordCount),
+                  style: AppTypography.micro.copyWith(color: colors.textMuted),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
+          child: Text(context.l10n.appDetail_cancel),
+        ),
+        FilledButton(
+          onPressed: _isLoading || _keywordCount == 0 ? null : _import,
+          child: _isLoading
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                )
+              : Text(context.l10n.appDetail_importKeywordsCount(_keywordCount)),
+        ),
+      ],
+    );
+  }
+}
+
+// =============================================================================
+// Stat Card
+// =============================================================================
 
 class _StatCard extends StatelessWidget {
   final IconData icon;
@@ -327,6 +934,10 @@ class _StatCard extends StatelessWidget {
     );
   }
 }
+
+// =============================================================================
+// Keyword Row
+// =============================================================================
 
 class _KeywordRow extends ConsumerWidget {
   final int appId;
@@ -523,6 +1134,10 @@ class _KeywordRow extends ConsumerWidget {
   }
 }
 
+// =============================================================================
+// Sparkline & Popularity
+// =============================================================================
+
 class _KeywordSparkline extends ConsumerWidget {
   final int appId;
   final Keyword keyword;
@@ -557,7 +1172,6 @@ class _KeywordSparkline extends ConsumerWidget {
     return historyAsync.when(
       data: (history) {
         if (history.isEmpty || history.length < 2) {
-          // Show a simple trend indicator based on change
           return _SimpleTrendIndicator(change: keyword.change, position: keyword.position);
         }
 
@@ -641,7 +1255,7 @@ class _KeywordSparkline extends ConsumerWidget {
           ),
         ),
       ),
-      error: (_, __) => _SimpleTrendIndicator(change: keyword.change, position: keyword.position),
+      error: (_, _) => _SimpleTrendIndicator(change: keyword.change, position: keyword.position),
     );
   }
 }
@@ -672,7 +1286,6 @@ class _SimpleTrendIndicator extends StatelessWidget {
     final isUp = change! > 0;
     final color = isUp ? colors.green : colors.red;
 
-    // Create a simple trend line based on change direction
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: CustomPaint(
@@ -705,7 +1318,6 @@ class _TrendLinePainter extends CustomPainter {
     final fillPath = Path();
 
     if (isUp) {
-      // Upward trend
       path.moveTo(0, size.height * 0.8);
       path.quadraticBezierTo(size.width * 0.5, size.height * 0.5, size.width, size.height * 0.2);
 
@@ -715,7 +1327,6 @@ class _TrendLinePainter extends CustomPainter {
       fillPath.lineTo(size.width, size.height);
       fillPath.close();
     } else {
-      // Downward trend
       path.moveTo(0, size.height * 0.2);
       path.quadraticBezierTo(size.width * 0.5, size.height * 0.5, size.width, size.height * 0.8);
 

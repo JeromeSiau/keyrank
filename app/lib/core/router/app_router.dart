@@ -31,16 +31,23 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/store_connections/presentation/store_connections_screen.dart';
 import '../../features/store_connections/presentation/connect_apple_screen.dart';
 import '../../features/store_connections/presentation/connect_google_screen.dart';
+import '../../features/integrations/presentation/integrations_screen.dart';
+import '../../features/integrations/presentation/connect_app_store_screen.dart';
+import '../../features/integrations/presentation/connect_google_play_screen.dart';
+import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/analytics/presentation/app_analytics_screen.dart';
 import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/chat/presentation/chat_conversation_screen.dart';
 import '../../features/ratings/presentation/ratings_analysis_screen.dart';
 import '../../features/keywords/presentation/top_charts_screen.dart';
 import '../../features/keywords/presentation/competitors_screen.dart';
+import '../../features/billing/presentation/billing_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
   final authNotifier = ref.read(authStateProvider.notifier);
+  final onboardingStatus = ref.watch(onboardingStatusProvider);
 
   return GoRouter(
     initialLocation: '/login',
@@ -49,6 +56,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuthenticated = authState.valueOrNull != null;
       final isAuthRoute = state.matchedLocation == '/login' ||
           state.matchedLocation == '/register';
+      final isOnboardingRoute = state.matchedLocation.startsWith('/onboarding');
 
       if (authState.isLoading) {
         return null;
@@ -58,8 +66,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/login';
       }
       if (isAuthenticated && isAuthRoute) {
+        // Check if user needs onboarding
+        final status = onboardingStatus.valueOrNull;
+        if (status != null && !status.isCompleted) {
+          return '/onboarding';
+        }
         return '/dashboard';
       }
+
+      // Redirect to onboarding if needed (for authenticated users)
+      if (isAuthenticated && !isOnboardingRoute) {
+        final status = onboardingStatus.valueOrNull;
+        if (status != null && !status.isCompleted) {
+          return '/onboarding';
+        }
+      }
+
       return null;
     },
     routes: [
@@ -70,6 +92,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      // Onboarding (outside main shell)
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+        routes: [
+          GoRoute(
+            path: 'connect/app-store',
+            builder: (context, state) => const ConnectAppStoreScreen(),
+          ),
+          GoRoute(
+            path: 'connect/google-play',
+            builder: (context, state) => const ConnectGooglePlayScreen(),
+          ),
+        ],
       ),
       ShellRoute(
         builder: (context, state, child) => MainShell(child: child),
@@ -159,6 +196,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
             routes: [
+              // Legacy store connections (V1)
               GoRoute(
                 path: 'connections',
                 builder: (context, state) => const StoreConnectionsScreen(),
@@ -172,6 +210,26 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (context, state) => const ConnectGoogleScreen(),
                   ),
                 ],
+              ),
+              // New integrations (V2)
+              GoRoute(
+                path: 'integrations',
+                builder: (context, state) => const IntegrationsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'app-store',
+                    builder: (context, state) => const ConnectAppStoreScreen(),
+                  ),
+                  GoRoute(
+                    path: 'google-play',
+                    builder: (context, state) => const ConnectGooglePlayScreen(),
+                  ),
+                ],
+              ),
+              // Billing
+              GoRoute(
+                path: 'billing',
+                builder: (context, state) => const BillingScreen(),
               ),
             ],
           ),

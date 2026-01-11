@@ -131,12 +131,26 @@ return new class extends Migration
 
         // Step 4: Update tracked_keywords unique constraint
         // Change from [app_id, keyword_id] to [user_id, app_id, keyword_id]
-        Schema::table('tracked_keywords', function (Blueprint $table) {
-            $table->dropUnique(['app_id', 'keyword_id']);
-        });
-        Schema::table('tracked_keywords', function (Blueprint $table) {
-            $table->unique(['user_id', 'app_id', 'keyword_id'], 'tracked_keywords_user_app_keyword_unique');
-        });
+        // For MySQL: need to drop FK first, then drop unique, add new unique, recreate FK
+        if (DB::getDriverName() === 'mysql') {
+            // Drop FKs that use the unique index
+            DB::statement('ALTER TABLE tracked_keywords DROP FOREIGN KEY tracked_keywords_keyword_id_foreign');
+            DB::statement('ALTER TABLE tracked_keywords DROP FOREIGN KEY tracked_keywords_app_id_foreign');
+            // Now we can drop the unique index
+            DB::statement('ALTER TABLE tracked_keywords DROP INDEX tracked_keywords_app_id_keyword_id_unique');
+            // Create new unique index
+            DB::statement('CREATE UNIQUE INDEX tracked_keywords_user_app_keyword_unique ON tracked_keywords (user_id, app_id, keyword_id)');
+            // Recreate FKs - they will use the new unique index or create their own index
+            DB::statement('ALTER TABLE tracked_keywords ADD CONSTRAINT tracked_keywords_keyword_id_foreign FOREIGN KEY (keyword_id) REFERENCES keywords(id) ON DELETE CASCADE');
+            DB::statement('ALTER TABLE tracked_keywords ADD CONSTRAINT tracked_keywords_app_id_foreign FOREIGN KEY (app_id) REFERENCES apps(id) ON DELETE CASCADE');
+        } else {
+            Schema::table('tracked_keywords', function (Blueprint $table) {
+                $table->dropUnique(['app_id', 'keyword_id']);
+            });
+            Schema::table('tracked_keywords', function (Blueprint $table) {
+                $table->unique(['user_id', 'app_id', 'keyword_id'], 'tracked_keywords_user_app_keyword_unique');
+            });
+        }
 
         // Step 5: Recreate apps table without user_id (SQLite compatible)
         Schema::create('apps_new', function (Blueprint $table) {
@@ -165,8 +179,15 @@ return new class extends Migration
         ');
 
         // Drop old table and rename
+        // Disable FK checks for MySQL to allow dropping table with references
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        }
         Schema::drop('apps');
         Schema::rename('apps_new', 'apps');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        }
 
         // Step 6: Recreate foreign keys on child tables
         // user_apps already has FK from creation

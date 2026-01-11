@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
+import '../../../shared/widgets/sparkline.dart';
+import '../../../shared/widgets/change_indicator.dart';
 import '../providers/apps_provider.dart';
 import '../domain/app_model.dart';
 
@@ -117,8 +121,8 @@ class _Toolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: AppSpacing.toolbarHeight,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.glassBorder)),
       ),
@@ -126,13 +130,9 @@ class _Toolbar extends StatelessWidget {
         children: [
           Text(
             context.l10n.apps_title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: colors.textPrimary,
-            ),
+            style: AppTypography.title.copyWith(color: colors.textPrimary),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           // Category filter dropdown
           if (availableCategories.isNotEmpty)
             _CategoryFilterDropdown(
@@ -146,7 +146,7 @@ class _Toolbar extends StatelessWidget {
             label: context.l10n.common_refresh,
             onTap: onRefresh,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.sm + 2),
           PrimaryButton(
             icon: Icons.add_rounded,
             label: context.l10n.dashboard_addApp,
@@ -184,10 +184,7 @@ class _CategoryFilterDropdown extends StatelessWidget {
           value: selectedCategory,
           hint: Text(
             context.l10n.discover_allCategories,
-            style: TextStyle(
-              fontSize: 13,
-              color: colors.textSecondary,
-            ),
+            style: AppTypography.caption.copyWith(color: colors.textSecondary),
           ),
           icon: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: colors.textMuted),
           dropdownColor: colors.bgBase,
@@ -197,10 +194,7 @@ class _CategoryFilterDropdown extends StatelessWidget {
               value: null,
               child: Text(
                 context.l10n.discover_allCategories,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colors.textPrimary,
-                ),
+                style: AppTypography.caption.copyWith(color: colors.textPrimary),
               ),
             ),
             ...availableCategories.map((categoryId) {
@@ -208,10 +202,7 @@ class _CategoryFilterDropdown extends StatelessWidget {
                 value: categoryId,
                 child: Text(
                   _getCategoryName(categoryId),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colors.textPrimary,
-                  ),
+                  style: AppTypography.caption.copyWith(color: colors.textPrimary),
                 ),
               );
             }),
@@ -285,7 +276,7 @@ class _AppsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
       child: Container(
         decoration: BoxDecoration(
           color: colors.bgActive.withAlpha(50),
@@ -297,22 +288,24 @@ class _AppsTable extends StatelessWidget {
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.cardPadding,
+                vertical: AppSpacing.sm + 4,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     context.l10n.apps_appCount(apps.length),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                    style: AppTypography.caption.copyWith(
                       color: colors.textSecondary,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Row(
                     children: [
                       SmallButton(label: context.l10n.common_filter, onTap: () {}),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppSpacing.xs + 2),
                       SmallButton(label: context.l10n.common_sort, onTap: () {}),
                     ],
                   ),
@@ -321,7 +314,10 @@ class _AppsTable extends StatelessWidget {
             ),
             // Table header
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.cardPadding,
+                vertical: AppSpacing.sm + 2,
+              ),
               decoration: BoxDecoration(
                 color: colors.bgActive.withAlpha(80),
                 border: Border(
@@ -335,63 +331,46 @@ class _AppsTable extends StatelessWidget {
                   Expanded(
                     child: Text(
                       context.l10n.apps_tableApp,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
                   SizedBox(
                     width: 120,
                     child: Text(
                       context.l10n.apps_tableDeveloper,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   SizedBox(
                     width: 80,
                     child: Text(
                       context.l10n.apps_tableKeywords,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      'Trend',
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
                   SizedBox(
                     width: 110,
                     child: Text(
                       context.l10n.apps_tablePlatform,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   SizedBox(
                     width: 70,
                     child: Text(
                       context.l10n.apps_tableRating,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                        color: colors.textMuted,
-                      ),
+                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
                     ),
                   ),
                   const SizedBox(width: 36),
@@ -430,16 +409,30 @@ class _AppRow extends StatelessWidget {
     required this.onTap,
   });
 
+  // Mock trend data for each app
+  static const List<List<double>> _mockTrends = [
+    [10.0, 12.0, 11.0, 15.0, 14.0, 18.0, 17.0, 20.0],
+    [20.0, 18.0, 19.0, 15.0, 16.0, 12.0, 14.0, 10.0],
+    [5.0, 8.0, 7.0, 9.0, 11.0, 10.0, 13.0, 15.0],
+    [15.0, 14.0, 16.0, 15.0, 17.0, 16.0, 18.0, 19.0],
+    [8.0, 10.0, 9.0, 12.0, 11.0, 14.0, 13.0, 16.0],
+  ];
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final trendData = _mockTrends[gradientIndex % _mockTrends.length];
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         hoverColor: colors.bgHover,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.cardPadding,
+            vertical: AppSpacing.sm + 4,
+          ),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: colors.glassBorder)),
           ),
@@ -459,7 +452,7 @@ class _AppRow extends StatelessWidget {
                         child: Image.network(
                           app.iconUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => const Center(
+                          errorBuilder: (_, e, s) => const Center(
                             child: Icon(Icons.apps, size: 20, color: Colors.white),
                           ),
                         ),
@@ -468,17 +461,34 @@ class _AppRow extends StatelessWidget {
                         child: Icon(Icons.apps, size: 20, color: Colors.white),
                       ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm + 4),
               // App name
               Expanded(
-                child: Text(
-                  app.name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      app.name,
+                      style: AppTypography.tableCellBold.copyWith(color: colors.textPrimary),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (app.bestRank != null)
+                      Row(
+                        children: [
+                          Text(
+                            'Best: #${app.bestRank}',
+                            style: AppTypography.micro.copyWith(color: colors.green),
+                          ),
+                          if (app.ratingCount > 0) ...[
+                            const SizedBox(width: AppSpacing.sm),
+                            Text(
+                              '${_formatCount(app.ratingCount)} reviews',
+                              style: AppTypography.micro.copyWith(color: colors.textMuted),
+                            ),
+                          ],
+                        ],
+                      ),
+                  ],
                 ),
               ),
               // Developer
@@ -486,14 +496,11 @@ class _AppRow extends StatelessWidget {
                 width: 120,
                 child: Text(
                   app.developer ?? '--',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colors.textMuted,
-                  ),
+                  style: AppTypography.tableCell.copyWith(color: colors.textMuted),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               // Keywords count
               SizedBox(
                 width: 80,
@@ -505,16 +512,18 @@ class _AppRow extends StatelessWidget {
                   ),
                   child: Text(
                     '${app.trackedKeywordsCount ?? 0}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: colors.accent,
-                    ),
+                    style: AppTypography.tableCellBold.copyWith(color: colors.accent),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
+              // Trend sparkline
+              SizedBox(
+                width: 80,
+                child: Sparkline(data: trendData, width: 60, height: 20),
+              ),
+              const SizedBox(width: AppSpacing.md),
               // Platform badge
               SizedBox(
                 width: 110,
@@ -530,10 +539,9 @@ class _AppRow extends StatelessWidget {
                         ),
                         child: Text(
                           'iOS',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
+                          style: AppTypography.micro.copyWith(
                             color: colors.textSecondary,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -546,43 +554,52 @@ class _AppRow extends StatelessWidget {
                         ),
                         child: Text(
                           'Android',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
+                          style: AppTypography.micro.copyWith(
                             color: colors.green,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
-              // Rating
+              const SizedBox(width: AppSpacing.md),
+              // Rating with change indicator
               SizedBox(
                 width: 70,
-                child: Row(
-                  children: [
-                    if (app.rating != null) ...[
-                      Icon(Icons.star_rounded, size: 16, color: colors.yellow),
-                      const SizedBox(width: 4),
-                      Text(
-                        app.rating!.toStringAsFixed(1),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: colors.textSecondary,
-                        ),
-                      ),
-                    ] else
-                      Text(
+                child: app.rating != null
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.star_rounded, size: 14, color: colors.yellow),
+                              const SizedBox(width: 2),
+                              Text(
+                                app.rating!.toStringAsFixed(1),
+                                style: AppTypography.tableCellBold.copyWith(
+                                  color: colors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Mock rating change
+                          ChangeIndicator(
+                            value: (gradientIndex % 3 == 0)
+                                ? 0.2
+                                : (gradientIndex % 2 == 0)
+                                    ? -0.1
+                                    : 0.0,
+                            format: ChangeFormat.number,
+                            size: ChangeIndicatorSize.small,
+                            showBackground: false,
+                          ),
+                        ],
+                      )
+                    : Text(
                         '--',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.textMuted,
-                        ),
+                        style: AppTypography.tableCell.copyWith(color: colors.textMuted),
                       ),
-                  ],
-                ),
               ),
               // Arrow
               Icon(
@@ -596,5 +613,13 @@ class _AppRow extends StatelessWidget {
       ),
     );
   }
-}
 
+  String _formatCount(int count) {
+    if (count >= 1000000) {
+      return '${(count / 1000000).toStringAsFixed(1)}M';
+    } else if (count >= 1000) {
+      return '${(count / 1000).toStringAsFixed(1)}K';
+    }
+    return count.toString();
+  }
+}
