@@ -20,6 +20,7 @@ _$ReviewImpl _$$ReviewImplFromJson(Map<String, dynamic> json) => _$ReviewImpl(
       ? null
       : DateTime.parse(json['responded_at'] as String),
   reviewedAt: DateTime.parse(json['reviewed_at'] as String),
+  canReply: json['can_reply'] as bool? ?? false,
   app: json['app'] == null
       ? null
       : ReviewApp.fromJson(json['app'] as Map<String, dynamic>),
@@ -38,6 +39,7 @@ Map<String, dynamic> _$$ReviewImplToJson(_$ReviewImpl instance) =>
       'our_response': instance.ourResponse,
       'responded_at': instance.respondedAt?.toIso8601String(),
       'reviewed_at': instance.reviewedAt.toIso8601String(),
+      'can_reply': instance.canReply,
       'app': instance.app,
     };
 
@@ -47,6 +49,7 @@ _$ReviewAppImpl _$$ReviewAppImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       iconUrl: json['icon_url'] as String?,
       platform: json['platform'] as String,
+      isOwned: json['is_owned'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$ReviewAppImplToJson(_$ReviewAppImpl instance) =>
@@ -55,4 +58,5 @@ Map<String, dynamic> _$$ReviewAppImplToJson(_$ReviewAppImpl instance) =>
       'name': instance.name,
       'icon_url': instance.iconUrl,
       'platform': instance.platform,
+      'is_owned': instance.isOwned,
     };

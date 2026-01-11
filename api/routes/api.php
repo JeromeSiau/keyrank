@@ -176,5 +176,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('{storeConnection}', [StoreConnectionController::class, 'update']);
         Route::delete('{storeConnection}', [StoreConnectionController::class, 'destroy']);
         Route::post('{storeConnection}/validate', [StoreConnectionController::class, 'validateConnection'])->middleware('throttle:30,1');
+        Route::post('{storeConnection}/sync-apps', [StoreConnectionController::class, 'syncApps'])->middleware('throttle:10,1');
     });
 });

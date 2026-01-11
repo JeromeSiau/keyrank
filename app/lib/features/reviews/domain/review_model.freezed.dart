@@ -35,6 +35,8 @@ mixin _$Review {
   DateTime? get respondedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'reviewed_at')
   DateTime get reviewedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'can_reply')
+  bool get canReply => throw _privateConstructorUsedError;
   ReviewApp? get app => throw _privateConstructorUsedError;
 
   /// Serializes this Review to a JSON map.
@@ -63,6 +65,7 @@ abstract class $ReviewCopyWith<$Res> {
     @JsonKey(name: 'our_response') String? ourResponse,
     @JsonKey(name: 'responded_at') DateTime? respondedAt,
     @JsonKey(name: 'reviewed_at') DateTime reviewedAt,
+    @JsonKey(name: 'can_reply') bool canReply,
     ReviewApp? app,
   });
 
@@ -95,6 +98,7 @@ class _$ReviewCopyWithImpl<$Res, $Val extends Review>
     Object? ourResponse = freezed,
     Object? respondedAt = freezed,
     Object? reviewedAt = null,
+    Object? canReply = null,
     Object? app = freezed,
   }) {
     return _then(
@@ -143,6 +147,10 @@ class _$ReviewCopyWithImpl<$Res, $Val extends Review>
                 ? _value.reviewedAt
                 : reviewedAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
+            canReply: null == canReply
+                ? _value.canReply
+                : canReply // ignore: cast_nullable_to_non_nullable
+                      as bool,
             app: freezed == app
                 ? _value.app
                 : app // ignore: cast_nullable_to_non_nullable
@@ -187,6 +195,7 @@ abstract class _$$ReviewImplCopyWith<$Res> implements $ReviewCopyWith<$Res> {
     @JsonKey(name: 'our_response') String? ourResponse,
     @JsonKey(name: 'responded_at') DateTime? respondedAt,
     @JsonKey(name: 'reviewed_at') DateTime reviewedAt,
+    @JsonKey(name: 'can_reply') bool canReply,
     ReviewApp? app,
   });
 
@@ -219,6 +228,7 @@ class __$$ReviewImplCopyWithImpl<$Res>
     Object? ourResponse = freezed,
     Object? respondedAt = freezed,
     Object? reviewedAt = null,
+    Object? canReply = null,
     Object? app = freezed,
   }) {
     return _then(
@@ -267,6 +277,10 @@ class __$$ReviewImplCopyWithImpl<$Res>
             ? _value.reviewedAt
             : reviewedAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        canReply: null == canReply
+            ? _value.canReply
+            : canReply // ignore: cast_nullable_to_non_nullable
+                  as bool,
         app: freezed == app
             ? _value.app
             : app // ignore: cast_nullable_to_non_nullable
@@ -291,6 +305,7 @@ class _$ReviewImpl extends _Review {
     @JsonKey(name: 'our_response') this.ourResponse,
     @JsonKey(name: 'responded_at') this.respondedAt,
     @JsonKey(name: 'reviewed_at') required this.reviewedAt,
+    @JsonKey(name: 'can_reply') this.canReply = false,
     this.app,
   }) : super._();
 
@@ -323,11 +338,14 @@ class _$ReviewImpl extends _Review {
   @JsonKey(name: 'reviewed_at')
   final DateTime reviewedAt;
   @override
+  @JsonKey(name: 'can_reply')
+  final bool canReply;
+  @override
   final ReviewApp? app;
 
   @override
   String toString() {
-    return 'Review(id: $id, author: $author, title: $title, content: $content, rating: $rating, version: $version, country: $country, sentiment: $sentiment, ourResponse: $ourResponse, respondedAt: $respondedAt, reviewedAt: $reviewedAt, app: $app)';
+    return 'Review(id: $id, author: $author, title: $title, content: $content, rating: $rating, version: $version, country: $country, sentiment: $sentiment, ourResponse: $ourResponse, respondedAt: $respondedAt, reviewedAt: $reviewedAt, canReply: $canReply, app: $app)';
   }
 
   @override
@@ -350,6 +368,8 @@ class _$ReviewImpl extends _Review {
                 other.respondedAt == respondedAt) &&
             (identical(other.reviewedAt, reviewedAt) ||
                 other.reviewedAt == reviewedAt) &&
+            (identical(other.canReply, canReply) ||
+                other.canReply == canReply) &&
             (identical(other.app, app) || other.app == app));
   }
 
@@ -368,6 +388,7 @@ class _$ReviewImpl extends _Review {
     ourResponse,
     respondedAt,
     reviewedAt,
+    canReply,
     app,
   );
 
@@ -398,6 +419,7 @@ abstract class _Review extends Review {
     @JsonKey(name: 'our_response') final String? ourResponse,
     @JsonKey(name: 'responded_at') final DateTime? respondedAt,
     @JsonKey(name: 'reviewed_at') required final DateTime reviewedAt,
+    @JsonKey(name: 'can_reply') final bool canReply,
     final ReviewApp? app,
   }) = _$ReviewImpl;
   const _Review._() : super._();
@@ -430,6 +452,9 @@ abstract class _Review extends Review {
   @JsonKey(name: 'reviewed_at')
   DateTime get reviewedAt;
   @override
+  @JsonKey(name: 'can_reply')
+  bool get canReply;
+  @override
   ReviewApp? get app;
 
   /// Create a copy of Review
@@ -451,6 +476,8 @@ mixin _$ReviewApp {
   @JsonKey(name: 'icon_url')
   String? get iconUrl => throw _privateConstructorUsedError;
   String get platform => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_owned')
+  bool get isOwned => throw _privateConstructorUsedError;
 
   /// Serializes this ReviewApp to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -472,6 +499,7 @@ abstract class $ReviewAppCopyWith<$Res> {
     String name,
     @JsonKey(name: 'icon_url') String? iconUrl,
     String platform,
+    @JsonKey(name: 'is_owned') bool isOwned,
   });
 }
 
@@ -494,6 +522,7 @@ class _$ReviewAppCopyWithImpl<$Res, $Val extends ReviewApp>
     Object? name = null,
     Object? iconUrl = freezed,
     Object? platform = null,
+    Object? isOwned = null,
   }) {
     return _then(
       _value.copyWith(
@@ -513,6 +542,10 @@ class _$ReviewAppCopyWithImpl<$Res, $Val extends ReviewApp>
                 ? _value.platform
                 : platform // ignore: cast_nullable_to_non_nullable
                       as String,
+            isOwned: null == isOwned
+                ? _value.isOwned
+                : isOwned // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -533,6 +566,7 @@ abstract class _$$ReviewAppImplCopyWith<$Res>
     String name,
     @JsonKey(name: 'icon_url') String? iconUrl,
     String platform,
+    @JsonKey(name: 'is_owned') bool isOwned,
   });
 }
 
@@ -554,6 +588,7 @@ class __$$ReviewAppImplCopyWithImpl<$Res>
     Object? name = null,
     Object? iconUrl = freezed,
     Object? platform = null,
+    Object? isOwned = null,
   }) {
     return _then(
       _$ReviewAppImpl(
@@ -573,6 +608,10 @@ class __$$ReviewAppImplCopyWithImpl<$Res>
             ? _value.platform
             : platform // ignore: cast_nullable_to_non_nullable
                   as String,
+        isOwned: null == isOwned
+            ? _value.isOwned
+            : isOwned // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -586,6 +625,7 @@ class _$ReviewAppImpl implements _ReviewApp {
     required this.name,
     @JsonKey(name: 'icon_url') this.iconUrl,
     required this.platform,
+    @JsonKey(name: 'is_owned') this.isOwned = false,
   });
 
   factory _$ReviewAppImpl.fromJson(Map<String, dynamic> json) =>
@@ -600,10 +640,13 @@ class _$ReviewAppImpl implements _ReviewApp {
   final String? iconUrl;
   @override
   final String platform;
+  @override
+  @JsonKey(name: 'is_owned')
+  final bool isOwned;
 
   @override
   String toString() {
-    return 'ReviewApp(id: $id, name: $name, iconUrl: $iconUrl, platform: $platform)';
+    return 'ReviewApp(id: $id, name: $name, iconUrl: $iconUrl, platform: $platform, isOwned: $isOwned)';
   }
 
   @override
@@ -615,12 +658,14 @@ class _$ReviewAppImpl implements _ReviewApp {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.iconUrl, iconUrl) || other.iconUrl == iconUrl) &&
             (identical(other.platform, platform) ||
-                other.platform == platform));
+                other.platform == platform) &&
+            (identical(other.isOwned, isOwned) || other.isOwned == isOwned));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, iconUrl, platform);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, iconUrl, platform, isOwned);
 
   /// Create a copy of ReviewApp
   /// with the given fields replaced by the non-null parameter values.
@@ -642,6 +687,7 @@ abstract class _ReviewApp implements ReviewApp {
     required final String name,
     @JsonKey(name: 'icon_url') final String? iconUrl,
     required final String platform,
+    @JsonKey(name: 'is_owned') final bool isOwned,
   }) = _$ReviewAppImpl;
 
   factory _ReviewApp.fromJson(Map<String, dynamic> json) =
@@ -656,6 +702,9 @@ abstract class _ReviewApp implements ReviewApp {
   String? get iconUrl;
   @override
   String get platform;
+  @override
+  @JsonKey(name: 'is_owned')
+  bool get isOwned;
 
   /// Create a copy of ReviewApp
   /// with the given fields replaced by the non-null parameter values.

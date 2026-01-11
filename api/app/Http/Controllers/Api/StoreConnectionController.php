@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\App;
 use App\Models\StoreConnection;
 use App\Services\AppStoreConnectService;
 use App\Services\GooglePlayDeveloperService;
+use App\Services\iTunesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,6 +19,7 @@ class StoreConnectionController extends Controller
     public function __construct(
         private AppStoreConnectService $appStoreService,
         private GooglePlayDeveloperService $googlePlayService,
+        private iTunesService $iTunesService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -156,6 +159,93 @@ class StoreConnectionController extends Controller
         return response()->json([
             'valid' => $isValid,
             'status' => $storeConnection->fresh()->status,
+        ]);
+    }
+
+    /**
+     * Sync apps from the connected store and mark as owned
+     */
+    public function syncApps(Request $request, StoreConnection $storeConnection): JsonResponse
+    {
+        $this->authorizeConnection($storeConnection);
+
+        if ($storeConnection->status !== 'active') {
+            return response()->json(['error' => 'Connection is not active. Please re-validate credentials.'], 422);
+        }
+
+        $user = $request->user();
+        $synced = [];
+
+        if ($storeConnection->platform === 'ios') {
+            // Fetch all apps from App Store Connect
+            $storeApps = $this->appStoreService->getApps($storeConnection);
+
+            if ($storeApps === null) {
+                return response()->json(['error' => 'Failed to fetch apps from App Store Connect.'], 500);
+            }
+
+            foreach ($storeApps as $storeApp) {
+                // Find or create the app in our database
+                $app = App::firstOrCreate(
+                    ['platform' => 'ios', 'store_id' => $storeApp['store_id']],
+                    [
+                        'name' => $storeApp['name'],
+                        'bundle_id' => $storeApp['bundle_id'],
+                    ]
+                );
+
+                // Fetch additional metadata from iTunes if needed
+                if (!$app->icon_url) {
+                    $metadata = $this->iTunesService->lookupApp($storeApp['store_id']);
+                    if ($metadata) {
+                        $app->update([
+                            'icon_url' => $metadata['icon_url'] ?? null,
+                            'developer' => $metadata['developer'] ?? null,
+                            'rating' => $metadata['rating'] ?? null,
+                            'rating_count' => $metadata['rating_count'] ?? 0,
+                        ]);
+                    }
+                }
+
+                // Attach to user with is_owner=true (or update if already attached)
+                $user->apps()->syncWithoutDetaching([
+                    $app->id => ['is_owner' => true],
+                ]);
+
+                $synced[] = [
+                    'id' => $app->id,
+                    'name' => $app->name,
+                    'icon_url' => $app->icon_url,
+                    'platform' => $app->platform,
+                ];
+            }
+        } else {
+            // For Android, we can't list all apps from Google Play API
+            // Instead, mark existing followed Android apps as owned if we can access their reviews
+            $androidApps = $user->apps()->where('platform', 'android')->get();
+
+            foreach ($androidApps as $app) {
+                $reviews = $this->googlePlayService->getReviews($storeConnection, $app->store_id);
+
+                if ($reviews !== null) {
+                    // Successfully accessed reviews, mark as owner
+                    $user->apps()->updateExistingPivot($app->id, ['is_owner' => true]);
+
+                    $synced[] = [
+                        'id' => $app->id,
+                        'name' => $app->name,
+                        'icon_url' => $app->icon_url,
+                        'platform' => $app->platform,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => [
+                'synced_count' => count($synced),
+                'apps' => $synced,
+            ],
         ]);
     }
 

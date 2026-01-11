@@ -19,6 +19,7 @@ class Review with _$Review {
     @JsonKey(name: 'our_response') String? ourResponse,
     @JsonKey(name: 'responded_at') DateTime? respondedAt,
     @JsonKey(name: 'reviewed_at') required DateTime reviewedAt,
+    @JsonKey(name: 'can_reply') @Default(false) bool canReply,
     ReviewApp? app,
   }) = _Review;
 
@@ -34,6 +35,7 @@ class ReviewApp with _$ReviewApp {
     required String name,
     @JsonKey(name: 'icon_url') String? iconUrl,
     required String platform,
+    @JsonKey(name: 'is_owned') @Default(false) bool isOwned,
   }) = _ReviewApp;
 
   factory ReviewApp.fromJson(Map<String, dynamic> json) =>
@@ -54,13 +56,21 @@ class PaginatedReviews with _$PaginatedReviews {
     final data = (json['data'] as List<dynamic>?) ?? [];
     final meta = (json['meta'] as Map<String, dynamic>?) ?? {};
 
+    // Helper to parse int from either int or string
+    int parseIntOrDefault(dynamic value, int defaultValue) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? defaultValue;
+      return defaultValue;
+    }
+
     return PaginatedReviews(
       reviews:
           data.map((e) => Review.fromJson(e as Map<String, dynamic>)).toList(),
-      currentPage: (meta['current_page'] as int?) ?? 1,
-      lastPage: (meta['last_page'] as int?) ?? 1,
-      perPage: (meta['per_page'] as int?) ?? 20,
-      total: (meta['total'] as int?) ?? 0,
+      currentPage: parseIntOrDefault(meta['current_page'], 1),
+      lastPage: parseIntOrDefault(meta['last_page'], 1),
+      perPage: parseIntOrDefault(meta['per_page'], 20),
+      total: parseIntOrDefault(meta['total'], 0),
     );
   }
 }

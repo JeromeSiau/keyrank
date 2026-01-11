@@ -319,9 +319,9 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
               final review = reviews[index];
               return ReviewCard(
                 review: review,
-                onReply: review.isAnswered
-                    ? null
-                    : () => showReplyModal(context, review),
+                onReply: review.canReply && !review.isAnswered
+                    ? () => showReplyModal(context, review)
+                    : null,
               );
             },
           ),

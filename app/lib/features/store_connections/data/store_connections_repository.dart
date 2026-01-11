@@ -62,4 +62,54 @@ class StoreConnectionsRepository {
       throw ApiException.fromDioError(e);
     }
   }
+
+  Future<SyncAppsResult> syncApps(int id) async {
+    try {
+      final response = await dio.post('/store-connections/$id/sync-apps');
+      final data = response.data['data'] as Map<String, dynamic>;
+      return SyncAppsResult.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+}
+
+class SyncAppsResult {
+  final int syncedCount;
+  final List<SyncedApp> apps;
+
+  SyncAppsResult({required this.syncedCount, required this.apps});
+
+  factory SyncAppsResult.fromJson(Map<String, dynamic> json) {
+    return SyncAppsResult(
+      syncedCount: json['synced_count'] as int? ?? 0,
+      apps: (json['apps'] as List<dynamic>?)
+              ?.map((e) => SyncedApp.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class SyncedApp {
+  final int id;
+  final String name;
+  final String? iconUrl;
+  final String platform;
+
+  SyncedApp({
+    required this.id,
+    required this.name,
+    this.iconUrl,
+    required this.platform,
+  });
+
+  factory SyncedApp.fromJson(Map<String, dynamic> json) {
+    return SyncedApp(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      iconUrl: json['icon_url'] as String?,
+      platform: json['platform'] as String,
+    );
+  }
 }

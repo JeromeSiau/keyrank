@@ -146,4 +146,62 @@ class AppStoreConnectService
             return false;
         }
     }
+
+    /**
+     * Get all apps from App Store Connect account
+     */
+    public function getApps(StoreConnection $connection): ?array
+    {
+        try {
+            $token = $this->generateToken($connection->credentials);
+            $apps = [];
+            $cursor = null;
+
+            do {
+                $params = ['limit' => 100];
+                if ($cursor) {
+                    $params['cursor'] = $cursor;
+                }
+
+                $response = Http::withToken($token)
+                    ->timeout(30)
+                    ->get("{$this->baseUrl}/v1/apps", $params);
+
+                if (!$response->successful()) {
+                    if ($response->status() === 401) {
+                        $connection->markAsExpired();
+                    }
+                    Log::error('App Store Connect getApps error', [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                    ]);
+                    return null;
+                }
+
+                $data = $response->json();
+                foreach ($data['data'] ?? [] as $app) {
+                    $apps[] = [
+                        'store_id' => $app['id'],
+                        'bundle_id' => $app['attributes']['bundleId'] ?? null,
+                        'name' => $app['attributes']['name'] ?? 'Unknown',
+                        'platform' => 'ios',
+                    ];
+                }
+
+                // Check for next page
+                $cursor = $data['links']['next'] ?? null;
+                if ($cursor) {
+                    // Extract cursor from the next URL
+                    $parsedUrl = parse_url($cursor);
+                    parse_str($parsedUrl['query'] ?? '', $queryParams);
+                    $cursor = $queryParams['cursor'] ?? null;
+                }
+            } while ($cursor);
+
+            return $apps;
+        } catch (\Exception $e) {
+            Log::error('App Store Connect getApps exception', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
 }

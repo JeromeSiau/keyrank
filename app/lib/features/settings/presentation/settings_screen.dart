@@ -114,6 +114,44 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 16),
 
+            // Store Connections section
+            _SectionCard(
+              isDark: isDark,
+              title: 'STORE CONNECTIONS',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.store,
+                      color: isDark ? AppColors.accent : AppColorsLight.accent,
+                    ),
+                    title: Text(
+                      'Manage Store Connections',
+                      style: TextStyle(
+                        color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Connect App Store Connect & Google Play Console',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+                    ),
+                    onTap: () => context.push('/settings/connections'),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
             // Account section
             _SectionCard(
               isDark: isDark,

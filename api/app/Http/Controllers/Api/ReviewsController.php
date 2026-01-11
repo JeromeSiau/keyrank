@@ -24,14 +24,16 @@ class ReviewsController extends Controller
     ) {}
 
     /**
-     * Get reviews inbox for all user's apps
+     * Get reviews inbox for user's owned apps only
      */
     public function inbox(Request $request): JsonResponse
     {
         $user = Auth::user();
-        $appIds = $user->apps()->pluck('apps.id');
 
-        if ($appIds->isEmpty()) {
+        // Only show reviews from owned apps (apps synced from connected store accounts)
+        $ownedAppIds = $user->ownedApps()->pluck('apps.id');
+
+        if ($ownedAppIds->isEmpty()) {
             return response()->json([
                 'data' => [],
                 'meta' => [
@@ -43,7 +45,11 @@ class ReviewsController extends Controller
             ]);
         }
 
-        $query = AppReview::whereIn('app_id', $appIds)
+        // Check which platforms have active store connections
+        $hasIosConnection = $user->hasStoreConnection('ios');
+        $hasAndroidConnection = $user->hasStoreConnection('android');
+
+        $query = AppReview::whereIn('app_id', $ownedAppIds)
             ->with('app:id,name,icon_url,platform');
 
         // Filter by status (unanswered/answered)
@@ -89,24 +95,31 @@ class ReviewsController extends Controller
         $reviews = $query->orderByDesc('reviewed_at')->paginate($perPage);
 
         return response()->json([
-            'data' => $reviews->map(fn($review) => [
-                'id' => $review->id,
-                'app' => [
-                    'id' => $review->app->id,
-                    'name' => $review->app->name,
-                    'icon_url' => $review->app->icon_url,
-                    'platform' => $review->app->platform,
-                ],
-                'author' => $review->author,
-                'title' => $review->title,
-                'content' => $review->content,
-                'rating' => $review->rating,
-                'country' => $review->country,
-                'sentiment' => $review->sentiment,
-                'reviewed_at' => $review->reviewed_at?->toIso8601String(),
-                'our_response' => $review->our_response,
-                'responded_at' => $review->responded_at?->toIso8601String(),
-            ]),
+            'data' => $reviews->map(function ($review) use ($hasIosConnection, $hasAndroidConnection) {
+                // All reviews in inbox are from owned apps
+                $hasConnection = $review->app->platform === 'ios' ? $hasIosConnection : $hasAndroidConnection;
+
+                return [
+                    'id' => $review->id,
+                    'app' => [
+                        'id' => $review->app->id,
+                        'name' => $review->app->name,
+                        'icon_url' => $review->app->icon_url,
+                        'platform' => $review->app->platform,
+                        'is_owned' => true,
+                    ],
+                    'author' => $review->author,
+                    'title' => $review->title,
+                    'content' => $review->content,
+                    'rating' => $review->rating,
+                    'country' => $review->country,
+                    'sentiment' => $review->sentiment,
+                    'reviewed_at' => $review->reviewed_at?->toIso8601String(),
+                    'our_response' => $review->our_response,
+                    'responded_at' => $review->responded_at?->toIso8601String(),
+                    'can_reply' => $hasConnection,
+                ];
+            }),
             'meta' => [
                 'current_page' => $reviews->currentPage(),
                 'last_page' => $reviews->lastPage(),

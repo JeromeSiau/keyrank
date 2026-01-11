@@ -70,4 +70,8 @@ class StoreConnectionsNotifier extends AsyncNotifier<List<StoreConnection>> {
             ?.any((c) => c.platform == platform && c.status == 'active') ??
         false;
   }
+
+  Future<SyncAppsResult> syncApps(int connectionId) async {
+    return ref.read(storeConnectionsRepositoryProvider).syncApps(connectionId);
+  }
 }

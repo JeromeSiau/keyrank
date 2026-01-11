@@ -62,7 +62,15 @@ class User extends Authenticatable
     public function apps(): BelongsToMany
     {
         return $this->belongsToMany(App::class, 'user_apps')
-            ->withPivot('is_favorite', 'favorited_at', 'created_at');
+            ->withPivot('is_owner', 'is_favorite', 'favorited_at', 'created_at');
+    }
+
+    /**
+     * Get user's owned apps (where they have store connection)
+     */
+    public function ownedApps(): BelongsToMany
+    {
+        return $this->apps()->wherePivot('is_owner', true);
     }
 
     /**
