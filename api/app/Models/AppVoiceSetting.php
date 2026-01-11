@@ -15,6 +15,10 @@ class AppVoiceSetting extends Model
         'signature',
     ];
 
+    protected $attributes = [
+        'default_language' => 'auto',
+    ];
+
     public function app(): BelongsTo
     {
         return $this->belongsTo(App::class);

@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\NotesController;
 use App\Http\Controllers\Api\StoreConnectionController;
 use App\Http\Controllers\Api\TagsController;
 use App\Http\Controllers\Api\UserPreferencesController;
+use App\Http\Controllers\Api\VoiceSettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -107,6 +108,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Export
         Route::get('{app}/export/rankings', [ExportController::class, 'rankings']);
+
+        // Voice Settings
+        Route::get('{app}/voice-settings', [VoiceSettingsController::class, 'show']);
+        Route::put('{app}/voice-settings', [VoiceSettingsController::class, 'update']);
     });
 
     // Keywords (global search)
