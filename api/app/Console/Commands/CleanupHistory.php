@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 class CleanupHistory extends Command
 {
     protected $signature = 'aso:cleanup {--days=90 : Keep daily history for this many days}';
+
     protected $description = 'Aggregate old data and clean up history';
 
     public function __construct(private AggregationService $aggregationService)
