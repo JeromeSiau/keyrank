@@ -1280,4 +1280,46 @@ class AppLocalizationsKo extends AppLocalizations {
   String reviewsInbox_stars(int count) {
     return '$count stars';
   }
+
+  @override
+  String get analytics_title => '분석';
+
+  @override
+  String get analytics_downloads => '다운로드';
+
+  @override
+  String get analytics_revenue => '수익';
+
+  @override
+  String get analytics_proceeds => '수입';
+
+  @override
+  String get analytics_subscribers => '구독자';
+
+  @override
+  String get analytics_downloadsOverTime => '시간별 다운로드';
+
+  @override
+  String get analytics_revenueOverTime => '시간별 수익';
+
+  @override
+  String get analytics_byCountry => '국가별';
+
+  @override
+  String get analytics_noData => '데이터 없음';
+
+  @override
+  String get analytics_noDataTitle => '분석 데이터 없음';
+
+  @override
+  String get analytics_noDataDescription =>
+      '실제 판매 및 다운로드 데이터를 보려면 App Store Connect 또는 Google Play 계정을 연결하세요.';
+
+  @override
+  String analytics_dataDelay(String date) {
+    return '$date 기준 데이터. Apple 데이터는 24-48시간 지연됩니다.';
+  }
+
+  @override
+  String get analytics_export => 'CSV 내보내기';
 }

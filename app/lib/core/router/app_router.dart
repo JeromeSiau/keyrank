@@ -31,6 +31,7 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/store_connections/presentation/store_connections_screen.dart';
 import '../../features/store_connections/presentation/connect_apple_screen.dart';
 import '../../features/store_connections/presentation/connect_google_screen.dart';
+import '../../features/analytics/presentation/app_analytics_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -118,6 +119,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final id = int.parse(state.pathParameters['id']!);
                   final appName = state.uri.queryParameters['name'] ?? 'App';
                   return AppInsightsScreen(appId: id, appName: appName);
+                },
+              ),
+              GoRoute(
+                path: ':id/analytics',
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  final appName = state.uri.queryParameters['name'] ?? 'App';
+                  return AppAnalyticsScreen(appId: id, appName: appName);
                 },
               ),
             ],

@@ -462,5 +462,24 @@
 
   "settings_notifications": "BILDIRIMLER",
   "settings_manageAlerts": "Uyari kurallarini yonet",
-  "settings_manageAlertsDesc": "Hangi uyarilari alacaginizi yapilandirin"
+  "settings_manageAlertsDesc": "Hangi uyarilari alacaginizi yapilandirin",
+
+  "analytics_title": "Analitik",
+  "analytics_downloads": "İndirmeler",
+  "analytics_revenue": "Gelir",
+  "analytics_proceeds": "Kazanç",
+  "analytics_subscribers": "Aboneler",
+  "analytics_downloadsOverTime": "Zaman İçinde İndirmeler",
+  "analytics_revenueOverTime": "Zaman İçinde Gelir",
+  "analytics_byCountry": "Ülkeye Göre",
+  "analytics_noData": "Veri yok",
+  "analytics_noDataTitle": "Analitik Verisi Yok",
+  "analytics_noDataDescription": "Gerçek satış ve indirme verilerini görmek için App Store Connect veya Google Play hesabınızı bağlayın.",
+  "analytics_dataDelay": "{date} itibariyle veriler. Apple verileri 24-48 saat gecikmelidir.",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "CSV Dışa Aktar"
 }

@@ -1280,4 +1280,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String reviewsInbox_stars(int count) {
     return '$count stars';
   }
+
+  @override
+  String get analytics_title => '分析';
+
+  @override
+  String get analytics_downloads => '下载';
+
+  @override
+  String get analytics_revenue => '收入';
+
+  @override
+  String get analytics_proceeds => '收益';
+
+  @override
+  String get analytics_subscribers => '订阅者';
+
+  @override
+  String get analytics_downloadsOverTime => '下载趋势';
+
+  @override
+  String get analytics_revenueOverTime => '收入趋势';
+
+  @override
+  String get analytics_byCountry => '按国家';
+
+  @override
+  String get analytics_noData => '无可用数据';
+
+  @override
+  String get analytics_noDataTitle => '无分析数据';
+
+  @override
+  String get analytics_noDataDescription =>
+      '连接您的 App Store Connect 或 Google Play 账户以查看真实的销售和下载数据。';
+
+  @override
+  String analytics_dataDelay(String date) {
+    return '数据截至 $date。Apple 数据有 24-48 小时延迟。';
+  }
+
+  @override
+  String get analytics_export => '导出 CSV';
 }

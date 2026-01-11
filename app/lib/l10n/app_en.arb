@@ -670,5 +670,24 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+
+  "analytics_title": "Analytics",
+  "analytics_downloads": "Downloads",
+  "analytics_revenue": "Revenue",
+  "analytics_proceeds": "Proceeds",
+  "analytics_subscribers": "Subscribers",
+  "analytics_downloadsOverTime": "Downloads Over Time",
+  "analytics_revenueOverTime": "Revenue Over Time",
+  "analytics_byCountry": "By Country",
+  "analytics_noData": "No data available",
+  "analytics_noDataTitle": "No Analytics Data",
+  "analytics_noDataDescription": "Connect your App Store Connect or Google Play account to see real sales and download data.",
+  "analytics_dataDelay": "Data as of {date}. Apple data has a 24-48h delay.",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "Export CSV"
 }

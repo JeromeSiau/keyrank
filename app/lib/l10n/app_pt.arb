@@ -462,5 +462,24 @@
 
   "settings_notifications": "NOTIFICACOES",
   "settings_manageAlerts": "Gerenciar regras de alerta",
-  "settings_manageAlertsDesc": "Configure quais alertas voce recebe"
+  "settings_manageAlertsDesc": "Configure quais alertas voce recebe",
+
+  "analytics_title": "Análises",
+  "analytics_downloads": "Downloads",
+  "analytics_revenue": "Receita",
+  "analytics_proceeds": "Lucros",
+  "analytics_subscribers": "Assinantes",
+  "analytics_downloadsOverTime": "Downloads ao longo do tempo",
+  "analytics_revenueOverTime": "Receita ao longo do tempo",
+  "analytics_byCountry": "Por país",
+  "analytics_noData": "Nenhum dado disponível",
+  "analytics_noDataTitle": "Sem dados analíticos",
+  "analytics_noDataDescription": "Conecte sua conta App Store Connect ou Google Play para ver dados reais de vendas e downloads.",
+  "analytics_dataDelay": "Dados de {date}. Dados da Apple têm atraso de 24-48h.",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "Exportar CSV"
 }

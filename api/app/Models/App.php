@@ -118,4 +118,19 @@ class App extends Model
     {
         return $this->voiceSettings()->where('user_id', $userId)->first();
     }
+
+    public function analytics(): HasMany
+    {
+        return $this->hasMany(AppAnalytics::class);
+    }
+
+    public function analyticsSummaries(): HasMany
+    {
+        return $this->hasMany(AppAnalyticsSummary::class);
+    }
+
+    public function getAnalyticsSummary(string $period = '30d'): ?AppAnalyticsSummary
+    {
+        return $this->analyticsSummaries()->where('period', $period)->first();
+    }
 }

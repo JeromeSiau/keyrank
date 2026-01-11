@@ -2453,6 +2453,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} stars'**
   String reviewsInbox_stars(int count);
+
+  /// No description provided for @analytics_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get analytics_title;
+
+  /// No description provided for @analytics_downloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get analytics_downloads;
+
+  /// No description provided for @analytics_revenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue'**
+  String get analytics_revenue;
+
+  /// No description provided for @analytics_proceeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceeds'**
+  String get analytics_proceeds;
+
+  /// No description provided for @analytics_subscribers.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribers'**
+  String get analytics_subscribers;
+
+  /// No description provided for @analytics_downloadsOverTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads Over Time'**
+  String get analytics_downloadsOverTime;
+
+  /// No description provided for @analytics_revenueOverTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue Over Time'**
+  String get analytics_revenueOverTime;
+
+  /// No description provided for @analytics_byCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'By Country'**
+  String get analytics_byCountry;
+
+  /// No description provided for @analytics_noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get analytics_noData;
+
+  /// No description provided for @analytics_noDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Analytics Data'**
+  String get analytics_noDataTitle;
+
+  /// No description provided for @analytics_noDataDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your App Store Connect or Google Play account to see real sales and download data.'**
+  String get analytics_noDataDescription;
+
+  /// No description provided for @analytics_dataDelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Data as of {date}. Apple data has a 24-48h delay.'**
+  String analytics_dataDelay(String date);
+
+  /// No description provided for @analytics_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get analytics_export;
 }
 
 class _AppLocalizationsDelegate

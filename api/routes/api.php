@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AlertRulesController;
+use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\AppController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
@@ -112,6 +113,14 @@ Route::middleware('auth:sanctum')->group(function () {
         // Voice Settings
         Route::get('{app}/voice-settings', [VoiceSettingsController::class, 'show']);
         Route::put('{app}/voice-settings', [VoiceSettingsController::class, 'update']);
+
+        // Analytics
+        Route::get('{app}/analytics', [AnalyticsController::class, 'index']);
+        Route::get('{app}/analytics/downloads', [AnalyticsController::class, 'downloads']);
+        Route::get('{app}/analytics/revenue', [AnalyticsController::class, 'revenue']);
+        Route::get('{app}/analytics/subscribers', [AnalyticsController::class, 'subscribers']);
+        Route::get('{app}/analytics/countries', [AnalyticsController::class, 'countries']);
+        Route::get('{app}/analytics/export', [AnalyticsController::class, 'export']);
     });
 
     // Keywords (global search)

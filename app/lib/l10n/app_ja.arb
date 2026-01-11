@@ -462,5 +462,24 @@
 
   "settings_notifications": "通知",
   "settings_manageAlerts": "アラートルールを管理",
-  "settings_manageAlertsDesc": "受け取るアラートを設定"
+  "settings_manageAlertsDesc": "受け取るアラートを設定",
+
+  "analytics_title": "分析",
+  "analytics_downloads": "ダウンロード",
+  "analytics_revenue": "収益",
+  "analytics_proceeds": "売上",
+  "analytics_subscribers": "登録者",
+  "analytics_downloadsOverTime": "ダウンロード推移",
+  "analytics_revenueOverTime": "収益推移",
+  "analytics_byCountry": "国別",
+  "analytics_noData": "データがありません",
+  "analytics_noDataTitle": "分析データがありません",
+  "analytics_noDataDescription": "App Store ConnectまたはGoogle Playアカウントを接続して、実際の売上とダウンロードデータを確認してください。",
+  "analytics_dataDelay": "{date}時点のデータ。Appleデータは24-48時間の遅延があります。",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "CSVエクスポート"
 }

@@ -1300,4 +1300,46 @@ class AppLocalizationsTr extends AppLocalizations {
   String reviewsInbox_stars(int count) {
     return '$count stars';
   }
+
+  @override
+  String get analytics_title => 'Analitik';
+
+  @override
+  String get analytics_downloads => 'İndirmeler';
+
+  @override
+  String get analytics_revenue => 'Gelir';
+
+  @override
+  String get analytics_proceeds => 'Kazanç';
+
+  @override
+  String get analytics_subscribers => 'Aboneler';
+
+  @override
+  String get analytics_downloadsOverTime => 'Zaman İçinde İndirmeler';
+
+  @override
+  String get analytics_revenueOverTime => 'Zaman İçinde Gelir';
+
+  @override
+  String get analytics_byCountry => 'Ülkeye Göre';
+
+  @override
+  String get analytics_noData => 'Veri yok';
+
+  @override
+  String get analytics_noDataTitle => 'Analitik Verisi Yok';
+
+  @override
+  String get analytics_noDataDescription =>
+      'Gerçek satış ve indirme verilerini görmek için App Store Connect veya Google Play hesabınızı bağlayın.';
+
+  @override
+  String analytics_dataDelay(String date) {
+    return '$date itibariyle veriler. Apple verileri 24-48 saat gecikmelidir.';
+  }
+
+  @override
+  String get analytics_export => 'CSV Dışa Aktar';
 }

@@ -539,6 +539,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                 onViewInsights: isPreview ? null : () => context.push(
                   '/apps/$appId/insights?name=${Uri.encodeComponent(appData.name)}',
                 ),
+                onViewAnalytics: isPreview ? null : () => context.push(
+                  '/apps/$appId/analytics?name=${Uri.encodeComponent(appData.name)}',
+                ),
                 onExport: isPreview ? null : () => _exportRankings(appData.name),
                 onImport: isPreview ? null : _showImportDialog,
               ),
@@ -642,6 +645,7 @@ class _Toolbar extends StatelessWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onViewRatings;
   final VoidCallback? onViewInsights;
+  final VoidCallback? onViewAnalytics;
   final VoidCallback? onExport;
   final VoidCallback? onImport;
 
@@ -654,6 +658,7 @@ class _Toolbar extends StatelessWidget {
     this.onDelete,
     this.onViewRatings,
     this.onViewInsights,
+    this.onViewAnalytics,
     this.onExport,
     this.onImport,
   });
@@ -716,6 +721,14 @@ class _Toolbar extends StatelessWidget {
               label: context.l10n.appDetail_insights,
               onTap: onViewInsights,
             ),
+            if (onViewAnalytics != null) ...[
+              const SizedBox(width: 10),
+              ToolbarButton(
+                icon: Icons.analytics_rounded,
+                label: context.l10n.analytics_title,
+                onTap: onViewAnalytics,
+              ),
+            ],
             const SizedBox(width: 10),
             // Overflow menu for secondary actions
             PopupMenuButton<String>(

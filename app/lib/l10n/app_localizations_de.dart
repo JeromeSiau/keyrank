@@ -1310,4 +1310,46 @@ class AppLocalizationsDe extends AppLocalizations {
   String reviewsInbox_stars(int count) {
     return '$count stars';
   }
+
+  @override
+  String get analytics_title => 'Analytik';
+
+  @override
+  String get analytics_downloads => 'Downloads';
+
+  @override
+  String get analytics_revenue => 'Umsatz';
+
+  @override
+  String get analytics_proceeds => 'Erlöse';
+
+  @override
+  String get analytics_subscribers => 'Abonnenten';
+
+  @override
+  String get analytics_downloadsOverTime => 'Downloads im Zeitverlauf';
+
+  @override
+  String get analytics_revenueOverTime => 'Umsatz im Zeitverlauf';
+
+  @override
+  String get analytics_byCountry => 'Nach Land';
+
+  @override
+  String get analytics_noData => 'Keine Daten verfügbar';
+
+  @override
+  String get analytics_noDataTitle => 'Keine Analysedaten';
+
+  @override
+  String get analytics_noDataDescription =>
+      'Verbinden Sie Ihr App Store Connect oder Google Play Konto, um echte Verkaufs- und Download-Daten zu sehen.';
+
+  @override
+  String analytics_dataDelay(String date) {
+    return 'Daten vom $date. Apple-Daten haben eine Verzögerung von 24-48h.';
+  }
+
+  @override
+  String get analytics_export => 'CSV exportieren';
 }

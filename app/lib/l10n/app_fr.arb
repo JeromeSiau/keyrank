@@ -590,5 +590,24 @@
   "reviewsInbox_replySent": "Réponse envoyée avec succès",
   "reviewsInbox_replyError": "Échec de l'envoi de la réponse : {error}",
   "reviewsInbox_aiError": "Échec de la génération de suggestion : {error}",
-  "reviewsInbox_stars": "{count} étoiles"
+  "reviewsInbox_stars": "{count} étoiles",
+
+  "analytics_title": "Analytiques",
+  "analytics_downloads": "Téléchargements",
+  "analytics_revenue": "Revenus",
+  "analytics_proceeds": "Bénéfices",
+  "analytics_subscribers": "Abonnés",
+  "analytics_downloadsOverTime": "Téléchargements au fil du temps",
+  "analytics_revenueOverTime": "Revenus au fil du temps",
+  "analytics_byCountry": "Par pays",
+  "analytics_noData": "Aucune donnée disponible",
+  "analytics_noDataTitle": "Pas de données analytiques",
+  "analytics_noDataDescription": "Connectez votre compte App Store Connect ou Google Play pour voir les données de ventes et téléchargements réels.",
+  "analytics_dataDelay": "Données au {date}. Les données Apple ont un délai de 24-48h.",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "Exporter CSV"
 }

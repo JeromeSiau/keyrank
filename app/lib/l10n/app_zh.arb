@@ -462,5 +462,24 @@
 
   "settings_notifications": "通知",
   "settings_manageAlerts": "管理警报规则",
-  "settings_manageAlertsDesc": "配置您收到的警报"
+  "settings_manageAlertsDesc": "配置您收到的警报",
+
+  "analytics_title": "分析",
+  "analytics_downloads": "下载",
+  "analytics_revenue": "收入",
+  "analytics_proceeds": "收益",
+  "analytics_subscribers": "订阅者",
+  "analytics_downloadsOverTime": "下载趋势",
+  "analytics_revenueOverTime": "收入趋势",
+  "analytics_byCountry": "按国家",
+  "analytics_noData": "无可用数据",
+  "analytics_noDataTitle": "无分析数据",
+  "analytics_noDataDescription": "连接您的 App Store Connect 或 Google Play 账户以查看真实的销售和下载数据。",
+  "analytics_dataDelay": "数据截至 {date}。Apple 数据有 24-48 小时延迟。",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "导出 CSV"
 }

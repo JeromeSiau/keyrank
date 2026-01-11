@@ -462,5 +462,24 @@
 
   "settings_notifications": "알림",
   "settings_manageAlerts": "알림 규칙 관리",
-  "settings_manageAlertsDesc": "받을 알림 설정"
+  "settings_manageAlertsDesc": "받을 알림 설정",
+
+  "analytics_title": "분석",
+  "analytics_downloads": "다운로드",
+  "analytics_revenue": "수익",
+  "analytics_proceeds": "수입",
+  "analytics_subscribers": "구독자",
+  "analytics_downloadsOverTime": "시간별 다운로드",
+  "analytics_revenueOverTime": "시간별 수익",
+  "analytics_byCountry": "국가별",
+  "analytics_noData": "데이터 없음",
+  "analytics_noDataTitle": "분석 데이터 없음",
+  "analytics_noDataDescription": "실제 판매 및 다운로드 데이터를 보려면 App Store Connect 또는 Google Play 계정을 연결하세요.",
+  "analytics_dataDelay": "{date} 기준 데이터. Apple 데이터는 24-48시간 지연됩니다.",
+  "@analytics_dataDelay": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "analytics_export": "CSV 내보내기"
 }
