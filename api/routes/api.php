@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\RatingsController;
 use App\Http\Controllers\Api\ReviewsController;
 use App\Http\Controllers\Api\NotesController;
+use App\Http\Controllers\Api\StoreConnectionController;
 use App\Http\Controllers\Api\TagsController;
 use App\Http\Controllers\Api\UserPreferencesController;
 use Illuminate\Support\Facades\Route;
@@ -154,5 +155,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('mark-all-read', [NotificationsController::class, 'markAllAsRead']);
         Route::patch('{notification}/read', [NotificationsController::class, 'markAsRead']);
         Route::delete('{notification}', [NotificationsController::class, 'destroy']);
+    });
+
+    // Store Connections
+    Route::prefix('store-connections')->group(function () {
+        Route::get('/', [StoreConnectionController::class, 'index']);
+        Route::post('/', [StoreConnectionController::class, 'store']);
+        Route::get('{storeConnection}', [StoreConnectionController::class, 'show']);
+        Route::patch('{storeConnection}', [StoreConnectionController::class, 'update']);
+        Route::delete('{storeConnection}', [StoreConnectionController::class, 'destroy']);
+        Route::post('{storeConnection}/validate', [StoreConnectionController::class, 'validateConnection']);
     });
 });
