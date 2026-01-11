@@ -1446,4 +1446,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get common_delete => 'Delete';
+
+  @override
+  String get appDetail_tabOverview => 'Apercu';
+
+  @override
+  String get appDetail_tabKeywords => 'Mots-cles';
+
+  @override
+  String get appDetail_tabReviews => 'Avis';
+
+  @override
+  String get appDetail_tabRatings => 'Notes';
+
+  @override
+  String get appDetail_tabInsights => 'Analyses';
 }

@@ -625,5 +625,11 @@
       "date": { "type": "String" }
     }
   },
-  "analytics_export": "Exporter CSV"
+  "analytics_export": "Exporter CSV",
+
+  "appDetail_tabOverview": "Apercu",
+  "appDetail_tabKeywords": "Mots-cles",
+  "appDetail_tabReviews": "Avis",
+  "appDetail_tabRatings": "Notes",
+  "appDetail_tabInsights": "Analyses"
 }

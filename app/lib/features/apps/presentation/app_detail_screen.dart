@@ -21,6 +21,11 @@ import '../../keywords/presentation/keyword_suggestions_modal.dart';
 import '../../tags/domain/tag_model.dart';
 import '../../tags/providers/tags_provider.dart';
 import '../../tags/data/tags_repository.dart';
+import 'tabs/app_overview_tab.dart';
+import 'tabs/app_keywords_tab.dart';
+import 'tabs/app_reviews_tab.dart';
+import 'tabs/app_ratings_tab.dart';
+import 'tabs/app_insights_tab.dart';
 
 enum KeywordFilter { all, favorites, hasTags, hasNotes, ios, android }
 enum KeywordSort { nameAsc, nameDesc, positionBest, popularity, recentlyTracked }
@@ -47,11 +52,15 @@ class AppDetailScreen extends ConsumerStatefulWidget {
   ConsumerState<AppDetailScreen> createState() => _AppDetailScreenState();
 }
 
-class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
+class _AppDetailScreenState extends ConsumerState<AppDetailScreen>
+    with SingleTickerProviderStateMixin {
   final _keywordController = TextEditingController();
   bool _isAddingKeyword = false;
   Keyword? _selectedKeyword;
   bool _countryInitialized = false;
+
+  // Tab controller for the 5 tabs
+  late TabController _tabController;
 
   // Preview mode state
   AppPreview? _previewData;
@@ -65,6 +74,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 5, vsync: this);
     if (widget.isPreviewMode) {
       _loadPreview();
     }
@@ -136,6 +146,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
 
   @override
   void dispose() {
+    _tabController.dispose();
     _keywordController.dispose();
     super.dispose();
   }
@@ -524,9 +535,9 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
         children: [
           // Main content
           Column(
-              children: [
-                // Toolbar
-                _Toolbar(
+            children: [
+              // Toolbar
+              _Toolbar(
                 appName: appData.name,
                 isFavorite: appData.isFavorite,
                 isPreview: isPreview,
@@ -545,73 +556,77 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen> {
                 onExport: isPreview ? null : () => _exportRankings(appData.name),
                 onImport: isPreview ? null : _showImportDialog,
               ),
-              // Content
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // App info card
-                      _AppInfoCard(
-                        app: appData,
-                        isPreview: isPreview,
-                        onViewRatings: isPreview ? null : () => context.push(
-                          '/apps/$appId/ratings?name=${Uri.encodeComponent(appData.name)}',
-                        ),
+              // App info card (always shown)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _AppInfoCard(
+                      app: appData,
+                      isPreview: isPreview,
+                      onViewRatings: isPreview ? null : () => context.push(
+                        '/apps/$appId/ratings?name=${Uri.encodeComponent(appData.name)}',
                       ),
-                      // Collapsible app info (description, screenshots, details)
-                      const SizedBox(height: 12),
-                      _CollapsibleAppInfo(app: appData),
-                      const SizedBox(height: 16),
-                      // Keywords section or preview message
-                      if (isPreview)
-                        _PreviewKeywordsPlaceholder(
-                          isAdding: _isAddingApp,
-                          onAddApp: _addAppToMyApps,
-                        )
-                      else ...[
-                        // Add keyword section
-                        _AddKeywordSection(
-                          controller: _keywordController,
-                          isAdding: _isAddingKeyword,
-                          onAdd: _addKeyword,
-                        ),
-                        const SizedBox(height: 16),
-                        // Keywords table
-                        _KeywordsTable(
-                          keywordsState: keywordsState!,
-                          onDelete: (keyword) async {
-                            await ref.read(keywordsNotifierProvider(appId).notifier).deleteKeyword(keyword);
-                            ref.invalidate(appsNotifierProvider);
-                          },
-                          onKeywordTap: _showKeywordHistory,
-                          onToggleFavorite: (keyword) async {
-                            await ref.read(keywordsNotifierProvider(appId).notifier).toggleFavorite(keyword);
-                          },
-                          onUpdateNote: (keyword, content) async {
-                            await ref.read(keywordsNotifierProvider(appId).notifier).updateNote(keyword, content);
-                          },
-                          onManageTags: (keyword) => _showTagsModal(keyword),
-                          onSuggestions: () => _showSuggestionsModal(appData, keywords),
-                          hasIos: appData.isIos,
-                          hasAndroid: appData.isAndroid,
-                          onBulkDelete: (ids) async {
-                            await ref.read(keywordsNotifierProvider(appId).notifier).bulkDelete(ids);
-                            ref.invalidate(appsNotifierProvider);
-                          },
-                          onBulkFavorite: (ids, isFavorite) async {
-                            await ref.read(keywordsNotifierProvider(appId).notifier).bulkFavorite(ids, isFavorite);
-                          },
-                          onBulkAddTags: (ids) async {
-                            await _showBulkTagsDialog(ids);
-                          },
-                        ),
-                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _CollapsibleAppInfo(app: appData),
+                  ],
+                ),
+              ),
+              // TabBar (only for tracked mode)
+              if (!isPreview) ...[
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: colors.glassBorder)),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    labelColor: colors.accent,
+                    unselectedLabelColor: colors.textMuted,
+                    indicatorColor: colors.accent,
+                    indicatorWeight: 2,
+                    labelStyle: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    tabs: [
+                      Tab(text: context.l10n.appDetail_tabOverview),
+                      Tab(text: context.l10n.appDetail_tabKeywords),
+                      Tab(text: context.l10n.appDetail_tabReviews),
+                      Tab(text: context.l10n.appDetail_tabRatings),
+                      Tab(text: context.l10n.appDetail_tabInsights),
                     ],
                   ),
                 ),
-              ),
+                // TabBarView content
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      AppOverviewTab(appId: appId, app: appData),
+                      AppKeywordsTab(appId: appId, app: appData),
+                      AppReviewsTab(appId: appId, app: appData),
+                      AppRatingsTab(appId: appId, app: appData),
+                      AppInsightsTab(appId: appId, app: appData),
+                    ],
+                  ),
+                ),
+              ],
+              // Preview mode content (keep original behavior)
+              if (isPreview)
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _PreviewKeywordsPlaceholder(
+                      isAdding: _isAddingApp,
+                      onAddApp: _addAppToMyApps,
+                    ),
+                  ),
+                ),
             ],
           ),
           // Backdrop to close panel when tapping outside (only for tracked mode)

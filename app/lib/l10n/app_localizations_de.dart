@@ -1451,4 +1451,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get common_delete => 'Delete';
+
+  @override
+  String get appDetail_tabOverview => 'Overview';
+
+  @override
+  String get appDetail_tabKeywords => 'Keywords';
+
+  @override
+  String get appDetail_tabReviews => 'Reviews';
+
+  @override
+  String get appDetail_tabRatings => 'Ratings';
+
+  @override
+  String get appDetail_tabInsights => 'Insights';
 }

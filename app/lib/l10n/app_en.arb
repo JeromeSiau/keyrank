@@ -724,5 +724,11 @@
   "chat_suggestedQuestions": "Suggested Questions",
 
   "common_cancel": "Cancel",
-  "common_delete": "Delete"
+  "common_delete": "Delete",
+
+  "appDetail_tabOverview": "Overview",
+  "appDetail_tabKeywords": "Keywords",
+  "appDetail_tabReviews": "Reviews",
+  "appDetail_tabRatings": "Ratings",
+  "appDetail_tabInsights": "Insights"
 }

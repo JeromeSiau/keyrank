@@ -2723,6 +2723,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get common_delete;
+
+  /// No description provided for @appDetail_tabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get appDetail_tabOverview;
+
+  /// No description provided for @appDetail_tabKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get appDetail_tabKeywords;
+
+  /// No description provided for @appDetail_tabReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get appDetail_tabReviews;
+
+  /// No description provided for @appDetail_tabRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings'**
+  String get appDetail_tabRatings;
+
+  /// No description provided for @appDetail_tabInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get appDetail_tabInsights;
 }
 
 class _AppLocalizationsDelegate
