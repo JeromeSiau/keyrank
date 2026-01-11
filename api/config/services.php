@@ -61,4 +61,8 @@ return [
         'password' => env('PROXY_PASSWORD'),
     ],
 
+    'app_store_connect' => [
+        'base_url' => env('APP_STORE_CONNECT_BASE_URL', 'https://api.appstoreconnect.apple.com'),
+    ],
+
 ];
