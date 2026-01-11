@@ -143,7 +143,7 @@ class AlertRulesController extends Controller
                 'type' => 'competitor_passed',
                 'icon' => 'sports_martial_arts',
                 'description' => 'Alerte quand un concurrent vous dépasse',
-                'default_conditions' => [],
+                'default_conditions' => (object)[], // Force JSON {} instead of []
             ],
             [
                 'name' => 'Mouvement de masse',

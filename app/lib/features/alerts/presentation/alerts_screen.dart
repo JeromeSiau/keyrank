@@ -60,23 +60,16 @@ class AlertsScreen extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Text('Error: $e'),
               data: (templates) {
-                final activeTypes = rulesAsync.valueOrNull?.map((r) => r.type).toSet() ?? {};
+                // Check by name to determine if template is already activated
+                final activeNames = rulesAsync.valueOrNull?.map((r) => r.name).toSet() ?? {};
 
-                return GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 0.85,
-                  ),
-                  itemCount: templates.length,
-                  itemBuilder: (context, index) {
-                    final template = templates[index];
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: templates.map((template) {
                     return AlertTemplateCard(
                       template: template,
-                      isActivated: activeTypes.contains(template.type),
+                      isActivated: activeNames.contains(template.name),
                       onActivate: () async {
                         try {
                           await rulesNotifier.createFromTemplate(template);
@@ -94,7 +87,7 @@ class AlertsScreen extends ConsumerWidget {
                         }
                       },
                     );
-                  },
+                  }).toList(),
                 );
               },
             ),

@@ -36,76 +36,55 @@ class AlertTemplateCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final accentColor = isDark ? AppColors.accent : AppColorsLight.accent;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha,
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(
-          color: isActivated ? accentColor : (isDark ? AppColors.glassBorder : AppColorsLight.glassBorder),
-          width: isActivated ? 2 : 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Material(
+      color: isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha,
+      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+      child: InkWell(
+        onTap: isActivated ? null : onActivate,
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+            border: Border.all(
+              color: isActivated ? accentColor : (isDark ? AppColors.glassBorder : AppColorsLight.glassBorder),
+              width: isActivated ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
             children: [
               Icon(
                 _parseIcon(template.icon),
                 color: isActivated ? accentColor : (isDark ? AppColors.textSecondary : AppColorsLight.textSecondary),
-                size: 24,
+                size: 20,
               ),
-              const Spacer(),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  template.name,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
               if (isActivated)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: accentColor.withAlpha(25),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'Active',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: accentColor,
-                    ),
-                  ),
+                Icon(
+                  Icons.check_circle,
+                  color: accentColor,
+                  size: 18,
+                )
+              else
+                Icon(
+                  Icons.add_circle_outline,
+                  color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+                  size: 18,
                 ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            template.name,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            template.description,
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: isActivated ? null : onActivate,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: accentColor,
-                side: BorderSide(color: accentColor.withAlpha(isActivated ? 50 : 150)),
-              ),
-              child: Text(isActivated ? 'Already active' : 'Activate'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
