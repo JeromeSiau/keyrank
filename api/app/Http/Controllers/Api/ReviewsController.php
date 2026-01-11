@@ -175,7 +175,7 @@ class ReviewsController extends Controller
         if ($app->platform === 'ios') {
             $storeResponseId = $result['data']['id'] ?? null;
         } else {
-            $storeResponseId = $result['result']['replyText'] ? $review->review_id : null;
+            $storeResponseId = $result['result']['replyId'] ?? null;
         }
 
         // Update review with our response
@@ -189,7 +189,7 @@ class ReviewsController extends Controller
             'data' => [
                 'id' => $review->id,
                 'our_response' => $review->our_response,
-                'responded_at' => $review->responded_at->toIso8601String(),
+                'responded_at' => $review->responded_at?->toIso8601String(),
                 'store_response_id' => $review->store_response_id,
             ],
         ]);
@@ -225,6 +225,7 @@ class ReviewsController extends Controller
         $result = $this->openRouter->chat($systemPrompt, $userPrompt, true);
 
         if (!$result) {
+            \Log::error('OpenRouter API failed', ['app_id' => $app->id, 'review_id' => $review->id]);
             return response()->json([
                 'error' => 'Failed to generate suggestion. Please try again.',
             ], 500);
