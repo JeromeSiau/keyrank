@@ -56,6 +56,8 @@ class AppController extends Controller
             ->map(function ($app) use ($bestRanks) {
                 $app->is_favorite = (bool) $app->pivot->is_favorite;
                 $app->favorited_at = $app->pivot->favorited_at;
+                $app->is_owner = (bool) ($app->pivot->is_owner ?? false);
+                $app->is_competitor = (bool) ($app->pivot->is_competitor ?? false);
                 $app->best_rank = $bestRanks[$app->id] ?? null;
 
                 return $app;
@@ -283,6 +285,11 @@ class AppController extends Controller
             $query->where('user_id', $user->id)->with('keyword');
         }]);
         $app->tracked_keywords_count = $app->trackedKeywords->count();
+
+        // Get pivot data for the current user
+        $pivot = $user->apps()->where('app_id', $app->id)->first()?->pivot;
+        $app->is_owner = (bool) ($pivot->is_owner ?? false);
+        $app->is_competitor = (bool) ($pivot->is_competitor ?? false);
 
         return response()->json([
             'data' => $app,
