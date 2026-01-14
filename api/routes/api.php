@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CompetitorController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\InsightsController;
@@ -89,6 +90,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('{app}/favorite', [AppController::class, 'toggleFavorite']);
         Route::get('{app}/developer-apps', [AppController::class, 'developerApps']);
 
+        // Competitors for app
+        Route::get('{app}/competitors', [CompetitorController::class, 'forApp']);
+        Route::post('{app}/competitors', [CompetitorController::class, 'linkToApp']);
+        Route::delete('{app}/competitors/{competitorAppId}', [CompetitorController::class, 'unlinkFromApp']);
+
         // Keywords for app
         Route::get('{app}/keywords', [KeywordController::class, 'forApp']);
         Route::post('{app}/keywords', [KeywordController::class, 'addToApp'])->middleware('plan.limit:keywords_per_app');
@@ -163,6 +169,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('{tag}', [TagsController::class, 'destroy']);
         Route::post('add-to-keyword', [TagsController::class, 'addToKeyword']);
         Route::post('remove-from-keyword', [TagsController::class, 'removeFromKeyword']);
+    });
+
+    // Competitors
+    Route::prefix('competitors')->group(function () {
+        Route::get('/', [CompetitorController::class, 'index']);
+        Route::post('/', [CompetitorController::class, 'store']);
+        Route::delete('{appId}', [CompetitorController::class, 'destroy']);
     });
 
     // Categories
