@@ -120,6 +120,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AppsListScreen(),
             routes: [
               GoRoute(
+                path: 'manage',
+                builder: (context, state) => const AppsListScreen(),
+              ),
+              GoRoute(
                 path: 'add',
                 builder: (context, state) => const AddAppScreen(),
               ),
