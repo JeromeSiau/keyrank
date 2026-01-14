@@ -415,7 +415,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen>
                 onViewInsights: isPreview ? null : () => context.push(
                   '/apps/$appId/insights?name=${Uri.encodeComponent(appData.name)}',
                 ),
-                onViewAnalytics: isPreview ? null : () => context.push(
+                onViewAnalytics: (isPreview || appData.isCompetitor) ? null : () => context.push(
                   '/apps/$appId/analytics?name=${Uri.encodeComponent(appData.name)}',
                 ),
                 onExport: isPreview ? null : () => _exportRankings(appData.name),
@@ -505,7 +505,7 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen>
               onClose: _hideKeywordHistory,
             ),
           // Chat drawer (slides in from right)
-          if (_isChatOpen && !isPreview)
+          if (_isChatOpen && !isPreview && !appData.isCompetitor)
             Positioned(
               top: 0,
               right: 0,
@@ -515,8 +515,8 @@ class _AppDetailScreenState extends ConsumerState<AppDetailScreen>
                 onClose: () => setState(() => _isChatOpen = false),
               ),
             ),
-          // Floating chat button (only for tracked apps, not preview)
-          if (!isPreview)
+          // Floating chat button (only for tracked apps, not preview, not competitors)
+          if (!isPreview && !appData.isCompetitor)
             Positioned(
               right: _isChatOpen ? 400 : 20,
               bottom: 20,
@@ -833,6 +833,31 @@ class _AppInfoCard extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             color: colors.textSecondary,
                           ),
+                        ),
+                      ),
+                    ],
+                    // Competitor badge
+                    if (app is AppModel && app.isCompetitor) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: colors.purple.withAlpha(30),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.visibility, size: 12, color: colors.purple),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Competitor',
+                              style: AppTypography.micro.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colors.purple,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
