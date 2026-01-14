@@ -29,10 +29,13 @@ final sidebarAppsProvider = Provider<SidebarApps>((ref) {
 
   return appsAsync.when(
     data: (apps) {
-      final favorites = apps.where((a) => a.isFavorite).toList()
+      // Filter for owned apps only - competitors should not appear in the app context switcher
+      final ownedApps = apps.where((app) => app.isOwner).toList();
+
+      final favorites = ownedApps.where((a) => a.isFavorite).toList()
         ..sort((a, b) => (b.favoritedAt ?? DateTime(0)).compareTo(a.favoritedAt ?? DateTime(0)));
 
-      final nonFavorites = apps.where((a) => !a.isFavorite).toList()
+      final nonFavorites = ownedApps.where((a) => !a.isFavorite).toList()
         ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
       return SidebarApps(
