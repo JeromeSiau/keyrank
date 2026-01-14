@@ -21,7 +21,7 @@ import '../../features/reviews/presentation/country_reviews_screen.dart';
 import '../../features/reviews/presentation/reviews_inbox_screen.dart';
 import '../../features/insights/presentation/app_insights_screen.dart';
 import '../../features/insights/presentation/insights_compare_screen.dart';
-import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
+import '../widgets/app_context_switcher.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/notifications/providers/notifications_provider.dart';
 import '../../features/alerts/presentation/alert_rule_builder_screen.dart';
@@ -295,7 +295,6 @@ class MainShell extends ConsumerWidget {
     return ResponsiveShell(
       sidebar: _GlassSidebar(
         selectedIndex: _getSelectedIndex(context),
-        selectedAppId: _getSelectedAppId(context),
         onDestinationSelected: (index) => _onDestinationSelected(context, index),
         userName: user?.name ?? 'User',
         userEmail: user?.email ?? '',
@@ -314,15 +313,6 @@ class MainShell extends ConsumerWidget {
     if (location.startsWith('/top-charts')) return 6;
     if (location.startsWith('/competitors')) return 7;
     return 0;
-  }
-
-  int? _getSelectedAppId(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    final match = RegExp(r'^/apps/(\d+)').firstMatch(location);
-    if (match != null) {
-      return int.tryParse(match.group(1)!);
-    }
-    return null;
   }
 
   void _onDestinationSelected(BuildContext context, int index) {
@@ -357,7 +347,6 @@ class MainShell extends ConsumerWidget {
 
 class _GlassSidebar extends ConsumerWidget {
   final int selectedIndex;
-  final int? selectedAppId;
   final ValueChanged<int> onDestinationSelected;
   final String userName;
   final String userEmail;
@@ -365,7 +354,6 @@ class _GlassSidebar extends ConsumerWidget {
 
   const _GlassSidebar({
     required this.selectedIndex,
-    required this.selectedAppId,
     required this.onDestinationSelected,
     required this.userName,
     required this.userEmail,
@@ -401,6 +389,13 @@ class _GlassSidebar extends ConsumerWidget {
               // Header with logo and notification bell
               _buildHeader(context, isDark, unreadCount),
 
+              // App context switcher
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: AppContextSwitcher(),
+              ),
+              const SizedBox(height: 16),
+
               // Navigation
               Expanded(
                 child: SingleChildScrollView(
@@ -423,16 +418,6 @@ class _GlassSidebar extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 16),
-
-                      // MY APPS section with app list (no menu items, just label + list)
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_myApps,
-                        items: [],
-                      ),
-                      SidebarAppsList(selectedAppId: selectedAppId),
-                      const SizedBox(height: 20),
 
                       // OPTIMIZATION section
                       _buildNavSection(
