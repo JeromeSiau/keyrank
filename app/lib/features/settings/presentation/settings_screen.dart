@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../core/providers/app_context_provider.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/theme/app_colors.dart';
@@ -70,6 +71,8 @@ class SettingsScreen extends ConsumerWidget {
                     darkLabel: context.l10n.settings_themeDark,
                     lightLabel: context.l10n.settings_themeLight,
                   ),
+                  const SizedBox(height: 16),
+                  _RememberAppContextToggle(isDark: isDark),
                 ],
               ),
             ),
@@ -508,6 +511,57 @@ class _ThemeOption extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _RememberAppContextToggle extends ConsumerWidget {
+  final bool isDark;
+
+  const _RememberAppContextToggle({required this.isDark});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rememberContext = ref.watch(rememberAppContextProvider);
+    final textPrimary = isDark ? AppColors.textPrimary : AppColorsLight.textPrimary;
+    final textSecondary = isDark ? AppColors.textSecondary : AppColorsLight.textSecondary;
+    final accent = isDark ? AppColors.accent : AppColorsLight.accent;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Remember selected app',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Restore app selection when you open the app',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: rememberContext,
+          onChanged: (value) {
+            ref.read(rememberAppContextProvider.notifier).setRemember(value);
+          },
+          activeTrackColor: accent.withAlpha(128),
+          activeThumbColor: accent,
+        ),
+      ],
     );
   }
 }
