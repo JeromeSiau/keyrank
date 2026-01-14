@@ -66,7 +66,7 @@ class App extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_apps')
-            ->withPivot('is_favorite', 'favorited_at', 'created_at');
+            ->withPivot('is_owner', 'is_competitor', 'is_favorite', 'favorited_at', 'created_at');
     }
 
     public function keywords(): BelongsToMany
@@ -170,6 +170,32 @@ class App extends Model
     public function discoveredApps(): HasMany
     {
         return $this->hasMany(App::class, 'discovered_from_app_id');
+    }
+
+    public function competitorLinks(): HasMany
+    {
+        return $this->hasMany(AppCompetitor::class, 'owner_app_id');
+    }
+
+    public function competitorOf(): HasMany
+    {
+        return $this->hasMany(AppCompetitor::class, 'competitor_app_id');
+    }
+
+    public function scopeOwnedBy($query, int $userId)
+    {
+        return $query->whereHas('users', function ($q) use ($userId) {
+            $q->where('users.id', $userId)
+              ->where('user_apps.is_owner', true);
+        });
+    }
+
+    public function scopeCompetitorsFor($query, int $userId)
+    {
+        return $query->whereHas('users', function ($q) use ($userId) {
+            $q->where('users.id', $userId)
+              ->where('user_apps.is_competitor', true);
+        });
     }
 
     public function scopeDiscoveredVia($query, string $source)
