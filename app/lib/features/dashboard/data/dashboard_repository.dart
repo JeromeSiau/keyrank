@@ -7,15 +7,24 @@ class DashboardRepository {
 
   DashboardRepository(this._dio);
 
-  Future<HeroMetrics> getHeroMetrics() async {
-    final response = await _dio.get('/dashboard/metrics');
+  /// Get hero metrics for all apps or a specific app.
+  Future<HeroMetrics> getHeroMetrics({int? appId}) async {
+    final response = await _dio.get(
+      '/dashboard/metrics',
+      queryParameters: appId != null ? {'app_id': appId} : null,
+    );
     return HeroMetrics.fromJson(response.data['data']);
   }
 
-  Future<RankingMoversData> getRankingMovers({String period = '7d'}) async {
+  /// Get ranking movers for all apps or a specific app.
+  Future<RankingMoversData> getRankingMovers({String period = '7d', int? appId}) async {
+    final queryParams = <String, dynamic>{'period': period};
+    if (appId != null) {
+      queryParams['app_id'] = appId;
+    }
     final response = await _dio.get(
       '/dashboard/movers',
-      queryParameters: {'period': period},
+      queryParameters: queryParams,
     );
     return RankingMoversData.fromJson(response.data['data']);
   }

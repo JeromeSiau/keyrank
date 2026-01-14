@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../core/providers/app_context_provider.dart';
 import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
 import '../../../shared/widgets/sentiment_bar.dart';
@@ -55,14 +56,16 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
-class _Toolbar extends StatelessWidget {
+class _Toolbar extends ConsumerWidget {
   final VoidCallback onAddApp;
 
   const _Toolbar({required this.onAddApp});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final selectedApp = ref.watch(appContextProvider);
+
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -79,6 +82,24 @@ class _Toolbar extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
+          if (selectedApp != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors.accentMuted,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                selectedApp.name,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: colors.accent,
+                ),
+              ),
+            ),
+          ],
           const Spacer(),
           PrimaryButton(
             icon: Icons.add_rounded,
