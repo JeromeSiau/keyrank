@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/breakpoints.dart';
+import '../../../core/providers/app_context_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/metric_card.dart';
@@ -24,10 +25,11 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
   int? _filterRating;
   int _currentPage = 1;
 
-  ReviewsInboxParams get _params => ReviewsInboxParams(
+  ReviewsInboxParams _getParams(int? appId) => ReviewsInboxParams(
         status: _filterUnanswered ? 'unanswered' : null,
         sentiment: _filterNegative ? 'negative' : null,
         rating: _filterRating,
+        appId: appId,
         page: _currentPage,
       );
 
@@ -70,7 +72,9 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final reviewsAsync = ref.watch(reviewsInboxProvider(_params));
+    final selectedApp = ref.watch(appContextProvider);
+    final params = _getParams(selectedApp?.id);
+    final reviewsAsync = ref.watch(reviewsInboxProvider(params));
 
     return Container(
       decoration: BoxDecoration(
@@ -80,13 +84,13 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
       child: Column(
         children: [
           // Toolbar
-          _buildToolbar(context),
+          _buildToolbar(context, params),
 
           // Content with overview
           Expanded(
             child: reviewsAsync.when(
               loading: () => _buildLoadingState(context),
-              error: (e, _) => _buildErrorState(context, e),
+              error: (e, _) => _buildErrorState(context, e, params),
               data: (paginatedReviews) {
                 return Column(
                   children: [
@@ -110,8 +114,9 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
     );
   }
 
-  Widget _buildToolbar(BuildContext context) {
+  Widget _buildToolbar(BuildContext context, ReviewsInboxParams params) {
     final colors = context.colors;
+    final selectedApp = ref.watch(appContextProvider);
 
     return Container(
       height: 56,
@@ -135,10 +140,28 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
               color: colors.textPrimary,
             ),
           ),
+          if (selectedApp != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors.accentMuted,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                selectedApp.name,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: colors.accent,
+                ),
+              ),
+            ),
+          ],
           const Spacer(),
           IconButton(
             icon: Icon(Icons.refresh_rounded, color: colors.textMuted),
-            onPressed: () => ref.invalidate(reviewsInboxProvider(_params)),
+            onPressed: () => ref.invalidate(reviewsInboxProvider(params)),
             tooltip: context.l10n.common_refresh,
           ),
         ],
@@ -334,7 +357,7 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
     );
   }
 
-  Widget _buildErrorState(BuildContext context, Object error) {
+  Widget _buildErrorState(BuildContext context, Object error, ReviewsInboxParams params) {
     final colors = context.colors;
     return Center(
       child: Column(
@@ -364,7 +387,7 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: () => ref.invalidate(reviewsInboxProvider(_params)),
+            onPressed: () => ref.invalidate(reviewsInboxProvider(params)),
             icon: const Icon(Icons.refresh, size: 18),
             label: Text(context.l10n.common_retry),
           ),

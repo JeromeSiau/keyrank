@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/providers/app_context_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/star_histogram.dart';
@@ -8,9 +9,6 @@ import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../providers/ratings_provider.dart';
 import '../domain/rating_model.dart';
-
-/// Selected app for ratings analysis (null = aggregate all apps)
-final ratingsAnalysisAppProvider = StateProvider<int?>((ref) => null);
 
 /// Selected period for trend chart
 final ratingsAnalysisPeriodProvider = StateProvider<int>((ref) => 30);
@@ -52,6 +50,8 @@ class RatingsAnalysisScreen extends ConsumerWidget {
 
   Widget _buildToolbar(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final selectedApp = ref.watch(appContextProvider);
+
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -70,6 +70,24 @@ class RatingsAnalysisScreen extends ConsumerWidget {
               color: colors.textPrimary,
             ),
           ),
+          if (selectedApp != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors.accentMuted,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                selectedApp.name,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: colors.accent,
+                ),
+              ),
+            ),
+          ],
           const Spacer(),
           IconButton(
             icon: Icon(Icons.refresh_rounded, color: colors.textMuted),
@@ -89,7 +107,8 @@ class _RatingsContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedAppId = ref.watch(ratingsAnalysisAppProvider);
+    final contextApp = ref.watch(appContextProvider);
+    final selectedAppId = contextApp?.id;
 
     // Calculate aggregate stats from apps
     final totalRatings = apps.fold<int>(0, (sum, app) => sum + app.ratingCount);
@@ -99,9 +118,7 @@ class _RatingsContent extends ConsumerWidget {
             apps.where((a) => a.rating != null).length;
 
     // Find selected app or use aggregate
-    final selectedApp = selectedAppId != null
-        ? apps.firstWhere((a) => a.id == selectedAppId, orElse: () => apps.first)
-        : null;
+    final selectedApp = contextApp;
 
     final displayRating = selectedApp?.rating ?? avgRating;
     final displayCount = selectedApp?.ratingCount ?? totalRatings;
@@ -115,10 +132,6 @@ class _RatingsContent extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // App selector
-              _AppSelector(apps: apps),
-              const SizedBox(height: 20),
-
               if (isWide)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,98 +339,6 @@ class _RatingsContent extends ConsumerWidget {
       return '${(number / 1000).toStringAsFixed(1)}K';
     }
     return number.toString();
-  }
-}
-
-class _AppSelector extends ConsumerWidget {
-  final List<AppModel> apps;
-
-  const _AppSelector({required this.apps});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedAppId = ref.watch(ratingsAnalysisAppProvider);
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          // "All Apps" option
-          _buildChip(
-            context,
-            ref,
-            label: 'All Apps',
-            isSelected: selectedAppId == null,
-            onTap: () => ref.read(ratingsAnalysisAppProvider.notifier).state = null,
-          ),
-          const SizedBox(width: 8),
-          // Individual apps
-          ...apps.map((app) => Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: _buildChip(
-              context,
-              ref,
-              label: app.name,
-              iconUrl: app.iconUrl,
-              isSelected: selectedAppId == app.id,
-              onTap: () => ref.read(ratingsAnalysisAppProvider.notifier).state = app.id,
-            ),
-          )),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChip(
-    BuildContext context,
-    WidgetRef ref, {
-    required String label,
-    String? iconUrl,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    final colors = context.colors;
-    return Material(
-      color: isSelected ? colors.accent : colors.bgActive,
-      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (iconUrl != null) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: Image.network(
-                    iconUrl,
-                    width: 20,
-                    height: 20,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => Icon(
-                      Icons.apps,
-                      size: 20,
-                      color: isSelected ? Colors.white : colors.textMuted,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: isSelected ? Colors.white : colors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 
