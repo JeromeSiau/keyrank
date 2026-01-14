@@ -1,30 +1,21 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
-import '../../apps/providers/apps_provider.dart';
-import '../../apps/domain/app_model.dart';
+import '../../competitors/providers/competitors_provider.dart';
+import '../../competitors/domain/competitor_model.dart';
 
-// Competitors screen local state providers
-final _selectedAppIdsProvider = StateProvider<Set<int>>((ref) => {});
-final _selectedPeriodProvider = StateProvider<String>((ref) => '30d');
-
-class CompetitorsScreen extends ConsumerStatefulWidget {
+class CompetitorsScreen extends ConsumerWidget {
   const CompetitorsScreen({super.key});
 
   @override
-  ConsumerState<CompetitorsScreen> createState() => _CompetitorsScreenState();
-}
-
-class _CompetitorsScreenState extends ConsumerState<CompetitorsScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final appsAsync = ref.watch(appsNotifierProvider);
-    final selectedIds = ref.watch(_selectedAppIdsProvider);
+    final competitorsAsync = ref.watch(filteredCompetitorsProvider);
+    final currentFilter = ref.watch(competitorFilterProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -33,16 +24,19 @@ class _CompetitorsScreenState extends ConsumerState<CompetitorsScreen> {
       ),
       child: Column(
         children: [
-          // Main toolbar
-          _MainToolbar(
-            onAddApps: () => _showAppSelectionDialog(appsAsync),
-            onRefresh: () {
-              ref.invalidate(appsNotifierProvider);
-            },
+          // Toolbar with title and actions
+          _Toolbar(onRefresh: () => ref.invalidate(competitorsProvider)),
+
+          // Filter chips
+          _FilterChips(
+            currentFilter: currentFilter,
+            onFilterChanged: (filter) =>
+                ref.read(competitorFilterProvider.notifier).state = filter,
           ),
-          // Content
+
+          // Competitors list
           Expanded(
-            child: appsAsync.when(
+            child: competitorsAsync.when(
               loading: () => const Center(
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
@@ -52,20 +46,24 @@ class _CompetitorsScreenState extends ConsumerState<CompetitorsScreen> {
                   style: TextStyle(color: colors.red),
                 ),
               ),
-              data: (apps) {
-                // Filter selected apps
-                final selectedApps = apps
-                    .where((app) => selectedIds.contains(app.id))
-                    .toList();
-
-                if (selectedApps.isEmpty) {
+              data: (competitors) {
+                if (competitors.isEmpty) {
                   return _EmptyState(
                     colors: colors,
-                    onAddApps: () => _showAppSelectionDialog(appsAsync),
+                    filter: currentFilter,
                   );
                 }
-
-                return _ComparisonView(selectedApps: selectedApps);
+                return ListView.builder(
+                  padding: const EdgeInsets.all(AppSpacing.screenPadding),
+                  itemCount: competitors.length,
+                  itemBuilder: (context, index) => _CompetitorTile(
+                    competitor: competitors[index],
+                    onView: () => context.push(
+                      '/apps/preview/${competitors[index].platform}/${competitors[index].storeId}',
+                    ),
+                    onRemove: () => _removeCompetitor(context, ref, competitors[index]),
+                  ),
+                );
               },
             ),
           ),
@@ -74,39 +72,80 @@ class _CompetitorsScreenState extends ConsumerState<CompetitorsScreen> {
     );
   }
 
-  void _showAppSelectionDialog(AsyncValue<List<AppModel>> appsAsync) {
-    final apps = appsAsync.valueOrNull ?? [];
-    if (apps.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.compare_noOtherApps),
-          backgroundColor: context.colors.red,
-        ),
-      );
-      return;
-    }
+  Future<void> _removeCompetitor(
+    BuildContext context,
+    WidgetRef ref,
+    CompetitorModel competitor,
+  ) async {
+    final colors = context.colors;
 
-    showDialog(
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => _AppSelectionDialog(
-        apps: apps,
-        initialSelectedIds: ref.read(_selectedAppIdsProvider),
-        onConfirm: (selectedIds) {
-          ref.read(_selectedAppIdsProvider.notifier).state = selectedIds;
-        },
+      builder: (context) => AlertDialog(
+        backgroundColor: colors.bgBase,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        ),
+        title: Text(
+          'Remove Competitor',
+          style: AppTypography.headline.copyWith(color: colors.textPrimary),
+        ),
+        content: Text(
+          'Are you sure you want to remove "${competitor.name}" from your competitors?',
+          style: AppTypography.body.copyWith(color: colors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'Cancel',
+              style: AppTypography.body.copyWith(color: colors.textMuted),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Remove',
+              style: AppTypography.body.copyWith(color: colors.red),
+            ),
+          ),
+        ],
       ),
     );
+
+    if (confirmed != true) return;
+
+    try {
+      final repository = ref.read(competitorsRepositoryProvider);
+      await repository.removeGlobalCompetitor(competitor.id);
+      ref.invalidate(competitorsProvider);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${competitor.name} removed'),
+            backgroundColor: colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to remove competitor: $e'),
+            backgroundColor: colors.red,
+          ),
+        );
+      }
+    }
   }
 }
 
-class _MainToolbar extends StatelessWidget {
-  final VoidCallback onAddApps;
+class _Toolbar extends StatelessWidget {
   final VoidCallback onRefresh;
 
-  const _MainToolbar({
-    required this.onAddApps,
-    required this.onRefresh,
-  });
+  const _Toolbar({required this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +158,7 @@ class _MainToolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Groups icon
+          // Competitors icon
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
@@ -139,41 +178,6 @@ class _MainToolbar extends StatelessWidget {
             style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
           const Spacer(),
-          // Add apps button
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onAddApps,
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              hoverColor: colors.bgHover,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4, vertical: AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: colors.accent,
-                  borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.add_rounded,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Add Apps',
-                      style: AppTypography.body.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm + 4),
           // Refresh button
           Material(
             color: Colors.transparent,
@@ -201,14 +205,125 @@ class _MainToolbar extends StatelessWidget {
   }
 }
 
+class _FilterChips extends StatelessWidget {
+  final CompetitorFilter currentFilter;
+  final ValueChanged<CompetitorFilter> onFilterChanged;
+
+  const _FilterChips({
+    required this.currentFilter,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenPadding,
+        vertical: AppSpacing.sm + 4,
+      ),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+      ),
+      child: Row(
+        children: [
+          _FilterChip(
+            label: 'All',
+            isSelected: currentFilter == CompetitorFilter.all,
+            onTap: () => onFilterChanged(CompetitorFilter.all),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          _FilterChip(
+            label: 'Global',
+            isSelected: currentFilter == CompetitorFilter.global,
+            onTap: () => onFilterChanged(CompetitorFilter.global),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          _FilterChip(
+            label: 'Contextual',
+            isSelected: currentFilter == CompetitorFilter.contextual,
+            onTap: () => onFilterChanged(CompetitorFilter.contextual),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _FilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm + 4,
+            vertical: AppSpacing.xs + 2,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected ? colors.accent : Colors.transparent,
+            border: Border.all(
+              color: isSelected ? colors.accent : colors.glassBorder,
+            ),
+            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+          ),
+          child: Text(
+            label,
+            style: AppTypography.caption.copyWith(
+              fontWeight: FontWeight.w500,
+              color: isSelected ? Colors.white : colors.textSecondary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptyState extends StatelessWidget {
   final AppColorsExtension colors;
-  final VoidCallback onAddApps;
+  final CompetitorFilter filter;
 
   const _EmptyState({
     required this.colors,
-    required this.onAddApps,
+    required this.filter,
   });
+
+  String get _message {
+    switch (filter) {
+      case CompetitorFilter.all:
+        return 'No competitors tracked yet';
+      case CompetitorFilter.global:
+        return 'No global competitors';
+      case CompetitorFilter.contextual:
+        return 'No contextual competitors';
+    }
+  }
+
+  String get _subtitle {
+    switch (filter) {
+      case CompetitorFilter.all:
+        return 'Add competitors to track their rankings and performance';
+      case CompetitorFilter.global:
+        return 'Global competitors appear across all your apps';
+      case CompetitorFilter.contextual:
+        return 'Contextual competitors are linked to specific apps';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,43 +345,14 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Select apps to compare',
+            _message,
             style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Compare metrics and rankings across your tracked apps',
+            _subtitle,
             style: AppTypography.body.copyWith(color: colors.textMuted),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onAddApps,
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding, vertical: AppSpacing.sm + 4),
-                decoration: BoxDecoration(
-                  color: colors.accent,
-                  borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.add_rounded,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Add Apps to Compare',
-                      style: AppTypography.bodyMedium.copyWith(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -274,1024 +360,247 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _AppSelectionDialog extends ConsumerStatefulWidget {
-  final List<AppModel> apps;
-  final Set<int> initialSelectedIds;
-  final ValueChanged<Set<int>> onConfirm;
+class _CompetitorTile extends StatelessWidget {
+  final CompetitorModel competitor;
+  final VoidCallback onView;
+  final VoidCallback onRemove;
 
-  const _AppSelectionDialog({
-    required this.apps,
-    required this.initialSelectedIds,
-    required this.onConfirm,
-  });
-
-  @override
-  ConsumerState<_AppSelectionDialog> createState() => _AppSelectionDialogState();
-}
-
-class _AppSelectionDialogState extends ConsumerState<_AppSelectionDialog> {
-  late Set<int> _selectedIds;
-  String _searchQuery = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIds = Set.from(widget.initialSelectedIds);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final filteredApps = widget.apps.where((app) {
-      if (_searchQuery.isEmpty) return true;
-      return app.name.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
-
-    return Dialog(
-      backgroundColor: colors.bgBase,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-      ),
-      child: Container(
-        width: 480,
-        constraints: const BoxConstraints(maxHeight: 600),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: colors.glassBorder)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.groups_rounded,
-                        size: 24,
-                        color: colors.accent,
-                      ),
-                      const SizedBox(width: AppSpacing.sm + 4),
-                      Text(
-                        'Select Apps to Compare',
-                        style: AppTypography.headline.copyWith(color: colors.textPrimary),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(
-                          Icons.close_rounded,
-                          color: colors.textMuted,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Select 2-4 apps from your tracked apps',
-                    style: AppTypography.caption.copyWith(color: colors.textMuted),
-                  ),
-                ],
-              ),
-            ),
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.cardPadding),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: colors.bgActive,
-                  borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                  border: Border.all(color: colors.glassBorder),
-                ),
-                child: TextField(
-                  onChanged: (value) => setState(() => _searchQuery = value),
-                  style: AppTypography.body.copyWith(color: colors.textPrimary),
-                  decoration: InputDecoration(
-                    hintText: context.l10n.compare_searchApps,
-                    hintStyle: AppTypography.body.copyWith(color: colors.textMuted),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: colors.textMuted,
-                      size: 20,
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.cardPadding,
-                      vertical: AppSpacing.sm + 4,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Selection count
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding),
-              child: Row(
-                children: [
-                  Text(
-                    '${_selectedIds.length} of 4 apps selected',
-                    style: AppTypography.body.copyWith(
-                      color: _selectedIds.length >= 2 ? colors.green : colors.textMuted,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (_selectedIds.isNotEmpty)
-                    TextButton(
-                      onPressed: () => setState(() => _selectedIds.clear()),
-                      child: Text(
-                        context.l10n.keywordSuggestions_clear,
-                        style: AppTypography.body.copyWith(color: colors.textMuted),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            // App list
-            Flexible(
-              child: filteredApps.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.xl),
-                        child: Text(
-                          context.l10n.compare_noMatchingApps,
-                          style: AppTypography.body.copyWith(color: colors.textMuted),
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding),
-                      itemCount: filteredApps.length,
-                      itemBuilder: (context, index) {
-                        final app = filteredApps[index];
-                        final isSelected = _selectedIds.contains(app.id);
-                        final canSelect = _selectedIds.length < 4 || isSelected;
-
-                        return _AppSelectionTile(
-                          app: app,
-                          isSelected: isSelected,
-                          canSelect: canSelect,
-                          onTap: () {
-                            setState(() {
-                              if (isSelected) {
-                                _selectedIds.remove(app.id);
-                              } else if (canSelect) {
-                                _selectedIds.add(app.id);
-                              }
-                            });
-                          },
-                        );
-                      },
-                    ),
-            ),
-            // Footer buttons
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.cardPadding),
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: colors.glassBorder)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      context.l10n.compare_cancel,
-                      style: AppTypography.body.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm + 4),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: _selectedIds.length >= 2
-                          ? () {
-                              widget.onConfirm(_selectedIds);
-                              Navigator.of(context).pop();
-                            }
-                          : null,
-                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.cardPadding,
-                          vertical: AppSpacing.sm + 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _selectedIds.length >= 2
-                              ? colors.accent
-                              : colors.bgActive,
-                          borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                        ),
-                        child: Text(
-                          context.l10n.compare_button(_selectedIds.length),
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: _selectedIds.length >= 2
-                                ? Colors.white
-                                : colors.textMuted,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AppSelectionTile extends StatelessWidget {
-  final AppModel app;
-  final bool isSelected;
-  final bool canSelect;
-  final VoidCallback onTap;
-
-  const _AppSelectionTile({
-    required this.app,
-    required this.isSelected,
-    required this.canSelect,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: canSelect ? onTap : null,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4, vertical: AppSpacing.sm + 2),
-          margin: const EdgeInsets.only(bottom: AppSpacing.xs),
-          decoration: BoxDecoration(
-            color: isSelected ? colors.accent.withAlpha(15) : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-            border: isSelected
-                ? Border.all(color: colors.accent.withAlpha(50))
-                : null,
-          ),
-          child: Row(
-            children: [
-              // Checkbox
-              Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: isSelected ? colors.accent : Colors.transparent,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: isSelected ? colors.accent : colors.glassBorder,
-                    width: 2,
-                  ),
-                ),
-                child: isSelected
-                    ? const Icon(
-                        Icons.check_rounded,
-                        size: 14,
-                        color: Colors.white,
-                      )
-                    : null,
-              ),
-              const SizedBox(width: AppSpacing.sm + 4),
-              // App icon
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: colors.bgActive,
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: app.iconUrl != null
-                    ? Image.network(
-                        app.iconUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, e, s) => Icon(
-                          app.isIos ? Icons.apple : Icons.android,
-                          size: 18,
-                          color: colors.textMuted,
-                        ),
-                      )
-                    : Icon(
-                        app.isIos ? Icons.apple : Icons.android,
-                        size: 18,
-                        color: colors.textMuted,
-                      ),
-              ),
-              const SizedBox(width: AppSpacing.sm + 4),
-              // App name and platform
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      app.name,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: canSelect ? colors.textPrimary : colors.textMuted,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(
-                          app.isIos ? Icons.apple : Icons.android,
-                          size: 12,
-                          color: colors.textMuted,
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          app.isIos ? 'iOS' : 'Android',
-                          style: AppTypography.caption.copyWith(color: colors.textMuted),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Rating
-              if (app.rating != null)
-                Row(
-                  children: [
-                    Icon(
-                      Icons.star_rounded,
-                      size: 14,
-                      color: colors.yellow,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      app.rating!.toStringAsFixed(1),
-                      style: AppTypography.tableCell.copyWith(color: colors.textSecondary),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ComparisonView extends ConsumerWidget {
-  final List<AppModel> selectedApps;
-
-  const _ComparisonView({required this.selectedApps});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.screenPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Selected apps chips
-          _SelectedAppsChips(
-            apps: selectedApps,
-            onRemove: (appId) {
-              final currentIds = ref.read(_selectedAppIdsProvider);
-              ref.read(_selectedAppIdsProvider.notifier).state =
-                  Set.from(currentIds)..remove(appId);
-            },
-          ),
-          const SizedBox(height: AppSpacing.screenPadding),
-          // Metrics comparison table
-          _MetricsComparisonCard(apps: selectedApps),
-          const SizedBox(height: AppSpacing.screenPadding),
-          // Ranking trend chart
-          _RankingTrendCard(apps: selectedApps),
-        ],
-      ),
-    );
-  }
-}
-
-class _SelectedAppsChips extends StatelessWidget {
-  final List<AppModel> apps;
-  final ValueChanged<int> onRemove;
-
-  const _SelectedAppsChips({
-    required this.apps,
+  const _CompetitorTile({
+    required this.competitor,
+    required this.onView,
     required this.onRemove,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return Wrap(
-      spacing: AppSpacing.sm,
-      runSpacing: AppSpacing.sm,
-      children: apps.map((app) {
-        final chipColor = _getAppColor(apps.indexOf(app));
-        return Container(
-          padding: const EdgeInsets.only(left: AppSpacing.xs, right: AppSpacing.sm, top: AppSpacing.xs, bottom: AppSpacing.xs),
-          decoration: BoxDecoration(
-            color: chipColor.withAlpha(20),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: chipColor.withAlpha(50)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // App icon
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: colors.bgActive,
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: app.iconUrl != null
-                    ? Image.network(
-                        app.iconUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, e, s) => Icon(
-                          app.isIos ? Icons.apple : Icons.android,
-                          size: 14,
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm + 4),
+      decoration: BoxDecoration(
+        color: colors.bgActive.withAlpha(50),
+        border: Border.all(color: colors.glassBorder),
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onView,
+          borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+          hoverColor: colors.bgHover,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.cardPadding),
+            child: Row(
+              children: [
+                // App icon
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: colors.bgActive,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: competitor.iconUrl != null
+                      ? Image.network(
+                          competitor.iconUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, e, s) => Icon(
+                            competitor.isIos ? Icons.apple : Icons.android,
+                            size: 24,
+                            color: colors.textMuted,
+                          ),
+                        )
+                      : Icon(
+                          competitor.isIos ? Icons.apple : Icons.android,
+                          size: 24,
                           color: colors.textMuted,
                         ),
-                      )
-                    : Icon(
-                        app.isIos ? Icons.apple : Icons.android,
-                        size: 14,
-                        color: colors.textMuted,
+                ),
+                const SizedBox(width: AppSpacing.cardPadding),
+                // Name, developer, badges
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              competitor.name,
+                              style: AppTypography.bodyMedium.copyWith(
+                                color: colors.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          // Type badge
+                          _TypeBadge(
+                            isGlobal: competitor.isGlobal,
+                            colors: colors,
+                          ),
+                        ],
                       ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              // App name
-              Text(
-                app.name,
-                style: AppTypography.body.copyWith(color: colors.textPrimary),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              // Remove button
-              GestureDetector(
-                onTap: () => onRemove(app.id),
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: colors.textMuted.withAlpha(30),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.close_rounded,
-                    size: 14,
-                    color: colors.textMuted,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _MetricsComparisonCard extends StatelessWidget {
-  final List<AppModel> apps;
-
-  const _MetricsComparisonCard({required this.apps});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.bgActive.withAlpha(50),
-        border: Border.all(color: colors.glassBorder),
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section header
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.analytics_rounded,
-                  size: 20,
-                  color: colors.accent,
-                ),
-                const SizedBox(width: AppSpacing.sm + 2),
-                Text(
-                  'Metrics Comparison',
-                  style: AppTypography.titleSmall.copyWith(color: colors.textPrimary),
-                ),
-              ],
-            ),
-          ),
-          Divider(height: 1, color: colors.glassBorder),
-          // Table header
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 4),
-            color: colors.bgActive.withAlpha(80),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 140,
-                  child: Text(
-                    'METRIC',
-                    style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                  ),
-                ),
-                ...apps.map((app) => Expanded(
-                      child: Text(
-                        app.name,
-                        style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          // Developer
+                          if (competitor.developer != null) ...[
+                            Expanded(
+                              child: Text(
+                                competitor.developer!,
+                                style: AppTypography.caption.copyWith(
+                                  color: colors.textMuted,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                          // Platform icon
+                          Icon(
+                            competitor.isIos ? Icons.apple : Icons.android,
+                            size: 14,
+                            color: colors.textMuted,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            competitor.isIos ? 'iOS' : 'Android',
+                            style: AppTypography.caption.copyWith(
+                              color: colors.textMuted,
+                            ),
+                          ),
+                        ],
                       ),
-                    )),
-              ],
-            ),
-          ),
-          // Metric rows
-          _MetricRow(
-            label: 'Rating',
-            icon: Icons.star_rounded,
-            iconColor: colors.yellow,
-            values: apps.map((app) => _RatingValue(rating: app.rating)).toList(),
-          ),
-          _MetricRow(
-            label: 'Total Reviews',
-            icon: Icons.reviews_rounded,
-            iconColor: colors.accent,
-            values: apps
-                .map((app) => _NumberValue(value: app.ratingCount))
-                .toList(),
-          ),
-          _MetricRow(
-            label: 'Recent Reviews',
-            icon: Icons.new_releases_rounded,
-            iconColor: colors.green,
-            values: apps.map((app) {
-              // Mock: random 10-100 for recent reviews
-              final random = Random(app.id);
-              final recentCount = 10 + random.nextInt(91);
-              return _NumberValue(value: recentCount, suffix: ' (30d)');
-            }).toList(),
-          ),
-          _MetricRow(
-            label: 'Keywords Tracked',
-            icon: Icons.key_rounded,
-            iconColor: colors.purple,
-            values: apps.map((app) {
-              final count = app.trackedKeywordsCount ?? 0;
-              return _TextValue(text: 'Tracking $count keywords');
-            }).toList(),
-            isLast: true,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetricRow extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color iconColor;
-  final List<Widget> values;
-  final bool isLast;
-
-  const _MetricRow({
-    required this.label,
-    required this.icon,
-    required this.iconColor,
-    required this.values,
-    this.isLast = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding, vertical: AppSpacing.sm + 6),
-      decoration: BoxDecoration(
-        border: isLast
-            ? null
-            : Border(bottom: BorderSide(color: colors.glassBorder)),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 140,
-            child: Row(
-              children: [
-                Icon(icon, size: 16, color: iconColor),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  label,
-                  style: AppTypography.body.copyWith(color: colors.textSecondary),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.cardPadding),
+                // Rating
+                if (competitor.rating != null) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.bgActive,
+                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          size: 16,
+                          color: colors.yellow,
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          competitor.rating!.toStringAsFixed(1),
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm + 4),
+                ],
+                // Actions
+                _ActionButton(
+                  icon: Icons.visibility_rounded,
+                  tooltip: 'View App',
+                  onTap: onView,
+                  colors: colors,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                _ActionButton(
+                  icon: Icons.delete_outline_rounded,
+                  tooltip: 'Remove',
+                  onTap: onRemove,
+                  colors: colors,
+                  isDestructive: true,
                 ),
               ],
             ),
           ),
-          ...values.map((value) => Expanded(child: Center(child: value))),
-        ],
-      ),
-    );
-  }
-}
-
-class _RatingValue extends StatelessWidget {
-  final double? rating;
-
-  const _RatingValue({required this.rating});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    if (rating == null) {
-      return Text(
-        '--',
-        style: AppTypography.bodyMedium.copyWith(color: colors.textMuted),
-      );
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.star_rounded, size: 16, color: colors.yellow),
-        const SizedBox(width: AppSpacing.xs),
-        Text(
-          rating!.toStringAsFixed(1),
-          style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
-        ),
-      ],
-    );
-  }
-}
-
-class _NumberValue extends StatelessWidget {
-  final int value;
-  final String? suffix;
-
-  const _NumberValue({required this.value, this.suffix});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Text(
-      _formatNumber(value) + (suffix ?? ''),
-      style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
-    );
-  }
-
-  String _formatNumber(int num) {
-    if (num >= 1000000) {
-      return '${(num / 1000000).toStringAsFixed(1)}M';
-    } else if (num >= 1000) {
-      return '${(num / 1000).toStringAsFixed(1)}K';
-    }
-    return num.toString();
-  }
-}
-
-class _TextValue extends StatelessWidget {
-  final String text;
-
-  const _TextValue({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Text(
-      text,
-      style: AppTypography.body.copyWith(color: colors.textSecondary),
-      textAlign: TextAlign.center,
-    );
-  }
-}
-
-class _RankingTrendCard extends ConsumerWidget {
-  final List<AppModel> apps;
-
-  const _RankingTrendCard({required this.apps});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    final selectedPeriod = ref.watch(_selectedPeriodProvider);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.bgActive.withAlpha(50),
-        border: Border.all(color: colors.glassBorder),
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section header with period selector
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.trending_up_rounded,
-                  size: 20,
-                  color: colors.green,
-                ),
-                const SizedBox(width: AppSpacing.sm + 2),
-                Text(
-                  'Ranking Trends',
-                  style: AppTypography.titleSmall.copyWith(color: colors.textPrimary),
-                ),
-                const Spacer(),
-                // Period selector
-                _PeriodSelector(
-                  selectedPeriod: selectedPeriod,
-                  onChanged: (period) {
-                    ref.read(_selectedPeriodProvider.notifier).state = period;
-                  },
-                ),
-              ],
-            ),
-          ),
-          Divider(height: 1, color: colors.glassBorder),
-          // Chart area
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.screenPadding),
-            child: Column(
-              children: [
-                // Multi-line chart placeholder
-                _MultiLineChart(apps: apps, period: selectedPeriod),
-                const SizedBox(height: AppSpacing.screenPadding),
-                // Legend
-                _ChartLegend(apps: apps),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PeriodSelector extends StatelessWidget {
-  final String selectedPeriod;
-  final ValueChanged<String> onChanged;
-
-  const _PeriodSelector({
-    required this.selectedPeriod,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.bgActive,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-        border: Border.all(color: colors.glassBorder),
-      ),
-      padding: const EdgeInsets.all(3),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: ['7d', '30d', '90d'].map((period) {
-          final isSelected = selectedPeriod == period;
-          return GestureDetector(
-            onTap: () => onChanged(period),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 4, vertical: 6),
-              decoration: BoxDecoration(
-                color: isSelected ? colors.glassPanel : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppColors.radiusSmall - 2),
-              ),
-              child: Text(
-                period.toUpperCase(),
-                style: AppTypography.caption.copyWith(
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected ? colors.textPrimary : colors.textMuted,
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _MultiLineChart extends StatelessWidget {
-  final List<AppModel> apps;
-  final String period;
-
-  const _MultiLineChart({
-    required this.apps,
-    required this.period,
-  });
-
-  int _getDataPoints() {
-    switch (period) {
-      case '7d':
-        return 7;
-      case '30d':
-        return 30;
-      case '90d':
-        return 90;
-      default:
-        return 30;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final dataPoints = _getDataPoints();
-
-    // Generate mock ranking data for each app
-    final mockData = <int, List<double>>{};
-    for (final app in apps) {
-      final random = Random(app.id + period.hashCode);
-      final baseRank = 10 + random.nextInt(40);
-      mockData[app.id] = List.generate(dataPoints, (i) {
-        return baseRank + (random.nextDouble() * 20 - 10);
-      });
-    }
-
-    return Container(
-      height: 200,
-      decoration: BoxDecoration(
-        color: colors.bgBase.withAlpha(50),
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-      ),
-      child: CustomPaint(
-        size: const Size(double.infinity, 200),
-        painter: _MultiLinePainter(
-          data: mockData,
-          apps: apps,
-          colors: colors,
         ),
       ),
     );
   }
 }
 
-class _MultiLinePainter extends CustomPainter {
-  final Map<int, List<double>> data;
-  final List<AppModel> apps;
+class _TypeBadge extends StatelessWidget {
+  final bool isGlobal;
   final AppColorsExtension colors;
 
-  _MultiLinePainter({
-    required this.data,
-    required this.apps,
+  const _TypeBadge({
+    required this.isGlobal,
     required this.colors,
   });
 
   @override
-  void paint(Canvas canvas, Size size) {
-    if (data.isEmpty) return;
-
-    final padding = const EdgeInsets.fromLTRB(40, 20, 20, 30);
-    final chartWidth = size.width - padding.left - padding.right;
-    final chartHeight = size.height - padding.top - padding.bottom;
-
-    // Find min/max across all data
-    double minValue = double.infinity;
-    double maxValue = double.negativeInfinity;
-    int maxPoints = 0;
-
-    for (final values in data.values) {
-      for (final value in values) {
-        minValue = min(minValue, value);
-        maxValue = max(maxValue, value);
-      }
-      maxPoints = max(maxPoints, values.length);
-    }
-
-    final range = maxValue - minValue;
-    final effectiveRange = range == 0 ? 1.0 : range;
-
-    // Draw grid lines
-    final gridPaint = Paint()
-      ..color = colors.glassBorder
-      ..strokeWidth = 1;
-
-    for (int i = 0; i <= 4; i++) {
-      final y = padding.top + (chartHeight * i / 4);
-      canvas.drawLine(
-        Offset(padding.left, y),
-        Offset(size.width - padding.right, y),
-        gridPaint,
-      );
-    }
-
-    // Draw lines for each app
-    for (int appIndex = 0; appIndex < apps.length; appIndex++) {
-      final app = apps[appIndex];
-      final values = data[app.id] ?? [];
-      if (values.isEmpty) continue;
-
-      final lineColor = _getAppColor(appIndex);
-      final linePaint = Paint()
-        ..color = lineColor
-        ..strokeWidth = 2
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round;
-
-      final path = Path();
-      for (int i = 0; i < values.length; i++) {
-        final x = padding.left + (i / (values.length - 1)) * chartWidth;
-        // Invert Y because lower rank is better (should be higher on chart)
-        final normalizedY = 1 - ((values[i] - minValue) / effectiveRange);
-        final y = padding.top + normalizedY * chartHeight;
-
-        if (i == 0) {
-          path.moveTo(x, y);
-        } else {
-          path.lineTo(x, y);
-        }
-      }
-      canvas.drawPath(path, linePaint);
-    }
-
-    // Draw Y-axis labels
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-    for (int i = 0; i <= 4; i++) {
-      final value = maxValue - (range * i / 4);
-      textPainter.text = TextSpan(
-        text: '#${value.round()}',
-        style: TextStyle(
+  Widget build(BuildContext context) {
+    final color = isGlobal ? colors.purple : colors.accent;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: 2,
+      ),
+      decoration: BoxDecoration(
+        color: color.withAlpha(20),
+        border: Border.all(color: color.withAlpha(50)),
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+      ),
+      child: Text(
+        isGlobal ? 'Global' : 'Contextual',
+        style: AppTypography.caption.copyWith(
           fontSize: 10,
-          color: colors.textMuted,
+          fontWeight: FontWeight.w600,
+          color: color,
         ),
-      );
-      textPainter.layout();
-      final y = padding.top + (chartHeight * i / 4) - textPainter.height / 2;
-      textPainter.paint(canvas, Offset(4, y));
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _MultiLinePainter oldDelegate) {
-    return oldDelegate.data != data;
+      ),
+    );
   }
 }
 
-class _ChartLegend extends StatelessWidget {
-  final List<AppModel> apps;
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+  final AppColorsExtension colors;
+  final bool isDestructive;
 
-  const _ChartLegend({required this.apps});
+  const _ActionButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+    required this.colors,
+    this.isDestructive = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Wrap(
-      spacing: AppSpacing.screenPadding,
-      runSpacing: AppSpacing.sm,
-      alignment: WrapAlignment.center,
-      children: apps.asMap().entries.map((entry) {
-        final index = entry.key;
-        final app = entry.value;
-        final lineColor = _getAppColor(index);
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 16,
-              height: 3,
-              decoration: BoxDecoration(
-                color: lineColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+          hoverColor: isDestructive
+              ? colors.red.withAlpha(20)
+              : colors.bgHover,
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            child: Icon(
+              icon,
+              size: 18,
+              color: isDestructive ? colors.red : colors.textMuted,
             ),
-            const SizedBox(width: 6),
-            Text(
-              app.name,
-              style: AppTypography.caption.copyWith(color: colors.textSecondary),
-            ),
-          ],
-        );
-      }).toList(),
+          ),
+        ),
+      ),
     );
   }
-}
-
-// Helper function to get consistent colors for apps
-Color _getAppColor(int index) {
-  const chartColors = [
-    Color(0xFF6366F1), // Indigo
-    Color(0xFF10B981), // Emerald
-    Color(0xFFF59E0B), // Amber
-    Color(0xFFEF4444), // Red
-  ];
-  return chartColors[index % chartColors.length];
 }
