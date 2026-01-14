@@ -26,6 +26,8 @@ class AppModel {
   final DateTime createdAt;
   final bool isFavorite;
   final DateTime? favoritedAt;
+  final bool isOwner;
+  final bool isCompetitor;
 
   AppModel({
     required this.id,
@@ -55,6 +57,8 @@ class AppModel {
     required this.createdAt,
     this.isFavorite = false,
     this.favoritedAt,
+    this.isOwner = false,
+    this.isCompetitor = false,
   });
 
   bool get isIos => platform == 'ios';
@@ -88,6 +92,8 @@ class AppModel {
     DateTime? createdAt,
     bool? isFavorite,
     DateTime? favoritedAt,
+    bool? isOwner,
+    bool? isCompetitor,
   }) {
     return AppModel(
       id: id ?? this.id,
@@ -117,6 +123,8 @@ class AppModel {
       createdAt: createdAt ?? this.createdAt,
       isFavorite: isFavorite ?? this.isFavorite,
       favoritedAt: favoritedAt ?? this.favoritedAt,
+      isOwner: isOwner ?? this.isOwner,
+      isCompetitor: isCompetitor ?? this.isCompetitor,
     );
   }
 
@@ -157,6 +165,8 @@ class AppModel {
       favoritedAt: json['favorited_at'] != null
           ? DateTime.parse(json['favorited_at'] as String)
           : null,
+      isOwner: json['is_owner'] as bool? ?? false,
+      isCompetitor: json['is_competitor'] as bool? ?? false,
     );
   }
 
