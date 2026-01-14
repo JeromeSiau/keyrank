@@ -5,7 +5,6 @@ import 'package:keyrank/core/widgets/app_context_switcher.dart';
 import 'package:keyrank/core/theme/app_theme.dart';
 import 'package:keyrank/core/providers/app_context_provider.dart';
 import 'package:keyrank/features/apps/providers/apps_provider.dart';
-import 'package:keyrank/features/apps/providers/sidebar_apps_provider.dart';
 import 'package:keyrank/features/apps/domain/app_model.dart';
 
 void main() {
