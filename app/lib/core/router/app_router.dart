@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 import '../utils/l10n_extension.dart';
-import '../widgets/keyrank_logo.dart';
 import '../widgets/user_menu.dart';
 import '../widgets/responsive_shell.dart';
 import '../../features/auth/presentation/login_screen.dart';
@@ -21,7 +20,6 @@ import '../../features/reviews/presentation/country_reviews_screen.dart';
 import '../../features/reviews/presentation/reviews_inbox_screen.dart';
 import '../../features/insights/presentation/app_insights_screen.dart';
 import '../../features/insights/presentation/insights_compare_screen.dart';
-import '../../features/apps/presentation/widgets/sidebar_apps_list.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/notifications/providers/notifications_provider.dart';
 import '../../features/alerts/presentation/alert_rule_builder_screen.dart';
@@ -307,12 +305,17 @@ class MainShell extends ConsumerWidget {
 
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
+    // Your Apps section
     if (location.startsWith('/apps')) return 1;
-    if (location.startsWith('/discover')) return 2; // Keyword Inspector also uses /discover
+    if (location.startsWith('/ratings')) return 2;
     if (location.startsWith('/reviews')) return 3;
-    if (location.startsWith('/ratings')) return 4;
+    // Research section
+    if (location.startsWith('/discover')) return 4;
+    if (location.startsWith('/competitors')) return 5;
     if (location.startsWith('/top-charts')) return 6;
-    if (location.startsWith('/competitors')) return 7;
+    // Settings section
+    if (location.startsWith('/alerts')) return 7;
+    if (location.startsWith('/settings')) return 8;
     return 0;
   }
 
@@ -330,31 +333,38 @@ class MainShell extends ConsumerWidget {
       case 0:
         context.go('/dashboard');
         break;
+      // Your Apps section
       case 1:
         context.go('/apps');
         break;
       case 2:
-        context.go('/discover'); // Keyword Inspector
+        context.go('/ratings');
         break;
       case 3:
         context.go('/reviews');
         break;
+      // Research section
       case 4:
-        context.go('/ratings');
+        context.go('/discover');
         break;
       case 5:
-        context.go('/discover');
+        context.go('/competitors');
         break;
       case 6:
         context.go('/top-charts');
         break;
+      // Settings section
       case 7:
-        context.go('/competitors');
+        context.go('/alerts');
+        break;
+      case 8:
+        context.go('/settings');
         break;
     }
   }
 }
 
+/// Clean sidebar with new navigation structure
 class _GlassSidebar extends ConsumerWidget {
   final int selectedIndex;
   final int? selectedAppId;
@@ -374,190 +384,187 @@ class _GlassSidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = context.colors;
     final unreadAsync = ref.watch(unreadCountProvider);
     final unreadCount = unreadAsync.valueOrNull ?? 0;
 
     return Container(
       width: 220,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha,
-        borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-        border: Border.all(color: isDark ? AppColors.glassBorder : AppColorsLight.glassBorder),
-        boxShadow: [
-          BoxShadow(
-            color: isDark ? const Color(0x20000000) : const Color(0x10000000),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: colors.bgSurface,
+        border: Border(
+          right: BorderSide(color: colors.border, width: 1),
+        ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Column(
-            children: [
-              // Header with logo and notification bell
-              _buildHeader(context, isDark, unreadCount),
+      child: Column(
+        children: [
+          // Header with logo and notification bell
+          _buildHeader(context, colors, unreadCount),
 
-              // Navigation
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // OVERVIEW section (only Dashboard now)
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_overview,
-                        items: [
-                          _NavItemData(
-                            icon: Icons.dashboard_outlined,
-                            selectedIcon: Icons.dashboard,
-                            label: context.l10n.nav_dashboard,
-                            index: 0,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // MY APPS section with app list (no menu items, just label + list)
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_myApps,
-                        items: [],
-                      ),
-                      SidebarAppsList(selectedAppId: selectedAppId),
-                      const SizedBox(height: 20),
-
-                      // OPTIMIZATION section
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_optimization,
-                        items: [
-                          _NavItemData(
-                            icon: Icons.search_outlined,
-                            selectedIcon: Icons.search,
-                            label: context.l10n.nav_keywordInspector,
-                            index: 2,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // ENGAGEMENT section
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_engagement,
-                        items: [
-                          _NavItemData(
-                            icon: Icons.inbox_outlined,
-                            selectedIcon: Icons.inbox_rounded,
-                            label: context.l10n.nav_reviewsInbox,
-                            index: 3,
-                          ),
-                          _NavItemData(
-                            icon: Icons.star_outline,
-                            selectedIcon: Icons.star,
-                            label: context.l10n.nav_ratingsAnalysis,
-                            index: 4,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // INTELLIGENCE section
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_intelligence,
-                        items: [
-                          _NavItemData(
-                            icon: Icons.explore_outlined,
-                            selectedIcon: Icons.explore,
-                            label: context.l10n.nav_discover,
-                            index: 5,
-                          ),
-                          _NavItemData(
-                            icon: Icons.leaderboard_outlined,
-                            selectedIcon: Icons.leaderboard,
-                            label: context.l10n.nav_topCharts,
-                            index: 6,
-                          ),
-                          _NavItemData(
-                            icon: Icons.people_outline,
-                            selectedIcon: Icons.people,
-                            label: context.l10n.nav_competitors,
-                            index: 7,
-                          ),
-                        ],
+          // Navigation
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // OVERVIEW section
+                  _buildNavSection(
+                    context,
+                    colors: colors,
+                    label: context.l10n.nav_overview,
+                    items: [
+                      _NavItemData(
+                        icon: Icons.grid_view_outlined,
+                        selectedIcon: Icons.grid_view_rounded,
+                        label: context.l10n.nav_dashboard,
+                        index: 0,
                       ),
                     ],
                   ),
-                ),
-              ),
+                  const SizedBox(height: 20),
 
-              // Footer with user
-              _buildUserFooter(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+                  // YOUR APPS section
+                  _buildNavSection(
+                    context,
+                    colors: colors,
+                    label: context.l10n.nav_yourApps,
+                    items: [
+                      _NavItemData(
+                        icon: Icons.apps_outlined,
+                        selectedIcon: Icons.apps_rounded,
+                        label: context.l10n.nav_myApps,
+                        index: 1,
+                      ),
+                      _NavItemData(
+                        icon: Icons.trending_up_outlined,
+                        selectedIcon: Icons.trending_up_rounded,
+                        label: context.l10n.nav_rankings,
+                        index: 2,
+                      ),
+                      _NavItemData(
+                        icon: Icons.chat_bubble_outline_rounded,
+                        selectedIcon: Icons.chat_bubble_rounded,
+                        label: context.l10n.nav_reviews,
+                        index: 3,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
 
-  Widget _buildHeader(BuildContext context, bool isDark, int unreadCount) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () => context.go('/dashboard'),
-              borderRadius: BorderRadius.circular(8),
-              child: Row(
-                children: [
-                  const KeyrankLogoIcon(size: 36),
-                  const SizedBox(width: 12),
-                  Text(
-                    'keyrank',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
-                      letterSpacing: -0.3,
-                    ),
+                  // RESEARCH section
+                  _buildNavSection(
+                    context,
+                    colors: colors,
+                    label: context.l10n.nav_research,
+                    items: [
+                      _NavItemData(
+                        icon: Icons.search_outlined,
+                        selectedIcon: Icons.search_rounded,
+                        label: context.l10n.nav_keywords,
+                        index: 4,
+                      ),
+                      _NavItemData(
+                        icon: Icons.groups_outlined,
+                        selectedIcon: Icons.groups_rounded,
+                        label: context.l10n.nav_competitors,
+                        index: 5,
+                      ),
+                      _NavItemData(
+                        icon: Icons.leaderboard_outlined,
+                        selectedIcon: Icons.leaderboard_rounded,
+                        label: context.l10n.nav_topCharts,
+                        index: 6,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // SETTINGS section
+                  _buildNavSection(
+                    context,
+                    colors: colors,
+                    label: context.l10n.nav_settings,
+                    items: [
+                      _NavItemData(
+                        icon: Icons.notifications_outlined,
+                        selectedIcon: Icons.notifications_rounded,
+                        label: context.l10n.nav_alerts,
+                        index: 7,
+                        badgeCount: unreadCount > 0 ? unreadCount : null,
+                      ),
+                      _NavItemData(
+                        icon: Icons.settings_outlined,
+                        selectedIcon: Icons.settings_rounded,
+                        label: context.l10n.common_settings,
+                        index: 8,
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
-          Badge(
-            isLabelVisible: unreadCount > 0,
-            label: Text('$unreadCount'),
-            child: IconButton(
-              icon: Icon(
-                Icons.notifications_outlined,
-                color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
-              ),
-              onPressed: () => context.go('/notifications'),
-              tooltip: context.l10n.nav_notifications,
-            ),
-          ),
+
+          // Footer with user
+          _buildUserFooter(context, colors),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, AppColorsExtension colors, int unreadCount) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: InkWell(
+        onTap: () => context.go('/dashboard'),
+        borderRadius: BorderRadius.circular(8),
+        child: Row(
+          children: [
+            // Bar chart icon
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: colors.accent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.bar_chart_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Logo text: key**rank**
+            RichText(
+              text: TextSpan(
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 18,
+                  color: colors.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+                children: const [
+                  TextSpan(
+                    text: 'key',
+                    style: TextStyle(fontWeight: FontWeight.w400),
+                  ),
+                  TextSpan(
+                    text: 'rank',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildNavSection(
     BuildContext context, {
-    required bool isDark,
+    required AppColorsExtension colors,
     required String label,
     required List<_NavItemData> items,
   }) {
@@ -568,33 +575,31 @@ class _GlassSidebar extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Text(
             label,
-            style: TextStyle(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
-              color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+              color: colors.textMuted,
             ),
           ),
         ),
-        ...items.map((item) => _buildNavItem(context, item, isDark)),
+        ...items.map((item) => _buildNavItem(context, item, colors)),
       ],
     );
   }
 
-  Widget _buildNavItem(BuildContext context, _NavItemData item, bool isDark) {
+  Widget _buildNavItem(BuildContext context, _NavItemData item, AppColorsExtension colors) {
     final isSelected = selectedIndex == item.index;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 2),
       child: Material(
-        color: isSelected
-            ? (isDark ? AppColors.accent : AppColorsLight.accent).withAlpha(30)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        color: isSelected ? colors.accentMuted : Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: () => onDestinationSelected(item.index),
-          borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-          hoverColor: isDark ? AppColors.bgHover : AppColorsLight.bgHover,
+          borderRadius: BorderRadius.circular(8),
+          hoverColor: colors.bgHover,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
@@ -602,35 +607,32 @@ class _GlassSidebar extends ConsumerWidget {
                 Icon(
                   isSelected ? item.selectedIcon : item.icon,
                   size: 20,
-                  color: isSelected
-                      ? (isDark ? AppColors.accent : AppColorsLight.accent)
-                      : (isDark ? AppColors.textMuted : AppColorsLight.textMuted),
+                  color: isSelected ? colors.accent : colors.textMuted,
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  item.label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected
-                        ? (isDark ? AppColors.textPrimary : AppColorsLight.textPrimary)
-                        : (isDark ? AppColors.textSecondary : AppColorsLight.textSecondary),
+                Expanded(
+                  child: Text(
+                    item.label,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected ? colors.textPrimary : colors.textSecondary,
+                    ),
                   ),
                 ),
-                if (item.badge != null) ...[
-                  const Spacer(),
+                if (item.badgeCount != null) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.bgActive : AppColorsLight.bgActive,
-                      borderRadius: BorderRadius.circular(6),
+                      color: colors.accent,
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      item.badge!,
-                      style: TextStyle(
+                      '${item.badgeCount}',
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -643,11 +645,18 @@ class _GlassSidebar extends ConsumerWidget {
     );
   }
 
-  Widget _buildUserFooter(BuildContext context) {
-    return UserMenu(
-      userName: userName,
-      userEmail: userEmail,
-      onLogout: onLogout,
+  Widget _buildUserFooter(BuildContext context, AppColorsExtension colors) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: colors.border, width: 1),
+        ),
+      ),
+      child: UserMenu(
+        userName: userName,
+        userEmail: userEmail,
+        onLogout: onLogout,
+      ),
     );
   }
 }
@@ -657,14 +666,14 @@ class _NavItemData {
   final IconData selectedIcon;
   final String label;
   final int index;
-  final String? badge;
+  final int? badgeCount;
 
   const _NavItemData({
     required this.icon,
     required this.selectedIcon,
     required this.label,
     required this.index,
-    this.badge,
+    this.badgeCount,
   });
 }
 

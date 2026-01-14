@@ -1002,7 +1002,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nav_dashboard => '仪表盘';
 
   @override
+  String get nav_yourApps => 'YOUR APPS';
+
+  @override
   String get nav_myApps => '我的应用';
+
+  @override
+  String get nav_rankings => 'Rankings';
+
+  @override
+  String get nav_reviews => 'Reviews';
 
   @override
   String get nav_research => '研究';
@@ -1011,7 +1020,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nav_keywords => '关键词';
 
   @override
+  String get nav_competitors => 'Competitors';
+
+  @override
+  String get nav_topCharts => 'Top Charts';
+
+  @override
   String get nav_discover => '发现';
+
+  @override
+  String get nav_settings => 'SETTINGS';
+
+  @override
+  String get nav_alerts => 'Alerts';
 
   @override
   String get nav_engagement => 'ENGAGEMENT';
@@ -1033,12 +1054,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nav_intelligence => 'INTELLIGENCE';
-
-  @override
-  String get nav_topCharts => 'Top Charts';
-
-  @override
-  String get nav_competitors => 'Competitors';
 
   @override
   String get common_save => '保存';

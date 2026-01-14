@@ -1002,7 +1002,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get nav_dashboard => 'ダッシュボード';
 
   @override
+  String get nav_yourApps => 'YOUR APPS';
+
+  @override
   String get nav_myApps => 'マイアプリ';
+
+  @override
+  String get nav_rankings => 'Rankings';
+
+  @override
+  String get nav_reviews => 'Reviews';
 
   @override
   String get nav_research => 'リサーチ';
@@ -1011,7 +1020,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get nav_keywords => 'キーワード';
 
   @override
+  String get nav_competitors => 'Competitors';
+
+  @override
+  String get nav_topCharts => 'Top Charts';
+
+  @override
   String get nav_discover => '発見';
+
+  @override
+  String get nav_settings => 'SETTINGS';
+
+  @override
+  String get nav_alerts => 'Alerts';
 
   @override
   String get nav_engagement => 'ENGAGEMENT';
@@ -1033,12 +1054,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get nav_intelligence => 'INTELLIGENCE';
-
-  @override
-  String get nav_topCharts => 'Top Charts';
-
-  @override
-  String get nav_competitors => 'Competitors';
 
   @override
   String get common_save => '保存';

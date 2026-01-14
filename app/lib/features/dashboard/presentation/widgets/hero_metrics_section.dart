@@ -95,19 +95,23 @@ class HeroMetricsSection extends ConsumerWidget {
           );
         }
 
-        return Row(
-          children: cards.take(crossAxisCount).map((item) {
-            return Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: item == cards.take(crossAxisCount).last
-                      ? 0
-                      : AppSpacing.gridGapSmall,
+        return SizedBox(
+          height: 120,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: cards.take(crossAxisCount).map((item) {
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    right: item == cards.take(crossAxisCount).last
+                        ? 0
+                        : AppSpacing.gridGapSmall,
+                  ),
+                  child: _buildMetricCard(context, item),
                 ),
-                child: _buildMetricCard(context, item),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         );
       },
     );
@@ -142,12 +146,11 @@ class HeroMetricsSection extends ConsumerWidget {
                   right: index == count - 1 ? 0 : AppSpacing.gridGapSmall,
                 ),
                 child: Container(
-                  height: 100,
+                  height: 120,
                   decoration: BoxDecoration(
-                    color: colors.glassPanelAlpha,
-                    borderRadius:
-                        BorderRadius.circular(AppColors.radiusMedium),
-                    border: Border.all(color: colors.glassBorder),
+                    color: colors.bgSurface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: colors.border),
                   ),
                   child: const Center(
                     child: CircularProgressIndicator(strokeWidth: 2),

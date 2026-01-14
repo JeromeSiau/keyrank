@@ -58,10 +58,7 @@ class AppsListScreen extends ConsumerWidget {
     final selectedCategory = ref.watch(_selectedCategoryFilterProvider);
 
     return Container(
-      decoration: BoxDecoration(
-        color: colors.glassPanel,
-        borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-      ),
+      color: colors.bgBase,
       child: Column(
         children: [
           // Toolbar
@@ -124,7 +121,8 @@ class _Toolbar extends StatelessWidget {
       height: AppSpacing.toolbarHeight,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+        color: colors.bgSurface,
+        border: Border(bottom: BorderSide(color: colors.border)),
       ),
       child: Row(
         children: [
@@ -175,9 +173,9 @@ class _CategoryFilterDropdown extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: colors.bgActive,
-        border: Border.all(color: colors.glassBorder),
-        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+        color: colors.bgHover,
+        border: Border.all(color: colors.border),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String?>(
@@ -281,7 +279,7 @@ class _AppsTable extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.bgActive.withAlpha(50),
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-          border: Border.all(color: colors.glassBorder),
+          border: Border.all(color: colors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,8 +319,8 @@ class _AppsTable extends StatelessWidget {
               decoration: BoxDecoration(
                 color: colors.bgActive.withAlpha(80),
                 border: Border(
-                  top: BorderSide(color: colors.glassBorder),
-                  bottom: BorderSide(color: colors.glassBorder),
+                  top: BorderSide(color: colors.border),
+                  bottom: BorderSide(color: colors.border),
                 ),
               ),
               child: Row(
@@ -434,7 +432,7 @@ class _AppRow extends StatelessWidget {
             vertical: AppSpacing.sm + 4,
           ),
           decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: colors.glassBorder)),
+            border: Border(bottom: BorderSide(color: colors.border)),
           ),
           child: Row(
             children: [

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
-/// A glass-styled metric card displaying a value with trend indicator.
+/// A clean metric card displaying a value with trend indicator.
 class MetricCard extends StatefulWidget {
   final String label;
   final String value;
@@ -39,20 +39,11 @@ class _MetricCardState extends State<MetricCard> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: colors.glassPanelAlpha,
-            borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-            border: Border.all(color: colors.glassBorder),
-            boxShadow: [
-              BoxShadow(
-                color: _isHovered
-                    ? colors.accent.withAlpha(30)
-                    : colors.bgBase.withAlpha(20),
-                blurRadius: _isHovered ? 16 : 8,
-                spreadRadius: _isHovered ? 2 : 0,
-              ),
-            ],
+            color: _isHovered ? colors.bgHover : colors.bgSurface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: colors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,21 +75,24 @@ class _MetricCardState extends State<MetricCard> {
                   letterSpacing: -0.5,
                 ),
               ),
-              if (widget.change != null) ...[
-                const SizedBox(height: 6),
+              if (widget.change != null || widget.subtitle != null) ...[
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    TrendBadge(change: widget.change!),
-                    if (widget.subtitle != null) ...[
+                    if (widget.change != null) TrendBadge(change: widget.change!),
+                    if (widget.change != null && widget.subtitle != null)
                       const SizedBox(width: 6),
-                      Text(
-                        widget.subtitle!,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colors.textMuted,
+                    if (widget.subtitle != null)
+                      Expanded(
+                        child: Text(
+                          widget.subtitle!,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: colors.textMuted,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ],
                   ],
                 ),
               ],

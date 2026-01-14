@@ -22,15 +22,15 @@ class RankingMoversSection extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.glassPanelAlpha,
+        color: colors.bgSurface,
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(color: colors.glassBorder),
+        border: Border.all(color: colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context, ref, period),
-          Divider(height: 1, color: colors.glassBorder),
+          Divider(height: 1, color: colors.border),
           moversAsync.when(
             data: (data) => _buildContent(context, data),
             loading: () => _buildLoading(context),
@@ -109,7 +109,7 @@ class RankingMoversSection extends ConsumerWidget {
               ),
               Container(
                 width: 1,
-                color: colors.glassBorder,
+                color: colors.border,
               ),
               Expanded(
                 child: _MoversList(
@@ -129,7 +129,7 @@ class RankingMoversSection extends ConsumerWidget {
               movers: data.improving,
               isPositive: true,
             ),
-            Divider(height: 1, color: colors.glassBorder),
+            Divider(height: 1, color: colors.border),
             _MoversList(
               title: 'Declining',
               movers: data.declining,

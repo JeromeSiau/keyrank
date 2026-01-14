@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,67 +23,62 @@ class GlassBottomNavBar extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.glassPanelAlpha,
+        color: colors.bgSurface,
         border: Border(
-          top: BorderSide(color: colors.glassBorder),
+          top: BorderSide(color: colors.border),
         ),
       ),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: NavigationBar(
-            height: 65,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            indicatorColor: colors.accent.withAlpha(30),
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (index) {
-              // Handle notification bell tap (index 3)
-              if (index == 3) {
-                context.go('/notifications');
-              } else {
-                // Adjust index for items after the bell
-                onDestinationSelected(index < 3 ? index : index - 1);
-              }
-            },
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: [
-              NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined, color: colors.textMuted),
-                selectedIcon: Icon(Icons.dashboard, color: colors.accent),
-                label: context.l10n.nav_dashboard,
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.apps_outlined, color: colors.textMuted),
-                selectedIcon: Icon(Icons.apps, color: colors.accent),
-                label: context.l10n.nav_myApps,
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.explore_outlined, color: colors.textMuted),
-                selectedIcon: Icon(Icons.explore, color: colors.accent),
-                label: context.l10n.nav_discover,
-              ),
-              NavigationDestination(
-                icon: Badge(
-                  isLabelVisible: unreadCount > 0,
-                  label: Text('$unreadCount'),
-                  child: Icon(Icons.notifications_outlined, color: colors.textMuted),
-                ),
-                selectedIcon: Badge(
-                  isLabelVisible: unreadCount > 0,
-                  label: Text('$unreadCount'),
-                  child: Icon(Icons.notifications, color: colors.accent),
-                ),
-                label: context.l10n.nav_notifications,
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.person_outline, color: colors.textMuted),
-                selectedIcon: Icon(Icons.person, color: colors.accent),
-                label: context.l10n.common_settings,
-              ),
-            ],
+      child: NavigationBar(
+        height: 65,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        indicatorColor: colors.accentMuted,
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          // Handle notification bell tap (index 3)
+          if (index == 3) {
+            context.go('/notifications');
+          } else {
+            // Adjust index for items after the bell
+            onDestinationSelected(index < 3 ? index : index - 1);
+          }
+        },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.grid_view_outlined, color: colors.textMuted),
+            selectedIcon: Icon(Icons.grid_view_rounded, color: colors.accent),
+            label: context.l10n.nav_dashboard,
           ),
-        ),
+          NavigationDestination(
+            icon: Icon(Icons.apps_outlined, color: colors.textMuted),
+            selectedIcon: Icon(Icons.apps_rounded, color: colors.accent),
+            label: context.l10n.nav_myApps,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined, color: colors.textMuted),
+            selectedIcon: Icon(Icons.search_rounded, color: colors.accent),
+            label: context.l10n.nav_keywords,
+          ),
+          NavigationDestination(
+            icon: Badge(
+              isLabelVisible: unreadCount > 0,
+              label: Text('$unreadCount'),
+              child: Icon(Icons.notifications_outlined, color: colors.textMuted),
+            ),
+            selectedIcon: Badge(
+              isLabelVisible: unreadCount > 0,
+              label: Text('$unreadCount'),
+              child: Icon(Icons.notifications_rounded, color: colors.accent),
+            ),
+            label: context.l10n.nav_alerts,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined, color: colors.textMuted),
+            selectedIcon: Icon(Icons.settings_rounded, color: colors.accent),
+            label: context.l10n.common_settings,
+          ),
+        ],
       ),
     );
   }

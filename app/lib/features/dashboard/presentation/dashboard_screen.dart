@@ -26,10 +26,7 @@ class DashboardScreen extends ConsumerWidget {
     final appsAsync = ref.watch(appsNotifierProvider);
 
     return Container(
-      decoration: BoxDecoration(
-        color: colors.glassPanel,
-        borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-      ),
+      color: colors.bgBase,
       child: Column(
         children: [
           // Toolbar
@@ -67,7 +64,8 @@ class _Toolbar extends StatelessWidget {
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+        color: colors.bgSurface,
+        border: Border(bottom: BorderSide(color: colors.border)),
       ),
       child: Row(
         children: [
@@ -133,48 +131,57 @@ class _DashboardContent extends ConsumerWidget {
   Widget _buildWideLayout(BuildContext context, List<AppModel> apps) {
     return Column(
       children: [
-        // Row 1: Ranking Movers + Insights
-        const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 3,
-              child: RankingMoversSection(),
-            ),
-            SizedBox(width: AppSpacing.gridGapLarge),
-            Expanded(
-              flex: 2,
-              child: InsightsSection(),
-            ),
-          ],
+        // Row 1: Ranking Movers + Insights (fixed height)
+        SizedBox(
+          height: 280,
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 3,
+                child: RankingMoversSection(),
+              ),
+              SizedBox(width: AppSpacing.gridGapLarge),
+              Expanded(
+                flex: 2,
+                child: InsightsSection(),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: AppSpacing.sectionSpacing),
-        // Row 2: Top Apps + Top Countries
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _TopPerformingAppsPanel(apps: apps),
-            ),
-            const SizedBox(width: AppSpacing.gridGapLarge),
-            Expanded(
-              child: _TopCountriesPanel(),
-            ),
-          ],
+        // Row 2: Top Apps + Top Countries (fixed height)
+        SizedBox(
+          height: 320,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _TopPerformingAppsPanel(apps: apps),
+              ),
+              const SizedBox(width: AppSpacing.gridGapLarge),
+              Expanded(
+                child: _TopCountriesPanel(),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: AppSpacing.sectionSpacing),
-        // Row 3: Sentiment + Quick Actions
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _SentimentOverviewPanel(),
-            ),
-            const SizedBox(width: AppSpacing.gridGapLarge),
-            Expanded(
-              child: _QuickActionsPanel(),
-            ),
-          ],
+        // Row 3: Sentiment + Quick Actions (fixed height)
+        SizedBox(
+          height: 280,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _SentimentOverviewPanel(),
+              ),
+              const SizedBox(width: AppSpacing.gridGapLarge),
+              Expanded(
+                child: _QuickActionsPanel(),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -402,16 +409,16 @@ class _SentimentOverviewPanel extends StatelessWidget {
                       Text(
                         context.l10n.dashboard_overallSentiment,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: colors.textSecondary,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
                         '85%',
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.w700,
                           color: colors.green,
                         ),
@@ -419,7 +426,7 @@ class _SentimentOverviewPanel extends StatelessWidget {
                       Text(
                         context.l10n.dashboard_positive,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 11,
                           color: colors.textMuted,
                         ),
                       ),
@@ -427,20 +434,20 @@ class _SentimentOverviewPanel extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: colors.greenMuted,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.trending_up, size: 16, color: colors.green),
+                      Icon(Icons.trending_up, size: 14, color: colors.green),
                       const SizedBox(width: 4),
                       Text(
                         '+5%',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: colors.green,
                         ),
@@ -450,13 +457,13 @@ class _SentimentOverviewPanel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             const SentimentBar(
               positivePercent: 85,
               showIcons: false,
-              height: 10,
+              height: 8,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -587,25 +594,25 @@ class _QuickActionItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.cardPadding,
-            vertical: 12,
+            vertical: 10,
           ),
           child: Row(
             children: [
               Container(
-                width: 32,
-                height: 32,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   color: color.withAlpha(30),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                child: Icon(icon, size: 16, color: color),
+                child: Icon(icon, size: 14, color: color),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: colors.textSecondary,
                   ),
@@ -613,7 +620,7 @@ class _QuickActionItem extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                size: 20,
+                size: 18,
                 color: colors.textMuted,
               ),
             ],
@@ -638,9 +645,9 @@ class _GlassPanel extends StatelessWidget {
     final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: colors.glassPanelAlpha,
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(color: colors.glassBorder),
+        color: colors.bgSurface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -661,7 +668,7 @@ class _GlassPanel extends StatelessWidget {
           ),
           Container(
             height: 1,
-            color: colors.glassBorder,
+            color: colors.border,
           ),
           child,
         ],

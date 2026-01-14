@@ -1956,11 +1956,29 @@ abstract class AppLocalizations {
   /// **'Dashboard'**
   String get nav_dashboard;
 
+  /// No description provided for @nav_yourApps.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR APPS'**
+  String get nav_yourApps;
+
   /// No description provided for @nav_myApps.
   ///
   /// In en, this message translates to:
   /// **'My Apps'**
   String get nav_myApps;
+
+  /// No description provided for @nav_rankings.
+  ///
+  /// In en, this message translates to:
+  /// **'Rankings'**
+  String get nav_rankings;
+
+  /// No description provided for @nav_reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get nav_reviews;
 
   /// No description provided for @nav_research.
   ///
@@ -1974,11 +1992,35 @@ abstract class AppLocalizations {
   /// **'Keywords'**
   String get nav_keywords;
 
+  /// No description provided for @nav_competitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitors'**
+  String get nav_competitors;
+
+  /// No description provided for @nav_topCharts.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Charts'**
+  String get nav_topCharts;
+
   /// No description provided for @nav_discover.
   ///
   /// In en, this message translates to:
   /// **'Discover'**
   String get nav_discover;
+
+  /// No description provided for @nav_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'SETTINGS'**
+  String get nav_settings;
+
+  /// No description provided for @nav_alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get nav_alerts;
 
   /// No description provided for @nav_engagement.
   ///
@@ -2021,18 +2063,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'INTELLIGENCE'**
   String get nav_intelligence;
-
-  /// No description provided for @nav_topCharts.
-  ///
-  /// In en, this message translates to:
-  /// **'Top Charts'**
-  String get nav_topCharts;
-
-  /// No description provided for @nav_competitors.
-  ///
-  /// In en, this message translates to:
-  /// **'Competitors'**
-  String get nav_competitors;
 
   /// No description provided for @common_save.
   ///

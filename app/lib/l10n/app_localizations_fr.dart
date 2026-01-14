@@ -1015,7 +1015,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nav_dashboard => 'Tableau de bord';
 
   @override
+  String get nav_yourApps => 'YOUR APPS';
+
+  @override
   String get nav_myApps => 'Mes Apps';
+
+  @override
+  String get nav_rankings => 'Rankings';
+
+  @override
+  String get nav_reviews => 'Reviews';
 
   @override
   String get nav_research => 'RECHERCHE';
@@ -1024,7 +1033,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nav_keywords => 'Mots-clés';
 
   @override
+  String get nav_competitors => 'Concurrents';
+
+  @override
+  String get nav_topCharts => 'Top Charts';
+
+  @override
   String get nav_discover => 'Découvrir';
+
+  @override
+  String get nav_settings => 'SETTINGS';
+
+  @override
+  String get nav_alerts => 'Alerts';
 
   @override
   String get nav_engagement => 'ENGAGEMENT';
@@ -1046,12 +1067,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nav_intelligence => 'INTELLIGENCE';
-
-  @override
-  String get nav_topCharts => 'Top Charts';
-
-  @override
-  String get nav_competitors => 'Concurrents';
 
   @override
   String get common_save => 'Enregistrer';

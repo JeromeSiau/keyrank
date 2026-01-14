@@ -514,10 +514,17 @@
 
   "nav_overview": "OVERVIEW",
   "nav_dashboard": "Dashboard",
+  "nav_yourApps": "YOUR APPS",
   "nav_myApps": "My Apps",
+  "nav_rankings": "Rankings",
+  "nav_reviews": "Reviews",
   "nav_research": "RESEARCH",
   "nav_keywords": "Keywords",
+  "nav_competitors": "Competitors",
+  "nav_topCharts": "Top Charts",
   "nav_discover": "Discover",
+  "nav_settings": "SETTINGS",
+  "nav_alerts": "Alerts",
   "nav_engagement": "ENGAGEMENT",
   "nav_reviewsInbox": "Reviews Inbox",
   "nav_notifications": "Alerts",
@@ -525,8 +532,6 @@
   "nav_keywordInspector": "Keyword Inspector",
   "nav_ratingsAnalysis": "Ratings Analysis",
   "nav_intelligence": "INTELLIGENCE",
-  "nav_topCharts": "Top Charts",
-  "nav_competitors": "Competitors",
 
   "common_save": "Save",
 

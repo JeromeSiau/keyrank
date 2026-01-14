@@ -1016,7 +1016,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get nav_dashboard => 'Kontrol Paneli';
 
   @override
+  String get nav_yourApps => 'YOUR APPS';
+
+  @override
   String get nav_myApps => 'Uygulamalarım';
+
+  @override
+  String get nav_rankings => 'Rankings';
+
+  @override
+  String get nav_reviews => 'Reviews';
 
   @override
   String get nav_research => 'ARAŞTIRMA';
@@ -1025,7 +1034,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get nav_keywords => 'Anahtar Kelimeler';
 
   @override
+  String get nav_competitors => 'Competitors';
+
+  @override
+  String get nav_topCharts => 'Top Charts';
+
+  @override
   String get nav_discover => 'Keşfet';
+
+  @override
+  String get nav_settings => 'SETTINGS';
+
+  @override
+  String get nav_alerts => 'Alerts';
 
   @override
   String get nav_engagement => 'ENGAGEMENT';
@@ -1047,12 +1068,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nav_intelligence => 'INTELLIGENCE';
-
-  @override
-  String get nav_topCharts => 'Top Charts';
-
-  @override
-  String get nav_competitors => 'Competitors';
 
   @override
   String get common_save => 'Kaydet';

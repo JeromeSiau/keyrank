@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/breakpoints.dart';
 import '../theme/app_colors.dart';
 import '../../features/auth/providers/auth_provider.dart';
@@ -43,7 +44,7 @@ class ResponsiveShell extends ConsumerWidget {
       children: [
         // Safe area for status bar
         Container(
-          color: colors.bgBase,
+          color: colors.bgSurface,
           child: SafeArea(
             bottom: false,
             child: Container(),
@@ -71,45 +72,43 @@ class ResponsiveShell extends ConsumerWidget {
     dynamic user,
     AppColorsExtension colors,
   ) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          // Navigation rail
-          GlassNavigationRail(
-            selectedIndex: _getSelectedIndex(context),
-            onDestinationSelected: (index) => _onDestinationSelected(context, ref, index),
-            onLogoTap: () => context.go('/dashboard'),
-            trailing: _buildCompactUserMenu(context, ref, user, colors),
-          ),
-          const SizedBox(width: 12),
-          // Content
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-              child: child,
+    return Row(
+      children: [
+        // Navigation rail
+        GlassNavigationRail(
+          selectedIndex: _getSelectedIndex(context),
+          onDestinationSelected: (index) => _onDestinationSelected(context, ref, index),
+          onLogoTap: () => context.go('/dashboard'),
+          trailing: _buildCompactUserMenu(context, ref, user, colors),
+        ),
+        // Content with border
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: colors.bgBase,
+              border: Border(
+                left: BorderSide(color: colors.border, width: 1),
+              ),
             ),
+            child: child,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildDesktopLayout(AppColorsExtension colors) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          sidebar,
-          const SizedBox(width: 12),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppColors.radiusLarge),
-              child: child,
-            ),
+    return Row(
+      children: [
+        sidebar,
+        // Content area
+        Expanded(
+          child: Container(
+            color: colors.bgBase,
+            child: child,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -129,7 +128,7 @@ class ResponsiveShell extends ConsumerWidget {
     return PopupMenuButton<String>(
       offset: const Offset(72, 0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: colors.border),
       ),
       color: colors.bgSurface,
@@ -147,7 +146,10 @@ class ResponsiveShell extends ConsumerWidget {
             children: [
               Icon(Icons.settings_outlined, size: 18, color: colors.textSecondary),
               const SizedBox(width: 12),
-              Text('Settings', style: TextStyle(color: colors.textPrimary)),
+              Text(
+                'Settings',
+                style: GoogleFonts.plusJakartaSans(color: colors.textPrimary),
+              ),
             ],
           ),
         ),
@@ -157,7 +159,10 @@ class ResponsiveShell extends ConsumerWidget {
             children: [
               Icon(Icons.logout_rounded, size: 18, color: colors.textSecondary),
               const SizedBox(width: 12),
-              Text('Logout', style: TextStyle(color: colors.textPrimary)),
+              Text(
+                'Logout',
+                style: GoogleFonts.plusJakartaSans(color: colors.textPrimary),
+              ),
             ],
           ),
         ),
@@ -166,15 +171,13 @@ class ResponsiveShell extends ConsumerWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
-          ),
+          color: colors.accent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
           child: Text(
             initials,
-            style: const TextStyle(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: Colors.white,

@@ -55,15 +55,15 @@ class InsightsSection extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.glassPanelAlpha,
+        color: colors.bgSurface,
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-        border: Border.all(color: colors.glassBorder),
+        border: Border.all(color: colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context),
-          Divider(height: 1, color: colors.glassBorder),
+          Divider(height: 1, color: colors.border),
           if (insights.isEmpty)
             _buildEmptyState(context)
           else
