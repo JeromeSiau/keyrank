@@ -7,13 +7,13 @@ import '../utils/l10n_extension.dart';
 import '../../features/notifications/providers/notifications_provider.dart';
 import 'keyrank_logo.dart';
 
-class GlassNavigationRail extends ConsumerWidget {
+class AppNavigationRail extends ConsumerWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
   final VoidCallback onLogoTap;
   final Widget trailing;
 
-  const GlassNavigationRail({
+  const AppNavigationRail({
     super.key,
     required this.selectedIndex,
     required this.onDestinationSelected,

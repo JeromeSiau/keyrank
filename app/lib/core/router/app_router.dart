@@ -12,9 +12,9 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
-import '../../features/apps/presentation/apps_list_screen.dart';
-import '../../features/apps/presentation/app_detail_screen.dart';
 import '../../features/apps/presentation/add_app_screen.dart';
+import '../../features/apps/presentation/apps_list_screen.dart';
+import '../../features/apps/presentation/app_preview_screen.dart';
 import '../../features/keywords/presentation/discover_screen.dart';
 import '../../features/ratings/presentation/app_ratings_screen.dart';
 import '../../features/reviews/presentation/country_reviews_screen.dart';
@@ -37,11 +37,15 @@ import '../../features/integrations/presentation/connect_google_play_screen.dart
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/analytics/presentation/app_analytics_screen.dart';
+import '../../features/analytics/presentation/analytics_screen.dart';
+import '../../features/keywords/presentation/keywords_screen.dart';
+import '../../features/insights/presentation/insights_screen.dart';
 import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/chat/presentation/chat_conversation_screen.dart';
 import '../../features/ratings/presentation/ratings_analysis_screen.dart';
 import '../../features/keywords/presentation/top_charts_screen.dart';
 import '../../features/keywords/presentation/competitors_screen.dart';
+import '../../features/competitors/presentation/add_competitor_screen.dart';
 import '../../features/billing/presentation/billing_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -120,12 +124,20 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AppsListScreen(),
             routes: [
               GoRoute(
+                path: 'add',
+                builder: (context, state) => const AddAppScreen(),
+              ),
+              GoRoute(
                 path: 'manage',
                 builder: (context, state) => const AppsListScreen(),
               ),
               GoRoute(
-                path: 'add',
-                builder: (context, state) => const AddAppScreen(),
+                path: 'preview/:platform/:storeId',
+                builder: (context, state) {
+                  final platform = state.pathParameters['platform']!;
+                  final storeId = state.pathParameters['storeId']!;
+                  return AppPreviewScreen(platform: platform, storeId: storeId);
+                },
               ),
               GoRoute(
                 path: 'compare',
@@ -133,13 +145,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final idsParam = state.uri.queryParameters['ids'] ?? '';
                   final ids = idsParam.split(',').map((s) => int.tryParse(s)).whereType<int>().toList();
                   return InsightsCompareScreen(appIds: ids);
-                },
-              ),
-              GoRoute(
-                path: ':id',
-                builder: (context, state) {
-                  final id = int.parse(state.pathParameters['id']!);
-                  return AppDetailScreen(appId: id);
                 },
               ),
               GoRoute(
@@ -180,21 +185,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/discover',
             builder: (context, state) => const DiscoverScreen(),
-            routes: [
-              GoRoute(
-                path: 'preview/:platform/:storeId',
-                builder: (context, state) {
-                  final platform = state.pathParameters['platform']!;
-                  final storeId = state.pathParameters['storeId']!;
-                  final country = state.uri.queryParameters['country'] ?? 'us';
-                  return AppDetailScreen(
-                    platform: platform,
-                    storeId: storeId,
-                    country: country,
-                  );
-                },
-              ),
-            ],
           ),
           GoRoute(
             path: '/settings',
@@ -256,6 +246,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/competitors',
             builder: (context, state) => const CompetitorsScreen(),
+            routes: [
+              GoRoute(
+                path: 'add',
+                builder: (context, state) => const AddCompetitorScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/keywords',
+            builder: (context, state) => const KeywordsScreen(),
+          ),
+          GoRoute(
+            path: '/insights',
+            builder: (context, state) => const InsightsScreen(),
+          ),
+          GoRoute(
+            path: '/analytics',
+            builder: (context, state) => const AnalyticsScreen(),
           ),
           GoRoute(
             path: '/alerts',
@@ -297,7 +305,7 @@ class MainShell extends ConsumerWidget {
     final user = ref.watch(authStateProvider).valueOrNull;
 
     return ResponsiveShell(
-      sidebar: _GlassSidebar(
+      sidebar: _AppSidebar(
         selectedIndex: _getSelectedIndex(context),
         onDestinationSelected: (index) => _onDestinationSelected(context, index),
         userName: user?.name ?? 'User',
@@ -310,12 +318,14 @@ class MainShell extends ConsumerWidget {
 
   int _getSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/apps')) return 1;
-    if (location.startsWith('/discover')) return 2; // Keyword Inspector also uses /discover
+    if (location.startsWith('/keywords')) return 1;
+    if (location.startsWith('/discover')) return 2;
     if (location.startsWith('/reviews')) return 3;
     if (location.startsWith('/ratings')) return 4;
     if (location.startsWith('/top-charts')) return 6;
     if (location.startsWith('/competitors')) return 7;
+    if (location.startsWith('/insights')) return 8;
+    if (location.startsWith('/analytics')) return 9;
     return 0;
   }
 
@@ -325,10 +335,10 @@ class MainShell extends ConsumerWidget {
         context.go('/dashboard');
         break;
       case 1:
-        context.go('/apps');
+        context.go('/keywords');
         break;
       case 2:
-        context.go('/discover'); // Keyword Inspector
+        context.go('/discover');
         break;
       case 3:
         context.go('/reviews');
@@ -345,18 +355,24 @@ class MainShell extends ConsumerWidget {
       case 7:
         context.go('/competitors');
         break;
+      case 8:
+        context.go('/insights');
+        break;
+      case 9:
+        context.go('/analytics');
+        break;
     }
   }
 }
 
-class _GlassSidebar extends ConsumerWidget {
+class _AppSidebar extends ConsumerWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
   final String userName;
   final String userEmail;
   final VoidCallback onLogout;
 
-  const _GlassSidebar({
+  const _AppSidebar({
     required this.selectedIndex,
     required this.onDestinationSelected,
     required this.userName,
@@ -407,7 +423,7 @@ class _GlassSidebar extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // OVERVIEW section (only Dashboard now)
+                      // OVERVIEW section
                       _buildNavSection(
                         context,
                         isDark: isDark,
@@ -419,25 +435,27 @@ class _GlassSidebar extends ConsumerWidget {
                             label: context.l10n.nav_dashboard,
                             index: 0,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // OPTIMIZATION section
-                      _buildNavSection(
-                        context,
-                        isDark: isDark,
-                        label: context.l10n.nav_optimization,
-                        items: [
                           _NavItemData(
-                            icon: Icons.search_outlined,
-                            selectedIcon: Icons.search,
-                            label: context.l10n.nav_keywordInspector,
-                            index: 2,
+                            icon: Icons.key_outlined,
+                            selectedIcon: Icons.key,
+                            label: 'Keywords',
+                            index: 1,
+                          ),
+                          _NavItemData(
+                            icon: Icons.lightbulb_outlined,
+                            selectedIcon: Icons.lightbulb,
+                            label: 'Insights',
+                            index: 8,
+                          ),
+                          _NavItemData(
+                            icon: Icons.analytics_outlined,
+                            selectedIcon: Icons.analytics,
+                            label: 'Analytics',
+                            index: 9,
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
 
                       // ENGAGEMENT section
                       _buildNavSection(
@@ -467,6 +485,12 @@ class _GlassSidebar extends ConsumerWidget {
                         isDark: isDark,
                         label: context.l10n.nav_intelligence,
                         items: [
+                          _NavItemData(
+                            icon: Icons.search_outlined,
+                            selectedIcon: Icons.search,
+                            label: context.l10n.nav_keywordInspector,
+                            index: 2,
+                          ),
                           _NavItemData(
                             icon: Icons.explore_outlined,
                             selectedIcon: Icons.explore,

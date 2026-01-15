@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/providers/app_context_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../apps/providers/apps_provider.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_animations.dart';
 import '../../../../shared/widgets/change_indicator.dart';
@@ -299,7 +301,7 @@ class _MoversList extends StatelessWidget {
   }
 }
 
-class _MoverRow extends StatelessWidget {
+class _MoverRow extends ConsumerWidget {
   final RankingMover mover;
   final bool isPositive;
 
@@ -309,12 +311,18 @@ class _MoverRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final apps = ref.watch(appsNotifierProvider).valueOrNull ?? [];
 
     return InkWell(
       onTap: () {
-        context.go('/apps/${mover.appId}');
+        try {
+          final app = apps.firstWhere((a) => a.id == mover.appId);
+          ref.read(appContextProvider.notifier).select(app);
+        } catch (_) {
+          // App not found in list, ignore tap
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(

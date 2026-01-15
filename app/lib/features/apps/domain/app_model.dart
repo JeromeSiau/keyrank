@@ -279,6 +279,7 @@ class AppPreview {
   final double? rating;
   final int ratingCount;
   final String? categoryId;
+  final String? categoryName;
 
   AppPreview({
     required this.platform,
@@ -299,6 +300,7 @@ class AppPreview {
     this.rating,
     required this.ratingCount,
     this.categoryId,
+    this.categoryName,
   });
 
   bool get isIos => platform == 'ios';
@@ -330,6 +332,7 @@ class AppPreview {
       rating: AppModel._parseDouble(json['rating']),
       ratingCount: AppModel._parseInt(json['rating_count']) ?? 0,
       categoryId: json['category_id'] as String?,
+      categoryName: json['category_name'] as String?,
     );
   }
 }

@@ -386,7 +386,7 @@ class _AppsTable extends StatelessWidget {
                   return _AppRow(
                     app: app,
                     gradientIndex: index,
-                    onTap: () => context.go('/apps/${app.id}'),
+                    onTap: () => context.go('/apps/preview/${app.platform}/${app.storeId}'),
                   );
                 },
               ),

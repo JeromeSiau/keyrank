@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../constants/breakpoints.dart';
+import '../providers/app_context_provider.dart';
 import '../theme/app_colors.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../shared/widgets/floating_chat_button.dart';
 import 'glass_bottom_nav_bar.dart';
-import 'glass_navigation_rail.dart';
+import 'app_navigation_rail.dart';
 
 class ResponsiveShell extends ConsumerWidget {
   final Widget child;
@@ -21,19 +23,30 @@ class ResponsiveShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final user = ref.watch(authStateProvider).valueOrNull;
+    final selectedApp = ref.watch(appContextProvider);
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenSize = screenWidth.screenSize;
 
     return Scaffold(
       backgroundColor: colors.bgBase,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final screenSize = constraints.maxWidth.screenSize;
-
-          return switch (screenSize) {
+      body: Stack(
+        children: [
+          switch (screenSize) {
             ScreenSize.mobile => _buildMobileLayout(context, ref, colors),
             ScreenSize.tablet => _buildTabletLayout(context, ref, user, colors),
             ScreenSize.desktop => _buildDesktopLayout(colors),
-          };
-        },
+          },
+          // Floating chat button - only visible when an app is selected
+          if (selectedApp != null)
+            Positioned(
+              right: 24,
+              bottom: screenSize == ScreenSize.mobile ? 80 : 24,
+              child: FloatingChatButton(
+                onTap: () => context.go('/chat'),
+                isExpanded: screenSize != ScreenSize.mobile,
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -76,7 +89,7 @@ class ResponsiveShell extends ConsumerWidget {
       child: Row(
         children: [
           // Navigation rail
-          GlassNavigationRail(
+          AppNavigationRail(
             selectedIndex: _getSelectedIndex(context),
             onDestinationSelected: (index) => _onDestinationSelected(context, ref, index),
             onLogoTap: () => context.go('/dashboard'),

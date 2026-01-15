@@ -5,7 +5,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/providers/app_context_provider.dart';
-import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
 import '../../../shared/widgets/sentiment_bar.dart';
 import '../../../shared/widgets/country_distribution.dart';
@@ -34,9 +33,7 @@ class DashboardScreen extends ConsumerWidget {
       child: Column(
         children: [
           // Toolbar
-          _Toolbar(
-            onAddApp: () => context.go('/apps/add'),
-          ),
+          const _Toolbar(),
           // Content
           Expanded(
             child: appsAsync.when(
@@ -57,9 +54,7 @@ class DashboardScreen extends ConsumerWidget {
 }
 
 class _Toolbar extends ConsumerWidget {
-  final VoidCallback onAddApp;
-
-  const _Toolbar({required this.onAddApp});
+  const _Toolbar();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -100,12 +95,6 @@ class _Toolbar extends ConsumerWidget {
               ),
             ),
           ],
-          const Spacer(),
-          PrimaryButton(
-            icon: Icons.add_rounded,
-            label: context.l10n.dashboard_addApp,
-            onTap: onAddApp,
-          ),
         ],
       ),
     );
@@ -184,19 +173,8 @@ class _DashboardContent extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.sectionSpacing),
-        // Row 3: Sentiment + Quick Actions
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _SentimentOverviewPanel(),
-            ),
-            const SizedBox(width: AppSpacing.gridGapLarge),
-            Expanded(
-              child: _QuickActionsPanel(),
-            ),
-          ],
-        ),
+        // Row 3: Sentiment (full width)
+        _SentimentOverviewPanel(),
       ],
     );
   }
@@ -214,14 +192,12 @@ class _DashboardContent extends ConsumerWidget {
         _TopCountriesPanel(),
         const SizedBox(height: AppSpacing.sectionSpacing),
         _SentimentOverviewPanel(),
-        const SizedBox(height: AppSpacing.sectionSpacing),
-        _QuickActionsPanel(),
       ],
     );
   }
 }
 
-class _TopPerformingAppsPanel extends StatelessWidget {
+class _TopPerformingAppsPanel extends ConsumerWidget {
   final List<AppModel> apps;
 
   const _TopPerformingAppsPanel({required this.apps});
@@ -236,12 +212,12 @@ class _TopPerformingAppsPanel extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final topApps = apps.take(5).toList();
 
     if (topApps.isEmpty) {
-      return _GlassPanel(
+      return _DashboardPanel(
         title: context.l10n.dashboard_topPerformingApps,
         child: _EmptyStateMessage(
           icon: Icons.analytics_outlined,
@@ -301,14 +277,14 @@ class _TopPerformingAppsPanel extends StatelessWidget {
       ];
     }).toList();
 
-    return _GlassPanel(
+    return _DashboardPanel(
       title: context.l10n.dashboard_topPerformingApps,
       child: EnhancedDataTable(
         columns: columns,
         rows: rows,
         onRowTap: (index) {
           if (index < topApps.length) {
-            context.go('/apps/${topApps[index].id}');
+            ref.read(appContextProvider.notifier).select(topApps[index]);
           }
         },
       ),
@@ -393,7 +369,7 @@ class _TopCountriesPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _GlassPanel(
+    return _DashboardPanel(
       title: context.l10n.dashboard_topCountries,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.cardPadding),
@@ -407,7 +383,7 @@ class _SentimentOverviewPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return _GlassPanel(
+    return _DashboardPanel(
       title: context.l10n.dashboard_sentimentOverview,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.cardPadding),
@@ -546,110 +522,11 @@ class _SentimentLegendItem extends StatelessWidget {
   }
 }
 
-class _QuickActionsPanel extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return _GlassPanel(
-      title: context.l10n.dashboard_quickActions,
-      child: Column(
-        children: [
-          _QuickActionItem(
-            icon: Icons.add_circle_outline_rounded,
-            label: context.l10n.dashboard_addNewApp,
-            color: colors.accent,
-            onTap: () => context.go('/apps/add'),
-          ),
-          _QuickActionItem(
-            icon: Icons.search_rounded,
-            label: context.l10n.dashboard_searchKeywords,
-            color: colors.purple,
-            onTap: () => context.go('/keywords'),
-          ),
-          _QuickActionItem(
-            icon: Icons.apps_rounded,
-            label: context.l10n.dashboard_viewAllApps,
-            color: colors.green,
-            onTap: () => context.go('/apps'),
-          ),
-          _QuickActionItem(
-            icon: Icons.rate_review_outlined,
-            label: context.l10n.dashboard_viewReviews,
-            color: colors.yellow,
-            onTap: () => context.go('/reviews'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuickActionItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _QuickActionItem({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        hoverColor: colors.bgHover,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: 12,
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: color.withAlpha(30),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 16, color: color),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: colors.textSecondary,
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: colors.textMuted,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GlassPanel extends StatelessWidget {
+class _DashboardPanel extends StatelessWidget {
   final String title;
   final Widget child;
 
-  const _GlassPanel({
+  const _DashboardPanel({
     required this.title,
     required this.child,
   });

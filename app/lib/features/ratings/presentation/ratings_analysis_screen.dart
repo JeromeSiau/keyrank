@@ -1,9 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_context_provider.dart';
+import '../../../core/providers/country_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../core/utils/country_names.dart';
 import '../../../shared/widgets/star_histogram.dart';
 import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
@@ -174,8 +177,12 @@ class _RatingsContent extends ConsumerWidget {
                 ),
 
               const SizedBox(height: 20),
-              // Apps comparison table
-              _AppsRatingsTable(apps: apps),
+              // Country ratings section (only when app is selected)
+              if (selectedAppId != null)
+                _CountryRatingsSection(appId: selectedAppId, appName: contextApp?.name ?? ''),
+              if (selectedAppId == null)
+                // Apps comparison table (only when no app selected)
+                _AppsRatingsTable(apps: apps),
             ],
           ),
         );
@@ -897,5 +904,378 @@ class _GlassCard extends StatelessWidget {
       ),
       child: child,
     );
+  }
+}
+
+/// Provider for country ratings search query
+final _countryRatingsSearchProvider = StateProvider.autoDispose<String>((ref) => '');
+
+/// Provider for country ratings pagination
+final _countryRatingsPageSizeProvider = StateProvider.autoDispose<int>((ref) => 10);
+
+class _CountryRatingsSection extends ConsumerWidget {
+  final int appId;
+  final String appName;
+
+  const _CountryRatingsSection({required this.appId, required this.appName});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final ratingsAsync = ref.watch(appRatingsProvider(appId));
+    final searchQuery = ref.watch(_countryRatingsSearchProvider);
+    final pageSize = ref.watch(_countryRatingsPageSizeProvider);
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.public_rounded, size: 18, color: colors.accent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  context.l10n.ratings_byCountry,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textMuted,
+                  ),
+                ),
+              ),
+              // Search field
+              SizedBox(
+                width: 200,
+                height: 36,
+                child: TextField(
+                  onChanged: (value) => ref.read(_countryRatingsSearchProvider.notifier).state = value,
+                  style: TextStyle(fontSize: 13, color: colors.textPrimary),
+                  decoration: InputDecoration(
+                    hintText: context.l10n.common_search,
+                    hintStyle: TextStyle(fontSize: 13, color: colors.textMuted),
+                    prefixIcon: Icon(Icons.search_rounded, size: 18, color: colors.textMuted),
+                    filled: true,
+                    fillColor: colors.bgActive,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: colors.accent, width: 1),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ratingsAsync.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+            error: (e, _) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text(
+                  'Unable to load ratings by country',
+                  style: TextStyle(color: colors.textMuted),
+                ),
+              ),
+            ),
+            data: (response) {
+              if (response.ratings.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Icon(Icons.star_outline_rounded, size: 40, color: colors.textMuted),
+                        const SizedBox(height: 12),
+                        Text(
+                          context.l10n.ratings_noRatingsAvailable,
+                          style: TextStyle(color: colors.textMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // Filter ratings by search query
+              final filteredRatings = searchQuery.isEmpty
+                  ? response.ratings
+                  : response.ratings.where((r) {
+                      final countryName = getLocalizedCountryName(context, r.country).toLowerCase();
+                      final code = r.country.toLowerCase();
+                      final query = searchQuery.toLowerCase();
+                      return countryName.contains(query) || code.contains(query);
+                    }).toList();
+
+              // Paginate
+              final displayedRatings = filteredRatings.take(pageSize).toList();
+              final hasMore = filteredRatings.length > pageSize;
+              final totalCount = filteredRatings.length;
+
+              return Column(
+                children: [
+                  // Results count
+                  if (searchQuery.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Text(
+                            '$totalCount ${totalCount == 1 ? 'country' : 'countries'} found',
+                            style: TextStyle(fontSize: 12, color: colors.textMuted),
+                          ),
+                          if (searchQuery.isNotEmpty) ...[
+                            const SizedBox(width: 8),
+                            InkWell(
+                              onTap: () => ref.read(_countryRatingsSearchProvider.notifier).state = '',
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: colors.bgActive,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      searchQuery,
+                                      style: TextStyle(fontSize: 11, color: colors.textSecondary),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(Icons.close, size: 12, color: colors.textMuted),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  // Table header
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: colors.glassBorder)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            context.l10n.ratings_headerCountry,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            context.l10n.ratings_headerRatings,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                              color: colors.textMuted,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            context.l10n.ratings_headerAverage,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                              color: colors.textMuted,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Ratings rows
+                  ...displayedRatings.map((rating) => _CountryRatingRow(
+                        rating: rating,
+                        appId: appId,
+                        appName: appName,
+                      )),
+                  // Show more / Show less buttons
+                  if (hasMore || pageSize > 10)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (hasMore)
+                            TextButton.icon(
+                              onPressed: () {
+                                ref.read(_countryRatingsPageSizeProvider.notifier).state = pageSize + 10;
+                              },
+                              icon: Icon(Icons.expand_more_rounded, size: 18, color: colors.accent),
+                              label: Text(
+                                'Show more (${filteredRatings.length - pageSize} remaining)',
+                                style: TextStyle(fontSize: 12, color: colors.accent),
+                              ),
+                            ),
+                          if (pageSize > 10) ...[
+                            if (hasMore) const SizedBox(width: 16),
+                            TextButton.icon(
+                              onPressed: () {
+                                ref.read(_countryRatingsPageSizeProvider.notifier).state = 10;
+                              },
+                              icon: Icon(Icons.expand_less_rounded, size: 18, color: colors.textMuted),
+                              label: Text(
+                                'Show less',
+                                style: TextStyle(fontSize: 12, color: colors.textMuted),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CountryRatingRow extends StatelessWidget {
+  final CountryRating rating;
+  final int appId;
+  final String appName;
+
+  const _CountryRatingRow({
+    required this.rating,
+    required this.appId,
+    required this.appName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final flag = getFlagForStorefront(rating.country);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          context.push('/apps/$appId/reviews/${rating.country}?name=${Uri.encodeComponent(appName)}');
+        },
+        hoverColor: colors.bgHover,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: colors.glassBorder.withAlpha(80))),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                    Text(flag, style: const TextStyle(fontSize: 18)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        getLocalizedCountryName(context, rating.country),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: colors.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: 100,
+                child: Text(
+                  _formatCount(rating.ratingCount),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textSecondary,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
+              ),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      rating.rating?.toStringAsFixed(2) ?? '--',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: _getRatingColor(context, rating.rating),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.star_rounded,
+                      size: 14,
+                      color: _getRatingColor(context, rating.rating),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 18,
+                color: colors.textMuted,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatCount(int count) {
+    if (count >= 1000000) {
+      return '${(count / 1000000).toStringAsFixed(1)}M';
+    } else if (count >= 1000) {
+      return '${(count / 1000).toStringAsFixed(1)}K';
+    }
+    return count.toString();
+  }
+
+  Color _getRatingColor(BuildContext context, double? rating) {
+    final colors = context.colors;
+    if (rating == null) return colors.textMuted;
+    if (rating >= 4.5) return colors.green;
+    if (rating >= 4.0) return const Color(0xFF84cc16);
+    if (rating >= 3.5) return colors.yellow;
+    return colors.red;
   }
 }

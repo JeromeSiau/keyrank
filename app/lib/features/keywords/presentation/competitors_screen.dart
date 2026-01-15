@@ -25,7 +25,10 @@ class CompetitorsScreen extends ConsumerWidget {
       child: Column(
         children: [
           // Toolbar with title and actions
-          _Toolbar(onRefresh: () => ref.invalidate(competitorsProvider)),
+          _Toolbar(
+            onRefresh: () => ref.invalidate(competitorsProvider),
+            onAddCompetitor: () => context.go('/competitors/add'),
+          ),
 
           // Filter chips
           _FilterChips(
@@ -51,6 +54,7 @@ class CompetitorsScreen extends ConsumerWidget {
                   return _EmptyState(
                     colors: colors,
                     filter: currentFilter,
+                    onAddCompetitor: () => context.go('/competitors/add'),
                   );
                 }
                 return ListView.builder(
@@ -144,8 +148,12 @@ class CompetitorsScreen extends ConsumerWidget {
 
 class _Toolbar extends StatelessWidget {
   final VoidCallback onRefresh;
+  final VoidCallback onAddCompetitor;
 
-  const _Toolbar({required this.onRefresh});
+  const _Toolbar({
+    required this.onRefresh,
+    required this.onAddCompetitor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -195,6 +203,44 @@ class _Toolbar extends StatelessWidget {
                   Icons.refresh_rounded,
                   size: 20,
                   color: colors.textMuted,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          // Add competitor button
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onAddCompetitor,
+              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+              hoverColor: colors.accent.withAlpha(20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.cardPadding,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: colors.accent,
+                  borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.add_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      'Add competitor',
+                      style: AppTypography.caption.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -297,10 +343,12 @@ class _FilterChip extends StatelessWidget {
 class _EmptyState extends StatelessWidget {
   final AppColorsExtension colors;
   final CompetitorFilter filter;
+  final VoidCallback onAddCompetitor;
 
   const _EmptyState({
     required this.colors,
     required this.filter,
+    required this.onAddCompetitor,
   });
 
   String get _message {
@@ -317,7 +365,7 @@ class _EmptyState extends StatelessWidget {
   String get _subtitle {
     switch (filter) {
       case CompetitorFilter.all:
-        return 'Add competitors to track their rankings and performance';
+        return 'Search for apps and add them as competitors to track their rankings';
       case CompetitorFilter.global:
         return 'Global competitors appear across all your apps';
       case CompetitorFilter.contextual:
@@ -353,6 +401,43 @@ class _EmptyState extends StatelessWidget {
             _subtitle,
             style: AppTypography.body.copyWith(color: colors.textMuted),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          // Add competitor button
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onAddCompetitor,
+              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.sm + 4,
+                ),
+                decoration: BoxDecoration(
+                  color: colors.accent,
+                  borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.search_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Search for competitors',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),

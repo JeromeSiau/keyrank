@@ -69,26 +69,125 @@ class AppContextSwitcher extends ConsumerWidget {
     final colors = context.colors;
     final sidebarApps = ref.read(sidebarAppsProvider);
     final selectedApp = ref.read(appContextProvider);
+    final isDesktop = MediaQuery.of(context).size.width >= 600;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colors.bgBase,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => _AppPickerSheet(
-        sidebarApps: sidebarApps,
-        selectedApp: selectedApp,
-        onSelect: (app) {
-          ref.read(appContextProvider.notifier).select(app);
-          Navigator.pop(context);
-        },
-        onManageApps: () {
-          Navigator.pop(context);
-          context.go('/apps/manage');
-        },
-      ),
-    );
+    if (isDesktop) {
+      // On desktop, show a dropdown popup below the switcher
+      final RenderBox button = context.findRenderObject() as RenderBox;
+      final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+      final Offset position = button.localToGlobal(Offset.zero, ancestor: overlay);
+
+      showMenu<dynamic>(
+        context: context,
+        position: RelativeRect.fromLTRB(
+          position.dx,
+          position.dy + button.size.height + 4,
+          position.dx + button.size.width,
+          position.dy + button.size.height + 400,
+        ),
+        color: colors.bgSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: colors.border),
+        ),
+        constraints: BoxConstraints(
+          minWidth: button.size.width,
+          maxWidth: button.size.width,
+          maxHeight: 400,
+        ),
+        items: [
+          // All apps option
+          PopupMenuItem<void>(
+            onTap: () => ref.read(appContextProvider.notifier).select(null),
+            child: _PopupAppTile(
+              icon: Icons.apps,
+              name: 'All apps',
+              isSelected: selectedApp == null,
+            ),
+          ),
+          const PopupMenuDivider(),
+          // Favorites
+          if (sidebarApps.favorites.isNotEmpty) ...[
+            const PopupMenuItem<void>(
+              enabled: false,
+              height: 32,
+              child: Text('Favorites', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+            ...sidebarApps.favorites.map((app) => PopupMenuItem<void>(
+              onTap: () => ref.read(appContextProvider.notifier).select(app),
+              child: _PopupAppTile(
+                iconUrl: app.iconUrl,
+                name: app.name,
+                isSelected: selectedApp?.id == app.id,
+              ),
+            )),
+          ],
+          // iOS
+          if (sidebarApps.iosList.isNotEmpty) ...[
+            const PopupMenuItem<void>(
+              enabled: false,
+              height: 32,
+              child: Text('iPhone', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+            ...sidebarApps.iosList.map((app) => PopupMenuItem<void>(
+              onTap: () => ref.read(appContextProvider.notifier).select(app),
+              child: _PopupAppTile(
+                iconUrl: app.iconUrl,
+                name: app.name,
+                isSelected: selectedApp?.id == app.id,
+              ),
+            )),
+          ],
+          // Android
+          if (sidebarApps.androidList.isNotEmpty) ...[
+            const PopupMenuItem<void>(
+              enabled: false,
+              height: 32,
+              child: Text('Android', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+            ...sidebarApps.androidList.map((app) => PopupMenuItem<void>(
+              onTap: () => ref.read(appContextProvider.notifier).select(app),
+              child: _PopupAppTile(
+                iconUrl: app.iconUrl,
+                name: app.name,
+                isSelected: selectedApp?.id == app.id,
+              ),
+            )),
+          ],
+          const PopupMenuDivider(),
+          // Manage apps
+          PopupMenuItem<void>(
+            onTap: () => context.go('/apps/manage'),
+            child: const _PopupAppTile(
+              icon: Icons.settings,
+              name: 'Manage apps',
+              isSelected: false,
+            ),
+          ),
+        ],
+      );
+    } else {
+      // On mobile, show a bottom sheet
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: colors.bgBase,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (context) => _AppPickerSheet(
+          sidebarApps: sidebarApps,
+          selectedApp: selectedApp,
+          onSelect: (app) {
+            ref.read(appContextProvider.notifier).select(app);
+            Navigator.pop(context);
+          },
+          onManageApps: () {
+            Navigator.pop(context);
+            context.go('/apps/manage');
+          },
+        ),
+      );
+    }
   }
 }
 
@@ -249,6 +348,56 @@ class _AppTile extends StatelessWidget {
       ),
       trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
       onTap: onTap,
+    );
+  }
+}
+
+/// Compact app tile for popup menu (desktop)
+class _PopupAppTile extends StatelessWidget {
+  final IconData? icon;
+  final String? iconUrl;
+  final String name;
+  final bool isSelected;
+
+  const _PopupAppTile({
+    this.icon,
+    this.iconUrl,
+    required this.name,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Row(
+      children: [
+        if (iconUrl != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.network(
+              iconUrl!,
+              width: 24,
+              height: 24,
+              errorBuilder: (_, _, _) => Icon(Icons.apps, size: 24, color: colors.textMuted),
+            ),
+          )
+        else
+          Icon(icon, size: 24, color: colors.textMuted),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            name,
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (isSelected)
+          Icon(Icons.check, size: 18, color: colors.accent),
+      ],
     );
   }
 }

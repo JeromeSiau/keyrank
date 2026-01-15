@@ -643,7 +643,7 @@ class _TopChartRowState extends ConsumerState<_TopChartRow> {
     final platform = ref.read(_topChartsPlatformProvider);
     final country = ref.read(selectedCountryProvider);
     context.push(
-      '/discover/preview/$platform/${widget.app.storeId}?country=${country.code}',
+      '/apps/preview/$platform/${widget.app.storeId}?country=${country.code}',
     );
   }
 

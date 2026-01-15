@@ -548,6 +548,84 @@ class AppController extends Controller
 
         $country = $validated['country'] ?? 'us';
 
+        // First check if we already have this app in our database (faster)
+        $app = App::where('platform', $platform)
+            ->where('store_id', $storeId)
+            ->first();
+
+        if ($app) {
+            // If app is missing detailed info (screenshots, description), fetch from store
+            if (empty($app->screenshots) || empty($app->description)) {
+                if ($platform === 'ios') {
+                    $details = $this->iTunesService->getAppDetails($storeId, $country);
+                } else {
+                    $details = $this->googlePlayService->getAppDetails($storeId, $country);
+                }
+
+                if ($details) {
+                    // Parse dates safely (avoid 1970-01-01 from invalid timestamps)
+                    $releaseDate = null;
+                    if (!empty($details['release_date'])) {
+                        $ts = strtotime($details['release_date']);
+                        if ($ts && $ts > 0) {
+                            $releaseDate = date('Y-m-d', $ts);
+                        }
+                    }
+
+                    $updatedDate = null;
+                    $updatedRaw = $details['updated_date'] ?? $details['updated'] ?? null;
+                    if (!empty($updatedRaw)) {
+                        $ts = is_numeric($updatedRaw) ? (int) ($updatedRaw / 1000) : strtotime($updatedRaw);
+                        if ($ts && $ts > 86400) { // After 1970-01-02
+                            $updatedDate = date('Y-m-d H:i:s', $ts);
+                        }
+                    }
+
+                    $app->update([
+                        'description' => $app->description ?? ($details['description'] ?? null),
+                        'screenshots' => $app->screenshots ?? ($details['screenshots'] ?? null),
+                        'version' => $app->version ?? ($details['version'] ?? null),
+                        'release_date' => $app->release_date ?? $releaseDate,
+                        'updated_date' => $app->updated_date ?? $updatedDate,
+                        'size_bytes' => $app->size_bytes ?? ($details['size_bytes'] ?? null),
+                        'minimum_os' => $app->minimum_os ?? ($details['minimum_os'] ?? null),
+                        'store_url' => $app->store_url ?? ($details['store_url'] ?? null),
+                        'category_id' => $app->category_id ?? ($details['category_id'] ?? $details['genre_id'] ?? null),
+                    ]);
+                    $app->refresh();
+                }
+            }
+
+            // Get category name from ID
+            $categoryName = $this->getCategoryName($app->platform, $app->category_id);
+
+            // Return data from our database
+            return response()->json([
+                'data' => [
+                    'platform' => $app->platform,
+                    'store_id' => $app->store_id,
+                    'name' => $app->name,
+                    'icon_url' => $app->icon_url,
+                    'developer' => $app->developer,
+                    'description' => $app->description,
+                    'screenshots' => $app->screenshots ?? [],
+                    'version' => $app->version,
+                    'release_date' => $app->release_date?->toDateString(),
+                    'updated_date' => $app->updated_date?->toIso8601String(),
+                    'size_bytes' => $app->size_bytes,
+                    'minimum_os' => $app->minimum_os,
+                    'store_url' => $app->store_url,
+                    'price' => $app->price,
+                    'currency' => $app->currency,
+                    'rating' => $app->rating,
+                    'rating_count' => $app->rating_count ?? 0,
+                    'category_id' => $app->category_id,
+                    'category_name' => $categoryName,
+                ],
+            ]);
+        }
+
+        // App not in DB, fetch from external API (for preview before adding)
         if ($platform === 'ios') {
             $details = $this->iTunesService->getAppDetails($storeId, $country);
         } else {
@@ -560,7 +638,7 @@ class AppController extends Controller
             ], 404);
         }
 
-        // Normalize the response format
+        // Normalize the response format from external API
         return response()->json([
             'data' => [
                 'platform' => $platform,
@@ -581,8 +659,25 @@ class AppController extends Controller
                 'rating' => $details['rating'] ?? null,
                 'rating_count' => $details['rating_count'] ?? 0,
                 'category_id' => $details['category_id'] ?? $details['genre_id'] ?? null,
+                'category_name' => $this->getCategoryName($platform, $details['category_id'] ?? $details['genre_id'] ?? null),
             ],
         ]);
+    }
+
+    /**
+     * Get category name from category ID
+     */
+    private function getCategoryName(string $platform, ?string $categoryId): ?string
+    {
+        if (!$categoryId) {
+            return null;
+        }
+
+        $categories = $platform === 'ios'
+            ? iTunesService::getCategories()
+            : GooglePlayService::getCategories();
+
+        return $categories[$categoryId] ?? $categoryId;
     }
 
     /**

@@ -154,18 +154,22 @@ class GooglePlayService
         $cacheKey = "gplay_top_{$collection}_{$categoryId}_{$country}_{$limit}";
 
         return Cache::remember($cacheKey, now()->addHour(), function () use ($categoryId, $country, $collection, $limit) {
-            $response = Http::timeout(60)->get("{$this->scraperUrl}/top", [
-                'category' => $categoryId,
-                'country' => $country,
-                'collection' => $collection,
-                'num' => min($limit, 200),
-            ]);
+            try {
+                $response = Http::timeout(60)->get("{$this->scraperUrl}/top", [
+                    'category' => $categoryId,
+                    'country' => $country,
+                    'collection' => $collection,
+                    'num' => min($limit, 200),
+                ]);
 
-            if (!$response->successful()) {
+                if (!$response->successful()) {
+                    return [];
+                }
+
+                return $response->json('results', []);
+            } catch (\Exception $e) {
                 return [];
             }
-
-            return $response->json('results', []);
         });
     }
 
