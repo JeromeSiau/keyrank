@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../domain/competitor_model.dart';
+import '../domain/competitor_keywords_model.dart';
 
 class CompetitorsRepository {
   final Dio _dio;
@@ -58,5 +59,55 @@ class CompetitorsRepository {
     required int competitorAppId,
   }) async {
     await _dio.delete('/apps/$ownerAppId/competitors/$competitorAppId');
+  }
+
+  /// Get competitor keywords with comparison to user's app.
+  Future<CompetitorKeywordsResponse> getCompetitorKeywords({
+    required int competitorId,
+    required int appId,
+    String country = 'US',
+  }) async {
+    final response = await _dio.get(
+      '/competitors/$competitorId/keywords',
+      queryParameters: {
+        'app_id': appId,
+        'country': country,
+      },
+    );
+    return CompetitorKeywordsResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  /// Add a keyword to track for a competitor.
+  Future<void> addKeywordToCompetitor({
+    required int competitorId,
+    required String keyword,
+    String storefront = 'US',
+  }) async {
+    await _dio.post(
+      '/competitors/$competitorId/keywords',
+      data: {
+        'keyword': keyword,
+        'storefront': storefront,
+      },
+    );
+  }
+
+  /// Add multiple keywords to track for a competitor (bulk).
+  Future<({int added, int skipped})> addKeywordsToCompetitor({
+    required int competitorId,
+    required List<String> keywords,
+    String storefront = 'US',
+  }) async {
+    final response = await _dio.post(
+      '/competitors/$competitorId/keywords/bulk',
+      data: {
+        'keywords': keywords,
+        'storefront': storefront,
+      },
+    );
+    return (
+      added: response.data['added'] as int,
+      skipped: response.data['skipped'] as int,
+    );
   }
 }

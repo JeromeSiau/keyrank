@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\RankingsSynced;
+use App\Models\App;
 use App\Models\AppRanking;
 use App\Models\TrackedKeyword;
 use App\Services\GooglePlayService;
@@ -81,7 +82,7 @@ class SyncRankings extends Command
                     'icon_url' => $r['icon_url'] ?? null,
                 ], $searchResults), 0, 3);
 
-                // Save ranking
+                // Save ranking for the user's app
                 $ranking = AppRanking::updateOrCreate(
                     [
                         'app_id' => $item->app_id,
@@ -91,6 +92,31 @@ class SyncRankings extends Command
                     ['position' => $position]
                 );
                 $syncedRankings->push($ranking);
+
+                // Also save rankings for any known apps (competitors) that appear in search results
+                $knownStoreIds = App::where('platform', $platform)
+                    ->pluck('store_id', 'id')
+                    ->toArray();
+
+                foreach ($searchResults as $result) {
+                    $resultStoreId = $result[$idField] ?? null;
+                    if (!$resultStoreId || $resultStoreId === $appStoreId) {
+                        continue; // Skip if no store_id or if it's the user's app (already saved)
+                    }
+
+                    // Find the app ID for this store_id
+                    $matchedAppId = array_search($resultStoreId, $knownStoreIds);
+                    if ($matchedAppId !== false) {
+                        AppRanking::updateOrCreate(
+                            [
+                                'app_id' => $matchedAppId,
+                                'keyword_id' => $item->keyword_id,
+                                'recorded_at' => today(),
+                            ],
+                            ['position' => $result['position']]
+                        );
+                    }
+                }
 
                 // Update tracked_keywords metrics for all users tracking this keyword/app pair
                 TrackedKeyword::where('app_id', $item->app_id)

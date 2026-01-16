@@ -62,9 +62,7 @@ class CompetitorsScreen extends ConsumerWidget {
                   itemCount: competitors.length,
                   itemBuilder: (context, index) => _CompetitorTile(
                     competitor: competitors[index],
-                    onView: () => context.push(
-                      '/apps/preview/${competitors[index].platform}/${competitors[index].storeId}',
-                    ),
+                    onView: () => context.push('/competitors/${competitors[index].id}'),
                     onRemove: () => _removeCompetitor(context, ref, competitors[index]),
                   ),
                 );
@@ -594,7 +592,7 @@ class _CompetitorTile extends StatelessWidget {
                 // Actions
                 _ActionButton(
                   icon: Icons.visibility_rounded,
-                  tooltip: 'View App',
+                  tooltip: 'View Keywords',
                   onTap: onView,
                   colors: colors,
                 ),

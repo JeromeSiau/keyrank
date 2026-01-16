@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AlertPreferencesController;
 use App\Http\Controllers\Api\AlertRulesController;
 use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\ApiKeyController;
@@ -126,6 +127,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{app}/insights/generate', [InsightsController::class, 'generate'])
             ->middleware('plan.feature:ai_insights');
 
+        // ASO Score
+        Route::get('{app}/aso-score', [InsightsController::class, 'asoScore']);
+
         // Export
         Route::get('{app}/export/rankings', [ExportController::class, 'rankings'])
             ->middleware('plan.feature:exports');
@@ -176,6 +180,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [CompetitorController::class, 'index']);
         Route::post('/', [CompetitorController::class, 'store']);
         Route::delete('{appId}', [CompetitorController::class, 'destroy']);
+        Route::get('{competitorId}/keywords', [CompetitorController::class, 'keywords']);
+        Route::post('{competitorId}/keywords', [CompetitorController::class, 'addKeyword']);
+        Route::post('{competitorId}/keywords/bulk', [CompetitorController::class, 'addKeywords']);
     });
 
     // Categories
@@ -200,6 +207,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('rules/{rule}', [AlertRulesController::class, 'update']);
         Route::delete('rules/{rule}', [AlertRulesController::class, 'destroy']);
         Route::patch('rules/{rule}/toggle', [AlertRulesController::class, 'toggle']);
+
+        // Alert Preferences (delivery settings)
+        Route::get('preferences', [AlertPreferencesController::class, 'show']);
+        Route::put('preferences', [AlertPreferencesController::class, 'update']);
+        Route::get('types', [AlertPreferencesController::class, 'types']);
     });
 
     // Notifications

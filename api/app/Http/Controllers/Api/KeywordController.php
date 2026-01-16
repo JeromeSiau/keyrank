@@ -209,8 +209,7 @@ class KeywordController extends Controller
                 ]
             );
         } catch (\Exception $e) {
-            // Log but don't fail - ranking will be collected by background job
-            \Log::warning("Failed to fetch initial ranking for keyword {$keywordText}: " . $e->getMessage());
+            // Log error but continue
         }
 
         return response()->json([

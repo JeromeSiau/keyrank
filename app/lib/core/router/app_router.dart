@@ -46,6 +46,7 @@ import '../../features/ratings/presentation/ratings_analysis_screen.dart';
 import '../../features/keywords/presentation/top_charts_screen.dart';
 import '../../features/keywords/presentation/competitors_screen.dart';
 import '../../features/competitors/presentation/add_competitor_screen.dart';
+import '../../features/competitors/presentation/competitor_detail_screen.dart';
 import '../../features/billing/presentation/billing_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -250,6 +251,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'add',
                 builder: (context, state) => const AddCompetitorScreen(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  return CompetitorDetailScreen(competitorId: id);
+                },
               ),
             ],
           ),
