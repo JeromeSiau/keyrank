@@ -222,60 +222,201 @@ class ReviewsController extends Controller
             return response()->json(['error' => 'Review does not belong to this app.'], 404);
         }
 
+        // Validate optional tone parameter
+        $validated = $request->validate([
+            'tone' => 'nullable|string|in:professional,empathetic,brief',
+        ]);
+
+        $requestedTone = $validated['tone'] ?? null;
+
         // Get voice settings for the app/user
         $voiceSettings = $app->getVoiceSettingForUser($user->id);
 
-        // Build system prompt with tone guidelines
-        $systemPrompt = $this->buildReplySystemPrompt($app, $voiceSettings);
+        // Detect issues from review content
+        $detectedIssues = $this->detectIssuesFromReview($review);
 
-        // Build user prompt with review details
-        $userPrompt = $this->buildReplyUserPrompt($review);
+        // Use enriched sentiment from sync job, or fallback to rating-based
+        $sentiment = $review->sentiment ?? ($review->rating >= 4 ? 'positive' : ($review->rating <= 2 ? 'negative' : 'neutral'));
 
-        // Call OpenRouter for AI response
-        $result = $this->openRouter->chat($systemPrompt, $userPrompt, true);
-
-        if (!$result) {
-            \Log::error('OpenRouter API failed', ['app_id' => $app->id, 'review_id' => $review->id]);
-            return response()->json([
-                'error' => 'Failed to generate suggestion. Please try again.',
-            ], 500);
+        // Generate suggestions - single API call for all 3 tones, or one tone if specified
+        if ($requestedTone) {
+            // Single tone requested - make one call
+            $suggestions = $this->generateSingleTone($app, $review, $requestedTone, $voiceSettings, $detectedIssues);
+        } else {
+            // Generate all 3 tones in a single API call (cost optimization: 1 call instead of 3)
+            $suggestions = $this->generateAllTones($app, $review, $voiceSettings, $detectedIssues);
         }
 
-        $suggestion = $result['reply'] ?? $result['content'] ?? null;
-
-        if (!$suggestion) {
+        if (empty($suggestions)) {
             return response()->json([
-                'error' => 'Failed to parse AI response. Please try again.',
+                'error' => 'Failed to generate suggestions. Please try again.',
             ], 500);
-        }
-
-        // Add signature if configured
-        if ($voiceSettings && $voiceSettings->signature) {
-            $suggestion .= "\n\n" . $voiceSettings->signature;
         }
 
         return response()->json([
             'data' => [
-                'suggestion' => $suggestion,
+                'suggestions' => $suggestions,
+                'detected_issues' => $detectedIssues,
+                'sentiment' => $sentiment,
             ],
         ]);
     }
 
     /**
-     * Build system prompt for review reply generation
+     * Generate all 3 tones in a single API call (cost optimization)
      */
-    private function buildReplySystemPrompt(App $app, $voiceSettings): string
+    private function generateAllTones(App $app, AppReview $review, $voiceSettings, array $detectedIssues): array
     {
-        $prompt = "You are a helpful assistant that generates professional app review replies for '{$app->name}'.";
-        $prompt .= " Your goal is to craft a thoughtful, empathetic response that addresses the user's feedback.";
-        $prompt .= " Keep replies concise (under 500 characters preferred, max 5970 characters).";
-        $prompt .= " Be professional but warm. Thank users for positive feedback, and address concerns constructively.";
+        $systemPrompt = $this->buildMultiToneSystemPrompt($app, $voiceSettings);
+        $userPrompt = $this->buildReplyUserPrompt($review, $detectedIssues);
 
-        if ($voiceSettings && $voiceSettings->tone_description) {
-            $prompt .= "\n\nTone Guidelines: {$voiceSettings->tone_description}";
+        $result = $this->openRouter->chat($systemPrompt, $userPrompt, true);
+
+        if (!$result) {
+            \Log::error('OpenRouter API failed for multi-tone generation', [
+                'app_id' => $app->id,
+                'review_id' => $review->id,
+            ]);
+            return [];
         }
 
-        $prompt .= "\n\nRespond with a JSON object containing a 'reply' field with your suggested response.";
+        $suggestions = [];
+        $signature = $voiceSettings?->signature;
+
+        // Parse the 3 tones from the response
+        foreach (['professional', 'empathetic', 'brief'] as $tone) {
+            $content = $result[$tone] ?? null;
+            if ($content) {
+                if ($signature) {
+                    $content .= "\n\n" . $signature;
+                }
+                $suggestions[] = [
+                    'tone' => $tone,
+                    'content' => $content,
+                ];
+            }
+        }
+
+        return $suggestions;
+    }
+
+    /**
+     * Generate a single tone reply
+     */
+    private function generateSingleTone(App $app, AppReview $review, string $tone, $voiceSettings, array $detectedIssues): array
+    {
+        $systemPrompt = $this->buildSingleToneSystemPrompt($app, $tone, $voiceSettings);
+        $userPrompt = $this->buildReplyUserPrompt($review, $detectedIssues);
+
+        $result = $this->openRouter->chat($systemPrompt, $userPrompt, true);
+
+        if (!$result) {
+            \Log::error('OpenRouter API failed', [
+                'app_id' => $app->id,
+                'review_id' => $review->id,
+                'tone' => $tone,
+            ]);
+            return [];
+        }
+
+        $content = $result['reply'] ?? $result['content'] ?? null;
+
+        if (!$content) {
+            return [];
+        }
+
+        if ($voiceSettings?->signature) {
+            $content .= "\n\n" . $voiceSettings->signature;
+        }
+
+        return [[
+            'tone' => $tone,
+            'content' => $content,
+        ]];
+    }
+
+    /**
+     * Detect issues mentioned in the review
+     */
+    private function detectIssuesFromReview(AppReview $review): array
+    {
+        $issues = [];
+        $content = strtolower($review->content . ' ' . ($review->title ?? ''));
+
+        $issuePatterns = [
+            'crash' => ['crash', 'crashes', 'crashing', 'stopped working', 'force close'],
+            'bug' => ['bug', 'glitch', 'broken', 'not working', 'doesnt work', "doesn't work"],
+            'slow' => ['slow', 'laggy', 'lag', 'freezes', 'freeze', 'hangs', 'performance'],
+            'login' => ['login', 'sign in', 'signin', 'authentication', 'password', 'account'],
+            'sync' => ['sync', 'syncing', 'synchronize', 'data loss', 'lost data'],
+            'ui' => ['confusing', 'hard to use', 'ui', 'interface', 'design', 'ugly'],
+            'battery' => ['battery', 'drain', 'power', 'energy'],
+            'notifications' => ['notification', 'notifications', 'alerts', 'push'],
+            'payment' => ['payment', 'subscription', 'purchase', 'billing', 'refund', 'charge'],
+            'update' => ['update', 'new version', 'latest version', 'after update'],
+            'ads' => ['ads', 'advertisements', 'too many ads', 'ad'],
+            'offline' => ['offline', 'internet', 'connection', 'network'],
+        ];
+
+        foreach ($issuePatterns as $issue => $patterns) {
+            foreach ($patterns as $pattern) {
+                if (str_contains($content, $pattern)) {
+                    $issues[] = $issue;
+                    break;
+                }
+            }
+        }
+
+        return array_unique($issues);
+    }
+
+    /**
+     * Build system prompt for generating all 3 tones in one call (cost optimization)
+     */
+    private function buildMultiToneSystemPrompt(App $app, $voiceSettings): string
+    {
+        $prompt = "You are a helpful assistant that generates app review replies for '{$app->name}'.";
+        $prompt .= " Generate 3 different reply options in different tones.";
+        $prompt .= " Keep all replies under 500 characters. Match the language of the review.";
+
+        if ($voiceSettings && $voiceSettings->tone_description) {
+            $prompt .= "\n\nAdditional tone guidelines: {$voiceSettings->tone_description}";
+        }
+
+        $prompt .= "\n\nRespond with a JSON object containing exactly these 3 fields:";
+        $prompt .= "\n- \"professional\": A professional, business-like response. Courteous and solution-focused.";
+        $prompt .= "\n- \"empathetic\": A warm, empathetic response showing genuine understanding.";
+        $prompt .= "\n- \"brief\": A very concise response (under 200 characters). Friendly but brief.";
+
+        return $prompt;
+    }
+
+    /**
+     * Build system prompt for a single tone
+     */
+    private function buildSingleToneSystemPrompt(App $app, string $tone, $voiceSettings): string
+    {
+        $prompt = "You are a helpful assistant that generates app review replies for '{$app->name}'.";
+
+        switch ($tone) {
+            case 'professional':
+                $prompt .= " Write in a professional, business-like tone. Be courteous and solution-focused.";
+                break;
+            case 'empathetic':
+                $prompt .= " Write in a warm, empathetic tone. Show genuine understanding.";
+                break;
+            case 'brief':
+                $prompt .= " Write a very concise response (under 200 characters). Be friendly but brief.";
+                break;
+        }
+
+        $prompt .= " Keep reply under 500 characters. Match the language of the review.";
+
+        if ($voiceSettings && $voiceSettings->tone_description) {
+            $prompt .= "\n\nAdditional tone guidelines: {$voiceSettings->tone_description}";
+        }
+
+        $prompt .= "\n\nRespond with a JSON object containing a 'reply' field.";
 
         return $prompt;
     }
@@ -283,7 +424,7 @@ class ReviewsController extends Controller
     /**
      * Build user prompt for review reply generation
      */
-    private function buildReplyUserPrompt(AppReview $review): string
+    private function buildReplyUserPrompt(AppReview $review, array $detectedIssues = []): string
     {
         $prompt = "Please generate a reply for this app review:\n\n";
         $prompt .= "Rating: {$review->rating}/5 stars\n";
@@ -295,6 +436,10 @@ class ReviewsController extends Controller
         $prompt .= "Review: {$review->content}\n";
         $prompt .= "Author: {$review->author}\n";
         $prompt .= "Country: {$review->country}";
+
+        if (!empty($detectedIssues)) {
+            $prompt .= "\n\nDetected issues to address: " . implode(', ', $detectedIssues);
+        }
 
         return $prompt;
     }

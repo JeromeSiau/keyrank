@@ -60,3 +60,45 @@ Map<String, dynamic> _$$ReviewAppImplToJson(_$ReviewAppImpl instance) =>
       'platform': instance.platform,
       'is_owned': instance.isOwned,
     };
+
+_$ReplySuggestionImpl _$$ReplySuggestionImplFromJson(
+  Map<String, dynamic> json,
+) => _$ReplySuggestionImpl(
+  tone: $enumDecode(_$ReplyToneEnumMap, json['tone']),
+  content: json['content'] as String,
+);
+
+Map<String, dynamic> _$$ReplySuggestionImplToJson(
+  _$ReplySuggestionImpl instance,
+) => <String, dynamic>{
+  'tone': _$ReplyToneEnumMap[instance.tone]!,
+  'content': instance.content,
+};
+
+const _$ReplyToneEnumMap = {
+  ReplyTone.professional: 'professional',
+  ReplyTone.empathetic: 'empathetic',
+  ReplyTone.brief: 'brief',
+};
+
+_$AiReplyResponseImpl _$$AiReplyResponseImplFromJson(
+  Map<String, dynamic> json,
+) => _$AiReplyResponseImpl(
+  suggestions: (json['suggestions'] as List<dynamic>)
+      .map((e) => ReplySuggestion.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  detectedIssues:
+      (json['detected_issues'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  sentiment: json['sentiment'] as String?,
+);
+
+Map<String, dynamic> _$$AiReplyResponseImplToJson(
+  _$AiReplyResponseImpl instance,
+) => <String, dynamic>{
+  'suggestions': instance.suggestions,
+  'detected_issues': instance.detectedIssues,
+  'sentiment': instance.sentiment,
+};

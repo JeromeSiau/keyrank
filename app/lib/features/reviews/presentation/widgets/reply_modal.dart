@@ -26,6 +26,10 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
   bool _isSending = false;
   String? _error;
 
+  // AI suggestions state
+  AiReplyResponse? _aiResponse;
+  ReplyTone _selectedTone = ReplyTone.professional;
+
   static const int _maxChars = 5970; // Apple limit
 
   @override
@@ -34,7 +38,7 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
     super.dispose();
   }
 
-  Future<void> _generateAiSuggestion() async {
+  Future<void> _generateAiSuggestions() async {
     if (widget.review.app == null) return;
 
     setState(() {
@@ -44,11 +48,19 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
 
     try {
       final repository = ref.read(reviewsRepositoryProvider);
-      final suggestion = await repository.suggestReply(
+      final response = await repository.suggestReply(
         appId: widget.review.app!.id,
         reviewId: widget.review.id,
       );
-      _controller.text = suggestion;
+
+      setState(() {
+        _aiResponse = response;
+        // Auto-select the first suggestion
+        if (response.suggestions.isNotEmpty) {
+          _selectedTone = response.suggestions.first.tone;
+          _controller.text = response.suggestions.first.content;
+        }
+      });
     } catch (e) {
       setState(() {
         _error = context.l10n.reviewsInbox_aiError(e.toString());
@@ -58,6 +70,20 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
         _isGenerating = false;
       });
     }
+  }
+
+  void _selectTone(ReplyTone tone) {
+    if (_aiResponse == null) return;
+
+    final suggestion = _aiResponse!.suggestions.firstWhere(
+      (s) => s.tone == tone,
+      orElse: () => _aiResponse!.suggestions.first,
+    );
+
+    setState(() {
+      _selectedTone = tone;
+      _controller.text = suggestion.content;
+    });
   }
 
   Future<void> _sendReply() async {
@@ -103,6 +129,28 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
     }
   }
 
+  String _getToneLabel(ReplyTone tone) {
+    switch (tone) {
+      case ReplyTone.professional:
+        return context.l10n.reviewsInbox_toneProfessional;
+      case ReplyTone.empathetic:
+        return context.l10n.reviewsInbox_toneEmpathetic;
+      case ReplyTone.brief:
+        return context.l10n.reviewsInbox_toneBrief;
+    }
+  }
+
+  IconData _getToneIcon(ReplyTone tone) {
+    switch (tone) {
+      case ReplyTone.professional:
+        return Icons.business_center_outlined;
+      case ReplyTone.empathetic:
+        return Icons.favorite_outline;
+      case ReplyTone.brief:
+        return Icons.short_text;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -115,8 +163,8 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
         side: BorderSide(color: colors.glassBorder),
       ),
       child: Container(
-        width: 500,
-        constraints: const BoxConstraints(maxHeight: 600),
+        width: 560,
+        constraints: const BoxConstraints(maxHeight: 700),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -155,38 +203,17 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
 
             const SizedBox(height: 16),
 
-            // AI suggestion button
-            if (widget.review.app != null)
-              OutlinedButton.icon(
-                onPressed: _isGenerating ? null : _generateAiSuggestion,
-                icon: _isGenerating
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: colors.accent,
-                        ),
-                      )
-                    : Icon(Icons.auto_awesome, size: 18, color: colors.accent),
-                label: Text(
-                  _isGenerating
-                      ? context.l10n.reviewsInbox_generating
-                      : context.l10n.reviewsInbox_generateAi,
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: colors.accent,
-                  side: BorderSide(color: colors.accent.withAlpha(100)),
-                ),
-              ),
-
-            const SizedBox(height: 16),
+            // AI Suggestions section
+            if (widget.review.app != null) ...[
+              _buildAiSection(context),
+              const SizedBox(height: 16),
+            ],
 
             // Response text field
             Flexible(
               child: TextField(
                 controller: _controller,
-                maxLines: 8,
+                maxLines: 6,
                 maxLength: _maxChars,
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
@@ -363,6 +390,167 @@ class _ReplyModalState extends ConsumerState<ReplyModal> {
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAiSection(BuildContext context) {
+    final colors = context.colors;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colors.accent.withAlpha(10),
+        border: Border.all(color: colors.accent.withAlpha(30)),
+        borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // AI Header
+          Row(
+            children: [
+              Icon(
+                Icons.auto_awesome,
+                size: 18,
+                color: colors.accent,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                context.l10n.reviewsInbox_aiSuggestions,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.accent,
+                ),
+              ),
+              const Spacer(),
+              // Generate / Regenerate button
+              TextButton.icon(
+                onPressed: _isGenerating ? null : _generateAiSuggestions,
+                icon: _isGenerating
+                    ? SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: colors.accent,
+                        ),
+                      )
+                    : Icon(
+                        _aiResponse != null ? Icons.refresh : Icons.auto_awesome,
+                        size: 16,
+                      ),
+                label: Text(
+                  _isGenerating
+                      ? context.l10n.reviewsInbox_generating
+                      : _aiResponse != null
+                          ? context.l10n.reviewsInbox_regenerate
+                          : context.l10n.reviewsInbox_generateAi,
+                  style: const TextStyle(fontSize: 13),
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: colors.accent,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                ),
+              ),
+            ],
+          ),
+
+          // Detected issues (if any)
+          if (_aiResponse != null && _aiResponse!.detectedIssues.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                Text(
+                  context.l10n.reviewsInbox_detectedIssues,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colors.textMuted,
+                  ),
+                ),
+                ..._aiResponse!.detectedIssues.map((issue) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: colors.orange.withAlpha(20),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: colors.orange.withAlpha(50)),
+                      ),
+                      child: Text(
+                        issue,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.orange,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ],
+
+          // Tone selector (only show if we have suggestions)
+          if (_aiResponse != null && _aiResponse!.suggestions.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              context.l10n.reviewsInbox_selectTone,
+              style: TextStyle(
+                fontSize: 12,
+                color: colors.textMuted,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: ReplyTone.values.map((tone) {
+                final isSelected = _selectedTone == tone;
+                final hasSuggestion =
+                    _aiResponse!.suggestions.any((s) => s.tone == tone);
+
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ChoiceChip(
+                    selected: isSelected,
+                    onSelected: hasSuggestion ? (_) => _selectTone(tone) : null,
+                    avatar: Icon(
+                      _getToneIcon(tone),
+                      size: 16,
+                      color: isSelected ? Colors.white : colors.textSecondary,
+                    ),
+                    label: Text(
+                      _getToneLabel(tone),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isSelected ? Colors.white : colors.textSecondary,
+                      ),
+                    ),
+                    selectedColor: colors.accent,
+                    backgroundColor: colors.bgActive.withAlpha(50),
+                    side: BorderSide(
+                      color: isSelected ? colors.accent : colors.glassBorder,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    labelPadding: const EdgeInsets.only(left: 4),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+
+          // No suggestions yet - show prompt
+          if (_aiResponse == null && !_isGenerating) ...[
+            const SizedBox(height: 8),
+            Text(
+              context.l10n.reviewsInbox_aiPrompt,
+              style: TextStyle(
+                fontSize: 12,
+                color: colors.textMuted,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ],
         ],

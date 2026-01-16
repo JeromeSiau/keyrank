@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/breakpoints.dart';
 import '../../../core/providers/app_context_provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/csv_exporter.dart';
 import '../../../core/utils/l10n_extension.dart';
+import '../../../shared/widgets/export_dialog.dart';
 import '../../../shared/widgets/metric_card.dart';
 import '../../../shared/widgets/sentiment_bar.dart';
 import '../domain/review_model.dart';
@@ -160,11 +162,47 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
           ],
           const Spacer(),
           IconButton(
+            icon: Icon(Icons.download_rounded, color: colors.textMuted),
+            onPressed: () => _showExportDialog(context, params),
+            tooltip: context.l10n.export_button,
+          ),
+          IconButton(
             icon: Icon(Icons.refresh_rounded, color: colors.textMuted),
             onPressed: () => ref.invalidate(reviewsInboxProvider(params)),
             tooltip: context.l10n.common_refresh,
           ),
         ],
+      ),
+    );
+  }
+
+  void _showExportDialog(BuildContext context, ReviewsInboxParams params) {
+    final reviewsAsync = ref.read(reviewsInboxProvider(params));
+    final reviews = reviewsAsync.value?.reviews ?? [];
+    final selectedApp = ref.read(appContextProvider);
+
+    showDialog(
+      context: context,
+      builder: (context) => ExportReviewsDialog(
+        reviewCount: reviews.length,
+        onExport: (options) async {
+          final result = await CsvExporter.exportReviews(
+            reviews: reviews,
+            appName: selectedApp?.name ?? 'All_Apps',
+            options: options,
+          );
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  result.success
+                      ? context.l10n.export_success(result.filename)
+                      : context.l10n.export_error(result.error ?? 'Unknown error'),
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }

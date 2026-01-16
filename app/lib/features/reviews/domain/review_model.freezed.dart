@@ -958,3 +958,409 @@ abstract class _PaginatedReviews implements PaginatedReviews {
   _$$PaginatedReviewsImplCopyWith<_$PaginatedReviewsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+ReplySuggestion _$ReplySuggestionFromJson(Map<String, dynamic> json) {
+  return _ReplySuggestion.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ReplySuggestion {
+  ReplyTone get tone => throw _privateConstructorUsedError;
+  String get content => throw _privateConstructorUsedError;
+
+  /// Serializes this ReplySuggestion to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ReplySuggestion
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ReplySuggestionCopyWith<ReplySuggestion> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ReplySuggestionCopyWith<$Res> {
+  factory $ReplySuggestionCopyWith(
+    ReplySuggestion value,
+    $Res Function(ReplySuggestion) then,
+  ) = _$ReplySuggestionCopyWithImpl<$Res, ReplySuggestion>;
+  @useResult
+  $Res call({ReplyTone tone, String content});
+}
+
+/// @nodoc
+class _$ReplySuggestionCopyWithImpl<$Res, $Val extends ReplySuggestion>
+    implements $ReplySuggestionCopyWith<$Res> {
+  _$ReplySuggestionCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ReplySuggestion
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? tone = null, Object? content = null}) {
+    return _then(
+      _value.copyWith(
+            tone: null == tone
+                ? _value.tone
+                : tone // ignore: cast_nullable_to_non_nullable
+                      as ReplyTone,
+            content: null == content
+                ? _value.content
+                : content // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ReplySuggestionImplCopyWith<$Res>
+    implements $ReplySuggestionCopyWith<$Res> {
+  factory _$$ReplySuggestionImplCopyWith(
+    _$ReplySuggestionImpl value,
+    $Res Function(_$ReplySuggestionImpl) then,
+  ) = __$$ReplySuggestionImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({ReplyTone tone, String content});
+}
+
+/// @nodoc
+class __$$ReplySuggestionImplCopyWithImpl<$Res>
+    extends _$ReplySuggestionCopyWithImpl<$Res, _$ReplySuggestionImpl>
+    implements _$$ReplySuggestionImplCopyWith<$Res> {
+  __$$ReplySuggestionImplCopyWithImpl(
+    _$ReplySuggestionImpl _value,
+    $Res Function(_$ReplySuggestionImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ReplySuggestion
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? tone = null, Object? content = null}) {
+    return _then(
+      _$ReplySuggestionImpl(
+        tone: null == tone
+            ? _value.tone
+            : tone // ignore: cast_nullable_to_non_nullable
+                  as ReplyTone,
+        content: null == content
+            ? _value.content
+            : content // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ReplySuggestionImpl implements _ReplySuggestion {
+  const _$ReplySuggestionImpl({required this.tone, required this.content});
+
+  factory _$ReplySuggestionImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ReplySuggestionImplFromJson(json);
+
+  @override
+  final ReplyTone tone;
+  @override
+  final String content;
+
+  @override
+  String toString() {
+    return 'ReplySuggestion(tone: $tone, content: $content)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ReplySuggestionImpl &&
+            (identical(other.tone, tone) || other.tone == tone) &&
+            (identical(other.content, content) || other.content == content));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, tone, content);
+
+  /// Create a copy of ReplySuggestion
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ReplySuggestionImplCopyWith<_$ReplySuggestionImpl> get copyWith =>
+      __$$ReplySuggestionImplCopyWithImpl<_$ReplySuggestionImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ReplySuggestionImplToJson(this);
+  }
+}
+
+abstract class _ReplySuggestion implements ReplySuggestion {
+  const factory _ReplySuggestion({
+    required final ReplyTone tone,
+    required final String content,
+  }) = _$ReplySuggestionImpl;
+
+  factory _ReplySuggestion.fromJson(Map<String, dynamic> json) =
+      _$ReplySuggestionImpl.fromJson;
+
+  @override
+  ReplyTone get tone;
+  @override
+  String get content;
+
+  /// Create a copy of ReplySuggestion
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ReplySuggestionImplCopyWith<_$ReplySuggestionImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+AiReplyResponse _$AiReplyResponseFromJson(Map<String, dynamic> json) {
+  return _AiReplyResponse.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AiReplyResponse {
+  List<ReplySuggestion> get suggestions => throw _privateConstructorUsedError;
+  @JsonKey(name: 'detected_issues')
+  List<String> get detectedIssues => throw _privateConstructorUsedError;
+  String? get sentiment => throw _privateConstructorUsedError;
+
+  /// Serializes this AiReplyResponse to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of AiReplyResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AiReplyResponseCopyWith<AiReplyResponse> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AiReplyResponseCopyWith<$Res> {
+  factory $AiReplyResponseCopyWith(
+    AiReplyResponse value,
+    $Res Function(AiReplyResponse) then,
+  ) = _$AiReplyResponseCopyWithImpl<$Res, AiReplyResponse>;
+  @useResult
+  $Res call({
+    List<ReplySuggestion> suggestions,
+    @JsonKey(name: 'detected_issues') List<String> detectedIssues,
+    String? sentiment,
+  });
+}
+
+/// @nodoc
+class _$AiReplyResponseCopyWithImpl<$Res, $Val extends AiReplyResponse>
+    implements $AiReplyResponseCopyWith<$Res> {
+  _$AiReplyResponseCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AiReplyResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? suggestions = null,
+    Object? detectedIssues = null,
+    Object? sentiment = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            suggestions: null == suggestions
+                ? _value.suggestions
+                : suggestions // ignore: cast_nullable_to_non_nullable
+                      as List<ReplySuggestion>,
+            detectedIssues: null == detectedIssues
+                ? _value.detectedIssues
+                : detectedIssues // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            sentiment: freezed == sentiment
+                ? _value.sentiment
+                : sentiment // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$AiReplyResponseImplCopyWith<$Res>
+    implements $AiReplyResponseCopyWith<$Res> {
+  factory _$$AiReplyResponseImplCopyWith(
+    _$AiReplyResponseImpl value,
+    $Res Function(_$AiReplyResponseImpl) then,
+  ) = __$$AiReplyResponseImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    List<ReplySuggestion> suggestions,
+    @JsonKey(name: 'detected_issues') List<String> detectedIssues,
+    String? sentiment,
+  });
+}
+
+/// @nodoc
+class __$$AiReplyResponseImplCopyWithImpl<$Res>
+    extends _$AiReplyResponseCopyWithImpl<$Res, _$AiReplyResponseImpl>
+    implements _$$AiReplyResponseImplCopyWith<$Res> {
+  __$$AiReplyResponseImplCopyWithImpl(
+    _$AiReplyResponseImpl _value,
+    $Res Function(_$AiReplyResponseImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of AiReplyResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? suggestions = null,
+    Object? detectedIssues = null,
+    Object? sentiment = freezed,
+  }) {
+    return _then(
+      _$AiReplyResponseImpl(
+        suggestions: null == suggestions
+            ? _value._suggestions
+            : suggestions // ignore: cast_nullable_to_non_nullable
+                  as List<ReplySuggestion>,
+        detectedIssues: null == detectedIssues
+            ? _value._detectedIssues
+            : detectedIssues // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        sentiment: freezed == sentiment
+            ? _value.sentiment
+            : sentiment // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AiReplyResponseImpl implements _AiReplyResponse {
+  const _$AiReplyResponseImpl({
+    required final List<ReplySuggestion> suggestions,
+    @JsonKey(name: 'detected_issues')
+    final List<String> detectedIssues = const [],
+    this.sentiment,
+  }) : _suggestions = suggestions,
+       _detectedIssues = detectedIssues;
+
+  factory _$AiReplyResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AiReplyResponseImplFromJson(json);
+
+  final List<ReplySuggestion> _suggestions;
+  @override
+  List<ReplySuggestion> get suggestions {
+    if (_suggestions is EqualUnmodifiableListView) return _suggestions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_suggestions);
+  }
+
+  final List<String> _detectedIssues;
+  @override
+  @JsonKey(name: 'detected_issues')
+  List<String> get detectedIssues {
+    if (_detectedIssues is EqualUnmodifiableListView) return _detectedIssues;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_detectedIssues);
+  }
+
+  @override
+  final String? sentiment;
+
+  @override
+  String toString() {
+    return 'AiReplyResponse(suggestions: $suggestions, detectedIssues: $detectedIssues, sentiment: $sentiment)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AiReplyResponseImpl &&
+            const DeepCollectionEquality().equals(
+              other._suggestions,
+              _suggestions,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._detectedIssues,
+              _detectedIssues,
+            ) &&
+            (identical(other.sentiment, sentiment) ||
+                other.sentiment == sentiment));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_suggestions),
+    const DeepCollectionEquality().hash(_detectedIssues),
+    sentiment,
+  );
+
+  /// Create a copy of AiReplyResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AiReplyResponseImplCopyWith<_$AiReplyResponseImpl> get copyWith =>
+      __$$AiReplyResponseImplCopyWithImpl<_$AiReplyResponseImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AiReplyResponseImplToJson(this);
+  }
+}
+
+abstract class _AiReplyResponse implements AiReplyResponse {
+  const factory _AiReplyResponse({
+    required final List<ReplySuggestion> suggestions,
+    @JsonKey(name: 'detected_issues') final List<String> detectedIssues,
+    final String? sentiment,
+  }) = _$AiReplyResponseImpl;
+
+  factory _AiReplyResponse.fromJson(Map<String, dynamic> json) =
+      _$AiReplyResponseImpl.fromJson;
+
+  @override
+  List<ReplySuggestion> get suggestions;
+  @override
+  @JsonKey(name: 'detected_issues')
+  List<String> get detectedIssues;
+  @override
+  String? get sentiment;
+
+  /// Create a copy of AiReplyResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AiReplyResponseImplCopyWith<_$AiReplyResponseImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

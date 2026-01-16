@@ -92,18 +92,24 @@ class ReviewsRepository {
     }
   }
 
-  /// Get AI-generated reply suggestion for a review
-  Future<String> suggestReply({
+  /// Get AI-generated reply suggestions for a review
+  /// If [tone] is provided, generates only that tone. Otherwise generates all 3 tones.
+  Future<AiReplyResponse> suggestReply({
     required int appId,
     required int reviewId,
+    ReplyTone? tone,
   }) async {
     try {
       final response = await dio.post(
         '${ApiConstants.apps}/$appId/reviews/$reviewId/suggest-reply',
+        data: tone != null ? {'tone': tone.name} : null,
       );
 
       final data = response.data?['data'] as Map<String, dynamic>?;
-      return (data?['suggestion'] as String?) ?? '';
+      if (data == null) {
+        throw ApiException(message: 'Invalid response from server');
+      }
+      return AiReplyResponse.fromJson(data);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }

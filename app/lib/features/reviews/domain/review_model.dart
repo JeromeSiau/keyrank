@@ -123,3 +123,38 @@ class CountryReviewSummary {
     );
   }
 }
+
+/// Tone options for AI reply generation
+enum ReplyTone {
+  @JsonValue('professional')
+  professional,
+  @JsonValue('empathetic')
+  empathetic,
+  @JsonValue('brief')
+  brief,
+}
+
+/// Single AI-generated reply suggestion
+@freezed
+class ReplySuggestion with _$ReplySuggestion {
+  const factory ReplySuggestion({
+    required ReplyTone tone,
+    required String content,
+  }) = _ReplySuggestion;
+
+  factory ReplySuggestion.fromJson(Map<String, dynamic> json) =>
+      _$ReplySuggestionFromJson(json);
+}
+
+/// Response from AI reply generation endpoint
+@freezed
+class AiReplyResponse with _$AiReplyResponse {
+  const factory AiReplyResponse({
+    required List<ReplySuggestion> suggestions,
+    @JsonKey(name: 'detected_issues') @Default([]) List<String> detectedIssues,
+    String? sentiment,
+  }) = _AiReplyResponse;
+
+  factory AiReplyResponse.fromJson(Map<String, dynamic> json) =>
+      _$AiReplyResponseFromJson(json);
+}
