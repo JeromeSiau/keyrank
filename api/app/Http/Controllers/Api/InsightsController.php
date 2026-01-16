@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppInsight;
 use App\Models\Note;
+use App\Services\AsoScoreService;
 use App\Services\InsightsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,8 @@ use Illuminate\Http\Request;
 class InsightsController extends Controller
 {
     public function __construct(
-        private InsightsService $insightsService
+        private InsightsService $insightsService,
+        private AsoScoreService $asoScoreService
     ) {}
 
     /**
@@ -31,6 +33,20 @@ class InsightsController extends Controller
 
         return response()->json([
             'data' => $this->formatInsight($insight, $request->user()->id),
+        ]);
+    }
+
+    /**
+     * Get ASO Score for an app
+     */
+    public function asoScore(Request $request, App $app): JsonResponse
+    {
+        $userId = $request->user()->id;
+
+        $score = $this->asoScoreService->calculate($app, $userId);
+
+        return response()->json([
+            'data' => $score,
         ]);
     }
 

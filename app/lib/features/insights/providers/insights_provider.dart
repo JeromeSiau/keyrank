@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/insights_repository.dart';
+import '../domain/aso_score_model.dart';
 import '../domain/insight_model.dart';
 
 /// Provider for fetching insight for an app
@@ -49,4 +50,10 @@ class GenerateInsightParams {
 final compareAppsProvider = FutureProvider.family<List<InsightComparison>, List<int>>((ref, appIds) async {
   final repository = ref.watch(insightsRepositoryProvider);
   return repository.compareApps(appIds);
+});
+
+/// Provider for fetching ASO score for an app
+final asoScoreProvider = FutureProvider.family<AsoScore, int>((ref, appId) async {
+  final repository = ref.watch(insightsRepositoryProvider);
+  return repository.getAsoScore(appId);
 });

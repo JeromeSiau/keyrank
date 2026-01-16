@@ -10,9 +10,12 @@ import '../../../shared/widgets/sentiment_bar.dart';
 import '../../../shared/widgets/country_distribution.dart';
 import '../../../shared/widgets/sparkline.dart';
 import '../../../shared/widgets/data_table_enhanced.dart';
+import '../../../shared/widgets/date_range_picker.dart';
+import '../../../shared/widgets/safe_image.dart';
 import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../../integrations/providers/integrations_provider.dart';
+import 'widgets/aso_score_section.dart';
 import 'widgets/hero_metrics_section.dart';
 import 'widgets/ranking_movers_section.dart';
 import 'widgets/insights_section.dart';
@@ -53,11 +56,18 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
-class _Toolbar extends ConsumerWidget {
+class _Toolbar extends ConsumerStatefulWidget {
   const _Toolbar();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_Toolbar> createState() => _ToolbarState();
+}
+
+class _ToolbarState extends ConsumerState<_Toolbar> {
+  DatePeriod _selectedPeriod = const DatePeriod.preset('last30Days');
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     final selectedApp = ref.watch(appContextProvider);
 
@@ -95,6 +105,11 @@ class _Toolbar extends ConsumerWidget {
               ),
             ),
           ],
+          const Spacer(),
+          DateRangePickerButton(
+            selected: _selectedPeriod,
+            onChanged: (period) => setState(() => _selectedPeriod = period),
+          ),
         ],
       ),
     );
@@ -143,37 +158,40 @@ class _DashboardContent extends ConsumerWidget {
   Widget _buildWideLayout(BuildContext context, List<AppModel> apps) {
     return Column(
       children: [
-        // Row 1: Ranking Movers + Insights
+        // Row 1: Ranking Movers + ASO Score + Insights
         const Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 3,
-              child: RankingMoversSection(),
-            ),
+            Expanded(flex: 3, child: RankingMoversSection()),
+            SizedBox(width: AppSpacing.gridGapLarge),
+            Expanded(flex: 2, child: AsoScoreSection()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sectionSpacing),
+        // Row 2: Top Apps + Insights
+        const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 3, child: InsightsSection()),
             SizedBox(width: AppSpacing.gridGapLarge),
             Expanded(
               flex: 2,
-              child: InsightsSection(),
+              child: SizedBox(), // Placeholder for balance
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.sectionSpacing),
-        // Row 2: Top Apps + Top Countries
+        // Row 3: Top Apps + Top Countries
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: _TopPerformingAppsPanel(apps: apps),
-            ),
+            Expanded(child: _TopPerformingAppsPanel(apps: apps)),
             const SizedBox(width: AppSpacing.gridGapLarge),
-            Expanded(
-              child: _TopCountriesPanel(),
-            ),
+            Expanded(child: _TopCountriesPanel()),
           ],
         ),
         const SizedBox(height: AppSpacing.sectionSpacing),
-        // Row 3: Sentiment (full width)
+        // Row 4: Sentiment (full width)
         _SentimentOverviewPanel(),
       ],
     );
@@ -183,6 +201,8 @@ class _DashboardContent extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const AsoScoreSection(),
+        const SizedBox(height: AppSpacing.sectionSpacing),
         const RankingMoversSection(),
         const SizedBox(height: AppSpacing.sectionSpacing),
         const InsightsSection(),
@@ -228,8 +248,16 @@ class _TopPerformingAppsPanel extends ConsumerWidget {
 
     final columns = [
       const EnhancedColumn(label: 'App'),
-      const EnhancedColumn(label: 'Keywords', width: 80, align: TextAlign.center),
-      const EnhancedColumn(label: 'Avg Rank', width: 80, align: TextAlign.center),
+      const EnhancedColumn(
+        label: 'Keywords',
+        width: 80,
+        align: TextAlign.center,
+      ),
+      const EnhancedColumn(
+        label: 'Avg Rank',
+        width: 80,
+        align: TextAlign.center,
+      ),
       const EnhancedColumn(label: 'Trend', width: 100, align: TextAlign.center),
     ];
 
@@ -239,9 +267,7 @@ class _TopPerformingAppsPanel extends ConsumerWidget {
       final trendData = _mockTrends[index % _mockTrends.length];
 
       return [
-        EnhancedCell.widget(
-          _AppNameCell(app: app, index: index),
-        ),
+        EnhancedCell.widget(_AppNameCell(app: app, index: index)),
         EnhancedCell.text(
           '${app.trackedKeywordsCount ?? 0}',
           align: TextAlign.center,
@@ -311,14 +337,11 @@ class _AppNameCell extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: app.iconUrl != null
-              ? ClipRRect(
+              ? SafeImage(
+                  imageUrl: app.iconUrl!,
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    app.iconUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, e, s) => const Center(
-                      child: Icon(Icons.apps, size: 16, color: Colors.white),
-                    ),
+                  errorWidget: const Center(
+                    child: Icon(Icons.apps, size: 16, color: Colors.white),
                   ),
                 )
               : const Center(
@@ -343,10 +366,7 @@ class _AppNameCell extends StatelessWidget {
               if (app.developer != null)
                 Text(
                   app.developer!,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: colors.textMuted,
-                  ),
+                  style: TextStyle(fontSize: 11, color: colors.textMuted),
                   overflow: TextOverflow.ellipsis,
                 ),
             ],
@@ -415,16 +435,16 @@ class _SentimentOverviewPanel extends StatelessWidget {
                       ),
                       Text(
                         context.l10n.dashboard_positive,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: colors.textMuted,
-                        ),
+                        style: TextStyle(fontSize: 12, color: colors.textMuted),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: colors.greenMuted,
                     borderRadius: BorderRadius.circular(8),
@@ -495,19 +515,10 @@ class _SentimentLegendItem extends StatelessWidget {
         Container(
           width: 8,
           height: 8,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: colors.textMuted,
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: colors.textMuted)),
         const SizedBox(width: 6),
         Text(
           value,
@@ -526,10 +537,7 @@ class _DashboardPanel extends StatelessWidget {
   final String title;
   final Widget child;
 
-  const _DashboardPanel({
-    required this.title,
-    required this.child,
-  });
+  const _DashboardPanel({required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -557,10 +565,7 @@ class _DashboardPanel extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            height: 1,
-            color: colors.glassBorder,
-          ),
+          Container(height: 1, color: colors.glassBorder),
           child,
         ],
       ),
@@ -572,10 +577,7 @@ class _EmptyStateMessage extends StatelessWidget {
   final IconData icon;
   final String message;
 
-  const _EmptyStateMessage({
-    required this.icon,
-    required this.message,
-  });
+  const _EmptyStateMessage({required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -598,10 +600,7 @@ class _EmptyStateMessage extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               message,
-              style: TextStyle(
-                fontSize: 14,
-                color: colors.textMuted,
-              ),
+              style: TextStyle(fontSize: 14, color: colors.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -622,10 +621,7 @@ class _ConnectStoresBanner extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.cardPaddingLarge),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            colors.accent.withAlpha(25),
-            colors.purple.withAlpha(15),
-          ],
+          colors: [colors.accent.withAlpha(25), colors.purple.withAlpha(15)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/constants/api_constants.dart';
+import '../domain/aso_score_model.dart';
 import '../domain/insight_model.dart';
 
 final insightsRepositoryProvider = Provider<InsightsRepository>((ref) {
@@ -74,6 +75,16 @@ class InsightsRepository {
           'content': content,
         },
       );
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Get ASO Score for an app
+  Future<AsoScore> getAsoScore(int appId) async {
+    try {
+      final response = await dio.get('${ApiConstants.apps}/$appId/aso-score');
+      return AsoScore.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
