@@ -542,6 +542,16 @@
       "count": { "type": "int" }
     }
   },
+  "appDetail_currentTags": "Current Tags",
+  "appDetail_noTagsOnKeyword": "No tags on this keyword",
+  "appDetail_addExistingTag": "Add Existing Tag",
+  "appDetail_allTagsUsed": "All tags already added",
+  "appDetail_createNewTag": "Create New Tag",
+  "appDetail_tagNameHint": "Tag name...",
+  "appDetail_note": "Note",
+  "appDetail_noteHint": "Add a note about this keyword...",
+  "appDetail_saveNote": "Save Note",
+  "appDetail_done": "Done",
   "appDetail_importFailed": "Import failed: {error}",
   "@appDetail_importFailed": {
     "placeholders": {
@@ -567,6 +577,12 @@
   "appDetail_period7d": "7d",
   "appDetail_period30d": "30d",
   "appDetail_period90d": "90d",
+
+  "keywords_difficultyFilter": "Difficulty:",
+  "keywords_difficultyAll": "All",
+  "keywords_difficultyEasy": "Easy < 40",
+  "keywords_difficultyMedium": "Medium 40-70",
+  "keywords_difficultyHard": "Hard > 70",
 
   "reviews_version": "v{version}",
   "@reviews_version": {
@@ -692,6 +708,14 @@
   "reviewsInbox_positive": "Positive",
   "reviewsInbox_avgRating": "Avg Rating",
   "reviewsInbox_sentimentOverview": "Sentiment Overview",
+  "reviewsInbox_aiSuggestions": "AI Suggested Replies",
+  "reviewsInbox_regenerate": "Regenerate",
+  "reviewsInbox_toneProfessional": "Professional",
+  "reviewsInbox_toneEmpathetic": "Empathetic",
+  "reviewsInbox_toneBrief": "Brief",
+  "reviewsInbox_selectTone": "Select tone:",
+  "reviewsInbox_detectedIssues": "Issues detected:",
+  "reviewsInbox_aiPrompt": "Click 'Generate AI suggestion' to get reply suggestions in 3 different tones",
 
   "analytics_title": "Analytics",
   "analytics_downloads": "Downloads",
@@ -735,5 +759,66 @@
   "appDetail_tabKeywords": "Keywords",
   "appDetail_tabReviews": "Reviews",
   "appDetail_tabRatings": "Ratings",
-  "appDetail_tabInsights": "Insights"
+  "appDetail_tabInsights": "Insights",
+
+  "dateRange_title": "Date Range",
+  "dateRange_today": "Today",
+  "dateRange_yesterday": "Yesterday",
+  "dateRange_last7Days": "Last 7 Days",
+  "dateRange_last30Days": "Last 30 Days",
+  "dateRange_thisMonth": "This Month",
+  "dateRange_lastMonth": "Last Month",
+  "dateRange_last90Days": "Last 90 Days",
+  "dateRange_yearToDate": "Year to Date",
+  "dateRange_allTime": "All Time",
+  "dateRange_custom": "Custom...",
+  "dateRange_compareToPrevious": "Compare to previous period",
+
+  "export_keywordsTitle": "Export Keywords",
+  "export_reviewsTitle": "Export Reviews",
+  "export_analyticsTitle": "Export Analytics",
+  "export_columnsToInclude": "Columns to include:",
+  "export_button": "Export",
+  "export_keyword": "Keyword",
+  "export_position": "Position",
+  "export_change": "Change",
+  "export_popularity": "Popularity",
+  "export_difficulty": "Difficulty",
+  "export_tags": "Tags",
+  "export_notes": "Notes",
+  "export_trackedSince": "Tracked Since",
+  "export_date": "Date",
+  "export_rating": "Rating",
+  "export_author": "Author",
+  "export_title": "Title",
+  "export_content": "Content",
+  "export_country": "Country",
+  "export_version": "Version",
+  "export_sentiment": "Sentiment",
+  "export_response": "Our Response",
+  "export_responseDate": "Response Date",
+  "export_keywordsCount": "{count} keywords will be exported",
+  "@export_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_reviewsCount": "{count} reviews will be exported",
+  "@export_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_success": "Export saved: {filename}",
+  "@export_success": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "export_error": "Export failed: {error}",
+  "@export_error": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

@@ -1088,6 +1088,36 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get appDetail_currentTags => 'Current Tags';
+
+  @override
+  String get appDetail_noTagsOnKeyword => 'No tags on this keyword';
+
+  @override
+  String get appDetail_addExistingTag => 'Add Existing Tag';
+
+  @override
+  String get appDetail_allTagsUsed => 'All tags already added';
+
+  @override
+  String get appDetail_createNewTag => 'Create New Tag';
+
+  @override
+  String get appDetail_tagNameHint => 'Tag name...';
+
+  @override
+  String get appDetail_note => 'Note';
+
+  @override
+  String get appDetail_noteHint => 'Add a note about this keyword...';
+
+  @override
+  String get appDetail_saveNote => 'Save Note';
+
+  @override
+  String get appDetail_done => 'Done';
+
+  @override
   String appDetail_importFailed(String error) {
     return 'Falha na importação: $error';
   }
@@ -1124,6 +1154,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appDetail_period90d => '90d';
+
+  @override
+  String get keywords_difficultyFilter => 'Difficulty:';
+
+  @override
+  String get keywords_difficultyAll => 'All';
+
+  @override
+  String get keywords_difficultyEasy => 'Easy < 40';
+
+  @override
+  String get keywords_difficultyMedium => 'Medium 40-70';
+
+  @override
+  String get keywords_difficultyHard => 'Hard > 70';
 
   @override
   String reviews_version(String version) {
@@ -1368,6 +1413,31 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reviewsInbox_sentimentOverview => 'Sentiment Overview';
 
   @override
+  String get reviewsInbox_aiSuggestions => 'AI Suggested Replies';
+
+  @override
+  String get reviewsInbox_regenerate => 'Regenerate';
+
+  @override
+  String get reviewsInbox_toneProfessional => 'Professional';
+
+  @override
+  String get reviewsInbox_toneEmpathetic => 'Empathetic';
+
+  @override
+  String get reviewsInbox_toneBrief => 'Brief';
+
+  @override
+  String get reviewsInbox_selectTone => 'Select tone:';
+
+  @override
+  String get reviewsInbox_detectedIssues => 'Issues detected:';
+
+  @override
+  String get reviewsInbox_aiPrompt =>
+      'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones';
+
+  @override
   String get analytics_title => 'Análises';
 
   @override
@@ -1474,4 +1544,129 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appDetail_tabInsights => 'Insights';
+
+  @override
+  String get dateRange_title => 'Date Range';
+
+  @override
+  String get dateRange_today => 'Today';
+
+  @override
+  String get dateRange_yesterday => 'Yesterday';
+
+  @override
+  String get dateRange_last7Days => 'Last 7 Days';
+
+  @override
+  String get dateRange_last30Days => 'Last 30 Days';
+
+  @override
+  String get dateRange_thisMonth => 'This Month';
+
+  @override
+  String get dateRange_lastMonth => 'Last Month';
+
+  @override
+  String get dateRange_last90Days => 'Last 90 Days';
+
+  @override
+  String get dateRange_yearToDate => 'Year to Date';
+
+  @override
+  String get dateRange_allTime => 'All Time';
+
+  @override
+  String get dateRange_custom => 'Custom...';
+
+  @override
+  String get dateRange_compareToPrevious => 'Compare to previous period';
+
+  @override
+  String get export_keywordsTitle => 'Export Keywords';
+
+  @override
+  String get export_reviewsTitle => 'Export Reviews';
+
+  @override
+  String get export_analyticsTitle => 'Export Analytics';
+
+  @override
+  String get export_columnsToInclude => 'Columns to include:';
+
+  @override
+  String get export_button => 'Export';
+
+  @override
+  String get export_keyword => 'Keyword';
+
+  @override
+  String get export_position => 'Position';
+
+  @override
+  String get export_change => 'Change';
+
+  @override
+  String get export_popularity => 'Popularity';
+
+  @override
+  String get export_difficulty => 'Difficulty';
+
+  @override
+  String get export_tags => 'Tags';
+
+  @override
+  String get export_notes => 'Notes';
+
+  @override
+  String get export_trackedSince => 'Tracked Since';
+
+  @override
+  String get export_date => 'Date';
+
+  @override
+  String get export_rating => 'Rating';
+
+  @override
+  String get export_author => 'Author';
+
+  @override
+  String get export_title => 'Title';
+
+  @override
+  String get export_content => 'Content';
+
+  @override
+  String get export_country => 'Country';
+
+  @override
+  String get export_version => 'Version';
+
+  @override
+  String get export_sentiment => 'Sentiment';
+
+  @override
+  String get export_response => 'Our Response';
+
+  @override
+  String get export_responseDate => 'Response Date';
+
+  @override
+  String export_keywordsCount(int count) {
+    return '$count keywords will be exported';
+  }
+
+  @override
+  String export_reviewsCount(int count) {
+    return '$count reviews will be exported';
+  }
+
+  @override
+  String export_success(String filename) {
+    return 'Export saved: $filename';
+  }
+
+  @override
+  String export_error(String error) {
+    return 'Export failed: $error';
+  }
 }

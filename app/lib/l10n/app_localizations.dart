@@ -2082,6 +2082,66 @@ abstract class AppLocalizations {
   /// **'Add {count} {count, plural, =1{Tag} other{Tags}}'**
   String appDetail_addTagsCount(int count);
 
+  /// No description provided for @appDetail_currentTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Tags'**
+  String get appDetail_currentTags;
+
+  /// No description provided for @appDetail_noTagsOnKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags on this keyword'**
+  String get appDetail_noTagsOnKeyword;
+
+  /// No description provided for @appDetail_addExistingTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Existing Tag'**
+  String get appDetail_addExistingTag;
+
+  /// No description provided for @appDetail_allTagsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'All tags already added'**
+  String get appDetail_allTagsUsed;
+
+  /// No description provided for @appDetail_createNewTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Tag'**
+  String get appDetail_createNewTag;
+
+  /// No description provided for @appDetail_tagNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag name...'**
+  String get appDetail_tagNameHint;
+
+  /// No description provided for @appDetail_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get appDetail_note;
+
+  /// No description provided for @appDetail_noteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note about this keyword...'**
+  String get appDetail_noteHint;
+
+  /// No description provided for @appDetail_saveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Note'**
+  String get appDetail_saveNote;
+
+  /// No description provided for @appDetail_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get appDetail_done;
+
   /// No description provided for @appDetail_importFailed.
   ///
   /// In en, this message translates to:
@@ -2141,6 +2201,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'90d'**
   String get appDetail_period90d;
+
+  /// No description provided for @keywords_difficultyFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty:'**
+  String get keywords_difficultyFilter;
+
+  /// No description provided for @keywords_difficultyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get keywords_difficultyAll;
+
+  /// No description provided for @keywords_difficultyEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy < 40'**
+  String get keywords_difficultyEasy;
+
+  /// No description provided for @keywords_difficultyMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium 40-70'**
+  String get keywords_difficultyMedium;
+
+  /// No description provided for @keywords_difficultyHard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard > 70'**
+  String get keywords_difficultyHard;
 
   /// No description provided for @reviews_version.
   ///
@@ -2580,6 +2670,54 @@ abstract class AppLocalizations {
   /// **'Sentiment Overview'**
   String get reviewsInbox_sentimentOverview;
 
+  /// No description provided for @reviewsInbox_aiSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Suggested Replies'**
+  String get reviewsInbox_aiSuggestions;
+
+  /// No description provided for @reviewsInbox_regenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get reviewsInbox_regenerate;
+
+  /// No description provided for @reviewsInbox_toneProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get reviewsInbox_toneProfessional;
+
+  /// No description provided for @reviewsInbox_toneEmpathetic.
+  ///
+  /// In en, this message translates to:
+  /// **'Empathetic'**
+  String get reviewsInbox_toneEmpathetic;
+
+  /// No description provided for @reviewsInbox_toneBrief.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief'**
+  String get reviewsInbox_toneBrief;
+
+  /// No description provided for @reviewsInbox_selectTone.
+  ///
+  /// In en, this message translates to:
+  /// **'Select tone:'**
+  String get reviewsInbox_selectTone;
+
+  /// No description provided for @reviewsInbox_detectedIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Issues detected:'**
+  String get reviewsInbox_detectedIssues;
+
+  /// No description provided for @reviewsInbox_aiPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones'**
+  String get reviewsInbox_aiPrompt;
+
   /// No description provided for @analytics_title.
   ///
   /// In en, this message translates to:
@@ -2783,6 +2921,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insights'**
   String get appDetail_tabInsights;
+
+  /// No description provided for @dateRange_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get dateRange_title;
+
+  /// No description provided for @dateRange_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dateRange_today;
+
+  /// No description provided for @dateRange_yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dateRange_yesterday;
+
+  /// No description provided for @dateRange_last7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 Days'**
+  String get dateRange_last7Days;
+
+  /// No description provided for @dateRange_last30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 Days'**
+  String get dateRange_last30Days;
+
+  /// No description provided for @dateRange_thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get dateRange_thisMonth;
+
+  /// No description provided for @dateRange_lastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Month'**
+  String get dateRange_lastMonth;
+
+  /// No description provided for @dateRange_last90Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 90 Days'**
+  String get dateRange_last90Days;
+
+  /// No description provided for @dateRange_yearToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Year to Date'**
+  String get dateRange_yearToDate;
+
+  /// No description provided for @dateRange_allTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All Time'**
+  String get dateRange_allTime;
+
+  /// No description provided for @dateRange_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom...'**
+  String get dateRange_custom;
+
+  /// No description provided for @dateRange_compareToPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare to previous period'**
+  String get dateRange_compareToPrevious;
+
+  /// No description provided for @export_keywordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Keywords'**
+  String get export_keywordsTitle;
+
+  /// No description provided for @export_reviewsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Reviews'**
+  String get export_reviewsTitle;
+
+  /// No description provided for @export_analyticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Analytics'**
+  String get export_analyticsTitle;
+
+  /// No description provided for @export_columnsToInclude.
+  ///
+  /// In en, this message translates to:
+  /// **'Columns to include:'**
+  String get export_columnsToInclude;
+
+  /// No description provided for @export_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export_button;
+
+  /// No description provided for @export_keyword.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword'**
+  String get export_keyword;
+
+  /// No description provided for @export_position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get export_position;
+
+  /// No description provided for @export_change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get export_change;
+
+  /// No description provided for @export_popularity.
+  ///
+  /// In en, this message translates to:
+  /// **'Popularity'**
+  String get export_popularity;
+
+  /// No description provided for @export_difficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty'**
+  String get export_difficulty;
+
+  /// No description provided for @export_tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get export_tags;
+
+  /// No description provided for @export_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get export_notes;
+
+  /// No description provided for @export_trackedSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracked Since'**
+  String get export_trackedSince;
+
+  /// No description provided for @export_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get export_date;
+
+  /// No description provided for @export_rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get export_rating;
+
+  /// No description provided for @export_author.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get export_author;
+
+  /// No description provided for @export_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get export_title;
+
+  /// No description provided for @export_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get export_content;
+
+  /// No description provided for @export_country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get export_country;
+
+  /// No description provided for @export_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get export_version;
+
+  /// No description provided for @export_sentiment.
+  ///
+  /// In en, this message translates to:
+  /// **'Sentiment'**
+  String get export_sentiment;
+
+  /// No description provided for @export_response.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Response'**
+  String get export_response;
+
+  /// No description provided for @export_responseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Response Date'**
+  String get export_responseDate;
+
+  /// No description provided for @export_keywordsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} keywords will be exported'**
+  String export_keywordsCount(int count);
+
+  /// No description provided for @export_reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews will be exported'**
+  String export_reviewsCount(int count);
+
+  /// No description provided for @export_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Export saved: {filename}'**
+  String export_success(String filename);
+
+  /// No description provided for @export_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String export_error(String error);
 }
 
 class _AppLocalizationsDelegate
