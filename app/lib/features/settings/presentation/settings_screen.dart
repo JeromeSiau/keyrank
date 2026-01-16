@@ -8,6 +8,7 @@ import '../../../core/providers/theme_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../auth/providers/auth_provider.dart';
+import 'widgets/alert_delivery_settings.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -113,6 +114,15 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Alert Delivery Settings section
+            _SectionCard(
+              isDark: isDark,
+              title: 'ALERT DELIVERY',
+              child: AlertDeliverySettings(isDark: isDark),
             ),
 
             const SizedBox(height: 16),

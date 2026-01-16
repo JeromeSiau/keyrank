@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/buttons.dart';
+import '../../../shared/widgets/safe_image.dart';
 import '../providers/apps_provider.dart';
 import '../providers/app_preview_provider.dart';
 import '../data/apps_repository.dart';
@@ -25,7 +26,9 @@ class AppPreviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final previewAsync = ref.watch(appPreviewProvider((platform: platform, storeId: storeId)));
+    final previewAsync = ref.watch(
+      appPreviewProvider((platform: platform, storeId: storeId)),
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -46,7 +49,9 @@ class AppPreviewScreen extends ConsumerWidget {
                 platform: platform,
                 storeId: storeId,
                 error: e.toString(),
-                onRetry: () => ref.invalidate(appPreviewProvider((platform: platform, storeId: storeId))),
+                onRetry: () => ref.invalidate(
+                  appPreviewProvider((platform: platform, storeId: storeId)),
+                ),
               ),
               data: (preview) => _PreviewContent(preview: preview),
             ),
@@ -124,10 +129,10 @@ class _PreviewContent extends ConsumerWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: preview.iconUrl != null
-                      ? Image.network(
-                          preview.iconUrl!,
+                      ? SafeImage(
+                          imageUrl: preview.iconUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => Icon(
+                          errorWidget: Icon(
                             preview.isIos ? Icons.apple : Icons.android,
                             size: 48,
                             color: colors.textMuted,
@@ -156,7 +161,9 @@ class _PreviewContent extends ConsumerWidget {
                       if (preview.developer != null)
                         Text(
                           preview.developer!,
-                          style: AppTypography.body.copyWith(color: colors.accent),
+                          style: AppTypography.body.copyWith(
+                            color: colors.accent,
+                          ),
                         ),
                       const SizedBox(height: AppSpacing.sm),
                       // Platform badge
@@ -179,20 +186,25 @@ class _PreviewContent extends ConsumerWidget {
                                 Icon(
                                   preview.isIos ? Icons.apple : Icons.android,
                                   size: 14,
-                                  color: preview.isIos ? colors.textSecondary : colors.green,
+                                  color: preview.isIos
+                                      ? colors.textSecondary
+                                      : colors.green,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   preview.isIos ? 'iOS' : 'Android',
                                   style: AppTypography.caption.copyWith(
-                                    color: preview.isIos ? colors.textSecondary : colors.green,
+                                    color: preview.isIos
+                                        ? colors.textSecondary
+                                        : colors.green,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          if (preview.categoryName != null || preview.categoryId != null) ...[
+                          if (preview.categoryName != null ||
+                              preview.categoryId != null) ...[
                             const SizedBox(width: AppSpacing.sm),
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -219,7 +231,11 @@ class _PreviewContent extends ConsumerWidget {
                       Row(
                         children: [
                           if (preview.rating != null) ...[
-                            Icon(Icons.star_rounded, size: 20, color: colors.yellow),
+                            Icon(
+                              Icons.star_rounded,
+                              size: 20,
+                              color: colors.yellow,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               preview.rating!.toStringAsFixed(1),
@@ -262,7 +278,8 @@ class _PreviewContent extends ConsumerWidget {
           ],
 
           // Screenshots
-          if (preview.screenshots != null && preview.screenshots!.isNotEmpty) ...[
+          if (preview.screenshots != null &&
+              preview.screenshots!.isNotEmpty) ...[
             Text(
               'Screenshots',
               style: AppTypography.headline.copyWith(color: colors.textPrimary),
@@ -273,18 +290,21 @@ class _PreviewContent extends ConsumerWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: preview.screenshots!.length,
-                separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
+                separatorBuilder: (_, _) =>
+                    const SizedBox(width: AppSpacing.sm),
                 itemBuilder: (context, index) {
                   return Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppColors.radiusMedium,
+                      ),
                       border: Border.all(color: colors.glassBorder),
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: Image.network(
-                      preview.screenshots![index],
+                    child: SafeImage(
+                      imageUrl: preview.screenshots![index],
                       fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) => Container(
+                      errorWidget: Container(
                         width: 200,
                         color: colors.bgActive,
                         child: Icon(
@@ -323,7 +343,9 @@ class _PreviewContent extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Screenshots not available',
-                      style: AppTypography.caption.copyWith(color: colors.textMuted),
+                      style: AppTypography.caption.copyWith(
+                        color: colors.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -366,9 +388,11 @@ class _ActionButtonsState extends ConsumerState<_ActionButtons> {
     // Check if this app is already tracked
     final trackedApp = appsAsync.maybeWhen(
       data: (apps) => apps.cast<AppModel?>().firstWhere(
-            (app) => app?.storeId == widget.preview.storeId && app?.platform == widget.preview.platform,
-            orElse: () => null,
-          ),
+        (app) =>
+            app?.storeId == widget.preview.storeId &&
+            app?.platform == widget.preview.platform,
+        orElse: () => null,
+      ),
       orElse: () => null,
     );
 
@@ -397,8 +421,8 @@ class _ActionButtonsState extends ConsumerState<_ActionButtons> {
                     isOwned
                         ? 'This app is in your tracked apps'
                         : isCompetitor
-                            ? 'This app is tracked as a competitor'
-                            : 'This app is already tracked',
+                        ? 'This app is tracked as a competitor'
+                        : 'This app is already tracked',
                     style: AppTypography.body.copyWith(color: colors.green),
                   ),
                 ),
@@ -432,7 +456,8 @@ class _ActionButtonsState extends ConsumerState<_ActionButtons> {
             // Open in store (always show)
             ToolbarButton(
               icon: widget.preview.isIos ? Icons.apple : Icons.android,
-              label: 'Open in ${widget.preview.isIos ? "App Store" : "Play Store"}',
+              label:
+                  'Open in ${widget.preview.isIos ? "App Store" : "Play Store"}',
               onTap: _openInStore,
             ),
           ],
@@ -521,7 +546,8 @@ class _ActionButtonsState extends ConsumerState<_ActionButtons> {
   }
 
   Future<void> _openInStore() async {
-    final url = widget.preview.storeUrl ??
+    final url =
+        widget.preview.storeUrl ??
         (widget.preview.isIos
             ? 'https://apps.apple.com/app/id${widget.preview.storeId}'
             : 'https://play.google.com/store/apps/details?id=${widget.preview.storeId}');

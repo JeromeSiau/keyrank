@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../core/api/api_client.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -10,23 +11,32 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/l10n_extension.dart';
 import '../../../../core/providers/country_provider.dart';
+import '../../../competitors/providers/competitors_provider.dart';
 import '../../../keywords/providers/keywords_provider.dart';
+import '../../../keywords/providers/global_keywords_provider.dart';
 import '../../../keywords/domain/keyword_model.dart';
 import '../../../keywords/domain/ranking_history_point.dart';
 import '../../../keywords/data/keywords_repository.dart';
 import '../../../keywords/presentation/keyword_suggestions_modal.dart';
+import '../../../tags/domain/tag_model.dart';
+import '../../../tags/providers/tags_provider.dart';
+import '../../../tags/data/tags_repository.dart';
 import '../../domain/app_model.dart';
+import '../../../keywords/presentation/widgets/keyword_widgets.dart';
 
 /// Provider for fetching keyword ranking history (cached).
 /// Now supports aggregated data (daily, weekly, monthly).
+/// Uses start of day to ensure consistent caching throughout the day.
 final keywordRankingHistoryProvider = FutureProvider.family<
     List<RankingHistoryPoint>,
     ({int appId, int keywordId, DateTime? from})>((ref, params) async {
   final repository = ref.watch(keywordsRepositoryProvider);
+  final today = DateTime.now();
+  final startOfDay = DateTime(today.year, today.month, today.day);
   return repository.getRankingHistory(
     params.appId,
     keywordId: params.keywordId,
-    from: params.from ?? DateTime.now().subtract(const Duration(days: 90)),
+    from: params.from ?? startOfDay.subtract(const Duration(days: 90)),
   );
 });
 
@@ -46,27 +56,31 @@ class AppKeywordsTab extends ConsumerStatefulWidget {
 
 class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
   bool _isExporting = false;
+  DifficultyFilter _difficultyFilter = DifficultyFilter.all;
+  bool _isSelectionMode = false;
+  final Set<int> _selectedIds = {};
 
   Future<void> _showAddKeywordDialog() async {
     final controller = TextEditingController();
     final country = ref.read(selectedCountryProvider);
 
-    final result = await showDialog<String>(
+    final result = await showDialog<({String keyword, String storefront})>(
       context: context,
       builder: (ctx) => _AddKeywordDialog(
         controller: controller,
-        storefront: country.code.toUpperCase(),
+        initialStorefront: country.code.toUpperCase(),
       ),
     );
 
-    if (result != null && result.isNotEmpty && mounted) {
+    if (result != null && result.keyword.isNotEmpty && mounted) {
       try {
         await ref.read(keywordsNotifierProvider(widget.appId).notifier)
-            .addKeyword(result, storefront: country.code.toUpperCase());
+            .addKeyword(result.keyword, storefront: result.storefront);
+        ref.invalidate(globalKeywordsProvider);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(context.l10n.appDetail_keywordAdded(result, country.code.toUpperCase())),
+              content: Text(context.l10n.appDetail_keywordAdded(result.keyword, result.storefront)),
               backgroundColor: AppColors.green,
             ),
           );
@@ -98,6 +112,7 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
             await ref.read(keywordsNotifierProvider(widget.appId).notifier)
                 .addKeyword(keyword, storefront: country.code.toUpperCase());
           }
+          ref.invalidate(globalKeywordsProvider);
         },
       ),
     );
@@ -141,14 +156,115 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
     }
   }
 
+  Future<void> _showCompareWithCompetitorDialog() async {
+    final competitorsAsync = ref.read(competitorsProvider);
+    final competitors = competitorsAsync.valueOrNull ?? [];
+    final colors = context.colors;
+
+    if (competitors.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No competitors found. Add competitors first.'),
+          backgroundColor: colors.yellow,
+          action: SnackBarAction(
+            label: 'Add',
+            textColor: Colors.white,
+            onPressed: () => context.go('/competitors'),
+          ),
+        ),
+      );
+      return;
+    }
+
+    final selectedCompetitorId = await showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: colors.bgBase,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+        ),
+        title: Text(
+          'Compare with Competitor',
+          style: AppTypography.headline.copyWith(color: colors.textPrimary),
+        ),
+        content: SizedBox(
+          width: 300,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Select a competitor to compare keywords:',
+                style: AppTypography.bodyMedium.copyWith(color: colors.textSecondary),
+              ),
+              const SizedBox(height: 16),
+              ...competitors.map((competitor) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: competitor.iconUrl != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          competitor.iconUrl!,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: colors.bgActive,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(Icons.apps, color: colors.textMuted),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: colors.bgActive,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(Icons.apps, color: colors.textMuted),
+                      ),
+                title: Text(
+                  competitor.name,
+                  style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
+                ),
+                subtitle: Text(
+                  competitor.developer ?? '',
+                  style: AppTypography.caption.copyWith(color: colors.textMuted),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () => Navigator.pop(ctx, competitor.id),
+              )),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Cancel', style: TextStyle(color: colors.textMuted)),
+          ),
+        ],
+      ),
+    );
+
+    if (selectedCompetitorId != null && mounted) {
+      context.go('/competitors/$selectedCompetitorId');
+    }
+  }
+
   Future<void> _exportKeywords() async {
     setState(() => _isExporting = true);
 
     try {
       final csv = await ref.read(keywordsRepositoryProvider).exportRankingsCsv(widget.appId);
 
-      // Save to downloads
-      final directory = await getApplicationDocumentsDirectory();
+      // Save to downloads folder (more accessible than ApplicationDocuments)
+      final directory = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
       final fileName = '${widget.app.name.replaceAll(RegExp(r'[^\w\s-]'), '')}_keywords_${DateTime.now().toIso8601String().split('T').first}.csv';
       final file = File('${directory.path}/$fileName');
       await file.writeAsString(csv);
@@ -181,6 +297,248 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
     }
   }
 
+  // =============================================================================
+  // Selection Mode Methods
+  // =============================================================================
+
+  void _toggleSelection(int trackedKeywordId) {
+    setState(() {
+      if (_selectedIds.contains(trackedKeywordId)) {
+        _selectedIds.remove(trackedKeywordId);
+      } else {
+        _selectedIds.add(trackedKeywordId);
+      }
+    });
+  }
+
+  void _selectAll(List<Keyword> keywords) {
+    setState(() {
+      for (final k in keywords) {
+        if (k.trackedKeywordId != null) {
+          _selectedIds.add(k.trackedKeywordId!);
+        }
+      }
+    });
+  }
+
+  void _clearSelection() {
+    setState(() {
+      _selectedIds.clear();
+      _isSelectionMode = false;
+    });
+  }
+
+  Future<void> _handleBulkAddToCompetitor(List<Keyword> keywords) async {
+    // Get competitors for this specific app
+    final competitorsAsync = ref.read(competitorsForAppProvider(widget.appId));
+    final competitors = competitorsAsync.valueOrNull ?? [];
+
+    if (competitors.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No competitors for this app. Add a competitor first.'),
+          backgroundColor: context.colors.yellow,
+        ),
+      );
+      return;
+    }
+
+    // Get selected keywords
+    final selectedKeywords = keywords
+        .where((k) => k.trackedKeywordId != null && _selectedIds.contains(k.trackedKeywordId))
+        .map((k) => k.keyword)
+        .toSet()
+        .toList();
+
+    if (selectedKeywords.isEmpty) return;
+
+    // Show competitor selection dialog
+    final selectedCompetitor = await showDialog<dynamic>(
+      context: context,
+      builder: (ctx) => _CompetitorSelectionDialog(
+        competitors: competitors,
+        keywordCount: selectedKeywords.length,
+      ),
+    );
+
+    if (selectedCompetitor == null) return;
+
+    // Add keywords to competitor
+    try {
+      final repository = ref.read(competitorsRepositoryProvider);
+      final country = ref.read(selectedCountryProvider);
+      final result = await repository.addKeywordsToCompetitor(
+        competitorId: selectedCompetitor.id as int,
+        keywords: selectedKeywords,
+        storefront: country.code,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.skipped > 0
+                  ? 'Added ${result.added} keywords to ${selectedCompetitor.name}, ${result.skipped} already tracked'
+                  : 'Added ${result.added} keywords to ${selectedCompetitor.name}',
+            ),
+            backgroundColor: context.colors.green,
+          ),
+        );
+        _clearSelection();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add keywords: $e'),
+            backgroundColor: context.colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleBulkDelete() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(dialogContext.l10n.appDetail_deleteKeywordsTitle),
+        content: Text(dialogContext.l10n.appDetail_deleteKeywordsConfirm(_selectedIds.length)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.l10n.appDetail_cancel),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.red),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(dialogContext.l10n.appDetail_delete),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkDelete(_selectedIds.toList());
+      ref.invalidate(globalKeywordsProvider);
+      _clearSelection();
+    }
+  }
+
+  Future<void> _handleBulkFavorite() async {
+    await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkFavorite(_selectedIds.toList(), true);
+    ref.invalidate(globalKeywordsProvider);
+    _clearSelection();
+  }
+
+  Future<void> _handleBulkAddTags() async {
+    final tagsAsync = ref.read(tagsNotifierProvider);
+    final tags = tagsAsync.valueOrNull ?? [];
+
+    if (tags.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.appDetail_noTagsAvailable),
+          backgroundColor: context.colors.yellow,
+        ),
+      );
+      return;
+    }
+
+    final selectedTagIds = await showDialog<List<int>>(
+      context: context,
+      builder: (ctx) => TagSelectionDialog(tags: tags),
+    );
+
+    if (selectedTagIds != null && selectedTagIds.isNotEmpty) {
+      await ref.read(keywordsNotifierProvider(widget.appId).notifier).bulkAddTags(_selectedIds.toList(), selectedTagIds);
+      ref.invalidate(globalKeywordsProvider);
+      _clearSelection();
+    }
+  }
+
+  Future<void> _handleBulkExport(List<Keyword> keywords) async {
+    final selectedKeywords = keywords.where((k) => k.trackedKeywordId != null && _selectedIds.contains(k.trackedKeywordId)).toList();
+    if (selectedKeywords.isEmpty) return;
+
+    setState(() => _isExporting = true);
+
+    try {
+      // Build CSV manually for selected keywords
+      final csv = StringBuffer();
+      csv.writeln('Keyword,Note,Position,Change,Popularity,Difficulty,Country,Tags');
+      for (final k in selectedKeywords) {
+        csv.writeln([
+          _escapeCsv(k.keyword),
+          _escapeCsv(k.note ?? ''),
+          k.position ?? '',
+          k.change ?? '',
+          k.popularity ?? '',
+          k.difficulty ?? '',
+          k.storefront,
+          _escapeCsv(k.tags.map((t) => t.name).join(';')),
+        ].join(','));
+      }
+
+      // Save to Downloads directory
+      final fileName = '${widget.app.name.replaceAll(RegExp(r'[^\w\s-]'), '')}_keywords_selected_${DateTime.now().toIso8601String().split('T').first}.csv';
+      final directory = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/$fileName');
+      await file.writeAsString(csv.toString());
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.appDetail_savedFile(fileName)),
+            backgroundColor: AppColors.green,
+          ),
+        );
+        _clearSelection();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: AppColors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isExporting = false);
+      }
+    }
+  }
+
+  String _escapeCsv(String value) {
+    if (value.contains(',') || value.contains('"') || value.contains('\n')) {
+      return '"${value.replaceAll('"', '""')}"';
+    }
+    return value;
+  }
+
+  Future<void> _showTagsModal(Keyword keyword) async {
+    if (keyword.trackedKeywordId == null) return;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => KeywordTagsModal(
+        appId: widget.appId,
+        keyword: keyword,
+      ),
+    );
+  }
+
+  Future<void> _showNoteModal(Keyword keyword) async {
+    if (keyword.trackedKeywordId == null) return;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => NoteEditModal(
+        appId: widget.appId,
+        keyword: keyword,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -199,6 +557,8 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
   }
 
   Widget _buildToolbar(AppColorsExtension colors, KeywordsState keywordsState) {
+    final keywords = keywordsState.keywords;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -207,51 +567,122 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
       ),
       child: Row(
         children: [
-          // Stats
-          if (!keywordsState.isLoading && keywordsState.keywords.isNotEmpty) ...[
-            _ToolbarStat(
-              label: 'Total',
-              value: '${keywordsState.keywords.length}',
+          if (_isSelectionMode) ...[
+            // Selection mode header
+            IconButton(
+              icon: const Icon(Icons.close, size: 20),
+              onPressed: _clearSelection,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              color: colors.textSecondary,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              context.l10n.appDetail_selectedCount(_selectedIds.length),
+              style: AppTypography.titleSmall.copyWith(color: colors.textPrimary),
+            ),
+            const Spacer(),
+            // Bulk action buttons
+            BulkActionButton(
+              icon: Icons.select_all_rounded,
+              label: context.l10n.filter_all,
+              onTap: () => _selectAll(keywords),
+            ),
+            const SizedBox(width: 6),
+            BulkActionButton(
+              icon: Icons.star_outline_rounded,
+              label: context.l10n.appDetail_favorite,
+              onTap: _selectedIds.isEmpty ? null : _handleBulkFavorite,
+            ),
+            const SizedBox(width: 6),
+            BulkActionButton(
+              icon: Icons.label_outline_rounded,
+              label: context.l10n.appDetail_tag,
+              onTap: _selectedIds.isEmpty ? null : _handleBulkAddTags,
+            ),
+            const SizedBox(width: 6),
+            BulkActionButton(
+              icon: Icons.person_add_alt_1_outlined,
+              label: 'Competitor',
+              onTap: _selectedIds.isEmpty ? null : () => _handleBulkAddToCompetitor(keywords),
+            ),
+            const SizedBox(width: 6),
+            BulkActionButton(
+              icon: Icons.file_download_outlined,
+              label: context.l10n.appDetail_export,
+              onTap: _selectedIds.isEmpty ? null : () => _handleBulkExport(keywords),
+            ),
+            const SizedBox(width: 6),
+            BulkActionButton(
+              icon: Icons.delete_outline_rounded,
+              label: context.l10n.appDetail_delete,
+              isDestructive: true,
+              onTap: _selectedIds.isEmpty ? null : _handleBulkDelete,
+            ),
+          ] else ...[
+            // Normal mode - Stats
+            if (!keywordsState.isLoading && keywords.isNotEmpty) ...[
+              _ToolbarStat(
+                label: 'Total',
+                value: '${keywords.length}',
+                color: colors.accent,
+              ),
+              const SizedBox(width: 16),
+              _ToolbarStat(
+                label: 'Ranked',
+                value: '${keywords.where((k) => k.isRanked).length}',
+                color: colors.green,
+              ),
+              const SizedBox(width: 16),
+            ],
+            const Spacer(),
+            // Select button
+            if (keywords.isNotEmpty) ...[
+              _ToolbarButton(
+                icon: Icons.check_box_outline_blank_rounded,
+                label: context.l10n.appDetail_select,
+                color: colors.textSecondary,
+                onTap: () => setState(() => _isSelectionMode = true),
+              ),
+              const SizedBox(width: 8),
+            ],
+            // Action buttons
+            _ToolbarButton(
+              icon: Icons.add_rounded,
+              label: context.l10n.appDetail_addKeyword,
               color: colors.accent,
+              onTap: _showAddKeywordDialog,
             ),
-            const SizedBox(width: 16),
-            _ToolbarStat(
-              label: 'Ranked',
-              value: '${keywordsState.keywords.where((k) => k.isRanked).length}',
+            const SizedBox(width: 8),
+            _ToolbarButton(
+              icon: Icons.lightbulb_outline_rounded,
+              label: context.l10n.appDetail_suggestions,
               color: colors.green,
+              onTap: _showSuggestionsModal,
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
+            _ToolbarButton(
+              icon: Icons.compare_arrows_rounded,
+              label: 'Compare',
+              color: colors.purple,
+              onTap: _showCompareWithCompetitorDialog,
+            ),
+            const SizedBox(width: 8),
+            _ToolbarButton(
+              icon: Icons.file_upload_outlined,
+              label: context.l10n.appDetail_import,
+              color: colors.yellow,
+              onTap: _showImportDialog,
+            ),
+            const SizedBox(width: 8),
+            _ToolbarButton(
+              icon: _isExporting ? null : Icons.file_download_outlined,
+              label: context.l10n.appDetail_export,
+              color: colors.textSecondary,
+              isLoading: _isExporting,
+              onTap: _isExporting ? null : _exportKeywords,
+            ),
           ],
-          const Spacer(),
-          // Action buttons
-          _ToolbarButton(
-            icon: Icons.add_rounded,
-            label: context.l10n.appDetail_addKeyword,
-            color: colors.accent,
-            onTap: _showAddKeywordDialog,
-          ),
-          const SizedBox(width: 8),
-          _ToolbarButton(
-            icon: Icons.lightbulb_outline_rounded,
-            label: context.l10n.appDetail_suggestions,
-            color: colors.green,
-            onTap: _showSuggestionsModal,
-          ),
-          const SizedBox(width: 8),
-          _ToolbarButton(
-            icon: Icons.file_upload_outlined,
-            label: context.l10n.appDetail_import,
-            color: colors.yellow,
-            onTap: _showImportDialog,
-          ),
-          const SizedBox(width: 8),
-          _ToolbarButton(
-            icon: _isExporting ? null : Icons.file_download_outlined,
-            label: context.l10n.appDetail_export,
-            color: colors.textSecondary,
-            isLoading: _isExporting,
-            onTap: _isExporting ? null : _exportKeywords,
-          ),
         ],
       ),
     );
@@ -349,9 +780,12 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
         children: [
           // Stats row
           _buildStatsRow(context, keywords.length, rankedKeywords, improvedKeywords, declinedKeywords, avgPosition),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
+          // Difficulty filter chips
+          _buildDifficultyFilters(context),
+          const SizedBox(height: 16),
           // Keywords table
-          _buildKeywordsTable(context, ref, keywords),
+          _buildKeywordsTable(context, ref, _filterKeywordsByDifficulty(keywords)),
         ],
       ),
     );
@@ -361,39 +795,97 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
     final colors = context.colors;
     return Row(
       children: [
-        _StatCard(
+        KeywordStatCard(
           icon: Icons.key_rounded,
           iconColor: colors.accent,
           label: 'Total',
           value: total.toString(),
         ),
         const SizedBox(width: 12),
-        _StatCard(
+        KeywordStatCard(
           icon: Icons.visibility_rounded,
           iconColor: colors.green,
           label: 'Ranked',
           value: ranked.toString(),
         ),
         const SizedBox(width: 12),
-        _StatCard(
+        KeywordStatCard(
           icon: Icons.trending_up_rounded,
           iconColor: colors.green,
           label: 'Improved',
           value: improved.toString(),
         ),
         const SizedBox(width: 12),
-        _StatCard(
+        KeywordStatCard(
           icon: Icons.trending_down_rounded,
           iconColor: colors.red,
           label: 'Declined',
           value: declined.toString(),
         ),
         const SizedBox(width: 12),
-        _StatCard(
+        KeywordStatCard(
           icon: Icons.analytics_rounded,
           iconColor: colors.yellow,
           label: 'Avg Position',
           value: avgPos > 0 ? '#${avgPos.toStringAsFixed(0)}' : '-',
+        ),
+      ],
+    );
+  }
+
+  List<Keyword> _filterKeywordsByDifficulty(List<Keyword> keywords) {
+    switch (_difficultyFilter) {
+      case DifficultyFilter.all:
+        return keywords;
+      case DifficultyFilter.easy:
+        return keywords.where((k) => k.difficulty != null && k.difficulty! < 40).toList();
+      case DifficultyFilter.medium:
+        return keywords.where((k) => k.difficulty != null && k.difficulty! >= 40 && k.difficulty! <= 70).toList();
+      case DifficultyFilter.hard:
+        return keywords.where((k) => k.difficulty != null && k.difficulty! > 70).toList();
+    }
+  }
+
+  Widget _buildDifficultyFilters(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
+    return Row(
+      children: [
+        Text(
+          l10n.keywords_difficultyFilter,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: colors.textMuted,
+          ),
+        ),
+        const SizedBox(width: 12),
+        DifficultyFilterChip(
+          label: l10n.keywords_difficultyAll,
+          isSelected: _difficultyFilter == DifficultyFilter.all,
+          onTap: () => setState(() => _difficultyFilter = DifficultyFilter.all),
+        ),
+        const SizedBox(width: 8),
+        DifficultyFilterChip(
+          label: l10n.keywords_difficultyEasy,
+          color: colors.green,
+          isSelected: _difficultyFilter == DifficultyFilter.easy,
+          onTap: () => setState(() => _difficultyFilter = DifficultyFilter.easy),
+        ),
+        const SizedBox(width: 8),
+        DifficultyFilterChip(
+          label: l10n.keywords_difficultyMedium,
+          color: colors.yellow,
+          isSelected: _difficultyFilter == DifficultyFilter.medium,
+          onTap: () => setState(() => _difficultyFilter = DifficultyFilter.medium),
+        ),
+        const SizedBox(width: 8),
+        DifficultyFilterChip(
+          label: l10n.keywords_difficultyHard,
+          color: colors.red,
+          isSelected: _difficultyFilter == DifficultyFilter.hard,
+          onTap: () => setState(() => _difficultyFilter = DifficultyFilter.hard),
         ),
       ],
     );
@@ -426,10 +918,39 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
             ),
             child: Row(
               children: [
+                // Checkbox column header
+                SizedBox(
+                  width: 36,
+                  child: _isSelectionMode
+                      ? const SizedBox()
+                      : InkWell(
+                          onTap: () => setState(() => _isSelectionMode = true),
+                          borderRadius: BorderRadius.circular(4),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Icon(
+                              Icons.check_box_outline_blank_rounded,
+                              size: 18,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                        ),
+                ),
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: Text(
                     'Keyword',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textMuted,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    'Note',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -486,6 +1007,18 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
                   ),
                 ),
                 SizedBox(
+                  width: 70,
+                  child: Text(
+                    'Difficulty',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textMuted,
+                    ),
+                  ),
+                ),
+                SizedBox(
                   width: 60,
                   child: Text(
                     'Country',
@@ -504,9 +1037,16 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
           ...sortedKeywords.map((keyword) => _KeywordRow(
                 appId: widget.appId,
                 keyword: keyword,
+                isSelectionMode: _isSelectionMode,
+                isSelected: keyword.trackedKeywordId != null && _selectedIds.contains(keyword.trackedKeywordId),
+                onToggleSelection: keyword.trackedKeywordId != null
+                    ? () => _toggleSelection(keyword.trackedKeywordId!)
+                    : null,
                 onToggleFavorite: () {
                   ref.read(keywordsNotifierProvider(widget.appId).notifier).toggleFavorite(keyword);
                 },
+                onOpenTags: () => _showTagsModal(keyword),
+                onOpenNote: () => _showNoteModal(keyword),
               )),
         ],
       ),
@@ -614,11 +1154,11 @@ class _ToolbarButton extends StatelessWidget {
 
 class _AddKeywordDialog extends StatefulWidget {
   final TextEditingController controller;
-  final String storefront;
+  final String initialStorefront;
 
   const _AddKeywordDialog({
     required this.controller,
-    required this.storefront,
+    required this.initialStorefront,
   });
 
   @override
@@ -626,6 +1166,21 @@ class _AddKeywordDialog extends StatefulWidget {
 }
 
 class _AddKeywordDialogState extends State<_AddKeywordDialog> {
+  late String _storefront;
+
+  @override
+  void initState() {
+    super.initState();
+    _storefront = widget.initialStorefront;
+  }
+
+  void _submit() {
+    final keyword = widget.controller.text.trim();
+    if (keyword.isNotEmpty) {
+      Navigator.pop(context, (keyword: keyword, storefront: _storefront));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -673,17 +1228,36 @@ class _AddKeywordDialogState extends State<_AddKeywordDialog> {
                 ),
                 prefixIcon: Icon(Icons.search_rounded, color: colors.textMuted),
               ),
-              onSubmitted: (value) {
-                if (value.trim().isNotEmpty) {
-                  Navigator.pop(context, value.trim());
-                }
-              },
+              onSubmitted: (_) => _submit(),
               onChanged: (_) => setState(() {}),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              '${context.l10n.appDetail_storefront}: ${widget.storefront}',
-              style: AppTypography.micro.copyWith(color: colors.textMuted),
+            const SizedBox(height: AppSpacing.sm + 4),
+            Row(
+              children: [
+                Text(
+                  context.l10n.appDetail_storefront,
+                  style: AppTypography.caption.copyWith(color: colors.textSecondary),
+                ),
+                const SizedBox(width: AppSpacing.sm + 4),
+                DropdownButton<String>(
+                  value: _storefront,
+                  dropdownColor: colors.glassPanel,
+                  style: AppTypography.caption.copyWith(color: colors.textPrimary),
+                  items: const [
+                    DropdownMenuItem(value: 'US', child: Text('🇺🇸 US')),
+                    DropdownMenuItem(value: 'GB', child: Text('🇬🇧 UK')),
+                    DropdownMenuItem(value: 'FR', child: Text('🇫🇷 FR')),
+                    DropdownMenuItem(value: 'DE', child: Text('🇩🇪 DE')),
+                    DropdownMenuItem(value: 'CA', child: Text('🇨🇦 CA')),
+                    DropdownMenuItem(value: 'AU', child: Text('🇦🇺 AU')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _storefront = value);
+                    }
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -694,9 +1268,7 @@ class _AddKeywordDialogState extends State<_AddKeywordDialog> {
           child: Text(context.l10n.appDetail_cancel),
         ),
         FilledButton(
-          onPressed: widget.controller.text.trim().isEmpty
-              ? null
-              : () => Navigator.pop(context, widget.controller.text.trim()),
+          onPressed: widget.controller.text.trim().isEmpty ? null : _submit,
           child: Text(context.l10n.appDetail_addKeyword),
         ),
       ],
@@ -876,66 +1448,6 @@ class _ImportKeywordsDialogState extends State<_ImportKeywordsDialog> {
 }
 
 // =============================================================================
-// Stat Card
-// =============================================================================
-
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String value;
-
-  const _StatCard({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: colors.glassPanelAlpha,
-          borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-          border: Border.all(color: colors.glassBorder),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 16, color: iconColor),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: colors.textMuted,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: colors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// =============================================================================
 // Keyword Row
 // =============================================================================
 
@@ -943,11 +1455,21 @@ class _KeywordRow extends ConsumerWidget {
   final int appId;
   final Keyword keyword;
   final VoidCallback onToggleFavorite;
+  final VoidCallback onOpenTags;
+  final VoidCallback onOpenNote;
+  final bool isSelectionMode;
+  final bool isSelected;
+  final VoidCallback? onToggleSelection;
 
   const _KeywordRow({
     required this.appId,
     required this.keyword,
     required this.onToggleFavorite,
+    required this.onOpenTags,
+    required this.onOpenNote,
+    this.isSelectionMode = false,
+    this.isSelected = false,
+    this.onToggleSelection,
   });
 
   @override
@@ -957,13 +1479,29 @@ class _KeywordRow extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
+        color: isSelected ? colors.accentMuted.withAlpha(30) : null,
         border: Border(bottom: BorderSide(color: colors.glassBorder.withAlpha(100))),
       ),
       child: Row(
         children: [
+          // Checkbox (only in selection mode)
+          if (isSelectionMode) ...[
+            SizedBox(
+              width: 36,
+              child: Checkbox(
+                value: isSelected,
+                onChanged: onToggleSelection != null ? (_) => onToggleSelection!() : null,
+                activeColor: colors.accent,
+                side: BorderSide(color: colors.textMuted),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+          ],
           // Keyword name with favorite
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Row(
               children: [
                 InkWell(
@@ -989,29 +1527,102 @@ class _KeywordRow extends ConsumerWidget {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (keyword.tags.isNotEmpty)
-                        Wrap(
-                          spacing: 4,
-                          children: keyword.tags.take(2).map((tag) => Container(
-                                margin: const EdgeInsets.only(top: 4),
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: tag.colorValue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(4),
+                      // Tags row - clickable
+                      InkWell(
+                        onTap: onOpenTags,
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: keyword.tags.isNotEmpty
+                              ? Wrap(
+                                  spacing: 4,
+                                  children: [
+                                    ...keyword.tags.take(2).map((tag) => Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: tag.colorValue.withAlpha(30),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: Text(
+                                            tag.name,
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: tag.colorValue,
+                                            ),
+                                          ),
+                                        )),
+                                    if (keyword.tags.length > 2)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: colors.bgActive,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          '+${keyword.tags.length - 2}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: colors.textMuted,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                )
+                              : Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.add, size: 12, color: colors.textMuted),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      'Tags',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: colors.textMuted,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                child: Text(
-                                  tag.name,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: tag.colorValue,
-                                  ),
-                                ),
-                              )).toList(),
                         ),
+                      ),
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+          // Note
+          Expanded(
+            flex: 2,
+            child: InkWell(
+              onTap: onOpenNote,
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: keyword.note != null && keyword.note!.isNotEmpty
+                    ? Text(
+                        keyword.note!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colors.textSecondary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add, size: 12, color: colors.textMuted),
+                          const SizedBox(width: 2),
+                          Text(
+                            'Note',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
             ),
           ),
           // Position
@@ -1035,7 +1646,7 @@ class _KeywordRow extends ConsumerWidget {
                       ),
                     )
                   : Text(
-                      '-',
+                      '+100',
                       style: TextStyle(
                         fontSize: 13,
                         color: colors.textMuted,
@@ -1090,7 +1701,25 @@ class _KeywordRow extends ConsumerWidget {
             width: 70,
             child: Center(
               child: keyword.popularity != null
-                  ? _PopularityBar(popularity: keyword.popularity!)
+                  ? PopularityBar(popularity: keyword.popularity!)
+                  : Text(
+                      '-',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.textMuted,
+                      ),
+                    ),
+            ),
+          ),
+          // Difficulty
+          SizedBox(
+            width: 70,
+            child: Center(
+              child: keyword.difficulty != null
+                  ? DifficultyBadge(
+                      difficulty: keyword.difficulty!,
+                      label: keyword.difficultyLabel,
+                    )
                   : Text(
                       '-',
                       style: TextStyle(
@@ -1161,11 +1790,13 @@ class _KeywordSparkline extends ConsumerWidget {
       );
     }
 
+    // Use null to let the provider use default (90 days from today at midnight)
+    // Avoids creating new provider key on every build due to DateTime.now() changing
     final historyAsync = ref.watch(
       keywordRankingHistoryProvider((
         appId: appId,
         keywordId: keyword.id,
-        from: DateTime.now().subtract(const Duration(days: 90)),
+        from: null,
       )),
     );
 
@@ -1347,46 +1978,138 @@ class _TrendLinePainter extends CustomPainter {
   }
 }
 
-class _PopularityBar extends StatelessWidget {
-  final int popularity;
+/// Dialog to select a competitor to add keywords to
+class _CompetitorSelectionDialog extends StatelessWidget {
+  final List<dynamic> competitors;
+  final int keywordCount;
 
-  const _PopularityBar({required this.popularity});
+  const _CompetitorSelectionDialog({
+    required this.competitors,
+    required this.keywordCount,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final normalizedPopularity = popularity.clamp(0, 100) / 100;
 
-    return Column(
-      children: [
-        Text(
-          popularity.toString(),
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: colors.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 4),
-        SizedBox(
-          width: 50,
-          height: 4,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(2),
-            child: LinearProgressIndicator(
-              value: normalizedPopularity,
-              backgroundColor: colors.bgHover,
-              color: _getPopularityColor(colors, popularity),
+    return AlertDialog(
+      backgroundColor: colors.bgBase,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppColors.radiusMedium),
+      ),
+      title: Text(
+        'Add to Competitor',
+        style: AppTypography.headline.copyWith(color: colors.textPrimary),
+      ),
+      content: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Add $keywordCount keyword${keywordCount > 1 ? 's' : ''} to:',
+              style: AppTypography.bodyMedium.copyWith(color: colors.textSecondary),
             ),
-          ),
+            const SizedBox(height: 16),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 300),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: competitors.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final competitor = competitors[index];
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context, competitor),
+                      borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: colors.glassBorder),
+                          borderRadius: BorderRadius.circular(AppColors.radiusSmall),
+                        ),
+                        child: Row(
+                          children: [
+                            // Icon
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: competitor.iconUrl != null
+                                  ? Image.network(
+                                      competitor.iconUrl!,
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: colors.bgActive,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Icon(Icons.apps, color: colors.textMuted),
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: colors.bgActive,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(Icons.apps, color: colors.textMuted),
+                                    ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Name and developer
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    competitor.name,
+                                    style: AppTypography.titleSmall.copyWith(
+                                      color: colors.textPrimary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  if (competitor.developer != null)
+                                    Text(
+                                      competitor.developer!,
+                                      style: AppTypography.caption.copyWith(
+                                        color: colors.textMuted,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                ],
+                              ),
+                            ),
+                            // Arrow
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              color: colors.textMuted,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancel', style: TextStyle(color: colors.textMuted)),
         ),
       ],
     );
-  }
-
-  Color _getPopularityColor(AppColorsExtension colors, int popularity) {
-    if (popularity >= 70) return colors.green;
-    if (popularity >= 40) return colors.yellow;
-    return colors.red;
   }
 }

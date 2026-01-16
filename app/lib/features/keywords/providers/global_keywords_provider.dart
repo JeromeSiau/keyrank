@@ -13,9 +13,13 @@ class KeywordWithApp {
 }
 
 /// Provider that fetches keywords from all apps and enriches them with app info
+/// Only includes owned apps, not competitors
 final globalKeywordsProvider = FutureProvider<List<KeywordWithApp>>((ref) async {
   final appsState = ref.watch(appsNotifierProvider);
-  final apps = appsState.valueOrNull ?? [];
+  final allApps = appsState.valueOrNull ?? [];
+
+  // Filter out competitors - only show keywords from owned apps
+  final apps = allApps.where((app) => !app.isCompetitor).toList();
 
   if (apps.isEmpty) {
     return [];

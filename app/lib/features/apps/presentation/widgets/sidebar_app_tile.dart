@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/app_model.dart';
+import '../../../../shared/widgets/safe_image.dart';
 
 class SidebarAppTile extends StatefulWidget {
   final AppModel app;
@@ -37,23 +38,23 @@ class _SidebarAppTileState extends State<SidebarAppTile>
       vsync: this,
     );
 
-    _starScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.35), weight: 35),
-      TweenSequenceItem(tween: Tween(begin: 1.35, end: 0.9), weight: 25),
-      TweenSequenceItem(tween: Tween(begin: 0.9, end: 1.0), weight: 40),
-    ]).animate(CurvedAnimation(
-      parent: _starController,
-      curve: Curves.easeOutBack,
-    ));
+    _starScale =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.35), weight: 35),
+          TweenSequenceItem(tween: Tween(begin: 1.35, end: 0.9), weight: 25),
+          TweenSequenceItem(tween: Tween(begin: 0.9, end: 1.0), weight: 40),
+        ]).animate(
+          CurvedAnimation(parent: _starController, curve: Curves.easeOutBack),
+        );
 
-    _starRotation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.0, end: -0.15), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: -0.15, end: 0.1), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 0.1, end: 0.0), weight: 30),
-    ]).animate(CurvedAnimation(
-      parent: _starController,
-      curve: Curves.easeInOut,
-    ));
+    _starRotation =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 0.0, end: -0.15), weight: 30),
+          TweenSequenceItem(tween: Tween(begin: -0.15, end: 0.1), weight: 40),
+          TweenSequenceItem(tween: Tween(begin: 0.1, end: 0.0), weight: 30),
+        ]).animate(
+          CurvedAnimation(parent: _starController, curve: Curves.easeInOut),
+        );
   }
 
   @override
@@ -106,20 +107,16 @@ class _SidebarAppTileState extends State<SidebarAppTile>
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: widget.app.iconUrl != null
-                      ? Image.network(
-                          widget.app.iconUrl!,
+                      ? SafeImage(
+                          imageUrl: widget.app.iconUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => Icon(
+                          errorWidget: Icon(
                             Icons.apps,
                             size: 14,
                             color: colors.textMuted,
                           ),
                         )
-                      : Icon(
-                          Icons.apps,
-                          size: 14,
-                          color: colors.textMuted,
-                        ),
+                      : Icon(Icons.apps, size: 14, color: colors.textMuted),
                 ),
                 const SizedBox(width: 8),
                 // Platform icon (inline before name)
@@ -138,8 +135,9 @@ class _SidebarAppTileState extends State<SidebarAppTile>
                     widget.app.name,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight:
-                          widget.isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: widget.isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
                       color: widget.isSelected
                           ? colors.textPrimary
                           : colors.textSecondary,

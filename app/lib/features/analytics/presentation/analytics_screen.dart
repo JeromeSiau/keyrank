@@ -1,8 +1,13 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../core/providers/app_context_provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
+import '../../../shared/widgets/date_range_picker.dart';
 import '../providers/analytics_provider.dart';
 import '../providers/global_analytics_provider.dart';
 import 'app_analytics_screen.dart';
@@ -32,6 +37,77 @@ class AnalyticsScreen extends ConsumerWidget {
 class _GlobalAnalyticsView extends ConsumerWidget {
   const _GlobalAnalyticsView();
 
+  Future<void> _exportAnalytics(
+    BuildContext context,
+    List<AnalyticsWithApp> analytics,
+    String period,
+  ) async {
+    final csv = StringBuffer();
+    final colors = context.colors;
+    final l10n = context.l10n;
+
+    // Header
+    csv.writeln('App,Downloads,Downloads Change %,Revenue,Revenue Change %,Proceeds,Subscribers,Subscribers Change %');
+
+    // Data rows
+    for (final item in analytics) {
+      final summary = item.summary;
+      final app = item.app;
+      csv.writeln(
+        '${_escapeCsv(app.name)},'
+        '${summary.totalDownloads},'
+        '${summary.downloadsChangePct?.toStringAsFixed(1) ?? ""},'
+        '${summary.totalRevenue.toStringAsFixed(2)},'
+        '${summary.revenueChangePct?.toStringAsFixed(1) ?? ""},'
+        '${summary.totalProceeds.toStringAsFixed(2)},'
+        '${summary.activeSubscribers},'
+        '${summary.subscribersChangePct?.toStringAsFixed(1) ?? ""}',
+      );
+    }
+
+    try {
+      final fileName = 'analytics_all_apps_${period}_${DateFormat('yyyy-MM-dd').format(DateTime.now())}.csv';
+
+      if (kIsWeb) {
+        // Web: would need different handling
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.export_success(fileName))),
+          );
+        }
+      } else {
+        final directory = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+        final file = File('${directory.path}/$fileName');
+        await file.writeAsString(csv.toString());
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.export_success(fileName)),
+              backgroundColor: colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.export_error(e.toString())),
+            backgroundColor: colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  String _escapeCsv(String value) {
+    if (value.contains(',') || value.contains('"') || value.contains('\n')) {
+      return '"${value.replaceAll('"', '""')}"';
+    }
+    return value;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final analyticsAsync = ref.watch(globalAnalyticsProvider);
@@ -43,22 +119,22 @@ class _GlobalAnalyticsView extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Analytics (All Apps)'),
         actions: [
+          // Export button
+          if (analyticsAsync.hasValue && analyticsAsync.value!.isNotEmpty)
+            IconButton(
+              onPressed: () => _exportAnalytics(context, analyticsAsync.value!, period),
+              icon: Icon(Icons.download_rounded, size: 20, color: colors.textSecondary),
+              tooltip: context.l10n.export_button,
+            ),
           // Period selector
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: DropdownButton<String>(
-              value: period,
-              underline: const SizedBox(),
-              items: analyticsPeriodOptions.map((option) {
-                return DropdownMenuItem(
-                  value: option.$1,
-                  child: Text(option.$2),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  ref.read(analyticsPeriodProvider.notifier).state = value;
-                }
+            child: DateRangePickerButton(
+              selected: DatePeriod.preset(period),
+              onChanged: (newPeriod) {
+                // Convert DatePeriod back to string for backward compatibility
+                ref.read(analyticsPeriodProvider.notifier).state =
+                    newPeriod.presetKey ?? '30d';
               },
             ),
           ),

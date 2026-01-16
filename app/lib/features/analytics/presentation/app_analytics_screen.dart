@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/utils/country_names.dart';
 import '../../../core/providers/country_provider.dart';
+import '../../../shared/widgets/date_range_picker.dart';
 import '../domain/analytics_summary_model.dart';
 import '../providers/analytics_provider.dart';
 
@@ -164,37 +165,11 @@ class _PeriodSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: analyticsPeriodOptions.map((option) {
-          final isSelected = option.$1 == selectedPeriod;
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Material(
-              color: isSelected ? colors.accent : colors.bgActive,
-              borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-              child: InkWell(
-                onTap: () => onPeriodChanged(option.$1),
-                borderRadius: BorderRadius.circular(AppColors.radiusSmall),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Text(
-                    option.$2,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: isSelected ? Colors.white : colors.textSecondary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
+    return DateRangePickerButton(
+      selected: DatePeriod.preset(selectedPeriod),
+      onChanged: (newPeriod) {
+        onPeriodChanged(newPeriod.presetKey ?? '30d');
+      },
     );
   }
 }

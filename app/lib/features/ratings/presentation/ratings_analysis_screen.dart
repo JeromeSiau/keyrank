@@ -7,6 +7,7 @@ import '../../../core/providers/country_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../core/utils/country_names.dart';
+import '../../../shared/widgets/date_range_picker.dart';
 import '../../../shared/widgets/star_histogram.dart';
 import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
@@ -16,11 +17,18 @@ import '../domain/rating_model.dart';
 /// Selected period for trend chart
 final ratingsAnalysisPeriodProvider = StateProvider<int>((ref) => 30);
 
-class RatingsAnalysisScreen extends ConsumerWidget {
+class RatingsAnalysisScreen extends ConsumerStatefulWidget {
   const RatingsAnalysisScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RatingsAnalysisScreen> createState() => _RatingsAnalysisScreenState();
+}
+
+class _RatingsAnalysisScreenState extends ConsumerState<RatingsAnalysisScreen> {
+  DatePeriod _selectedPeriod = const DatePeriod.preset('last30Days');
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     final appsAsync = ref.watch(appsNotifierProvider);
 
@@ -32,7 +40,7 @@ class RatingsAnalysisScreen extends ConsumerWidget {
       child: Column(
         children: [
           // Toolbar
-          _buildToolbar(context, ref),
+          _buildToolbar(context),
           // Content
           Expanded(
             child: appsAsync.when(
@@ -51,7 +59,7 @@ class RatingsAnalysisScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildToolbar(BuildContext context, WidgetRef ref) {
+  Widget _buildToolbar(BuildContext context) {
     final colors = context.colors;
     final selectedApp = ref.watch(appContextProvider);
 
@@ -92,6 +100,11 @@ class RatingsAnalysisScreen extends ConsumerWidget {
             ),
           ],
           const Spacer(),
+          DateRangePickerButton(
+            selected: _selectedPeriod,
+            onChanged: (period) => setState(() => _selectedPeriod = period),
+          ),
+          const SizedBox(width: 8),
           IconButton(
             icon: Icon(Icons.refresh_rounded, color: colors.textMuted),
             onPressed: () => ref.invalidate(appsNotifierProvider),

@@ -9,6 +9,8 @@ import '../../../shared/widgets/buttons.dart';
 import '../../../shared/widgets/states.dart';
 import '../../../shared/widgets/sparkline.dart';
 import '../../../shared/widgets/change_indicator.dart';
+import '../../../shared/widgets/data_table_enhanced.dart';
+import '../../../shared/widgets/safe_image.dart';
 import '../providers/apps_provider.dart';
 import '../domain/app_model.dart';
 
@@ -71,7 +73,8 @@ class AppsListScreen extends ConsumerWidget {
             availableCategories: availableCategories,
             selectedCategory: selectedCategory,
             onCategoryChanged: (category) {
-              ref.read(_selectedCategoryFilterProvider.notifier).state = category;
+              ref.read(_selectedCategoryFilterProvider.notifier).state =
+                  category;
             },
           ),
           // Content
@@ -186,7 +189,11 @@ class _CategoryFilterDropdown extends StatelessWidget {
             context.l10n.discover_allCategories,
             style: AppTypography.caption.copyWith(color: colors.textSecondary),
           ),
-          icon: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: colors.textMuted),
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 18,
+            color: colors.textMuted,
+          ),
           dropdownColor: colors.bgBase,
           isDense: true,
           items: [
@@ -194,7 +201,9 @@ class _CategoryFilterDropdown extends StatelessWidget {
               value: null,
               child: Text(
                 context.l10n.discover_allCategories,
-                style: AppTypography.caption.copyWith(color: colors.textPrimary),
+                style: AppTypography.caption.copyWith(
+                  color: colors.textPrimary,
+                ),
               ),
             ),
             ...availableCategories.map((categoryId) {
@@ -202,7 +211,9 @@ class _CategoryFilterDropdown extends StatelessWidget {
                 value: categoryId,
                 child: Text(
                   _getCategoryName(categoryId),
-                  style: AppTypography.caption.copyWith(color: colors.textPrimary),
+                  style: AppTypography.caption.copyWith(
+                    color: colors.textPrimary,
+                  ),
                 ),
               );
             }),
@@ -262,152 +273,15 @@ class _CategoryFilterDropdown extends StatelessWidget {
     };
 
     return iosCategoryNames[categoryId] ??
-           androidCategoryNames[categoryId] ??
-           categoryId;
+        androidCategoryNames[categoryId] ??
+        categoryId;
   }
 }
 
-class _AppsTable extends StatelessWidget {
-  final List apps;
+class _AppsTable extends ConsumerWidget {
+  final List<AppModel> apps;
 
   const _AppsTable({required this.apps});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      child: Container(
-        decoration: BoxDecoration(
-          color: colors.bgActive.withAlpha(50),
-          borderRadius: BorderRadius.circular(AppColors.radiusMedium),
-          border: Border.all(color: colors.glassBorder),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.cardPadding,
-                vertical: AppSpacing.sm + 4,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    context.l10n.apps_appCount(apps.length),
-                    style: AppTypography.caption.copyWith(
-                      color: colors.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      SmallButton(label: context.l10n.common_filter, onTap: () {}),
-                      const SizedBox(width: AppSpacing.xs + 2),
-                      SmallButton(label: context.l10n.common_sort, onTap: () {}),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            // Table header
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.cardPadding,
-                vertical: AppSpacing.sm + 2,
-              ),
-              decoration: BoxDecoration(
-                color: colors.bgActive.withAlpha(80),
-                border: Border(
-                  top: BorderSide(color: colors.glassBorder),
-                  bottom: BorderSide(color: colors.glassBorder),
-                ),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 52),
-                  Expanded(
-                    child: Text(
-                      context.l10n.apps_tableApp,
-                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: Text(
-                      context.l10n.apps_tableDeveloper,
-                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  SizedBox(
-                    width: 80,
-                    child: Text(
-                      context.l10n.apps_tableKeywords,
-                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  SizedBox(
-                    width: 80,
-                    child: Text(
-                      'Trend',
-                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  SizedBox(
-                    width: 110,
-                    child: Text(
-                      context.l10n.apps_tablePlatform,
-                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  SizedBox(
-                    width: 70,
-                    child: Text(
-                      context.l10n.apps_tableRating,
-                      style: AppTypography.tableHeader.copyWith(color: colors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(width: 36),
-                ],
-              ),
-            ),
-            // Apps list
-            Expanded(
-              child: ListView.builder(
-                itemCount: apps.length,
-                itemBuilder: (context, index) {
-                  final app = apps[index];
-                  return _AppRow(
-                    app: app,
-                    gradientIndex: index,
-                    onTap: () => context.go('/apps/preview/${app.platform}/${app.storeId}'),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AppRow extends StatelessWidget {
-  final dynamic app;
-  final int gradientIndex;
-  final VoidCallback onTap;
-
-  const _AppRow({
-    required this.app,
-    required this.gradientIndex,
-    required this.onTap,
-  });
 
   // Mock trend data for each app
   static const List<List<double>> _mockTrends = [
@@ -419,198 +293,257 @@ class _AppRow extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final trendData = _mockTrends[gradientIndex % _mockTrends.length];
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        hoverColor: colors.bgHover,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: AppSpacing.sm + 4,
+    final columns = [
+      EnhancedColumn(label: context.l10n.apps_tableApp),
+      EnhancedColumn(label: context.l10n.apps_tableDeveloper, width: 120),
+      EnhancedColumn(
+        label: context.l10n.apps_tableKeywords,
+        width: 80,
+        align: TextAlign.center,
+      ),
+      const EnhancedColumn(label: 'Trend', width: 80, align: TextAlign.center),
+      EnhancedColumn(label: context.l10n.apps_tablePlatform, width: 110),
+      EnhancedColumn(label: context.l10n.apps_tableRating, width: 70),
+      const EnhancedColumn(label: '', width: 36), // Arrow column
+    ];
+
+    final rows = apps.asMap().entries.map((entry) {
+      final index = entry.key;
+      final app = entry.value;
+      final trendData = _mockTrends[index % _mockTrends.length];
+
+      return [
+        EnhancedCell.widget(_AppNameCell(app: app, index: index)),
+        EnhancedCell.text(
+          app.developer ?? '--',
+          style: AppTypography.tableCell.copyWith(color: colors.textMuted),
+        ),
+        EnhancedCell.widget(
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: colors.accentMuted,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              '${app.trackedKeywordsCount ?? 0}',
+              style: AppTypography.tableCellBold.copyWith(color: colors.accent),
+              textAlign: TextAlign.center,
+            ),
           ),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: colors.glassBorder)),
-          ),
-          child: Row(
+          align: TextAlign.center,
+        ),
+        EnhancedCell.widget(
+          Sparkline(data: trendData, width: 60, height: 20),
+          align: TextAlign.center,
+        ),
+        EnhancedCell.widget(
+          Row(
             children: [
-              // App icon
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  gradient: AppColors.getGradient(gradientIndex),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: app.iconUrl != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          app.iconUrl!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, e, s) => const Center(
-                            child: Icon(Icons.apps, size: 20, color: Colors.white),
-                          ),
-                        ),
-                      )
-                    : const Center(
-                        child: Icon(Icons.apps, size: 20, color: Colors.white),
-                      ),
-              ),
-              const SizedBox(width: AppSpacing.sm + 4),
-              // App name
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      app.name,
-                      style: AppTypography.tableCellBold.copyWith(color: colors.textPrimary),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (app.bestRank != null)
-                      Row(
-                        children: [
-                          Text(
-                            'Best: #${app.bestRank}',
-                            style: AppTypography.micro.copyWith(color: colors.green),
-                          ),
-                          if (app.ratingCount > 0) ...[
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              '${_formatCount(app.ratingCount)} reviews',
-                              style: AppTypography.micro.copyWith(color: colors.textMuted),
-                            ),
-                          ],
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-              // Developer
-              SizedBox(
-                width: 120,
-                child: Text(
-                  app.developer ?? '--',
-                  style: AppTypography.tableCell.copyWith(color: colors.textMuted),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              // Keywords count
-              SizedBox(
-                width: 80,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              if (app.isIos)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  margin: const EdgeInsets.only(right: 6),
                   decoration: BoxDecoration(
-                    color: colors.accentMuted,
-                    borderRadius: BorderRadius.circular(8),
+                    color: colors.textMuted.withAlpha(30),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    '${app.trackedKeywordsCount ?? 0}',
-                    style: AppTypography.tableCellBold.copyWith(color: colors.accent),
-                    textAlign: TextAlign.center,
+                    'iOS',
+                    style: AppTypography.micro.copyWith(
+                      color: colors.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              // Trend sparkline
-              SizedBox(
-                width: 80,
-                child: Sparkline(data: trendData, width: 60, height: 20),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              // Platform badge
-              SizedBox(
-                width: 110,
-                child: Row(
-                  children: [
-                    if (app.isIos)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        margin: const EdgeInsets.only(right: 6),
-                        decoration: BoxDecoration(
-                          color: colors.textMuted.withAlpha(30),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          'iOS',
-                          style: AppTypography.micro.copyWith(
-                            color: colors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    if (app.isAndroid)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: colors.green.withAlpha(30),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          'Android',
-                          style: AppTypography.micro.copyWith(
-                            color: colors.green,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                  ],
+              if (app.isAndroid)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colors.green.withAlpha(30),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'Android',
+                    style: AppTypography.micro.copyWith(
+                      color: colors.green,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              // Rating with change indicator
-              SizedBox(
-                width: 70,
-                child: app.rating != null
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.star_rounded, size: 14, color: colors.yellow),
-                              const SizedBox(width: 2),
-                              Text(
-                                app.rating!.toStringAsFixed(1),
-                                style: AppTypography.tableCellBold.copyWith(
-                                  color: colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Mock rating change
-                          ChangeIndicator(
-                            value: (gradientIndex % 3 == 0)
-                                ? 0.2
-                                : (gradientIndex % 2 == 0)
-                                    ? -0.1
-                                    : 0.0,
-                            format: ChangeFormat.number,
-                            size: ChangeIndicatorSize.small,
-                            showBackground: false,
-                          ),
-                        ],
-                      )
-                    : Text(
-                        '--',
-                        style: AppTypography.tableCell.copyWith(color: colors.textMuted),
-                      ),
-              ),
-              // Arrow
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: colors.textMuted,
-              ),
             ],
           ),
         ),
+        EnhancedCell.widget(
+          app.rating != null
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          size: 14,
+                          color: colors.yellow,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          app.rating!.toStringAsFixed(1),
+                          style: AppTypography.tableCellBold.copyWith(
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ChangeIndicator(
+                      value: (index % 3 == 0)
+                          ? 0.2
+                          : (index % 2 == 0)
+                          ? -0.1
+                          : 0.0,
+                      format: ChangeFormat.number,
+                      size: ChangeIndicatorSize.small,
+                      showBackground: false,
+                    ),
+                  ],
+                )
+              : Text(
+                  '--',
+                  style: AppTypography.tableCell.copyWith(
+                    color: colors.textMuted,
+                  ),
+                ),
+        ),
+        EnhancedCell.widget(
+          Icon(Icons.chevron_right_rounded, size: 20, color: colors.textMuted),
+          align: TextAlign.center,
+        ),
+      ];
+    }).toList();
+
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.cardPadding,
+              vertical: AppSpacing.sm + 4,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.apps_appCount(apps.length),
+                  style: AppTypography.caption.copyWith(
+                    color: colors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Row(
+                  children: [
+                    SmallButton(
+                      label: context.l10n.common_filter,
+                      onTap: () {},
+                    ),
+                    const SizedBox(width: AppSpacing.xs + 2),
+                    SmallButton(label: context.l10n.common_sort, onTap: () {}),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: EnhancedDataTable(
+              columns: columns,
+              rows: rows,
+              onRowTap: (index) {
+                final app = apps[index];
+                context.go('/apps/preview/${app.platform}/${app.storeId}');
+              },
+            ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _AppNameCell extends StatelessWidget {
+  final AppModel app;
+  final int index;
+
+  const _AppNameCell({required this.app, required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            gradient: AppColors.getGradient(index),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: app.iconUrl != null
+              ? SafeImage(
+                  imageUrl: app.iconUrl!,
+                  borderRadius: BorderRadius.circular(10),
+                  errorWidget: const Center(
+                    child: Icon(Icons.apps, size: 20, color: Colors.white),
+                  ),
+                )
+              : const Center(
+                  child: Icon(Icons.apps, size: 20, color: Colors.white),
+                ),
+        ),
+        const SizedBox(width: AppSpacing.sm + 4),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                app.name,
+                style: AppTypography.tableCellBold.copyWith(
+                  color: colors.textPrimary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (app.bestRank != null)
+                Row(
+                  children: [
+                    Text(
+                      'Best: #${app.bestRank}',
+                      style: AppTypography.micro.copyWith(color: colors.green),
+                    ),
+                    if (app.ratingCount > 0) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        '${_formatCount(app.ratingCount)} reviews',
+                        style: AppTypography.micro.copyWith(
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
