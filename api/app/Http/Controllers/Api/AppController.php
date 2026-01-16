@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateKeywordSuggestionsJob;
 use App\Models\App;
+use App\Models\AppCompetitor;
 use App\Models\AppRating;
 use App\Models\AppReview;
 use App\Models\TrackedKeyword;
@@ -48,16 +49,22 @@ class AppController extends Controller
                 ->toArray();
         }
 
+        // Get competitor app IDs for this user
+        $competitorAppIds = AppCompetitor::where('user_id', $userId)
+            ->pluck('competitor_app_id')
+            ->unique()
+            ->toArray();
+
         // Get apps with tracked keywords count for this user
         $apps = $user
             ->apps()
             ->withCount(['trackedKeywords' => fn($q) => $q->where('user_id', $userId)])
             ->get()
-            ->map(function ($app) use ($bestRanks) {
+            ->map(function ($app) use ($bestRanks, $competitorAppIds) {
                 $app->is_favorite = (bool) $app->pivot->is_favorite;
                 $app->favorited_at = $app->pivot->favorited_at;
                 $app->is_owner = (bool) ($app->pivot->is_owner ?? false);
-                $app->is_competitor = (bool) ($app->pivot->is_competitor ?? false);
+                $app->is_competitor = in_array($app->id, $competitorAppIds);
                 $app->best_rank = $bestRanks[$app->id] ?? null;
 
                 return $app;
@@ -289,7 +296,9 @@ class AppController extends Controller
         // Get pivot data for the current user
         $pivot = $user->apps()->where('app_id', $app->id)->first()?->pivot;
         $app->is_owner = (bool) ($pivot->is_owner ?? false);
-        $app->is_competitor = (bool) ($pivot->is_competitor ?? false);
+        $app->is_competitor = AppCompetitor::where('user_id', $user->id)
+            ->where('competitor_app_id', $app->id)
+            ->exists();
 
         return response()->json([
             'data' => $app,
