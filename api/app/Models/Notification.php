@@ -22,6 +22,8 @@ class Notification extends Model
         'is_read',
         'read_at',
         'sent_at',
+        'email_sent_at',
+        'digest_sent_at',
         'created_at',
     ];
 
@@ -30,6 +32,8 @@ class Notification extends Model
         'is_read' => 'boolean',
         'read_at' => 'datetime',
         'sent_at' => 'datetime',
+        'email_sent_at' => 'datetime',
+        'digest_sent_at' => 'datetime',
         'created_at' => 'datetime',
     ];
 

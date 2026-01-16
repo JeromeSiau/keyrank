@@ -41,6 +41,8 @@ class ApiConstants {
   // Alert Rules endpoints
   static const String alertTemplates = '/alerts/templates';
   static const String alertRules = '/alerts/rules';
+  static const String alertPreferences = '/alerts/preferences';
+  static const String alertTypes = '/alerts/types';
 
   // Notifications endpoints
   static const String notifications = '/notifications';

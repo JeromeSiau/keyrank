@@ -30,6 +30,10 @@ class User extends Authenticatable
         'fcm_token',
         'quiet_hours_start',
         'quiet_hours_end',
+        'alert_delivery_preferences',
+        'digest_time',
+        'weekly_digest_day',
+        'email_notifications_enabled',
         'onboarding_step',
         'onboarding_completed_at',
     ];
@@ -56,8 +60,57 @@ class User extends Authenticatable
             'password' => 'hashed',
             'quiet_hours_start' => 'datetime:H:i:s',
             'quiet_hours_end' => 'datetime:H:i:s',
+            'alert_delivery_preferences' => 'array',
+            'email_notifications_enabled' => 'boolean',
             'onboarding_completed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Get default alert delivery preferences for all alert types
+     */
+    public static function getDefaultAlertDeliveryPreferences(): array
+    {
+        $alertTypes = [
+            'position_change',
+            'rating_change',
+            'review_spike',
+            'review_keyword',
+            'new_competitor',
+            'competitor_passed',
+            'mass_movement',
+            'keyword_popularity',
+            'opportunity',
+        ];
+
+        $defaults = [];
+        foreach ($alertTypes as $type) {
+            // Critical alerts get email by default, others go to digest
+            $isCritical = in_array($type, ['rating_change', 'review_spike']);
+            $defaults[$type] = [
+                'push' => true,
+                'email' => $isCritical,
+                'digest' => !$isCritical,
+            ];
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * Get alert delivery preferences with defaults filled in
+     */
+    public function getAlertDeliveryPreferencesAttribute($value): array
+    {
+        $decoded = is_string($value) ? json_decode($value, true) : $value;
+        $defaults = self::getDefaultAlertDeliveryPreferences();
+
+        if (empty($decoded)) {
+            return $defaults;
+        }
+
+        // Merge with defaults to ensure all types are present
+        return array_merge($defaults, $decoded);
     }
 
     /**

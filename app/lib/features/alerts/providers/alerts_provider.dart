@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/alerts_repository.dart';
+import '../domain/alert_preferences_model.dart';
 import '../domain/alert_rule_model.dart';
 
 /// Templates provider - cached, rarely changes
@@ -80,4 +81,105 @@ class AlertRulesNotifier extends StateNotifier<AsyncValue<List<AlertRuleModel>>>
 final alertRulesNotifierProvider =
     StateNotifierProvider<AlertRulesNotifier, AsyncValue<List<AlertRuleModel>>>((ref) {
   return AlertRulesNotifier(ref.watch(alertsRepositoryProvider));
+});
+
+// ============================================
+// Alert Preferences (Email/Push/Digest settings)
+// ============================================
+
+/// Alert types provider - cached
+final alertTypesProvider = FutureProvider<List<AlertTypeInfo>>((ref) async {
+  return ref.watch(alertsRepositoryProvider).getAlertTypes();
+});
+
+/// Alert preferences state notifier
+class AlertPreferencesNotifier extends StateNotifier<AsyncValue<AlertPreferences>> {
+  final AlertsRepository _repository;
+
+  AlertPreferencesNotifier(this._repository) : super(const AsyncValue.loading()) {
+    load();
+  }
+
+  Future<void> load() async {
+    state = const AsyncValue.loading();
+    try {
+      final prefs = await _repository.getPreferences();
+      state = AsyncValue.data(prefs);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> setEmailNotificationsEnabled(bool enabled) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    // Optimistic update
+    state = AsyncValue.data(current.copyWith(emailNotificationsEnabled: enabled));
+
+    try {
+      final updated = await _repository.updatePreferences(emailNotificationsEnabled: enabled);
+      state = AsyncValue.data(updated);
+    } catch (e, st) {
+      // Revert on error
+      state = AsyncValue.data(current);
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> updateDeliveryForType(String alertType, AlertDelivery delivery) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    // Optimistic update
+    final newDeliveryByType = Map<String, AlertDelivery>.from(current.deliveryByType);
+    newDeliveryByType[alertType] = delivery;
+    state = AsyncValue.data(current.copyWith(deliveryByType: newDeliveryByType));
+
+    try {
+      final updated = await _repository.updatePreferences(
+        deliveryByType: {alertType: delivery},
+      );
+      state = AsyncValue.data(updated);
+    } catch (e, st) {
+      // Revert on error
+      state = AsyncValue.data(current);
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> setDigestTime(String time) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    state = AsyncValue.data(current.copyWith(digestTime: time));
+
+    try {
+      final updated = await _repository.updatePreferences(digestTime: time);
+      state = AsyncValue.data(updated);
+    } catch (e, st) {
+      state = AsyncValue.data(current);
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> setWeeklyDigestDay(String day) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    state = AsyncValue.data(current.copyWith(weeklyDigestDay: day));
+
+    try {
+      final updated = await _repository.updatePreferences(weeklyDigestDay: day);
+      state = AsyncValue.data(updated);
+    } catch (e, st) {
+      state = AsyncValue.data(current);
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+
+final alertPreferencesNotifierProvider =
+    StateNotifierProvider<AlertPreferencesNotifier, AsyncValue<AlertPreferences>>((ref) {
+  return AlertPreferencesNotifier(ref.watch(alertsRepositoryProvider));
 });

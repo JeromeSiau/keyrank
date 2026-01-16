@@ -102,6 +102,24 @@ Schedule::job(new WeeklyDigestJob())
     ->weeklyOn(1, '09:00')
     ->withoutOverlapping();
 
+// =============================================================================
+// Alert Digests (User-configured email notifications)
+// =============================================================================
+
+// Daily alert digest - runs hourly, sends to users whose digest_time matches
+// Each user configures their preferred time in settings (default 09:00)
+Schedule::command('alerts:send-digests --period=daily')
+    ->hourly()
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Weekly alert digest - runs hourly on configured days
+// Each user configures their preferred day and time in settings
+Schedule::command('alerts:send-digests --period=weekly')
+    ->hourly()
+    ->withoutOverlapping()
+    ->runInBackground();
+
 // Keyword suggestions refresh - weekly on Sunday at 2 AM
 // Refreshes keyword suggestions for all apps with staggered execution
 Schedule::job(new RefreshAllKeywordSuggestionsJob('US'))

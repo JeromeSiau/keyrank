@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Mail\AlertNotificationMail;
 use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 
@@ -77,13 +79,47 @@ class NotificationService
         }
 
         $aggregated = $this->aggregate($alerts);
+        $preferences = $user->alert_delivery_preferences ?? [];
 
         foreach ($aggregated as $alert) {
             $notification = $this->create($user, $alert);
+            $type = $alert['original_type'] ?? $alert['type'];
+            $typePrefs = $preferences[$type] ?? ['push' => true, 'email' => false, 'digest' => false];
 
-            if (!$this->isQuietHours($user) && $user->fcm_token) {
+            // Send push notification if enabled and not in quiet hours
+            $shouldPush = $typePrefs['push'] ?? true;
+            if ($shouldPush && !$this->isQuietHours($user) && $user->fcm_token) {
                 $this->sendFcm($user, $notification);
             }
+
+            // Send immediate email if enabled (not digest)
+            $shouldEmail = $typePrefs['email'] ?? false;
+            if ($shouldEmail && $user->email_notifications_enabled) {
+                $this->sendEmail($user, $notification);
+            }
+        }
+    }
+
+    public function sendEmail(User $user, Notification $notification): void
+    {
+        if (!$user->email) {
+            return;
+        }
+
+        try {
+            Mail::to($user->email)->queue(
+                new AlertNotificationMail($user, $notification)
+            );
+
+            $notification->update(['email_sent_at' => now()]);
+
+            Log::info('Email notification queued', ['user_id' => $user->id, 'notification_id' => $notification->id]);
+        } catch (\Exception $e) {
+            Log::error('Email send failed', [
+                'user_id' => $user->id,
+                'notification_id' => $notification->id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
