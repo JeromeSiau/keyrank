@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
+import '../domain/chat_action_model.dart';
 import '../domain/chat_models.dart';
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
@@ -94,9 +95,14 @@ class ChatRepository {
   }
 
   /// Get suggested questions for an app
-  Future<List<SuggestedQuestions>> getSuggestedQuestions(int appId) async {
+  Future<List<SuggestedQuestions>> getSuggestedQuestions(int appId, {String? locale}) async {
     try {
-      final response = await dio.get('/apps/$appId/chat/suggestions');
+      final response = await dio.get(
+        '/apps/$appId/chat/suggestions',
+        options: locale != null
+            ? Options(headers: {'Accept-Language': locale})
+            : null,
+      );
       final data = response.data['data'] as List<dynamic>? ?? [];
       return data
           .map((e) => SuggestedQuestions.fromJson(e as Map<String, dynamic>))
@@ -114,5 +120,51 @@ class ChatRepository {
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
+  }
+
+  /// Execute a chat action
+  Future<ActionExecutionResult> executeAction(int actionId) async {
+    try {
+      final response = await dio.post('/chat/actions/$actionId/execute');
+      return ActionExecutionResult.fromJson(
+          response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Cancel a chat action
+  Future<ChatAction> cancelAction(int actionId) async {
+    try {
+      final response = await dio.post('/chat/actions/$actionId/cancel');
+      return ChatAction.fromJson(
+          response.data['data']['action'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+}
+
+/// Result of executing an action
+class ActionExecutionResult {
+  final bool success;
+  final ChatAction action;
+  final Map<String, dynamic>? result;
+  final String? error;
+
+  ActionExecutionResult({
+    required this.success,
+    required this.action,
+    this.result,
+    this.error,
+  });
+
+  factory ActionExecutionResult.fromJson(Map<String, dynamic> json) {
+    return ActionExecutionResult(
+      success: json['success'] as bool? ?? false,
+      action: ChatAction.fromJson(json['action'] as Map<String, dynamic>),
+      result: json['result'] as Map<String, dynamic>?,
+      error: json['error'] as String?,
+    );
   }
 }

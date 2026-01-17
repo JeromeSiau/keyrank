@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -306,16 +307,25 @@ class _ChatConversationScreenState
 
   Widget _buildMessagesList(BuildContext context, ChatState chatState) {
     final messages = chatState.messages;
+    final notifier = ref.read(chatNotifierProvider(widget.conversationId).notifier);
 
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.all(16),
-      itemCount: messages.length,
+      itemCount: messages.length + (chatState.isSending ? 1 : 0),
       itemBuilder: (context, index) {
+        // Show typing indicator at the end when sending
+        if (chatState.isSending && index == messages.length) {
+          return const TypingIndicator();
+        }
+
         final message = messages[index];
         return MessageBubble(
           message: message,
-          isLast: index == messages.length - 1,
+          isLast: index == messages.length - 1 && !chatState.isSending,
+          executingActionIds: chatState.executingActionIds,
+          onConfirmAction: (action) => notifier.executeAction(action),
+          onCancelAction: (action) => notifier.cancelAction(action),
         );
       },
     );
@@ -339,26 +349,58 @@ class _ChatConversationScreenState
                 borderRadius: BorderRadius.circular(AppColors.radiusMedium),
                 border: Border.all(color: colors.glassBorder),
               ),
-              child: TextField(
-                controller: _messageController,
-                focusNode: _focusNode,
-                enabled: !isSending,
-                maxLines: 4,
-                minLines: 1,
-                decoration: InputDecoration(
-                  hintText: context.l10n.chat_typeMessage,
-                  hintStyle: TextStyle(color: colors.textMuted),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+              child: KeyboardListener(
+                focusNode: FocusNode(),
+                onKeyEvent: (event) {
+                  if (event is KeyDownEvent &&
+                      event.logicalKey == LogicalKeyboardKey.enter) {
+                    final isModifierPressed =
+                        HardwareKeyboard.instance.isControlPressed ||
+                            HardwareKeyboard.instance.isMetaPressed;
+                    if (isModifierPressed) {
+                      // Ctrl/Cmd+Enter: insert new line
+                      final text = _messageController.text;
+                      final selection = _messageController.selection;
+                      final newText = text.replaceRange(
+                        selection.start,
+                        selection.end,
+                        '\n',
+                      );
+                      _messageController.value = TextEditingValue(
+                        text: newText,
+                        selection: TextSelection.collapsed(
+                          offset: selection.start + 1,
+                        ),
+                      );
+                    } else {
+                      // Enter alone: send message
+                      _sendMessage();
+                    }
+                  }
+                },
+                child: TextField(
+                  controller: _messageController,
+                  focusNode: _focusNode,
+                  enabled: !isSending,
+                  maxLines: 4,
+                  minLines: 1,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.send,
+                  decoration: InputDecoration(
+                    hintText: context.l10n.chat_typeMessage,
+                    hintStyle: TextStyle(color: colors.textMuted),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: colors.textPrimary,
+                  ),
+                  onSubmitted: (_) => _sendMessage(),
                 ),
-                style: TextStyle(
-                  fontSize: 15,
-                  color: colors.textPrimary,
-                ),
-                onSubmitted: (_) => _sendMessage(),
               ),
             ),
           ),

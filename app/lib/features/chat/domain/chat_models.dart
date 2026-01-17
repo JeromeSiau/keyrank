@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:keyrank/features/chat/domain/chat_action_model.dart';
 
 part 'chat_models.freezed.dart';
 part 'chat_models.g.dart';
@@ -31,6 +32,7 @@ class ChatMessage with _$ChatMessage {
     required String role,
     required String content,
     @JsonKey(name: 'data_sources_used') List<String>? dataSourcesUsed,
+    @Default([]) List<ChatAction> actions,
     @JsonKey(name: 'created_at') required DateTime createdAt,
   }) = _ChatMessage;
 
@@ -39,6 +41,9 @@ class ChatMessage with _$ChatMessage {
 
   bool get isUser => role == 'user';
   bool get isAssistant => role == 'assistant';
+  bool get hasActions => actions.isNotEmpty;
+  List<ChatAction> get pendingActions =>
+      actions.where((a) => a.isProposed).toList();
 }
 
 @freezed

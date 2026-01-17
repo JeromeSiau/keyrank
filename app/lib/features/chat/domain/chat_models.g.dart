@@ -42,6 +42,11 @@ _$ChatMessageImpl _$$ChatMessageImplFromJson(Map<String, dynamic> json) =>
       dataSourcesUsed: (json['data_sources_used'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      actions:
+          (json['actions'] as List<dynamic>?)
+              ?.map((e) => ChatAction.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       createdAt: DateTime.parse(json['created_at'] as String),
     );
 
@@ -51,6 +56,7 @@ Map<String, dynamic> _$$ChatMessageImplToJson(_$ChatMessageImpl instance) =>
       'role': instance.role,
       'content': instance.content,
       'data_sources_used': instance.dataSourcesUsed,
+      'actions': instance.actions,
       'created_at': instance.createdAt.toIso8601String(),
     };
 

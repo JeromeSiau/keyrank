@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/providers/app_context_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../data/chat_repository.dart';
@@ -15,6 +16,13 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Refresh conversations when screen appears (title may have changed)
+    Future.microtask(() => ref.invalidate(conversationsProvider));
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -105,8 +113,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   Future<void> _createNewConversation(BuildContext context) async {
     final repository = ref.read(chatRepositoryProvider);
+    final selectedApp = ref.read(appContextProvider);
+
     try {
-      final conversation = await repository.createConversation();
+      final conversation = await repository.createConversation(
+        appId: selectedApp?.id,
+      );
       ref.invalidate(conversationsProvider);
       if (context.mounted) {
         context.go('/chat/${conversation.id}');

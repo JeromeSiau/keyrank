@@ -336,6 +336,7 @@ mixin _$ChatMessage {
   String get content => throw _privateConstructorUsedError;
   @JsonKey(name: 'data_sources_used')
   List<String>? get dataSourcesUsed => throw _privateConstructorUsedError;
+  List<ChatAction> get actions => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
@@ -361,6 +362,7 @@ abstract class $ChatMessageCopyWith<$Res> {
     String role,
     String content,
     @JsonKey(name: 'data_sources_used') List<String>? dataSourcesUsed,
+    List<ChatAction> actions,
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
@@ -384,6 +386,7 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
     Object? role = null,
     Object? content = null,
     Object? dataSourcesUsed = freezed,
+    Object? actions = null,
     Object? createdAt = null,
   }) {
     return _then(
@@ -404,6 +407,10 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
                 ? _value.dataSourcesUsed
                 : dataSourcesUsed // ignore: cast_nullable_to_non_nullable
                       as List<String>?,
+            actions: null == actions
+                ? _value.actions
+                : actions // ignore: cast_nullable_to_non_nullable
+                      as List<ChatAction>,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -428,6 +435,7 @@ abstract class _$$ChatMessageImplCopyWith<$Res>
     String role,
     String content,
     @JsonKey(name: 'data_sources_used') List<String>? dataSourcesUsed,
+    List<ChatAction> actions,
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
@@ -450,6 +458,7 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
     Object? role = null,
     Object? content = null,
     Object? dataSourcesUsed = freezed,
+    Object? actions = null,
     Object? createdAt = null,
   }) {
     return _then(
@@ -470,6 +479,10 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
             ? _value._dataSourcesUsed
             : dataSourcesUsed // ignore: cast_nullable_to_non_nullable
                   as List<String>?,
+        actions: null == actions
+            ? _value._actions
+            : actions // ignore: cast_nullable_to_non_nullable
+                  as List<ChatAction>,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -487,8 +500,10 @@ class _$ChatMessageImpl extends _ChatMessage {
     required this.role,
     required this.content,
     @JsonKey(name: 'data_sources_used') final List<String>? dataSourcesUsed,
+    final List<ChatAction> actions = const [],
     @JsonKey(name: 'created_at') required this.createdAt,
   }) : _dataSourcesUsed = dataSourcesUsed,
+       _actions = actions,
        super._();
 
   factory _$ChatMessageImpl.fromJson(Map<String, dynamic> json) =>
@@ -511,13 +526,22 @@ class _$ChatMessageImpl extends _ChatMessage {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<ChatAction> _actions;
+  @override
+  @JsonKey()
+  List<ChatAction> get actions {
+    if (_actions is EqualUnmodifiableListView) return _actions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_actions);
+  }
+
   @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, role: $role, content: $content, dataSourcesUsed: $dataSourcesUsed, createdAt: $createdAt)';
+    return 'ChatMessage(id: $id, role: $role, content: $content, dataSourcesUsed: $dataSourcesUsed, actions: $actions, createdAt: $createdAt)';
   }
 
   @override
@@ -532,6 +556,7 @@ class _$ChatMessageImpl extends _ChatMessage {
               other._dataSourcesUsed,
               _dataSourcesUsed,
             ) &&
+            const DeepCollectionEquality().equals(other._actions, _actions) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -544,6 +569,7 @@ class _$ChatMessageImpl extends _ChatMessage {
     role,
     content,
     const DeepCollectionEquality().hash(_dataSourcesUsed),
+    const DeepCollectionEquality().hash(_actions),
     createdAt,
   );
 
@@ -567,6 +593,7 @@ abstract class _ChatMessage extends ChatMessage {
     required final String role,
     required final String content,
     @JsonKey(name: 'data_sources_used') final List<String>? dataSourcesUsed,
+    final List<ChatAction> actions,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _$ChatMessageImpl;
   const _ChatMessage._() : super._();
@@ -583,6 +610,8 @@ abstract class _ChatMessage extends ChatMessage {
   @override
   @JsonKey(name: 'data_sources_used')
   List<String>? get dataSourcesUsed;
+  @override
+  List<ChatAction> get actions;
   @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;

@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/providers/locale_provider.dart';
 import '../data/chat_repository.dart';
+import '../domain/chat_action_model.dart';
 import '../domain/chat_models.dart';
 
 /// Provider for fetching the list of conversations
@@ -33,7 +35,8 @@ final chatQuotaProvider = FutureProvider<ChatQuota>((ref) async {
 final suggestedQuestionsProvider =
     FutureProvider.family<List<SuggestedQuestions>, int>((ref, appId) async {
   final repository = ref.watch(chatRepositoryProvider);
-  return repository.getSuggestedQuestions(appId);
+  final locale = ref.watch(localeProvider)?.languageCode;
+  return repository.getSuggestedQuestions(appId, locale: locale);
 });
 
 /// Notifier for managing chat state during a conversation
@@ -76,21 +79,20 @@ class ChatNotifier extends StateNotifier<ChatState> {
     );
 
     try {
+      // Use non-streaming endpoint
       final assistantMessage = await _repository.sendMessage(conversationId, message);
 
-      // Replace optimistic message and add assistant response
+      // Replace optimistic user message with real messages
       final updatedMessages = state.messages
           .where((m) => m.id != userMessage.id)
           .toList();
 
-      // Add the real user message (with proper ID from server implicit in the conversation)
-      // and the assistant message
       state = state.copyWith(
         isSending: false,
         messages: [
           ...updatedMessages,
           ChatMessage(
-            id: assistantMessage.id - 1, // User message comes before
+            id: assistantMessage.id - 1,
             role: 'user',
             content: message,
             createdAt: assistantMessage.createdAt.subtract(const Duration(seconds: 1)),
@@ -102,10 +104,61 @@ class ChatNotifier extends StateNotifier<ChatState> {
       // Remove optimistic message on error
       state = state.copyWith(
         isSending: false,
-        messages: state.messages.where((m) => m.id != userMessage.id).toList(),
+        messages: state.messages
+            .where((m) => m.id != userMessage.id)
+            .toList(),
         error: e.toString(),
       );
     }
+  }
+
+  /// Execute an action
+  Future<void> executeAction(ChatAction action) async {
+    // Mark as executing
+    state = state.copyWith(
+      executingActionIds: {...state.executingActionIds, action.id},
+    );
+
+    try {
+      final result = await _repository.executeAction(action.id);
+
+      // Update the action in the message
+      state = state.copyWith(
+        executingActionIds: {...state.executingActionIds}..remove(action.id),
+        messages: _updateActionInMessages(result.action),
+      );
+    } catch (e) {
+      state = state.copyWith(
+        executingActionIds: {...state.executingActionIds}..remove(action.id),
+        error: e.toString(),
+      );
+    }
+  }
+
+  /// Cancel an action
+  Future<void> cancelAction(ChatAction action) async {
+    try {
+      final cancelledAction = await _repository.cancelAction(action.id);
+      state = state.copyWith(
+        messages: _updateActionInMessages(cancelledAction),
+      );
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  /// Helper to update an action within messages
+  List<ChatMessage> _updateActionInMessages(ChatAction updatedAction) {
+    return state.messages.map((message) {
+      if (message.actions.any((a) => a.id == updatedAction.id)) {
+        return message.copyWith(
+          actions: message.actions
+              .map((a) => a.id == updatedAction.id ? updatedAction : a)
+              .toList(),
+        );
+      }
+      return message;
+    }).toList();
   }
 }
 
@@ -115,6 +168,7 @@ class ChatState {
   final String? error;
   final ChatConversation? conversation;
   final List<ChatMessage> messages;
+  final Set<int> executingActionIds;
 
   ChatState({
     required this.isLoading,
@@ -122,12 +176,14 @@ class ChatState {
     this.error,
     this.conversation,
     required this.messages,
+    this.executingActionIds = const {},
   });
 
   factory ChatState.initial() => ChatState(
         isLoading: false,
         isSending: false,
         messages: [],
+        executingActionIds: {},
       );
 
   ChatState copyWith({
@@ -136,6 +192,7 @@ class ChatState {
     String? error,
     ChatConversation? conversation,
     List<ChatMessage>? messages,
+    Set<int>? executingActionIds,
   }) {
     return ChatState(
       isLoading: isLoading ?? this.isLoading,
@@ -143,6 +200,7 @@ class ChatState {
       error: error,
       conversation: conversation ?? this.conversation,
       messages: messages ?? this.messages,
+      executingActionIds: executingActionIds ?? this.executingActionIds,
     );
   }
 }

@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../domain/chat_action_model.dart';
 import '../../domain/chat_models.dart';
+import 'action_card.dart';
 
 class MessageBubble extends StatelessWidget {
   final ChatMessage message;
   final bool isLast;
+  final void Function(ChatAction action)? onConfirmAction;
+  final void Function(ChatAction action)? onCancelAction;
+  final Set<int> executingActionIds;
 
   const MessageBubble({
     super.key,
     required this.message,
     this.isLast = false,
+    this.onConfirmAction,
+    this.onCancelAction,
+    this.executingActionIds = const {},
   });
 
   @override
@@ -34,32 +42,46 @@ class MessageBubble extends StatelessWidget {
               crossAxisAlignment:
                   isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isUser ? colors.accent : colors.bgActive,
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(16),
-                      topRight: const Radius.circular(16),
-                      bottomLeft: Radius.circular(isUser ? 16 : 4),
-                      bottomRight: Radius.circular(isUser ? 4 : 16),
+                // Message content
+                if (message.content.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
                     ),
-                    border: isUser
-                        ? null
-                        : Border.all(color: colors.glassBorder),
-                  ),
-                  child: SelectableText(
-                    message.content,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: isUser ? Colors.white : colors.textPrimary,
-                      height: 1.5,
+                    decoration: BoxDecoration(
+                      color: isUser ? colors.accent : colors.bgActive,
+                      borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(16),
+                        topRight: const Radius.circular(16),
+                        bottomLeft: Radius.circular(isUser ? 16 : 4),
+                        bottomRight: Radius.circular(isUser ? 4 : 16),
+                      ),
+                      border: isUser
+                          ? null
+                          : Border.all(color: colors.glassBorder),
+                    ),
+                    child: SelectableText(
+                      message.content,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: isUser ? Colors.white : colors.textPrimary,
+                        height: 1.5,
+                      ),
                     ),
                   ),
-                ),
+
+                // Action cards for assistant messages
+                if (!isUser && message.actions.isNotEmpty)
+                  ...message.actions.map((action) => ActionCard(
+                        action: action,
+                        isExecuting: executingActionIds.contains(action.id),
+                        onConfirm: () => onConfirmAction?.call(action),
+                        onCancel: () => onCancelAction?.call(action),
+                      )),
+
+                // Only show metadata row when message has content
+                if (message.content.isNotEmpty) ...[
                 const SizedBox(height: 6),
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -80,12 +102,13 @@ class MessageBubble extends StatelessWidget {
                       ),
                     ),
                     // Copy button for assistant messages
-                    if (!isUser) ...[
+                    if (!isUser && message.content.isNotEmpty) ...[
                       const SizedBox(width: 8),
                       _CopyButton(content: message.content),
                     ],
                   ],
                 ),
+                ], // end if content.isNotEmpty
               ],
             ),
           ),
