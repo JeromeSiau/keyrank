@@ -8,11 +8,11 @@
 
 | Phase | Total | Done | In Progress | Remaining |
 |-------|-------|------|-------------|-----------|
-| Phase 1: Quick Wins | 6 | 1 | 0 | 5 |
-| Phase 2: Core Parity | 6 | 2 | 0 | 4 |
-| Phase 3: Différenciation | 4 | 0 | 0 | 4 |
+| Phase 1: Quick Wins | 6 | 6 | 0 | 0 |
+| Phase 2: Core Parity | 6 | 6 | 0 | 0 |
+| Phase 3: Différenciation | 4 | 1 | 0 | 3 |
 | Phase 4: Enterprise | 5 | 0 | 0 | 5 |
-| **TOTAL** | **21** | **3** | **0** | **18** |
+| **TOTAL** | **21** | **13** | **0** | **8** |
 
 ---
 
@@ -20,18 +20,14 @@
 
 | # | Feature | Status | Branch | Session Date | Notes |
 |---|---------|--------|--------|--------------|-------|
-| 4.1 | ASO Score Global | ⬚ Todo | - | - | Dashboard widget + Insights |
-| 4.2 | Keyword Difficulty Score | ⬚ Todo | - | - | Liste keywords + filtres |
-| 4.3 | Export CSV | ⬚ Todo | - | - | Keywords, Analytics, Reviews |
-| 4.4 | AI Review Reply Generator | ⬚ Todo | - | - | 3 tons: pro/empathetic/brief |
+| 4.1 | ASO Score Global | ✅ Done | main | 2026-01-16 | Dashboard widget + Insights |
+| 4.2 | Keyword Difficulty Score | ✅ Done | main | 2026-01-16 | Liste keywords + filtres |
+| 4.3 | Export CSV | ✅ Done | main | 2026-01-16 | Keywords, Analytics, Reviews |
+| 4.4 | AI Review Reply Generator | ✅ Done | main | 2026-01-16 | 3 tons: pro/empathetic/brief |
 | 4.5 | Email Alerts | ✅ Done | main | 2026-01-16 | Settings + digest scheduling |
-| 4.6 | Custom Date Range Picker | ⬚ Todo | - | - | Shared widget |
+| 4.6 | Custom Date Range Picker | ✅ Done | main | 2026-01-16 | Shared widget |
 
-### Suggested Order
-```
-4.6 → 4.3 → 4.2 → 4.1 → 4.4
-(dependencies: date picker used in analytics, export simple, etc.)
-```
+**Phase 1 Complete!** All 6 Quick Wins implemented.
 
 ---
 
@@ -39,12 +35,14 @@
 
 | # | Feature | Status | Branch | Session Date | Notes |
 |---|---------|--------|--------|--------------|-------|
-| 5.1 | Metadata Editor | ⬚ Todo | - | - | NEW module, ~1-2h |
-| 5.2 | Multi-Locale View | ⬚ Todo | - | - | Depends on 5.1 |
-| 5.3 | Keyword Suggestions AI | ⬚ Todo | - | - | Backend AI needed |
+| 5.1 | Metadata Editor | ✅ Done | main | 2026-01-16 | Full CRUD + ASC/Google Play API integration |
+| 5.2 | Multi-Locale View | ✅ Done | main | 2026-01-16 | Table view, filters, bulk copy/translate (AI) |
+| 5.3 | Keyword Suggestions AI | ✅ Done | main | 2026-01-16 | Categorized: High Opp, Competitor, Long-tail, Trending, Related |
 | 5.4 | Competitor Keyword Spy | ✅ Done | main | 2026-01-16 | Detail page + comparison |
 | 5.5 | Bulk Keyword Actions | ✅ Done | main | 2026-01-16 | Selection mode + bulk export |
-| 5.6 | Conversion Funnel | ⬚ Todo | - | - | ASC/Google API data |
+| 5.6 | Conversion Funnel | ✅ Done | main | 2026-01-16 | Full implementation with insight text + trend chart |
+
+**Phase 2 Complete!** All 6 Core Parity features implemented.
 
 ### Suggested Order
 ```
@@ -60,7 +58,7 @@
 |---|---------|--------|--------|--------------|-------|
 | 6.1 | AI Optimization Wizard | ⬚ Todo | - | - | Depends on 5.1 (Metadata) |
 | 6.2 | Competitor Metadata History | ⬚ Todo | - | - | Backend scraping needed |
-| 6.3 | Chat with Executable Actions | ⬚ Todo | - | - | Extend existing chat |
+| 6.3 | Chat with Executable Actions | ✅ Done | main | 2026-01-17 | Tool calling + action cards |
 | 6.4 | Review Intelligence Dashboard | ⬚ Todo | - | - | AI extraction features |
 
 ### Suggested Order
@@ -139,6 +137,131 @@
   - `app/lib/features/keywords/presentation/keywords_screen.dart` - Added selection mode to global view
   - Deleted: `app/lib/features/apps/presentation/app_detail_screen.dart`
 
+### Session 2026-01-16 - 5.1 Metadata Editor + 5.2 Multi-Locale View
+- **Branch**: main
+- **Status**: ✅ Done
+- **Notes**:
+  - **5.1 Metadata Editor** (already implemented):
+    - Backend: Full `MetadataController` with CRUD operations
+    - API endpoints: `GET/PUT /apps/{id}/metadata/{locale}`, publish, refresh, history
+    - Flutter: Models, Repository, Provider, Editor Screen
+    - Features: Live vs Draft comparison, keyword analysis, character limits
+  - **5.2 Multi-Locale View** (this session):
+    - Backend: Added `POST /metadata/copy` and `POST /metadata/translate` endpoints
+    - AI Translation using OpenRouter (gpt-5-nano) with ASO-optimized prompts
+    - Flutter: Coverage card with stats and progress bar
+    - Flutter: Multi-locale table with filters (All/Live/Draft/Empty)
+    - Flutter: Bulk actions bar (Copy, Translate, Publish)
+    - Flutter: Selection mode with long-press to select
+    - Added l10n strings for all 10 languages (EN, FR, DE, ES, IT, JA, KO, PT, TR, ZH)
+- **Files created**:
+  - `app/lib/features/metadata/presentation/widgets/metadata_coverage_card.dart`
+  - `app/lib/features/metadata/presentation/widgets/metadata_multi_locale_table.dart`
+  - `app/lib/features/metadata/presentation/widgets/metadata_bulk_actions_bar.dart`
+- **Files modified**:
+  - `api/app/Http/Controllers/Api/MetadataController.php` - Added copyLocale, translateLocale
+  - `api/routes/api.php` - Added copy and translate routes
+  - `app/lib/features/metadata/data/metadata_repository.dart` - Added copyLocale, translateLocale methods
+  - `app/lib/features/metadata/providers/metadata_provider.dart` - Added selection/filter providers
+  - `app/lib/features/metadata/presentation/screens/metadata_editor_screen.dart` - Integrated new components
+  - `app/lib/l10n/*.dart` - Added multi-locale view strings (27 new strings per locale)
+
+### Session 2026-01-16 - 5.3 Keyword Suggestions AI
+- **Branch**: main
+- **Status**: ✅ Done
+- **Notes**:
+  - Enhanced keyword suggestions with 5 categories: High Opportunity, Competitor, Long-tail, Trending, Related
+  - Backend: Created `KeywordSuggestionService` with cross-platform support (iOS + Android)
+  - Competitor extraction from tracked competitors' keywords
+  - Long-tail generation with Search Hints validation (real search volume)
+  - Related keywords expansion from tracked keywords
+  - Trending keywords from category top apps
+  - Flutter: Updated models with category, popularity, reason, basedOn, competitorName
+  - Flutter: Enhanced modal with category tabs, grouped view, reason display
+  - Added l10n strings (EN + FR)
+- **Files created**:
+  - `api/app/Services/KeywordSuggestionService.php`
+  - `api/database/migrations/2026_01_16_100000_add_ai_fields_to_keyword_suggestions_table.php`
+  - `docs/plans/5.3-keyword-suggestions-ai.md`
+- **Files modified**:
+  - `api/app/Models/KeywordSuggestion.php` - Added new fields + scopes
+  - `api/app/Jobs/GenerateKeywordSuggestionsJob.php` - Use new service
+  - `api/app/Http/Controllers/Api/KeywordController.php` - Categorized response
+  - `app/lib/features/keywords/domain/keyword_model.dart` - Added category, reason, etc.
+  - `app/lib/features/keywords/presentation/keyword_suggestions_modal.dart` - Category tabs + grouped view
+  - `app/lib/l10n/app_en.arb`, `app_fr.arb` - New category strings
+
+### Session 2026-01-16 - 5.6 Conversion Funnel Analytics
+- **Branch**: main
+- **Status**: ✅ Done
+- **Notes**:
+  - **Backend**: Full implementation with ASC Analytics API + Google Play acquisition reports
+  - Migration: `app_funnel_analytics` table with impressions, page_views, downloads, source
+  - AppFunnelAnalytics model with scopes (forPeriod, bySource, byCountry, aggregatedByDate, aggregatedBySource)
+  - Extended AppStoreConnectService with Analytics API methods (requestAnalyticsReport, getConversionFunnelData)
+  - Extended GooglePlayDeveloperService with acquisition report methods
+  - FunnelController: GET /apps/{app}/funnel, POST /apps/{app}/funnel/sync
+  - SyncFunnelAnalyticsJob: Daily at 7:00 AM
+  - **Flutter**: ConversionFunnel models (Freezed) with summary, bySource, trend, comparison
+  - ConversionFunnelCard widget with:
+    - Funnel stages visualization (Impressions → Page Views → Downloads)
+    - Category average comparison badge
+    - Source breakdown table
+    - **NEW**: _FunnelInsight widget with AI-generated insight text (e.g., "Search traffic converts 2.4x better than Browse")
+    - **NEW**: _FunnelTrendChart with fl_chart line chart for CVR % over time
+  - Analytics provider with conversionFunnelProvider, funnelSourceFilterProvider
+  - l10n strings for all insight recommendations (EN + FR + fallback for other locales)
+- **Files created**:
+  - `api/database/migrations/2026_01_16_200000_create_app_funnel_analytics_table.php`
+  - `api/app/Models/AppFunnelAnalytics.php`
+  - `api/app/Http/Controllers/Api/FunnelController.php`
+  - `api/app/Jobs/SyncFunnelAnalyticsJob.php`
+  - `app/lib/features/analytics/domain/conversion_funnel_model.dart`
+  - `app/lib/features/analytics/presentation/widgets/conversion_funnel_card.dart`
+  - `docs/plans/5.6-conversion-funnel.md`
+- **Files modified**:
+  - `api/app/Services/AppStoreConnectService.php` - Added Analytics API methods
+  - `api/app/Services/GooglePlayDeveloperService.php` - Added acquisition report methods
+  - `api/routes/api.php` - Added funnel routes
+  - `api/routes/console.php` - Added SyncFunnelAnalyticsJob schedule
+  - `app/lib/features/analytics/data/analytics_repository.dart` - Added getFunnel, syncFunnel
+  - `app/lib/features/analytics/providers/analytics_provider.dart` - Added funnel providers
+  - `app/lib/features/analytics/presentation/app_analytics_screen.dart` - Integrated ConversionFunnelCard
+  - `app/lib/l10n/*.arb` and `app_localizations*.dart` - Added funnel insight strings
+
+**Phase 2 Complete!** All Core Parity features implemented.
+
+### Session 2026-01-17 - 6.3 Chat with Executable Actions
+- **Branch**: main
+- **Status**: ✅ Done
+- **Notes**:
+  - **LLM Tool Calling**: Extended OpenRouterService with function/tool definitions
+  - Tools implemented: add_keywords, remove_keywords, create_alert
+  - ChatAction model with status (proposed/executed/cancelled/failed)
+  - ActionExecutorService for executing actions on user confirmation
+  - **Flutter**: ChatAction model (Freezed), ActionCard widget with Confirm/Cancel buttons
+  - MessageBubble now renders inline ActionCards for proposed actions
+  - Fixed app context provider usage in ChatScreen (was using wrong provider)
+  - Fixed ActionExecutorService to use TrackedKeyword model (not Keyword)
+  - Removed non-working streaming implementation
+  - Added localized suggested questions (10 languages via Accept-Language header)
+- **Files created**:
+  - `api/app/Models/ChatAction.php`
+  - `api/app/Services/ActionExecutorService.php`
+  - `api/database/migrations/2026_01_16_300000_create_chat_actions_table.php`
+  - `app/lib/features/chat/domain/chat_action_model.dart`
+  - `app/lib/features/chat/presentation/widgets/action_card.dart`
+  - `docs/plans/6.3-chat-executable-actions.md`
+- **Files modified**:
+  - `api/app/Http/Controllers/Api/ChatController.php` - execute/cancel actions, localized suggestions
+  - `api/app/Services/ChatService.php` - Tool definitions, action extraction from LLM response
+  - `api/app/Services/OpenRouterService.php` - Tool calling support
+  - `api/routes/api.php` - Action routes
+  - `app/lib/features/chat/data/chat_repository.dart` - Execute/cancel action methods
+  - `app/lib/features/chat/providers/chat_provider.dart` - Action execution, locale for suggestions
+  - `app/lib/features/chat/presentation/chat_screen.dart` - Fixed app context provider
+  - `app/lib/features/chat/presentation/widgets/message_bubble.dart` - Render action cards
+
 ---
 
 ## Blockers & Questions
@@ -158,12 +281,13 @@ Features requiring backend changes:
 | 4.1 ASO Score | Score calculation | `GET /apps/{id}/aso-score` | ⬚ Todo |
 | 4.4 AI Reply | LLM integration | `POST /reviews/{id}/generate-reply` | ⬚ Todo |
 | 4.5 Email Alerts | Email service | `PUT /settings/alerts` | ✅ Done |
-| 5.1 Metadata Editor | ASC API integration | `GET/PUT /apps/{id}/metadata` | ⬚ Todo |
-| 5.3 Keyword Suggestions | AI + competitor data | `GET /keywords/suggestions/{appId}` | ⬚ Todo |
+| 5.1 Metadata Editor | ASC API integration | `GET/PUT /apps/{id}/metadata` | ✅ Done |
+| 5.2 Multi-Locale | Copy/Translate | `POST /apps/{id}/metadata/copy,translate` | ✅ Done |
+| 5.3 Keyword Suggestions | AI + competitor data | `GET /apps/{id}/keywords/suggestions` | ✅ Done |
 | 5.4 Competitor Keywords | Keyword comparison | `GET /competitors/{id}/keywords` | ✅ Done |
-| 5.6 Conversion Funnel | ASC Analytics API | `GET /analytics/{id}/funnel` | ⬚ Todo |
+| 5.6 Conversion Funnel | ASC Analytics API | `GET /apps/{id}/funnel` | ✅ Done |
 | 6.2 Competitor History | Scraping service | `GET /competitors/{id}/metadata-history` | ⬚ Todo |
-| 6.3 Chat Actions | Action execution | `POST /chat/execute-action` | ⬚ Todo |
+| 6.3 Chat Actions | Action execution | `POST /chat/actions/{id}/execute` | ✅ Done |
 | 7.1 Team | User management | `GET/POST /team/*` | ⬚ Todo |
 | 7.2 Slack | OAuth | `POST /integrations/slack` | ⬚ Todo |
 | 7.3 Reports | PDF generation | `POST /reports/{id}/generate` | ⬚ Todo |
@@ -217,4 +341,4 @@ Track which files each feature touches:
 
 ---
 
-*Last updated: 2026-01-16 (5.4 Competitor Keyword Spy)*
+*Last updated: 2026-01-17 (6.3 Chat with Executable Actions)*
