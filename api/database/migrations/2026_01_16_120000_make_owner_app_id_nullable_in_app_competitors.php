@@ -9,36 +9,40 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // 1. Drop foreign key on owner_app_id if it exists
-        $foreignKeys = collect(DB::select("
-            SELECT CONSTRAINT_NAME
-            FROM information_schema.TABLE_CONSTRAINTS
-            WHERE TABLE_SCHEMA = DATABASE()
-            AND TABLE_NAME = 'app_competitors'
-            AND CONSTRAINT_TYPE = 'FOREIGN KEY'
-            AND CONSTRAINT_NAME = 'app_competitors_owner_app_id_foreign'
-        "));
+        // Helper to check if index exists
+        $indexExists = fn($table, $index) => collect(
+            DB::select("SHOW INDEX FROM {$table} WHERE Key_name = ?", [$index])
+        )->isNotEmpty();
 
-        if ($foreignKeys->isNotEmpty()) {
+        // Helper to check if foreign key exists
+        $fkExists = fn($table, $fk) => collect(DB::select("
+            SELECT 1 FROM information_schema.TABLE_CONSTRAINTS
+            WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = ? AND CONSTRAINT_TYPE = 'FOREIGN KEY'
+        ", [$table, $fk]))->isNotEmpty();
+
+        // 1. Drop foreign key on owner_app_id if it exists
+        if ($fkExists('app_competitors', 'app_competitors_owner_app_id_foreign')) {
             Schema::table('app_competitors', function (Blueprint $table) {
                 $table->dropForeign('app_competitors_owner_app_id_foreign');
             });
         }
 
-        // 2. Create a simple index on user_id so we can drop the composite one
-        // (MySQL needs an index for the user_id foreign key)
-        Schema::table('app_competitors', function (Blueprint $table) {
-            $table->index('user_id', 'app_competitors_user_id_index');
-        });
+        // 2. Create a simple index on user_id (if not exists)
+        if (!$indexExists('app_competitors', 'app_competitors_user_id_index')) {
+            Schema::table('app_competitors', function (Blueprint $table) {
+                $table->index('user_id', 'app_competitors_user_id_index');
+            });
+        }
 
-        // 3. Now we can safely drop the composite index
-        Schema::table('app_competitors', function (Blueprint $table) {
-            $table->dropIndex('app_competitors_user_id_owner_app_id_index');
-        });
+        // 3. Drop the composite index (if exists)
+        if ($indexExists('app_competitors', 'app_competitors_user_id_owner_app_id_index')) {
+            Schema::table('app_competitors', function (Blueprint $table) {
+                $table->dropIndex('app_competitors_user_id_owner_app_id_index');
+            });
+        }
 
-        // 4. Drop the orphaned index from former foreign key if it exists
-        $indexes = collect(DB::select("SHOW INDEX FROM app_competitors WHERE Key_name = 'app_competitors_owner_app_id_foreign'"));
-        if ($indexes->isNotEmpty()) {
+        // 4. Drop orphaned index from former foreign key (if exists)
+        if ($indexExists('app_competitors', 'app_competitors_owner_app_id_foreign')) {
             Schema::table('app_competitors', function (Blueprint $table) {
                 $table->dropIndex('app_competitors_owner_app_id_foreign');
             });
@@ -49,15 +53,17 @@ return new class extends Migration
             $table->unsignedBigInteger('owner_app_id')->nullable()->change();
         });
 
-        // 6. Re-add foreign key on owner_app_id (now allows NULL)
-        Schema::table('app_competitors', function (Blueprint $table) {
-            $table->foreign('owner_app_id')
-                  ->references('id')
-                  ->on('apps')
-                  ->onDelete('cascade');
-        });
+        // 6. Re-add foreign key on owner_app_id (if not exists)
+        if (!$fkExists('app_competitors', 'app_competitors_owner_app_id_foreign')) {
+            Schema::table('app_competitors', function (Blueprint $table) {
+                $table->foreign('owner_app_id')
+                      ->references('id')
+                      ->on('apps')
+                      ->onDelete('cascade');
+            });
+        }
 
-        // 7. Migrate global competitors from user_apps to app_competitors (if column exists)
+        // 7. Migrate global competitors from user_apps (if column exists)
         if (Schema::hasColumn('user_apps', 'is_competitor')) {
             DB::statement("
                 INSERT INTO app_competitors (user_id, owner_app_id, competitor_app_id, source, created_at)
@@ -73,16 +79,24 @@ return new class extends Migration
             ");
         }
 
-        // 8. Add unique constraint and new composite index
-        Schema::table('app_competitors', function (Blueprint $table) {
-            $table->unique(['user_id', 'owner_app_id', 'competitor_app_id'], 'unique_competitor');
-            $table->index(['user_id', 'owner_app_id'], 'app_competitors_user_id_owner_app_id_index');
-        });
+        // 8. Add unique constraint and composite index (if not exist)
+        if (!$indexExists('app_competitors', 'unique_competitor')) {
+            Schema::table('app_competitors', function (Blueprint $table) {
+                $table->unique(['user_id', 'owner_app_id', 'competitor_app_id'], 'unique_competitor');
+            });
+        }
+        if (!$indexExists('app_competitors', 'app_competitors_user_id_owner_app_id_index')) {
+            Schema::table('app_competitors', function (Blueprint $table) {
+                $table->index(['user_id', 'owner_app_id'], 'app_competitors_user_id_owner_app_id_index');
+            });
+        }
 
-        // 9. Drop the temporary simple user_id index (composite index can now be used)
-        Schema::table('app_competitors', function (Blueprint $table) {
-            $table->dropIndex('app_competitors_user_id_index');
-        });
+        // 9. Drop temporary user_id index (if exists)
+        if ($indexExists('app_competitors', 'app_competitors_user_id_index')) {
+            Schema::table('app_competitors', function (Blueprint $table) {
+                $table->dropIndex('app_competitors_user_id_index');
+            });
+        }
 
         // 10. Remove is_competitor from user_apps (if column exists)
         if (Schema::hasColumn('user_apps', 'is_competitor')) {
