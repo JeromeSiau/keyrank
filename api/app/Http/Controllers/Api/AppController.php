@@ -291,8 +291,14 @@ class AppController extends Controller
      */
     public function show(Request $request, App $app): JsonResponse
     {
-        // Load only this team's tracked keywords for this app
         $team = $this->currentTeam();
+
+        // Verify team owns this app
+        if (!$app->teams()->where('teams.id', $team->id)->exists()) {
+            abort(404, 'App not found');
+        }
+
+        // Load only this team's tracked keywords for this app
         $app->load(['trackedKeywords' => function ($query) use ($team) {
             $query->where('team_id', $team->id)->with('keyword');
         }]);
