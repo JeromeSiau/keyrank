@@ -13,11 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Global middleware
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
         $middleware->alias([
             'owns.app' => \App\Http\Middleware\EnsureUserOwnsApp::class,
             'plan.limit' => \App\Http\Middleware\CheckPlanLimit::class,
             'plan.feature' => \App\Http\Middleware\CheckPlanFeature::class,
             'api.key' => \App\Http\Middleware\AuthenticateApiKey::class,
+            'login.rate' => \App\Http\Middleware\LoginRateLimiter::class,
         ]);
 
         // Return JSON 401 for unauthenticated API requests instead of redirecting
