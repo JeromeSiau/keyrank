@@ -57,19 +57,21 @@ return new class extends Migration
                   ->onDelete('cascade');
         });
 
-        // 7. Migrate global competitors from user_apps to app_competitors
-        DB::statement("
-            INSERT INTO app_competitors (user_id, owner_app_id, competitor_app_id, source, created_at)
-            SELECT ua.user_id, NULL, ua.app_id, 'manual', ua.created_at
-            FROM user_apps ua
-            WHERE ua.is_competitor = 1
-            AND NOT EXISTS (
-                SELECT 1 FROM app_competitors ac
-                WHERE ac.user_id = ua.user_id
-                AND ac.owner_app_id IS NULL
-                AND ac.competitor_app_id = ua.app_id
-            )
-        ");
+        // 7. Migrate global competitors from user_apps to app_competitors (if column exists)
+        if (Schema::hasColumn('user_apps', 'is_competitor')) {
+            DB::statement("
+                INSERT INTO app_competitors (user_id, owner_app_id, competitor_app_id, source, created_at)
+                SELECT ua.user_id, NULL, ua.app_id, 'manual', ua.created_at
+                FROM user_apps ua
+                WHERE ua.is_competitor = 1
+                AND NOT EXISTS (
+                    SELECT 1 FROM app_competitors ac
+                    WHERE ac.user_id = ua.user_id
+                    AND ac.owner_app_id IS NULL
+                    AND ac.competitor_app_id = ua.app_id
+                )
+            ");
+        }
 
         // 8. Add unique constraint and new composite index
         Schema::table('app_competitors', function (Blueprint $table) {
@@ -82,10 +84,12 @@ return new class extends Migration
             $table->dropIndex('app_competitors_user_id_index');
         });
 
-        // 10. Remove is_competitor from user_apps
-        Schema::table('user_apps', function (Blueprint $table) {
-            $table->dropColumn('is_competitor');
-        });
+        // 10. Remove is_competitor from user_apps (if column exists)
+        if (Schema::hasColumn('user_apps', 'is_competitor')) {
+            Schema::table('user_apps', function (Blueprint $table) {
+                $table->dropColumn('is_competitor');
+            });
+        }
     }
 
     public function down(): void
