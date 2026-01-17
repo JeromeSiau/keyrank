@@ -9,7 +9,7 @@ class AppMetadataDraft extends Model
 {
     protected $fillable = [
         'app_id',
-        'user_id',
+        'team_id',
         'locale',
         'title',
         'subtitle',
@@ -54,9 +54,9 @@ class AppMetadataDraft extends Model
         return $this->belongsTo(App::class);
     }
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     /**
@@ -131,9 +131,9 @@ class AppMetadataDraft extends Model
         return $query->where('app_id', $appId);
     }
 
-    public function scopeForUser($query, int $userId)
+    public function scopeForTeam($query, int $teamId)
     {
-        return $query->where('user_id', $userId);
+        return $query->where('team_id', $teamId);
     }
 
     public function scopeForLocale($query, string $locale)

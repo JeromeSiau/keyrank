@@ -12,14 +12,14 @@ class Tag extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'team_id',
         'name',
         'color',
     ];
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function trackedKeywords(): BelongsToMany

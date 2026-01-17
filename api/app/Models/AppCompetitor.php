@@ -11,7 +11,7 @@ class AppCompetitor extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
+        'team_id',
         'owner_app_id',
         'competitor_app_id',
         'source',
@@ -21,9 +21,9 @@ class AppCompetitor extends Model
         'created_at' => 'datetime',
     ];
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function ownerApp(): BelongsTo

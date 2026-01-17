@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Models\AlertRule;
 use App\Models\Notification;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,6 +38,7 @@ class User extends Authenticatable
         'email_notifications_enabled',
         'onboarding_step',
         'onboarding_completed_at',
+        'current_team_id',
     ];
 
     /**
@@ -227,5 +230,48 @@ class User extends Authenticatable
     public function hasStoreConnection(string $platform): bool
     {
         return $this->getStoreConnection($platform) !== null;
+    }
+
+    /**
+     * Get user's teams
+     */
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class, 'team_members')
+            ->withPivot('role', 'created_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get user's owned teams
+     */
+    public function ownedTeams(): HasMany
+    {
+        return $this->hasMany(Team::class, 'owner_id');
+    }
+
+    /**
+     * Get user's current team
+     */
+    public function currentTeam(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'current_team_id');
+    }
+
+    /**
+     * Check if user belongs to a team
+     */
+    public function belongsToTeam(Team $team): bool
+    {
+        return $this->teams()->where('team_id', $team->id)->exists();
+    }
+
+    /**
+     * Get user's role in a team
+     */
+    public function roleInTeam(Team $team): ?string
+    {
+        $membership = $this->teams()->where('team_id', $team->id)->first();
+        return $membership?->pivot->role;
     }
 }

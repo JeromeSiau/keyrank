@@ -12,7 +12,7 @@ class TrackedKeyword extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
+        'team_id',
         'app_id',
         'keyword_id',
         'is_favorite',
@@ -33,9 +33,9 @@ class TrackedKeyword extends Model
         'top_competitors' => 'array',
     ];
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function app(): BelongsTo

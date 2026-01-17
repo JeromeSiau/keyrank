@@ -12,7 +12,7 @@ class AlertRule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'team_id',
         'name',
         'type',
         'scope_type',
@@ -45,9 +45,9 @@ class AlertRule extends Model
     public const SCOPE_CATEGORY = 'category';
     public const SCOPE_KEYWORD = 'keyword';
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function notifications(): HasMany
@@ -65,8 +65,8 @@ class AlertRule extends Model
         return $query->where('type', $type);
     }
 
-    public function scopeForUser($query, int $userId)
+    public function scopeForTeam($query, int $teamId)
     {
-        return $query->where('user_id', $userId);
+        return $query->where('team_id', $teamId);
     }
 }

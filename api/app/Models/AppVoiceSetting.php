@@ -9,7 +9,7 @@ class AppVoiceSetting extends Model
 {
     protected $fillable = [
         'app_id',
-        'user_id',
+        'team_id',
         'tone_description',
         'default_language',
         'signature',
@@ -24,8 +24,8 @@ class AppVoiceSetting extends Model
         return $this->belongsTo(App::class);
     }
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 }
