@@ -47,9 +47,47 @@ class MyApp extends ConsumerStatefulWidget {
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   bool _hasLoadedPreferences = false;
   bool _hasFcmInitialized = false;
+  DateTime? _pausedAt;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _pausedAt = DateTime.now();
+    } else if (state == AppLifecycleState.resumed) {
+      _checkSessionOnResume();
+    }
+  }
+
+  void _checkSessionOnResume() {
+    if (_pausedAt == null) return;
+
+    final pauseDuration = DateTime.now().difference(_pausedAt!);
+    _pausedAt = null;
+
+    // If app was in background for more than 30 minutes, refresh auth state
+    if (pauseDuration.inMinutes >= 30) {
+      final authState = ref.read(authStateProvider);
+      if (authState.valueOrNull != null) {
+        // Trigger a re-check of auth state by invalidating the provider
+        ref.invalidate(authStateProvider);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

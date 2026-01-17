@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/api_client.dart';
@@ -47,7 +49,7 @@ class FcmService {
       }
     } catch (e) {
       // FCM not available (missing entitlements, simulator, etc.)
-      print('FCM initialization skipped: $e');
+      developer.log('FCM initialization skipped: $e', name: 'FcmService');
     }
   }
 
@@ -57,20 +59,20 @@ class FcmService {
       await dio.put(ApiConstants.userFcmToken, data: {'fcm_token': token});
     } catch (e) {
       // Log error but don't crash - token sync can retry later
-      print('Failed to send FCM token: $e');
+      developer.log('Failed to send FCM token: $e', name: 'FcmService');
     }
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
     // Could show a local notification or update badge
     // For now just log it
-    print('Foreground message: ${message.notification?.title}');
+    developer.log('Foreground message: ${message.notification?.title}', name: 'FcmService');
   }
 
   void _handleMessageTap(RemoteMessage message) {
     // TODO: Navigate to relevant screen based on message.data
     // This would require access to GoRouter or a global navigation key
-    print('Message tapped: ${message.data}');
+    developer.log('Message tapped: ${message.data}', name: 'FcmService');
   }
 
   Future<void> deleteToken() async {
@@ -79,7 +81,7 @@ class FcmService {
       final dio = _ref.read(dioProvider);
       await dio.put(ApiConstants.userFcmToken, data: {'fcm_token': null});
     } catch (e) {
-      print('Failed to clear FCM token: $e');
+      developer.log('Failed to clear FCM token: $e', name: 'FcmService');
     }
   }
 }
