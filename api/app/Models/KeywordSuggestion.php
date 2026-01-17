@@ -14,10 +14,15 @@ class KeywordSuggestion extends Model
         'app_id',
         'keyword',
         'source',
+        'category',
         'position',
         'competition',
         'difficulty',
         'difficulty_label',
+        'popularity',
+        'reason',
+        'based_on',
+        'competitor_name',
         'top_competitors',
         'country',
         'generated_at',
@@ -27,8 +32,20 @@ class KeywordSuggestion extends Model
         'position' => 'integer',
         'competition' => 'integer',
         'difficulty' => 'integer',
+        'popularity' => 'integer',
         'top_competitors' => 'array',
         'generated_at' => 'datetime',
+    ];
+
+    /**
+     * Valid categories for suggestions
+     */
+    public const CATEGORIES = [
+        'high_opportunity',
+        'competitor',
+        'long_tail',
+        'trending',
+        'related',
     ];
 
     public function app(): BelongsTo
@@ -63,5 +80,21 @@ class KeywordSuggestion extends Model
     {
         return $query->orderByRaw('position IS NULL')
                      ->orderBy('difficulty', 'asc');
+    }
+
+    /**
+     * Scope: Filter by category
+     */
+    public function scopeForCategory($query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    /**
+     * Scope: Order by category priority for display
+     */
+    public function scopeOrderByCategory($query)
+    {
+        return $query->orderByRaw("FIELD(category, 'high_opportunity', 'competitor', 'long_tail', 'trending', 'related')");
     }
 }

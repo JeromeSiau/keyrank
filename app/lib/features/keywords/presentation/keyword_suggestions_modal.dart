@@ -27,13 +27,14 @@ class KeywordSuggestionsModal extends ConsumerStatefulWidget {
 }
 
 class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModal> {
-  List<KeywordSuggestion>? _suggestions;
+  KeywordSuggestionsResponse? _response;
   bool _isLoading = true;
   bool _isGenerating = false;
   String? _error;
   final Set<String> _selectedKeywords = {};
   String _searchQuery = '';
   bool _isAdding = false;
+  String? _activeCategory; // null = all categories
 
   @override
   void initState() {
@@ -52,13 +53,11 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
       final response = await repository.getKeywordSuggestions(
         widget.appId,
         country: widget.country,
-        limit: 50,
+        limit: 80,
       );
       if (mounted) {
         setState(() {
-          _suggestions = response.suggestions
-              .where((s) => !widget.existingKeywords.contains(s.keyword.toLowerCase()))
-              .toList();
+          _response = response;
           _isGenerating = response.isGenerating;
           _isLoading = false;
         });
@@ -81,11 +80,39 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
   }
 
   List<KeywordSuggestion> get _filteredSuggestions {
-    if (_suggestions == null) return [];
-    if (_searchQuery.isEmpty) return _suggestions!;
-    return _suggestions!
-        .where((s) => s.keyword.toLowerCase().contains(_searchQuery.toLowerCase()))
+    if (_response == null) return [];
+
+    List<KeywordSuggestion> suggestions;
+    if (_activeCategory != null) {
+      suggestions = _response!.forCategory(_activeCategory!);
+    } else {
+      suggestions = _response!.suggestions;
+    }
+
+    // Filter out existing keywords
+    suggestions = suggestions
+        .where((s) => !widget.existingKeywords.contains(s.keyword.toLowerCase()))
         .toList();
+
+    // Apply search filter
+    if (_searchQuery.isNotEmpty) {
+      suggestions = suggestions
+          .where((s) => s.keyword.toLowerCase().contains(_searchQuery.toLowerCase()))
+          .toList();
+    }
+
+    return suggestions;
+  }
+
+  Map<String, List<KeywordSuggestion>> get _groupedSuggestions {
+    final filtered = _filteredSuggestions;
+    final grouped = <String, List<KeywordSuggestion>>{};
+
+    for (final s in filtered) {
+      grouped.putIfAbsent(s.category, () => []).add(s);
+    }
+
+    return grouped;
   }
 
   void _toggleSelection(String keyword) {
@@ -150,6 +177,58 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
     }
   }
 
+  Color _getCategoryColor(String category) {
+    final colors = context.colors;
+    switch (category) {
+      case 'high_opportunity':
+        return colors.orange;
+      case 'competitor':
+        return colors.accent;
+      case 'long_tail':
+        return colors.green;
+      case 'trending':
+        return colors.red;
+      case 'related':
+        return colors.yellow;
+      default:
+        return colors.textMuted;
+    }
+  }
+
+  String _getCategoryIcon(String category) {
+    switch (category) {
+      case 'high_opportunity':
+        return '🔥';
+      case 'competitor':
+        return '👀';
+      case 'long_tail':
+        return '📝';
+      case 'trending':
+        return '📈';
+      case 'related':
+        return '🔗';
+      default:
+        return '💡';
+    }
+  }
+
+  String _getCategoryName(String category) {
+    switch (category) {
+      case 'high_opportunity':
+        return context.l10n.keywordSuggestions_categoryHighOpportunity;
+      case 'competitor':
+        return context.l10n.keywordSuggestions_categoryCompetitor;
+      case 'long_tail':
+        return context.l10n.keywordSuggestions_categoryLongTail;
+      case 'trending':
+        return context.l10n.keywordSuggestions_categoryTrending;
+      case 'related':
+        return context.l10n.keywordSuggestions_categoryRelated;
+      default:
+        return category;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -160,13 +239,14 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
         side: BorderSide(color: colors.glassBorder),
       ),
       child: Container(
-        width: 700,
-        height: 600,
+        width: 800,
+        height: 700,
         padding: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildHeader(),
+            _buildCategoryTabs(),
             _buildSearchBar(),
             Expanded(child: _buildContent()),
             _buildFooter(),
@@ -189,10 +269,10 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: colors.greenMuted,
+              color: colors.accentMuted,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(Icons.lightbulb_outline_rounded, size: 20, color: colors.green),
+            child: Icon(Icons.auto_awesome_rounded, size: 20, color: colors.accent),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -230,6 +310,81 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             color: colors.textMuted,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryTabs() {
+    final colors = context.colors;
+    final categories = _response?.nonEmptyCategories ?? [];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: colors.bgActive.withAlpha(30),
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            // "All" tab
+            _buildCategoryChip(null, context.l10n.keywordSuggestions_categoryAll, '✨'),
+            const SizedBox(width: 8),
+            // Category tabs
+            ...categories.map((cat) {
+              final count = _response?.byCategory[cat] ?? 0;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: _buildCategoryChip(
+                  cat,
+                  '${_getCategoryName(cat)} ($count)',
+                  _getCategoryIcon(cat),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryChip(String? category, String label, String icon) {
+    final colors = context.colors;
+    final isSelected = _activeCategory == category;
+    final chipColor = category != null ? _getCategoryColor(category) : colors.accent;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => setState(() => _activeCategory = category),
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? chipColor.withAlpha(40) : colors.bgBase,
+            border: Border.all(
+              color: isSelected ? chipColor : colors.glassBorder,
+              width: isSelected ? 1.5 : 1,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(icon, style: const TextStyle(fontSize: 14)),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? chipColor : colors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -350,7 +505,7 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             ),
             const SizedBox(height: 16),
             Text(
-              'Generating suggestions...',
+              context.l10n.keywordSuggestions_generating,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -359,7 +514,7 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             ),
             const SizedBox(height: 8),
             Text(
-              'This may take a few minutes. Please check back later.',
+              context.l10n.keywordSuggestions_generatingSubtitle,
               style: TextStyle(
                 fontSize: 13,
                 color: colors.textMuted,
@@ -370,7 +525,7 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             FilledButton.icon(
               onPressed: _loadSuggestions,
               icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Check again'),
+              label: Text(context.l10n.keywordSuggestions_checkAgain),
             ),
           ],
         ),
@@ -393,7 +548,9 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             ),
             const SizedBox(height: 16),
             Text(
-              _searchQuery.isEmpty ? context.l10n.keywordSuggestions_noSuggestions : context.l10n.keywordSuggestions_noMatchingSuggestions,
+              _searchQuery.isEmpty
+                  ? context.l10n.keywordSuggestions_noSuggestions
+                  : context.l10n.keywordSuggestions_noMatchingSuggestions,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -405,6 +562,79 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
       );
     }
 
+    // If viewing all categories, show grouped view
+    if (_activeCategory == null) {
+      return _buildGroupedList();
+    }
+
+    // If viewing specific category, show flat list
+    return _buildFlatList(suggestions);
+  }
+
+  Widget _buildGroupedList() {
+    final colors = context.colors;
+    final grouped = _groupedSuggestions;
+    final categoryOrder = KeywordSuggestionsResponse.categoryOrder;
+
+    return ListView.builder(
+      itemCount: categoryOrder.length,
+      itemBuilder: (context, index) {
+        final category = categoryOrder[index];
+        final items = grouped[category] ?? [];
+        if (items.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Category header
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Row(
+                children: [
+                  Text(
+                    _getCategoryIcon(category),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _getCategoryName(category),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: _getCategoryColor(category),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _getCategoryColor(category).withAlpha(30),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '${items.length}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: _getCategoryColor(category),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Category items
+            ...items.map((s) => _buildSuggestionRow(s)),
+            // Divider
+            Divider(color: colors.glassBorder, height: 1),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFlatList(List<KeywordSuggestion> suggestions) {
+    final colors = context.colors;
     return Column(
       children: [
         // Table header
@@ -457,112 +687,129 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
             ],
           ),
         ),
-        // Table content
+        // List
         Expanded(
           child: ListView.builder(
             itemCount: suggestions.length,
-            itemBuilder: (context, index) {
-              final suggestion = suggestions[index];
-              final isSelected = _selectedKeywords.contains(suggestion.keyword);
-              final difficultyColor = _getDifficultyColor(suggestion.difficultyLabel);
-
-              return Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => _toggleSelection(suggestion.keyword),
-                  hoverColor: colors.bgHover,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isSelected ? colors.accentMuted : Colors.transparent,
-                      border: Border(
-                        bottom: BorderSide(color: colors.glassBorder),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        // Checkbox
-                        SizedBox(
-                          width: 40,
-                          child: Checkbox(
-                            value: isSelected,
-                            onChanged: (_) => _toggleSelection(suggestion.keyword),
-                            activeColor: colors.accent,
-                            side: BorderSide(color: colors.textMuted),
-                          ),
-                        ),
-                        // Keyword
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                suggestion.keyword,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: colors.textPrimary,
-                                ),
-                              ),
-                              if (suggestion.position != null)
-                                Text(
-                                  context.l10n.keywordSuggestions_rankedAt(suggestion.position!),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: colors.green,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        // Difficulty
-                        SizedBox(
-                          width: 100,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${suggestion.difficulty}',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: difficultyColor,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: ProgressBar(
-                                  value: suggestion.difficulty,
-                                  height: 4,
-                                  width: 50,
-                                  color: difficultyColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Apps count
-                        SizedBox(
-                          width: 80,
-                          child: Text(
-                            '${suggestion.competition}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: colors.textSecondary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            itemBuilder: (context, index) => _buildSuggestionRow(suggestions[index]),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSuggestionRow(KeywordSuggestion suggestion) {
+    final colors = context.colors;
+    final isSelected = _selectedKeywords.contains(suggestion.keyword);
+    final difficultyColor = _getDifficultyColor(suggestion.difficultyLabel);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _toggleSelection(suggestion.keyword),
+        hoverColor: colors.bgHover,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? colors.accentMuted : Colors.transparent,
+            border: Border(
+              bottom: BorderSide(color: colors.glassBorder.withAlpha(100)),
+            ),
+          ),
+          child: Row(
+            children: [
+              // Checkbox
+              SizedBox(
+                width: 40,
+                child: Checkbox(
+                  value: isSelected,
+                  onChanged: (_) => _toggleSelection(suggestion.keyword),
+                  activeColor: colors.accent,
+                  side: BorderSide(color: colors.textMuted),
+                ),
+              ),
+              // Keyword and reason
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      suggestion.keyword,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    if (suggestion.reason != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        suggestion.reason!,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.textMuted,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                    if (suggestion.position != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        context.l10n.keywordSuggestions_rankedAt(suggestion.position!),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.green,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              // Difficulty
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${suggestion.difficulty}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: difficultyColor,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ProgressBar(
+                        value: suggestion.difficulty,
+                        height: 4,
+                        width: 50,
+                        color: difficultyColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Competition count
+              SizedBox(
+                width: 80,
+                child: Text(
+                  '${suggestion.competition}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: colors.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -603,6 +850,45 @@ class _KeywordSuggestionsModalState extends ConsumerState<KeywordSuggestionsModa
                 : Text(context.l10n.keywordSuggestions_addKeywords(_selectedKeywords.length)),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Simple progress bar widget
+class ProgressBar extends StatelessWidget {
+  final int value;
+  final double height;
+  final double width;
+  final Color color;
+
+  const ProgressBar({
+    super.key,
+    required this.value,
+    this.height = 4,
+    this.width = 50,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: colors.bgActive,
+        borderRadius: BorderRadius.circular(height / 2),
+      ),
+      child: FractionallySizedBox(
+        alignment: Alignment.centerLeft,
+        widthFactor: (value / 100).clamp(0.0, 1.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(height / 2),
+          ),
+        ),
       ),
     );
   }

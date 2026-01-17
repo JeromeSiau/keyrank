@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Models\App;
 use App\Models\KeywordSuggestion;
-use App\Services\KeywordDiscoveryService;
+use App\Services\KeywordSuggestionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,16 +16,16 @@ class GenerateKeywordSuggestionsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $timeout = 600; // 10 minutes max
+    public int $timeout = 900; // 15 minutes max (more time for AI suggestions)
     public int $tries = 2;
 
     public function __construct(
         public int $appId,
         public string $country = 'US',
-        public int $limit = 50
+        public int $limitPerCategory = 15
     ) {}
 
-    public function handle(KeywordDiscoveryService $service): void
+    public function handle(KeywordSuggestionService $service): void
     {
         $app = App::find($this->appId);
 
@@ -37,11 +37,11 @@ class GenerateKeywordSuggestionsJob implements ShouldQueue
         Log::info("Generating keyword suggestions for app {$app->name} ({$app->store_id}) in {$this->country}");
 
         try {
-            // Get suggestions from the discovery service
-            $suggestions = $service->getSuggestionsForApp(
-                $app->store_id,
+            // Get categorized suggestions from the service
+            $suggestions = $service->generateSuggestions(
+                $app,
                 $this->country,
-                $this->limit
+                $this->limitPerCategory
             );
 
             // Delete old suggestions for this app/country
@@ -55,11 +55,16 @@ class GenerateKeywordSuggestionsJob implements ShouldQueue
                 KeywordSuggestion::create([
                     'app_id' => $this->appId,
                     'keyword' => $suggestion['keyword'],
-                    'source' => $suggestion['source'] ?? 'app_name',
-                    'position' => $suggestion['metrics']['position'] ?? null,
-                    'competition' => $suggestion['metrics']['competition'] ?? 0,
-                    'difficulty' => $suggestion['metrics']['difficulty'] ?? 0,
-                    'difficulty_label' => $suggestion['metrics']['difficulty_label'] ?? 'easy',
+                    'source' => $suggestion['source'] ?? 'search_hints',
+                    'category' => $suggestion['category'] ?? 'high_opportunity',
+                    'position' => $suggestion['position'] ?? null,
+                    'competition' => $suggestion['competition'] ?? 0,
+                    'difficulty' => $suggestion['difficulty'] ?? 0,
+                    'difficulty_label' => $suggestion['difficulty_label'] ?? 'easy',
+                    'popularity' => $suggestion['popularity'] ?? null,
+                    'reason' => $suggestion['reason'] ?? null,
+                    'based_on' => $suggestion['based_on'] ?? null,
+                    'competitor_name' => $suggestion['competitor_name'] ?? null,
                     'top_competitors' => $suggestion['top_competitors'] ?? [],
                     'country' => $this->country,
                     'generated_at' => $now,

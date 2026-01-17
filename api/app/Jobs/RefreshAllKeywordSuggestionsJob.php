@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 /**
  * Weekly job to refresh keyword suggestions for all apps.
  * Dispatches individual GenerateKeywordSuggestionsJob for each app.
+ * Uses each app's storefront for country-specific suggestions.
  */
 class RefreshAllKeywordSuggestionsJob implements ShouldQueue
 {
@@ -22,25 +23,28 @@ class RefreshAllKeywordSuggestionsJob implements ShouldQueue
     public int $timeout = 60; // Just dispatches jobs, shouldn't take long
 
     public function __construct(
-        public string $country = 'US'
+        public ?string $countryOverride = null // If null, use each app's storefront
     ) {}
 
     public function handle(): void
     {
-        Log::info("Starting weekly keyword suggestions refresh for country: {$this->country}");
+        Log::info("Starting weekly keyword suggestions refresh" .
+            ($this->countryOverride ? " for country: {$this->countryOverride}" : " using each app's storefront"));
 
-        // Get all apps that have users tracking them
+        // Get all apps that have users tracking them (iOS + Android)
         $apps = App::whereHas('users')
-            ->where('platform', 'ios') // Only iOS for now (uses iTunes API)
-            ->select('id', 'name')
+            ->select('id', 'name', 'storefront', 'platform')
             ->get();
 
         $count = 0;
 
         foreach ($apps as $app) {
+            // Use override or app's storefront
+            $country = $this->countryOverride ?? strtoupper($app->storefront ?? 'US');
+
             // Check if suggestions need refresh (older than 7 days or don't exist)
             $latestSuggestion = KeywordSuggestion::where('app_id', $app->id)
-                ->where('country', $this->country)
+                ->where('country', $country)
                 ->orderByDesc('generated_at')
                 ->first();
 
@@ -49,7 +53,7 @@ class RefreshAllKeywordSuggestionsJob implements ShouldQueue
                            $latestSuggestion->generated_at->diffInDays(now()) >= 7;
 
             if ($needsRefresh) {
-                GenerateKeywordSuggestionsJob::dispatch($app->id, $this->country, 50)
+                GenerateKeywordSuggestionsJob::dispatch($app->id, $country, 50)
                     ->delay(now()->addMinutes($count * 2)); // Stagger jobs to avoid rate limits
 
                 $count++;

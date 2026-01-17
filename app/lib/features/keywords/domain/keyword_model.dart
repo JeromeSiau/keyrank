@@ -205,19 +205,29 @@ class KeywordSearchResult {
 class KeywordSuggestion {
   final String keyword;
   final String source;
+  final String category;
   final int? position;
+  final int? popularity;
   final int competition;
   final int difficulty;
   final String difficultyLabel;
+  final String? reason;
+  final String? basedOn;
+  final String? competitorName;
   final List<TopCompetitor> topCompetitors;
 
   KeywordSuggestion({
     required this.keyword,
     required this.source,
+    this.category = 'high_opportunity',
     this.position,
+    this.popularity,
     required this.competition,
     required this.difficulty,
     required this.difficultyLabel,
+    this.reason,
+    this.basedOn,
+    this.competitorName,
     required this.topCompetitors,
   });
 
@@ -226,15 +236,56 @@ class KeywordSuggestion {
     return KeywordSuggestion(
       keyword: json['keyword'] as String,
       source: json['source'] as String,
+      category: json['category'] as String? ?? 'high_opportunity',
       position: metrics['position'] as int?,
+      popularity: metrics['popularity'] as int?,
       competition: metrics['competition'] as int? ?? 0,
       difficulty: metrics['difficulty'] as int? ?? 0,
       difficultyLabel: metrics['difficulty_label'] as String? ?? 'easy',
+      reason: json['reason'] as String?,
+      basedOn: json['based_on'] as String?,
+      competitorName: json['competitor_name'] as String?,
       topCompetitors: (json['top_competitors'] as List?)
               ?.map((e) => TopCompetitor.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );
+  }
+
+  /// Get display name for category
+  String get categoryDisplayName {
+    switch (category) {
+      case 'high_opportunity':
+        return 'High Opportunity';
+      case 'competitor':
+        return 'Competitor Keywords';
+      case 'long_tail':
+        return 'Long-tail';
+      case 'trending':
+        return 'Trending';
+      case 'related':
+        return 'Related';
+      default:
+        return category;
+    }
+  }
+
+  /// Get icon for category
+  String get categoryIcon {
+    switch (category) {
+      case 'high_opportunity':
+        return '🔥';
+      case 'competitor':
+        return '👀';
+      case 'long_tail':
+        return '📝';
+      case 'trending':
+        return '📈';
+      case 'related':
+        return '🔗';
+      default:
+        return '💡';
+    }
   }
 }
 
@@ -263,34 +314,73 @@ class TopCompetitor {
 
 class KeywordSuggestionsResponse {
   final List<KeywordSuggestion> suggestions;
+  final Map<String, List<KeywordSuggestion>> categories;
   final String appId;
   final String country;
   final int total;
+  final Map<String, int> byCategory;
   final DateTime? generatedAt;
   final bool isGenerating;
 
   KeywordSuggestionsResponse({
     required this.suggestions,
+    required this.categories,
     required this.appId,
     required this.country,
     required this.total,
+    required this.byCategory,
     this.generatedAt,
     this.isGenerating = false,
   });
 
   factory KeywordSuggestionsResponse.fromJson(Map<String, dynamic> json) {
     final meta = json['meta'] as Map<String, dynamic>;
+    final categoriesJson = json['categories'] as Map<String, dynamic>? ?? {};
+
+    // Parse categories
+    final categories = <String, List<KeywordSuggestion>>{};
+    for (final entry in categoriesJson.entries) {
+      categories[entry.key] = (entry.value as List)
+          .map((e) => KeywordSuggestion.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    // Parse by_category counts
+    final byCategoryJson = meta['by_category'] as Map<String, dynamic>? ?? {};
+    final byCategory = byCategoryJson.map((k, v) => MapEntry(k, v as int));
+
     return KeywordSuggestionsResponse(
       suggestions: (json['data'] as List)
           .map((e) => KeywordSuggestion.fromJson(e as Map<String, dynamic>))
           .toList(),
+      categories: categories,
       appId: meta['app_id'] as String,
       country: meta['country'] as String,
       total: meta['total'] as int,
+      byCategory: byCategory,
       generatedAt: meta['generated_at'] != null
           ? DateTime.parse(meta['generated_at'] as String)
           : null,
       isGenerating: meta['is_generating'] as bool? ?? false,
     );
+  }
+
+  /// Get suggestions for a specific category
+  List<KeywordSuggestion> forCategory(String category) {
+    return categories[category] ?? [];
+  }
+
+  /// Category display order
+  static const categoryOrder = [
+    'high_opportunity',
+    'competitor',
+    'long_tail',
+    'trending',
+    'related',
+  ];
+
+  /// Get non-empty categories in display order
+  List<String> get nonEmptyCategories {
+    return categoryOrder.where((cat) => (byCategory[cat] ?? 0) > 0).toList();
   }
 }
