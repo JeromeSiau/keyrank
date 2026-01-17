@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_context_provider.dart';
 import '../theme/app_colors.dart';
+import '../../features/apps/providers/apps_provider.dart';
 import '../../features/apps/providers/sidebar_apps_provider.dart';
 import '../../features/apps/domain/app_model.dart';
 
@@ -16,6 +17,26 @@ class AppContextSwitcher extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedApp = ref.watch(appContextProvider);
     final colors = context.colors;
+
+    // Restore app context from persistence when apps are loaded
+    final appsAsync = ref.watch(appsNotifierProvider);
+    ref.listen<AsyncValue<List<AppModel>>>(appsNotifierProvider, (prev, next) {
+      next.whenData((apps) {
+        final notifier = ref.read(appContextProvider.notifier);
+        if (!notifier.hasRestored) {
+          notifier.restoreFromApps(apps);
+        }
+      });
+    });
+    // Also restore on initial build (ref.listen doesn't fire for initial value)
+    appsAsync.whenData((apps) {
+      final notifier = ref.read(appContextProvider.notifier);
+      if (!notifier.hasRestored) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          notifier.restoreFromApps(apps);
+        });
+      }
+    });
 
     return InkWell(
       onTap: () => _showAppPicker(context, ref),

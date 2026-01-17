@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/apps/domain/app_model.dart';
-import '../../features/apps/providers/apps_provider.dart';
 import 'theme_provider.dart';
 
 const _kRememberAppContextKey = 'remember_app_context';
@@ -93,16 +92,3 @@ class AppContextNotifier extends StateNotifier<AppModel?> {
     }
   }
 }
-
-/// Provider that restores the app context when apps are loaded.
-/// Should be watched early in the app lifecycle (e.g., in ResponsiveShell).
-final appContextRestorationProvider = Provider<void>((ref) {
-  final appsAsync = ref.watch(appsNotifierProvider);
-  final contextNotifier = ref.read(appContextProvider.notifier);
-
-  appsAsync.whenData((apps) {
-    if (!contextNotifier.hasRestored) {
-      contextNotifier.restoreFromApps(apps);
-    }
-  });
-});

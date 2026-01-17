@@ -25,9 +25,6 @@ class ResponsiveShell extends ConsumerWidget {
     final user = ref.watch(authStateProvider).valueOrNull;
     final selectedApp = ref.watch(appContextProvider);
     final screenWidth = MediaQuery.sizeOf(context).width;
-
-    // Restore app context from persistence if enabled
-    ref.watch(appContextRestorationProvider);
     final screenSize = screenWidth.screenSize;
 
     return Scaffold(
