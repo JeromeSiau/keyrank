@@ -150,12 +150,12 @@ class _GlobalAnalyticsView extends ConsumerWidget {
                   Icon(Icons.analytics_outlined, size: 64, color: colors.textMuted),
                   const SizedBox(height: 16),
                   Text(
-                    'No analytics data available',
+                    context.l10n.analytics_noDataTitle,
                     style: TextStyle(fontSize: 18, color: colors.textSecondary),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Analytics data will appear once apps are connected',
+                    context.l10n.analytics_noDataDescription,
                     style: TextStyle(fontSize: 14, color: colors.textMuted),
                   ),
                 ],

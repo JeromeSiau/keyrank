@@ -10,6 +10,7 @@ import '../../../core/providers/country_provider.dart';
 import '../../../shared/widgets/date_range_picker.dart';
 import '../domain/analytics_summary_model.dart';
 import '../providers/analytics_provider.dart';
+import 'widgets/conversion_funnel_card.dart';
 
 class AppAnalyticsScreen extends ConsumerWidget {
   final int appId;
@@ -67,6 +68,10 @@ class AppAnalyticsScreen extends ConsumerWidget {
 
                       // KPI Cards
                       _KpiCards(summary: summary),
+                      const SizedBox(height: 24),
+
+                      // Conversion Funnel
+                      ConversionFunnelCard(appId: appId),
                       const SizedBox(height: 24),
 
                       // Downloads Chart

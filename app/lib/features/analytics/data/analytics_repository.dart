@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../domain/analytics_summary_model.dart';
+import '../domain/conversion_funnel_model.dart';
 
 final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
   return AnalyticsRepository(ref.watch(dioProvider));
@@ -92,6 +93,38 @@ class AnalyticsRepository {
         queryParameters: {'period': period},
       );
       return response.data as String;
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Get conversion funnel data (impressions → page views → downloads)
+  Future<ConversionFunnel> getFunnel(
+    int appId, {
+    String period = '30d',
+    String? country,
+    String? source,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{'period': period};
+      if (country != null) queryParams['country'] = country;
+      if (source != null) queryParams['source'] = source;
+
+      final response = await dio.get(
+        '/apps/$appId/funnel',
+        queryParameters: queryParams,
+      );
+      return ConversionFunnel.fromJson(
+          response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
+  }
+
+  /// Manually trigger funnel data sync for an app
+  Future<void> syncFunnel(int appId) async {
+    try {
+      await dio.post('/apps/$appId/funnel/sync');
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }

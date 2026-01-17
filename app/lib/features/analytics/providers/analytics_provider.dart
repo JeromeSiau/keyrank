@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/analytics_repository.dart';
 import '../domain/analytics_summary_model.dart';
+import '../domain/conversion_funnel_model.dart';
 
 /// Selected period for analytics (global state)
 final analyticsPeriodProvider = StateProvider<String>((ref) => '30d');
@@ -47,4 +48,39 @@ const analyticsPeriodOptions = [
   ('90d', '90 Days'),
   ('ytd', 'Year to Date'),
   ('all', 'All Time'),
+];
+
+// =============================================================================
+// CONVERSION FUNNEL PROVIDERS
+// =============================================================================
+
+/// Filter funnel by source (search, browse, referral, etc.)
+final funnelSourceFilterProvider = StateProvider<String?>((ref) => null);
+
+/// Filter funnel by country
+final funnelCountryFilterProvider = StateProvider<String?>((ref) => null);
+
+/// Conversion funnel data for an app
+final conversionFunnelProvider =
+    FutureProvider.autoDispose.family<ConversionFunnel, int>((ref, appId) async {
+  final period = ref.watch(analyticsPeriodProvider);
+  final source = ref.watch(funnelSourceFilterProvider);
+  final country = ref.watch(funnelCountryFilterProvider);
+
+  return ref.watch(analyticsRepositoryProvider).getFunnel(
+        appId,
+        period: period,
+        source: source,
+        country: country,
+      );
+});
+
+/// Available source options for funnel filter
+const funnelSourceOptions = [
+  (null, 'All Sources'),
+  ('search', 'App Store Search'),
+  ('browse', 'Browse'),
+  ('referral', 'Referrals'),
+  ('app_referrer', 'App Referrer'),
+  ('web_referrer', 'Web Referrer'),
 ];
