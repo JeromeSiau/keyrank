@@ -41,7 +41,7 @@ class InsightGeneratorJob implements ShouldQueue
 
     public function __construct()
     {
-        $this->onQueue('insights');
+        $this->onQueue('ai');
     }
 
     public function handle(
@@ -265,7 +265,7 @@ PROMPT;
 
         $userPrompt = "App: {$app->name}\nPlatform: {$app->platform}\n\n" . json_encode($context, JSON_PRETTY_PRINT);
 
-        $result = $this->openRouter->chat($systemPrompt, $userPrompt);
+        $result = $this->openRouter->chat($systemPrompt, $userPrompt, cacheSystemPrompt: true);
 
         if (!$result || !isset($result['title'])) {
             return [];

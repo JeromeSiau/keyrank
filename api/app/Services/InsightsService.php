@@ -137,7 +137,7 @@ class InsightsService
         $systemPrompt = $this->buildSystemPrompt();
         $userPrompt = $this->buildUserPrompt($app, $reviews);
 
-        return $this->openRouter->chat($systemPrompt, $userPrompt);
+        return $this->openRouter->chat($systemPrompt, $userPrompt, cacheSystemPrompt: true);
     }
 
     private function synthesizeChunks(App $app, array $analyses, int $totalReviews): ?array
@@ -156,7 +156,7 @@ PROMPT;
         $userPrompt .= "PARTIAL ANALYSES:\n";
         $userPrompt .= json_encode($analyses, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        return $this->openRouter->chat($systemPrompt, $userPrompt);
+        return $this->openRouter->chat($systemPrompt, $userPrompt, cacheSystemPrompt: true);
     }
 
     private function buildSystemPrompt(): string

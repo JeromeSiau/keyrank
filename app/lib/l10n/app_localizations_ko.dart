@@ -1443,6 +1443,40 @@ class AppLocalizationsKo extends AppLocalizations {
       'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones';
 
   @override
+  String get reviewIntelligence_title => 'Review Intelligence';
+
+  @override
+  String get reviewIntelligence_featureRequests => 'Feature Requests';
+
+  @override
+  String get reviewIntelligence_bugReports => 'Bug Reports';
+
+  @override
+  String get reviewIntelligence_sentimentByVersion => 'Sentiment by Version';
+
+  @override
+  String get reviewIntelligence_openFeatures => 'Open Features';
+
+  @override
+  String get reviewIntelligence_openBugs => 'Open Bugs';
+
+  @override
+  String get reviewIntelligence_highPriority => 'High Priority';
+
+  @override
+  String get reviewIntelligence_total => 'total';
+
+  @override
+  String get reviewIntelligence_mentions => 'mentions';
+
+  @override
+  String get reviewIntelligence_noData => 'No insights yet';
+
+  @override
+  String get reviewIntelligence_noDataHint =>
+      'Insights will appear after reviews are analyzed';
+
+  @override
   String get analytics_title => '분석';
 
   @override

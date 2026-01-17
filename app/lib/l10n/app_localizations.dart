@@ -2772,6 +2772,72 @@ abstract class AppLocalizations {
   /// **'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones'**
   String get reviewsInbox_aiPrompt;
 
+  /// No description provided for @reviewIntelligence_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Intelligence'**
+  String get reviewIntelligence_title;
+
+  /// No description provided for @reviewIntelligence_featureRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature Requests'**
+  String get reviewIntelligence_featureRequests;
+
+  /// No description provided for @reviewIntelligence_bugReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug Reports'**
+  String get reviewIntelligence_bugReports;
+
+  /// No description provided for @reviewIntelligence_sentimentByVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Sentiment by Version'**
+  String get reviewIntelligence_sentimentByVersion;
+
+  /// No description provided for @reviewIntelligence_openFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Features'**
+  String get reviewIntelligence_openFeatures;
+
+  /// No description provided for @reviewIntelligence_openBugs.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Bugs'**
+  String get reviewIntelligence_openBugs;
+
+  /// No description provided for @reviewIntelligence_highPriority.
+  ///
+  /// In en, this message translates to:
+  /// **'High Priority'**
+  String get reviewIntelligence_highPriority;
+
+  /// No description provided for @reviewIntelligence_total.
+  ///
+  /// In en, this message translates to:
+  /// **'total'**
+  String get reviewIntelligence_total;
+
+  /// No description provided for @reviewIntelligence_mentions.
+  ///
+  /// In en, this message translates to:
+  /// **'mentions'**
+  String get reviewIntelligence_mentions;
+
+  /// No description provided for @reviewIntelligence_noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No insights yet'**
+  String get reviewIntelligence_noData;
+
+  /// No description provided for @reviewIntelligence_noDataHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights will appear after reviews are analyzed'**
+  String get reviewIntelligence_noDataHint;
+
   /// No description provided for @analytics_title.
   ///
   /// In en, this message translates to:

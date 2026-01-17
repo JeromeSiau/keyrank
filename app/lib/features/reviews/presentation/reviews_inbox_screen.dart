@@ -11,6 +11,7 @@ import '../../../shared/widgets/sentiment_bar.dart';
 import '../domain/review_model.dart';
 import '../providers/reviews_provider.dart';
 import 'widgets/review_card.dart';
+import 'widgets/review_intelligence_card.dart';
 import 'widgets/reply_modal.dart';
 
 class ReviewsInboxScreen extends ConsumerStatefulWidget {
@@ -26,6 +27,7 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
   bool _filterNegative = false;
   int? _filterRating;
   int _currentPage = 1;
+  bool _showIntelligence = true;
 
   ReviewsInboxParams _getParams(int? appId) => ReviewsInboxParams(
         status: _filterUnanswered ? 'unanswered' : null,
@@ -96,6 +98,9 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
               data: (paginatedReviews) {
                 return Column(
                   children: [
+                    // Review Intelligence section (when app is selected)
+                    if (selectedApp != null)
+                      _buildIntelligenceSection(context, selectedApp.id),
                     // Overview section
                     _buildOverviewSection(context, paginatedReviews),
                     // Filter chips
@@ -305,6 +310,40 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
     if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}M';
     if (count >= 1000) return '${(count / 1000).toStringAsFixed(1)}K';
     return count.toString();
+  }
+
+  Widget _buildIntelligenceSection(BuildContext context, int appId) {
+    final colors = context.colors;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+      ),
+      child: ExpansionTile(
+        initiallyExpanded: _showIntelligence,
+        onExpansionChanged: (expanded) {
+          setState(() => _showIntelligence = expanded);
+        },
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        leading: Icon(Icons.psychology_rounded, color: colors.purple, size: 20),
+        title: Text(
+          context.l10n.reviewIntelligence_title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: colors.textPrimary,
+          ),
+        ),
+        trailing: Icon(
+          _showIntelligence ? Icons.expand_less : Icons.expand_more,
+          color: colors.textMuted,
+        ),
+        children: [
+          ReviewIntelligenceCard(appId: appId),
+        ],
+      ),
+    );
   }
 
   Widget _buildFilterChips(BuildContext context) {

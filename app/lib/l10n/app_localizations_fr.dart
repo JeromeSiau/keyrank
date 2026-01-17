@@ -1468,6 +1468,41 @@ class AppLocalizationsFr extends AppLocalizations {
       'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones';
 
   @override
+  String get reviewIntelligence_title => 'Intelligence des avis';
+
+  @override
+  String get reviewIntelligence_featureRequests =>
+      'Demandes de fonctionnalités';
+
+  @override
+  String get reviewIntelligence_bugReports => 'Rapports de bugs';
+
+  @override
+  String get reviewIntelligence_sentimentByVersion => 'Sentiment par version';
+
+  @override
+  String get reviewIntelligence_openFeatures => 'Fonctionnalités ouvertes';
+
+  @override
+  String get reviewIntelligence_openBugs => 'Bugs ouverts';
+
+  @override
+  String get reviewIntelligence_highPriority => 'Haute priorité';
+
+  @override
+  String get reviewIntelligence_total => 'total';
+
+  @override
+  String get reviewIntelligence_mentions => 'mentions';
+
+  @override
+  String get reviewIntelligence_noData => 'Pas encore d\'insights';
+
+  @override
+  String get reviewIntelligence_noDataHint =>
+      'Les insights apparaîtront après l\'analyse des avis';
+
+  @override
   String get analytics_title => 'Analytiques';
 
   @override

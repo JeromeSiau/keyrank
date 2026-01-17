@@ -69,11 +69,11 @@ class DailyRefresh extends Command
         } else {
             // Dispatch to queue as a chain
             Bus::chain($jobs)
-                ->onQueue('aso-refresh')
+                ->onQueue('collectors')
                 ->dispatch();
 
-            $this->info("✅ Dispatched " . count($jobs) . " jobs to queue 'aso-refresh'");
-            $this->line("   Run: php artisan queue:work --queue=aso-refresh");
+            $this->info("✅ Dispatched " . count($jobs) . " jobs to queue 'collectors'");
+            $this->line("   Run: php artisan queue:work --queue=collectors");
         }
 
         return Command::SUCCESS;

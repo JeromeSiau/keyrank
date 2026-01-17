@@ -20,8 +20,10 @@ class OpenRouterService
 
     /**
      * Send a chat completion request to OpenRouter
+     *
+     * @param bool $cacheSystemPrompt If true, wraps system prompt in cache tags for 90% cost reduction
      */
-    public function chat(string $systemPrompt, string $userPrompt, bool $jsonMode = true): ?array
+    public function chat(string $systemPrompt, string $userPrompt, bool $jsonMode = true, bool $cacheSystemPrompt = false): ?array
     {
         if (!$this->apiKey) {
             Log::error('OpenRouter API key not configured');
@@ -29,10 +31,15 @@ class OpenRouterService
         }
 
         try {
+            // Wrap system prompt in cache tags if caching is enabled
+            $finalSystemPrompt = $cacheSystemPrompt
+                ? "<cache>{$systemPrompt}</cache>"
+                : $systemPrompt;
+
             $payload = [
                 'model' => $this->model,
                 'messages' => [
-                    ['role' => 'system', 'content' => $systemPrompt],
+                    ['role' => 'system', 'content' => $finalSystemPrompt],
                     ['role' => 'user', 'content' => $userPrompt],
                 ],
             ];

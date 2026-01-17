@@ -726,6 +726,18 @@
   "reviewsInbox_detectedIssues": "Issues detected:",
   "reviewsInbox_aiPrompt": "Click 'Generate AI suggestion' to get reply suggestions in 3 different tones",
 
+  "reviewIntelligence_title": "Review Intelligence",
+  "reviewIntelligence_featureRequests": "Feature Requests",
+  "reviewIntelligence_bugReports": "Bug Reports",
+  "reviewIntelligence_sentimentByVersion": "Sentiment by Version",
+  "reviewIntelligence_openFeatures": "Open Features",
+  "reviewIntelligence_openBugs": "Open Bugs",
+  "reviewIntelligence_highPriority": "High Priority",
+  "reviewIntelligence_total": "total",
+  "reviewIntelligence_mentions": "mentions",
+  "reviewIntelligence_noData": "No insights yet",
+  "reviewIntelligence_noDataHint": "Insights will appear after reviews are analyzed",
+
   "analytics_title": "Analytics",
   "analytics_downloads": "Downloads",
   "analytics_revenue": "Revenue",

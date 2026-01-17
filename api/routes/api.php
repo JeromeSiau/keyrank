@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\PublicApiController;
 use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\RatingsController;
 use App\Http\Controllers\Api\ReviewsController;
+use App\Http\Controllers\Api\ReviewIntelligenceController;
 use App\Http\Controllers\Api\NotesController;
 use App\Http\Controllers\Api\StoreConnectionController;
 use App\Http\Controllers\Api\SyncController;
@@ -123,6 +124,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{app}/reviews/{review}/reply', [ReviewsController::class, 'reply']);
         Route::post('{app}/reviews/{review}/suggest', [ReviewsController::class, 'suggestReply'])
             ->middleware('throttle:10,1');
+
+        // Review Intelligence (AI-extracted insights from reviews)
+        Route::get('{app}/review-intelligence', [ReviewIntelligenceController::class, 'index']);
+        Route::get('{app}/review-intelligence/feature-requests', [ReviewIntelligenceController::class, 'featureRequests']);
+        Route::get('{app}/review-intelligence/bug-reports', [ReviewIntelligenceController::class, 'bugReports']);
+        Route::get('{app}/review-intelligence/insights/{insight}/reviews', [ReviewIntelligenceController::class, 'insightReviews']);
+        Route::patch('{app}/review-intelligence/insights/{insight}', [ReviewIntelligenceController::class, 'updateInsight']);
 
         // Insights for app
         Route::get('{app}/insights', [InsightsController::class, 'show']);

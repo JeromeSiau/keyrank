@@ -622,6 +622,18 @@
   "reviewsInbox_avgRating": "Note moyenne",
   "reviewsInbox_sentimentOverview": "Aperçu du sentiment",
 
+  "reviewIntelligence_title": "Intelligence des avis",
+  "reviewIntelligence_featureRequests": "Demandes de fonctionnalités",
+  "reviewIntelligence_bugReports": "Rapports de bugs",
+  "reviewIntelligence_sentimentByVersion": "Sentiment par version",
+  "reviewIntelligence_openFeatures": "Fonctionnalités ouvertes",
+  "reviewIntelligence_openBugs": "Bugs ouverts",
+  "reviewIntelligence_highPriority": "Haute priorité",
+  "reviewIntelligence_total": "total",
+  "reviewIntelligence_mentions": "mentions",
+  "reviewIntelligence_noData": "Pas encore d'insights",
+  "reviewIntelligence_noDataHint": "Les insights apparaîtront après l'analyse des avis",
+
   "analytics_title": "Analytiques",
   "analytics_downloads": "Téléchargements",
   "analytics_revenue": "Revenus",

@@ -10,9 +10,9 @@
 |-------|-------|------|-------------|-----------|
 | Phase 1: Quick Wins | 6 | 6 | 0 | 0 |
 | Phase 2: Core Parity | 6 | 6 | 0 | 0 |
-| Phase 3: Différenciation | 4 | 1 | 0 | 3 |
+| Phase 3: Différenciation | 4 | 2 | 0 | 2 |
 | Phase 4: Enterprise | 5 | 0 | 0 | 5 |
-| **TOTAL** | **21** | **13** | **0** | **8** |
+| **TOTAL** | **21** | **14** | **0** | **7** |
 
 ---
 
@@ -59,7 +59,7 @@
 | 6.1 | AI Optimization Wizard | ⬚ Todo | - | - | Depends on 5.1 (Metadata) |
 | 6.2 | Competitor Metadata History | ⬚ Todo | - | - | Backend scraping needed |
 | 6.3 | Chat with Executable Actions | ✅ Done | main | 2026-01-17 | Tool calling + action cards |
-| 6.4 | Review Intelligence Dashboard | ⬚ Todo | - | - | AI extraction features |
+| 6.4 | Review Intelligence Dashboard | ✅ Done | main | 2026-01-17 | Feature requests, bug reports, version sentiment |
 
 ### Suggested Order
 ```

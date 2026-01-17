@@ -10,8 +10,9 @@ use App\Jobs\Collectors\AppMetadataCollector;
 use App\Jobs\Collectors\CategoryRankingCollector;
 use App\Jobs\Collectors\AsoMetadataCollector;
 use App\Jobs\Collectors\FeaturedAppsCollector;
-// use App\Jobs\EnrichmentJob;  // Disabled - uses OpenRouter API
-// use App\Jobs\InsightGeneratorJob;  // Disabled - uses OpenRouter API
+use App\Jobs\EnrichmentJob;
+use App\Jobs\InsightGeneratorJob;
+use App\Jobs\ExtractReviewInsightsJob;
 use App\Jobs\RefreshAllKeywordSuggestionsJob;
 use App\Jobs\SyncFunnelAnalyticsJob;
 use App\Jobs\WeeklyDigestJob;
@@ -83,20 +84,26 @@ Schedule::job(new FeaturedAppsCollector())
     ->withoutOverlapping();
 
 // =============================================================================
-// V2 AI & Intelligence Jobs (DISABLED - uses OpenRouter API = $$$)
+// V2 AI & Intelligence Jobs
 // =============================================================================
 
 // Review enrichment - hourly (sentiment, themes, language detection)
-// WARNING: With 10k+ apps, this can cost $50-100+/month
-// Schedule::job(new EnrichmentJob())
-//     ->hourly()
-//     ->withoutOverlapping();
+// Processes up to 500 reviews per run, ~$0.03 per run with caching
+Schedule::job(new EnrichmentJob())
+    ->hourly()
+    ->withoutOverlapping();
+
+// Review intelligence extraction - daily at 6:00 AM
+// Extracts feature requests and bug reports from enriched reviews
+Schedule::job(new ExtractReviewInsightsJob())
+    ->dailyAt('06:00')
+    ->withoutOverlapping();
 
 // Insight generation - daily at 8:00 AM
-// Uses AI to generate suggestions - lower volume but still costs
-// Schedule::job(new InsightGeneratorJob())
-//     ->dailyAt('08:00')
-//     ->withoutOverlapping();
+// Uses AI to generate ASO suggestions per app
+Schedule::job(new InsightGeneratorJob())
+    ->dailyAt('08:00')
+    ->withoutOverlapping();
 
 // Weekly digest email - Monday at 9:00 AM (NO AI - just emails)
 Schedule::job(new WeeklyDigestJob())

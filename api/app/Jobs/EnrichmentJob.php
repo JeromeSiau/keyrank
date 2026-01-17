@@ -19,8 +19,9 @@ class EnrichmentJob implements ShouldQueue
 
     /**
      * Number of reviews to process per batch for LLM call
+     * Higher = fewer API calls, lower overhead (system prompt cached)
      */
-    private const BATCH_SIZE = 20;
+    private const BATCH_SIZE = 50;
 
     /**
      * Maximum reviews to process per job run
@@ -46,7 +47,7 @@ class EnrichmentJob implements ShouldQueue
 
     public function __construct()
     {
-        $this->onQueue('enrichment');
+        $this->onQueue('ai');
     }
 
     public function handle(OpenRouterService $openRouter): void
@@ -102,7 +103,8 @@ class EnrichmentJob implements ShouldQueue
         $systemPrompt = $this->buildSystemPrompt();
         $userPrompt = $this->buildUserPrompt($reviews);
 
-        $result = $openRouter->chat($systemPrompt, $userPrompt);
+        // Enable caching for system prompt (90% cost reduction on repeated calls)
+        $result = $openRouter->chat($systemPrompt, $userPrompt, jsonMode: true, cacheSystemPrompt: true);
 
         if (!$result || !isset($result['reviews'])) {
             Log::warning('[EnrichmentJob] Failed to get LLM response for batch');
