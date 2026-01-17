@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Jobs\GenerateKeywordSuggestionsJob;
 use App\Models\App;
 use App\Models\AppRanking;
@@ -18,6 +19,8 @@ use Illuminate\Http\Request;
 
 class KeywordController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function __construct(
         private iTunesService $iTunesService,
         private GooglePlayService $googlePlayService,
@@ -69,14 +72,14 @@ class KeywordController extends Controller
     }
 
     /**
-     * Get keywords tracked for a specific app (scoped to current user)
+     * Get keywords tracked for a specific app (scoped to current team)
      */
     public function forApp(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        // Get only keywords tracked by this user for this app with tags and note
-        $trackedKeywords = TrackedKeyword::where('user_id', $user->id)
+        // Get only keywords tracked by this team for this app with tags and note
+        $trackedKeywords = TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->with(['keyword', 'tags', 'note'])
             ->get();
@@ -143,7 +146,9 @@ class KeywordController extends Controller
      */
     public function addToApp(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_keywords');
+
+        $team = $this->currentTeam();
 
         $validated = $request->validate([
             'keyword' => 'required|string|min:2|max:100',
@@ -156,8 +161,8 @@ class KeywordController extends Controller
         // Find or create keyword
         $keyword = Keyword::findOrCreateKeyword($keywordText, $storefront);
 
-        // Check if this user is already tracking this keyword for this app
-        $existing = TrackedKeyword::where('user_id', $user->id)
+        // Check if this team is already tracking this keyword for this app
+        $existing = TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->where('keyword_id', $keyword->id)
             ->first();
@@ -168,9 +173,9 @@ class KeywordController extends Controller
             ], 409);
         }
 
-        // Create tracking for this user
+        // Create tracking for this team
         TrackedKeyword::create([
-            'user_id' => $user->id,
+            'team_id' => $team->id,
             'app_id' => $app->id,
             'keyword_id' => $keyword->id,
             'created_at' => now(),
@@ -228,19 +233,21 @@ class KeywordController extends Controller
     }
 
     /**
-     * Remove a keyword from tracking (for current user only)
+     * Remove a keyword from tracking (for current team only)
      */
     public function removeFromApp(Request $request, App $app, Keyword $keyword): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_keywords');
 
-        // Delete tracking only for this user
-        TrackedKeyword::where('user_id', $user->id)
+        $team = $this->currentTeam();
+
+        // Delete tracking only for this team
+        TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->where('keyword_id', $keyword->id)
             ->delete();
 
-        // Do NOT delete rankings - they are shared between users
+        // Do NOT delete rankings - they are shared between teams
 
         return response()->json([
             'message' => 'Keyword removed successfully',
@@ -275,9 +282,11 @@ class KeywordController extends Controller
      */
     public function toggleFavorite(Request $request, App $app, Keyword $keyword): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_keywords');
 
-        $tracked = TrackedKeyword::where('user_id', $user->id)
+        $team = $this->currentTeam();
+
+        $tracked = TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->where('keyword_id', $keyword->id)
             ->firstOrFail();
@@ -399,15 +408,17 @@ class KeywordController extends Controller
      */
     public function bulkDelete(Request $request, App $app): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $validated = $request->validate([
             'tracked_keyword_ids' => 'required|array|min:1',
             'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
 
         $deletedCount = TrackedKeyword::whereIn('id', $validated['tracked_keyword_ids'])
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->delete();
 
@@ -423,6 +434,8 @@ class KeywordController extends Controller
      */
     public function bulkAddTags(Request $request, App $app): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $validated = $request->validate([
             'tracked_keyword_ids' => 'required|array|min:1',
             'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
@@ -430,25 +443,25 @@ class KeywordController extends Controller
             'tag_ids.*' => 'integer|exists:tags,id',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        // Verify all tags belong to user
-        $userTagIds = Tag::where('user_id', $user->id)
+        // Verify all tags belong to team
+        $teamTagIds = Tag::where('team_id', $team->id)
             ->whereIn('id', $validated['tag_ids'])
             ->pluck('id')
             ->toArray();
 
-        if (count($userTagIds) !== count($validated['tag_ids'])) {
-            abort(403, 'Some tags do not belong to you');
+        if (count($teamTagIds) !== count($validated['tag_ids'])) {
+            abort(403, 'Some tags do not belong to your team');
         }
 
         $trackedKeywords = TrackedKeyword::whereIn('id', $validated['tracked_keyword_ids'])
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->get();
 
         foreach ($trackedKeywords as $tracked) {
-            $tracked->tags()->syncWithoutDetaching($userTagIds);
+            $tracked->tags()->syncWithoutDetaching($teamTagIds);
         }
 
         return response()->json([
@@ -463,17 +476,19 @@ class KeywordController extends Controller
      */
     public function bulkFavorite(Request $request, App $app): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $validated = $request->validate([
             'tracked_keyword_ids' => 'required|array|min:1',
             'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
             'is_favorite' => 'required|boolean',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $isFavorite = $validated['is_favorite'];
 
         $updatedCount = TrackedKeyword::whereIn('id', $validated['tracked_keyword_ids'])
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->update([
                 'is_favorite' => $isFavorite,
@@ -492,12 +507,14 @@ class KeywordController extends Controller
      */
     public function import(Request $request, App $app): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $validated = $request->validate([
             'keywords' => 'required|string',
             'storefront' => 'nullable|string|size:2',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $storefront = strtoupper($validated['storefront'] ?? 'US');
 
         // Parse keywords (one per line, trim whitespace, remove empty lines)
@@ -518,7 +535,7 @@ class KeywordController extends Controller
                 $keyword = Keyword::findOrCreateKeyword($keywordText, $storefront);
 
                 // Check if already tracked
-                $existing = TrackedKeyword::where('user_id', $user->id)
+                $existing = TrackedKeyword::where('team_id', $team->id)
                     ->where('app_id', $app->id)
                     ->where('keyword_id', $keyword->id)
                     ->first();
@@ -530,7 +547,7 @@ class KeywordController extends Controller
 
                 // Create tracking
                 TrackedKeyword::create([
-                    'user_id' => $user->id,
+                    'team_id' => $team->id,
                     'app_id' => $app->id,
                     'keyword_id' => $keyword->id,
                     'created_at' => now(),
