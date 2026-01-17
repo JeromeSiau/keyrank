@@ -67,6 +67,13 @@
   "dashboard_positiveReviews": "Positive",
   "dashboard_negativeReviews": "Negative",
   "dashboard_viewReviews": "View reviews",
+  "dashboard_tableApp": "App",
+  "dashboard_tableKeywords": "Keywords",
+  "dashboard_tableAvgRank": "Avg Rank",
+  "dashboard_tableTrend": "Trend",
+  "dashboard_connectYourStores": "Connect Your Stores",
+  "dashboard_connectStoresDescription": "Link App Store Connect or Google Play to import your apps and reply to reviews.",
+  "dashboard_connect": "Connect",
 
   "apps_title": "My Apps",
   "apps_appCount": "{count} apps",
@@ -174,6 +181,36 @@
   "insights_emergentThemes": "Emergent Themes",
   "insights_exampleQuotes": "Example quotes:",
   "insights_selectCountryFirst": "Select at least one country",
+  "insights_title": "Insights",
+  "insights_titleWithApp": "Insights - {appName}",
+  "@insights_titleWithApp": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "insights_allApps": "Insights (All Apps)",
+  "insights_noInsightsYet": "No insights generated yet",
+  "insights_selectAppToGenerate": "Select an app to generate insights from reviews",
+  "insights_appsWithInsights": "{count} apps with insights",
+  "@insights_appsWithInsights": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_errorLoading": "Error loading insights",
+  "insights_reviewsAnalyzed": "{count} reviews analyzed",
+  "@insights_reviewsAnalyzed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_avgScore": "avg score",
+  "insights_updatedOn": "Updated {date}",
+  "@insights_updatedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "compare_selectAppsToCompare": "Select up to 3 apps to compare with {appName}",
   "@compare_selectAppsToCompare": {
@@ -631,12 +668,39 @@
   "alerts_editRule": "Edit rule",
   "alerts_noRulesYet": "No rules yet",
   "alerts_deleteConfirm": "Delete rule?",
+  "alerts_createCustomRule": "Create custom rule",
+  "alerts_ruleActivated": "{name} activated!",
+  "@alerts_ruleActivated": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "alerts_deleteMessage": "This will delete \"{name}\".",
+  "@alerts_deleteMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "alerts_noRulesDescription": "Activate a template or create your own!",
+  "alerts_create": "Create",
 
   "settings_notifications": "NOTIFICATIONS",
   "settings_manageAlerts": "Manage Alert Rules",
   "settings_manageAlertsDesc": "Configure what alerts you receive",
   "settings_storeConnections": "Store Connections",
   "settings_storeConnectionsDesc": "Connect your App Store and Google Play accounts",
+  "settings_alertDelivery": "ALERT DELIVERY",
+  "settings_team": "TEAM",
+  "settings_teamManagement": "Team Management",
+  "settings_teamManagementDesc": "Invite members, manage roles & permissions",
+  "settings_integrations": "INTEGRATIONS",
+  "settings_manageIntegrations": "Manage Integrations",
+  "settings_manageIntegrationsDesc": "Connect App Store Connect & Google Play Console",
+  "settings_billing": "BILLING",
+  "settings_plansBilling": "Plans & Billing",
+  "settings_plansBillingDesc": "Manage your subscription and payment",
+  "settings_rememberApp": "Remember selected app",
+  "settings_rememberAppDesc": "Restore app selection when you open the app",
 
   "storeConnections_title": "Store Connections",
   "storeConnections_description": "Connect your App Store and Google Play accounts to enable advanced features like sales data and app analytics.",
@@ -665,6 +729,27 @@
   "@storeConnections_connectedOn": {
     "placeholders": {
       "date": { "type": "String" }
+    }
+  },
+  "storeConnections_syncApps": "Sync Apps",
+  "storeConnections_syncing": "Syncing...",
+  "storeConnections_syncDescription": "Sync will mark your apps from this account as owned, enabling review replies.",
+  "storeConnections_syncedApps": "Synced {count} apps as owned",
+  "@storeConnections_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "storeConnections_syncFailed": "Sync failed: {error}",
+  "@storeConnections_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "storeConnections_errorLoading": "Error loading connections: {error}",
+  "@storeConnections_errorLoading": {
+    "placeholders": {
+      "error": { "type": "String" }
     }
   },
 
@@ -1116,5 +1201,426 @@
   "wizard_after": "After",
   "wizard_nextStepsTitle": "What happens next?",
   "wizard_nextStepsWithChanges": "Your changes will be saved as drafts. You can review and publish them from the Metadata Editor.",
-  "wizard_nextStepsNoChanges": "No changes to save. Go back and select suggestions to optimize your metadata."
+  "wizard_nextStepsNoChanges": "No changes to save. Go back and select suggestions to optimize your metadata.",
+
+  "team_title": "Team Management",
+  "team_createTeam": "Create Team",
+  "team_teamName": "Team Name",
+  "team_teamNameHint": "Enter team name",
+  "team_description": "Description (optional)",
+  "team_descriptionHint": "What is this team for?",
+  "team_teamNameRequired": "Team name is required",
+  "team_teamNameMinLength": "Team name must be at least 2 characters",
+  "team_inviteMember": "Invite Team Member",
+  "team_emailAddress": "Email Address",
+  "team_emailHint": "colleague@example.com",
+  "team_emailRequired": "Email is required",
+  "team_emailInvalid": "Enter a valid email address",
+  "team_invitationSent": "Invitation sent to {email}",
+  "@team_invitationSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "team_members": "MEMBERS",
+  "team_invite": "Invite",
+  "team_pendingInvitations": "PENDING INVITATIONS",
+  "team_noPendingInvitations": "No pending invitations",
+  "team_teamSettings": "Team Settings",
+  "team_changeRole": "Change Role for {name}",
+  "@team_changeRole": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_removeMember": "Remove Member",
+  "team_removeMemberConfirm": "Are you sure you want to remove {name} from this team?",
+  "@team_removeMemberConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_remove": "Remove",
+  "team_leaveTeam": "Leave Team",
+  "team_leaveTeamConfirm": "Are you sure you want to leave \"{teamName}\"?",
+  "@team_leaveTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_leave": "Leave",
+  "team_deleteTeam": "Delete Team",
+  "team_deleteTeamConfirm": "Are you sure you want to delete \"{teamName}\"? This action cannot be undone.",
+  "@team_deleteTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_yourTeams": "YOUR TEAMS",
+  "team_failedToLoadTeam": "Failed to load team",
+  "team_failedToLoadMembers": "Failed to load members",
+  "team_failedToLoadInvitations": "Failed to load invitations",
+  "team_memberCount": "{count, plural, =1{1 member} other{{count} members}}",
+  "@team_memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "team_invitedAs": "Invited as {role}",
+  "@team_invitedAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
+  "team_joinedTeam": "Joined {teamName}",
+  "@team_joinedTeam": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_invitationDeclined": "Invitation declined",
+  "team_noTeamsYet": "No Teams Yet",
+  "team_noTeamsDescription": "Create a team to collaborate with others on your apps",
+  "team_createFirstTeam": "Create Your First Team",
+
+  "integrations_title": "Integrations",
+  "integrations_syncFailed": "Sync failed: {error}",
+  "@integrations_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_disconnectConfirm": "Disconnect?",
+  "integrations_disconnectedSuccess": "Disconnected successfully",
+  "integrations_connectGooglePlay": "Connect Google Play Console",
+  "integrations_connectAppStore": "Connect App Store Connect",
+  "integrations_connectedApps": "Connected! Imported {count} apps.",
+  "@integrations_connectedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_syncedApps": "Synced {count} apps as owned",
+  "@integrations_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnected": "App Store Connect connected successfully!",
+  "integrations_googlePlayConnected": "Google Play Console connected successfully!",
+  "integrations_description": "Connect your store accounts to import apps, reply to reviews, and access analytics.",
+  "integrations_errorLoading": "Error loading integrations: {error}",
+  "@integrations_errorLoading": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_syncedAppsDetails": "Synced {imported} apps ({discovered} discovered)",
+  "@integrations_syncedAppsDetails": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "discovered": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnect": "App Store Connect",
+  "integrations_connectAppleAccount": "Connect your Apple Developer account",
+  "integrations_googlePlayConsole": "Google Play Console",
+  "integrations_connectGoogleAccount": "Connect your Google Play account",
+  "integrations_disconnectConfirmMessage": "Are you sure you want to disconnect {type}? This will remove {count} imported apps.",
+  "@integrations_disconnectConfirmMessage": {
+    "placeholders": {
+      "type": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_disconnect": "Disconnect",
+  "integrations_connect": "Connect",
+  "integrations_connected": "Connected",
+  "integrations_error": "Error",
+  "integrations_syncing": "Syncing...",
+  "integrations_refreshApps": "Refresh Apps",
+  "integrations_lastSynced": "Last synced: {date}",
+  "@integrations_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "integrations_connectedOn": "Connected on {date}",
+  "@integrations_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "integrations_appsImported": "{count, plural, =1{1 app imported} other{{count} apps imported}}",
+  "@integrations_appsImported": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "alertBuilder_nameYourRule": "NAME YOUR RULE",
+  "alertBuilder_nameDescription": "Give your alert rule a descriptive name",
+  "alertBuilder_nameHint": "e.g., Daily Position Alert",
+  "alertBuilder_summary": "SUMMARY",
+  "alertBuilder_saveAlertRule": "Save Alert Rule",
+  "alertBuilder_selectAlertType": "SELECT ALERT TYPE",
+  "alertBuilder_selectAlertTypeDescription": "Choose what kind of alert you want to create",
+  "alertBuilder_deleteRuleConfirm": "This will delete \"{ruleName}\".",
+  "@alertBuilder_deleteRuleConfirm": {
+    "placeholders": {
+      "ruleName": { "type": "String" }
+    }
+  },
+  "alertBuilder_activateTemplateOrCreate": "No rules yet. Activate a template or create your own!",
+
+  "billing_cancelSubscription": "Cancel Subscription",
+  "billing_keepSubscription": "Keep Subscription",
+  "billing_billingPortal": "Billing Portal",
+  "billing_resume": "Resume",
+
+  "keywords_noCompetitorsFound": "No competitors found. Add competitors first.",
+  "keywords_noCompetitorsForApp": "No competitors for this app. Add a competitor first.",
+  "keywords_failedToAddKeywords": "Failed to add keywords: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_bulkAddHint": "budget tracker\nexpense manager\nmoney app",
+
+  "appOverview_urlCopied": "Store URL copied to clipboard",
+
+  "country_us": "United States",
+  "country_gb": "United Kingdom",
+  "country_fr": "France",
+  "country_de": "Germany",
+  "country_ca": "Canada",
+  "country_au": "Australia",
+  "country_jp": "Japan",
+  "country_cn": "China",
+  "country_kr": "South Korea",
+  "country_br": "Brazil",
+  "country_es": "Spain",
+  "country_it": "Italy",
+
+  "countryCode_us": "🇺🇸 US",
+  "countryCode_gb": "🇬🇧 UK",
+  "countryCode_fr": "🇫🇷 FR",
+  "countryCode_de": "🇩🇪 DE",
+  "countryCode_ca": "🇨🇦 CA",
+  "countryCode_au": "🇦🇺 AU",
+
+  "alertBuilder_type": "Type",
+  "alertBuilder_scope": "Scope",
+  "alertBuilder_name": "Name",
+  "alertBuilder_scopeGlobal": "All Apps",
+  "alertBuilder_scopeApp": "Specific App",
+  "alertBuilder_scopeCategory": "Category",
+  "alertBuilder_scopeKeyword": "Keyword",
+
+  "alertType_positionChange": "Position Change",
+  "alertType_positionChangeDesc": "Alert when app rank changes significantly",
+  "alertType_ratingChange": "Rating Change",
+  "alertType_ratingChangeDesc": "Alert when app rating changes",
+  "alertType_reviewSpike": "Review Spike",
+  "alertType_reviewSpikeDesc": "Alert on unusual review activity",
+  "alertType_reviewKeyword": "Review Keyword",
+  "alertType_reviewKeywordDesc": "Alert when keywords appear in reviews",
+  "alertType_newCompetitor": "New Competitor",
+  "alertType_newCompetitorDesc": "Alert when new apps enter your space",
+  "alertType_competitorPassed": "Competitor Passed",
+  "alertType_competitorPassedDesc": "Alert when you overtake a competitor",
+  "alertType_massMovement": "Mass Movement",
+  "alertType_massMovementDesc": "Alert on large ranking shifts",
+  "alertType_keywordTrend": "Keyword Trend",
+  "alertType_keywordTrendDesc": "Alert when keyword popularity changes",
+  "alertType_opportunity": "Opportunity",
+  "alertType_opportunityDesc": "Alert on new ranking opportunities",
+
+  "billing_title": "Billing & Plans",
+  "billing_subscriptionActivated": "Subscription activated successfully!",
+  "billing_changePlan": "Change Plan",
+  "billing_choosePlan": "Choose a Plan",
+  "billing_cancelMessage": "Your subscription will remain active until the end of the current billing period. After that, you will lose access to premium features.",
+  "billing_currentPlan": "CURRENT PLAN",
+  "billing_trial": "TRIAL",
+  "billing_canceling": "CANCELING",
+  "billing_accessUntil": "Access until {date}",
+  "@billing_accessUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_renewsOn": "Renews {date}",
+  "@billing_renewsOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_manageSubscription": "MANAGE SUBSCRIPTION",
+  "billing_monthly": "Monthly",
+  "billing_yearly": "Yearly",
+  "billing_savePercent": "Save {percent}%",
+  "@billing_savePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "billing_current": "Current",
+  "billing_apps": "Apps",
+  "billing_unlimited": "Unlimited",
+  "billing_keywordsPerApp": "Keywords per app",
+  "billing_history": "History",
+  "billing_days": "{count} days",
+  "@billing_days": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "billing_exports": "Exports",
+  "billing_aiInsights": "AI Insights",
+  "billing_apiAccess": "API Access",
+  "billing_yes": "Yes",
+  "billing_no": "No",
+  "billing_currentPlanButton": "Current Plan",
+  "billing_upgradeTo": "Upgrade to {planName}",
+  "@billing_upgradeTo": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "billing_cancel": "Cancel",
+
+  "keywords_compareWithCompetitor": "Compare with Competitor",
+  "keywords_selectCompetitorToCompare": "Select a competitor to compare keywords:",
+  "keywords_noCompetitorsFound": "No competitors found. Add competitors first.",
+  "keywords_noCompetitorsForApp": "No competitors for this app. Add a competitor first.",
+  "keywords_failedToAddKeywords": "Failed to add keywords: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_addToCompetitor": "Add to Competitor",
+  "keywords_addKeywordsTo": "Add {count} keyword(s) to:",
+  "@keywords_addKeywordsTo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywords_avgPosition": "Avg Position",
+  "keywords_declined": "Declined",
+  "keywords_total": "Total",
+  "keywords_ranked": "Ranked",
+  "keywords_improved": "Improved",
+
+  "onboarding_skip": "Skip",
+  "onboarding_back": "Back",
+  "onboarding_continue": "Continue",
+  "onboarding_getStarted": "Get Started",
+  "onboarding_welcomeToKeyrank": "Welcome to Keyrank",
+  "onboarding_welcomeSubtitle": "Track your app rankings, manage reviews, and optimize your ASO strategy.",
+  "onboarding_connectStore": "Connect Your Store",
+  "onboarding_connectStoreSubtitle": "Optional: Connect to import apps and reply to reviews.",
+  "onboarding_couldNotLoadIntegrations": "Could not load integrations",
+  "onboarding_tapToConnect": "Tap to connect",
+  "onboarding_allSet": "You're All Set!",
+  "onboarding_allSetSubtitle": "Start by adding an app to track, or explore the keyword inspector.",
+
+  "team_you": "You",
+  "team_changeRoleButton": "Change Role",
+  "team_removeButton": "Remove",
+
+  "competitors_removeTitle": "Remove Competitor",
+  "competitors_removeConfirm": "Are you sure you want to remove \"{name}\" from your competitors?",
+  "@competitors_removeConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_removed": "{name} removed",
+  "@competitors_removed": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_removeFailed": "Failed to remove competitor: {error}",
+  "@competitors_removeFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_addCompetitor": "Add competitor",
+  "competitors_filterAll": "All",
+  "competitors_filterGlobal": "Global",
+  "competitors_filterContextual": "Contextual",
+  "competitors_noCompetitorsYet": "No competitors tracked yet",
+  "competitors_noGlobalCompetitors": "No global competitors",
+  "competitors_noContextualCompetitors": "No contextual competitors",
+  "competitors_emptySubtitleAll": "Search for apps and add them as competitors to track their rankings",
+  "competitors_emptySubtitleGlobal": "Global competitors appear across all your apps",
+  "competitors_emptySubtitleContextual": "Contextual competitors are linked to specific apps",
+  "competitors_searchForCompetitors": "Search for competitors",
+  "competitors_viewKeywords": "View Keywords",
+
+  "common_remove": "Remove",
+
+  "competitors_addTitle": "Add Competitor",
+  "competitors_addedAsCompetitor": "{name} added as competitor",
+  "@competitors_addedAsCompetitor": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_addFailed": "Failed to add competitor: {error}",
+  "@competitors_addFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_searchForCompetitor": "Search for a competitor",
+
+  "appPreview_back": "Back",
+
+  "alerts_edit": "Edit",
+  "alerts_scopeGlobal": "All apps",
+  "alerts_scopeApp": "Specific app",
+  "alerts_scopeCategory": "Category",
+  "alerts_scopeKeyword": "Keyword",
+
+  "ratings_showMore": "Show more ({count} remaining)",
+  "@ratings_showMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "ratings_showLess": "Show less",
+
+  "insights_aiInsights": "AI Insights",
+  "insights_viewAll": "View all",
+  "insights_viewMore": "View {count} more insights",
+  "@insights_viewMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_noInsightsYet": "No insights yet",
+  "insights_noInsightsDesc": "AI-powered insights will appear here as we analyze your apps",
+  "insights_loadFailed": "Failed to load insights",
+
+  "chat_createFailed": "Failed to create conversation: {error}",
+  "@chat_createFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "chat_deleteFailed": "Failed to delete: {error}",
+  "@chat_deleteFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "notifications_markAllRead": "Mark all read",
+  "notifications_manageAlerts": "Manage alerts"
 }

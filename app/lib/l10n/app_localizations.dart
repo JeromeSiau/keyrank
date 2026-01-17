@@ -462,6 +462,48 @@ abstract class AppLocalizations {
   /// **'View reviews'**
   String get dashboard_viewReviews;
 
+  /// No description provided for @dashboard_tableApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get dashboard_tableApp;
+
+  /// No description provided for @dashboard_tableKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get dashboard_tableKeywords;
+
+  /// No description provided for @dashboard_tableAvgRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Rank'**
+  String get dashboard_tableAvgRank;
+
+  /// No description provided for @dashboard_tableTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Trend'**
+  String get dashboard_tableTrend;
+
+  /// No description provided for @dashboard_connectYourStores.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Your Stores'**
+  String get dashboard_connectYourStores;
+
+  /// No description provided for @dashboard_connectStoresDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Link App Store Connect or Google Play to import your apps and reply to reviews.'**
+  String get dashboard_connectStoresDescription;
+
+  /// No description provided for @dashboard_connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get dashboard_connect;
+
   /// No description provided for @apps_title.
   ///
   /// In en, this message translates to:
@@ -941,6 +983,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select at least one country'**
   String get insights_selectCountryFirst;
+
+  /// No description provided for @insights_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insights_title;
+
+  /// No description provided for @insights_titleWithApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights - {appName}'**
+  String insights_titleWithApp(String appName);
+
+  /// No description provided for @insights_allApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights (All Apps)'**
+  String get insights_allApps;
+
+  /// No description provided for @insights_noInsightsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No insights yet'**
+  String get insights_noInsightsYet;
+
+  /// No description provided for @insights_selectAppToGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an app to generate insights from reviews'**
+  String get insights_selectAppToGenerate;
+
+  /// No description provided for @insights_appsWithInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} apps with insights'**
+  String insights_appsWithInsights(int count);
+
+  /// No description provided for @insights_errorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading insights'**
+  String get insights_errorLoading;
+
+  /// No description provided for @insights_reviewsAnalyzed.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews analyzed'**
+  String insights_reviewsAnalyzed(int count);
+
+  /// No description provided for @insights_avgScore.
+  ///
+  /// In en, this message translates to:
+  /// **'avg score'**
+  String get insights_avgScore;
+
+  /// No description provided for @insights_updatedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {date}'**
+  String insights_updatedOn(String date);
 
   /// No description provided for @compare_selectAppsToCompare.
   ///
@@ -2466,6 +2568,36 @@ abstract class AppLocalizations {
   /// **'Delete rule?'**
   String get alerts_deleteConfirm;
 
+  /// No description provided for @alerts_createCustomRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom rule'**
+  String get alerts_createCustomRule;
+
+  /// No description provided for @alerts_ruleActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} activated!'**
+  String alerts_ruleActivated(String name);
+
+  /// No description provided for @alerts_deleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will delete \"{name}\".'**
+  String alerts_deleteMessage(String name);
+
+  /// No description provided for @alerts_noRulesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate a template or create your own!'**
+  String get alerts_noRulesDescription;
+
+  /// No description provided for @alerts_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get alerts_create;
+
   /// No description provided for @settings_notifications.
   ///
   /// In en, this message translates to:
@@ -2495,6 +2627,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect your App Store and Google Play accounts'**
   String get settings_storeConnectionsDesc;
+
+  /// No description provided for @settings_alertDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'ALERT DELIVERY'**
+  String get settings_alertDelivery;
+
+  /// No description provided for @settings_team.
+  ///
+  /// In en, this message translates to:
+  /// **'TEAM'**
+  String get settings_team;
+
+  /// No description provided for @settings_teamManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Management'**
+  String get settings_teamManagement;
+
+  /// No description provided for @settings_teamManagementDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite members, manage roles & permissions'**
+  String get settings_teamManagementDesc;
+
+  /// No description provided for @settings_integrations.
+  ///
+  /// In en, this message translates to:
+  /// **'INTEGRATIONS'**
+  String get settings_integrations;
+
+  /// No description provided for @settings_manageIntegrations.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Integrations'**
+  String get settings_manageIntegrations;
+
+  /// No description provided for @settings_manageIntegrationsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect App Store Connect & Google Play Console'**
+  String get settings_manageIntegrationsDesc;
+
+  /// No description provided for @settings_billing.
+  ///
+  /// In en, this message translates to:
+  /// **'BILLING'**
+  String get settings_billing;
+
+  /// No description provided for @settings_plansBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans & Billing'**
+  String get settings_plansBilling;
+
+  /// No description provided for @settings_plansBillingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your subscription and payment'**
+  String get settings_plansBillingDesc;
+
+  /// No description provided for @settings_rememberApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember selected app'**
+  String get settings_rememberApp;
+
+  /// No description provided for @settings_rememberAppDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore app selection when you open the app'**
+  String get settings_rememberAppDesc;
 
   /// No description provided for @storeConnections_title.
   ///
@@ -2579,6 +2783,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connected on {date}'**
   String storeConnections_connectedOn(String date);
+
+  /// No description provided for @storeConnections_syncApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Apps'**
+  String get storeConnections_syncApps;
+
+  /// No description provided for @storeConnections_syncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing...'**
+  String get storeConnections_syncing;
+
+  /// No description provided for @storeConnections_syncDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync will mark your apps from this account as owned, enabling review replies.'**
+  String get storeConnections_syncDescription;
+
+  /// No description provided for @storeConnections_syncedApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced {count} apps as owned'**
+  String storeConnections_syncedApps(int count);
+
+  /// No description provided for @storeConnections_syncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {error}'**
+  String storeConnections_syncFailed(String error);
+
+  /// No description provided for @storeConnections_errorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading connections: {error}'**
+  String storeConnections_errorLoading(String error);
 
   /// No description provided for @reviewsInbox_title.
   ///
@@ -4240,6 +4480,1302 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No changes to save. Go back and select suggestions to optimize your metadata.'**
   String get wizard_nextStepsNoChanges;
+
+  /// No description provided for @team_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Management'**
+  String get team_title;
+
+  /// No description provided for @team_createTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Team'**
+  String get team_createTeam;
+
+  /// No description provided for @team_teamName.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Name'**
+  String get team_teamName;
+
+  /// No description provided for @team_teamNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter team name'**
+  String get team_teamNameHint;
+
+  /// No description provided for @team_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get team_description;
+
+  /// No description provided for @team_descriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What is this team for?'**
+  String get team_descriptionHint;
+
+  /// No description provided for @team_teamNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Team name is required'**
+  String get team_teamNameRequired;
+
+  /// No description provided for @team_teamNameMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Team name must be at least 2 characters'**
+  String get team_teamNameMinLength;
+
+  /// No description provided for @team_inviteMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Team Member'**
+  String get team_inviteMember;
+
+  /// No description provided for @team_emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get team_emailAddress;
+
+  /// No description provided for @team_emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'colleague@example.com'**
+  String get team_emailHint;
+
+  /// No description provided for @team_emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get team_emailRequired;
+
+  /// No description provided for @team_emailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get team_emailInvalid;
+
+  /// No description provided for @team_invitationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation sent to {email}'**
+  String team_invitationSent(String email);
+
+  /// No description provided for @team_members.
+  ///
+  /// In en, this message translates to:
+  /// **'MEMBERS'**
+  String get team_members;
+
+  /// No description provided for @team_invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get team_invite;
+
+  /// No description provided for @team_pendingInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'PENDING INVITATIONS'**
+  String get team_pendingInvitations;
+
+  /// No description provided for @team_noPendingInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending invitations'**
+  String get team_noPendingInvitations;
+
+  /// No description provided for @team_teamSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Settings'**
+  String get team_teamSettings;
+
+  /// No description provided for @team_changeRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Role for {name}'**
+  String team_changeRole(String name);
+
+  /// No description provided for @team_removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Member'**
+  String get team_removeMember;
+
+  /// No description provided for @team_removeMemberConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove {name} from this team?'**
+  String team_removeMemberConfirm(String name);
+
+  /// No description provided for @team_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get team_remove;
+
+  /// No description provided for @team_leaveTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave Team'**
+  String get team_leaveTeam;
+
+  /// No description provided for @team_leaveTeamConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to leave \"{teamName}\"?'**
+  String team_leaveTeamConfirm(String teamName);
+
+  /// No description provided for @team_leave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get team_leave;
+
+  /// No description provided for @team_deleteTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Team'**
+  String get team_deleteTeam;
+
+  /// No description provided for @team_deleteTeamConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{teamName}\"? This action cannot be undone.'**
+  String team_deleteTeamConfirm(String teamName);
+
+  /// No description provided for @team_yourTeams.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR TEAMS'**
+  String get team_yourTeams;
+
+  /// No description provided for @team_failedToLoadTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load team'**
+  String get team_failedToLoadTeam;
+
+  /// No description provided for @team_failedToLoadMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load members'**
+  String get team_failedToLoadMembers;
+
+  /// No description provided for @team_failedToLoadInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load invitations'**
+  String get team_failedToLoadInvitations;
+
+  /// No description provided for @team_memberCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 member} other{{count} members}}'**
+  String team_memberCount(int count);
+
+  /// No description provided for @team_invitedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited as {role}'**
+  String team_invitedAs(String role);
+
+  /// No description provided for @team_joinedTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {teamName}'**
+  String team_joinedTeam(String teamName);
+
+  /// No description provided for @team_invitationDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation declined'**
+  String get team_invitationDeclined;
+
+  /// No description provided for @team_noTeamsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Teams Yet'**
+  String get team_noTeamsYet;
+
+  /// No description provided for @team_noTeamsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a team to collaborate with others on your apps'**
+  String get team_noTeamsDescription;
+
+  /// No description provided for @team_createFirstTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your First Team'**
+  String get team_createFirstTeam;
+
+  /// No description provided for @integrations_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Integrations'**
+  String get integrations_title;
+
+  /// No description provided for @integrations_syncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {error}'**
+  String integrations_syncFailed(String error);
+
+  /// No description provided for @integrations_disconnectConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect?'**
+  String get integrations_disconnectConfirm;
+
+  /// No description provided for @integrations_disconnectedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected successfully'**
+  String get integrations_disconnectedSuccess;
+
+  /// No description provided for @integrations_connectGooglePlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Google Play Console'**
+  String get integrations_connectGooglePlay;
+
+  /// No description provided for @integrations_connectAppStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect App Store Connect'**
+  String get integrations_connectAppStore;
+
+  /// No description provided for @integrations_connectedApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected! Imported {count} apps.'**
+  String integrations_connectedApps(int count);
+
+  /// No description provided for @integrations_syncedApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced {count} apps as owned'**
+  String integrations_syncedApps(int count);
+
+  /// No description provided for @integrations_appStoreConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store Connect connected successfully!'**
+  String get integrations_appStoreConnected;
+
+  /// No description provided for @integrations_googlePlayConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play Console connected successfully!'**
+  String get integrations_googlePlayConnected;
+
+  /// No description provided for @integrations_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your store accounts to import apps, reply to reviews, and access analytics.'**
+  String get integrations_description;
+
+  /// No description provided for @integrations_errorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading integrations: {error}'**
+  String integrations_errorLoading(String error);
+
+  /// No description provided for @integrations_syncedAppsDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced {imported} apps ({discovered} discovered)'**
+  String integrations_syncedAppsDetails(int imported, int discovered);
+
+  /// No description provided for @integrations_appStoreConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store Connect'**
+  String get integrations_appStoreConnect;
+
+  /// No description provided for @integrations_connectAppleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Apple Developer account'**
+  String get integrations_connectAppleAccount;
+
+  /// No description provided for @integrations_googlePlayConsole.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play Console'**
+  String get integrations_googlePlayConsole;
+
+  /// No description provided for @integrations_connectGoogleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Google Play account'**
+  String get integrations_connectGoogleAccount;
+
+  /// No description provided for @integrations_disconnectConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disconnect {type}? This will remove {count} imported apps.'**
+  String integrations_disconnectConfirmMessage(String type, int count);
+
+  /// No description provided for @integrations_disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get integrations_disconnect;
+
+  /// No description provided for @integrations_connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get integrations_connect;
+
+  /// No description provided for @integrations_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get integrations_connected;
+
+  /// No description provided for @integrations_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get integrations_error;
+
+  /// No description provided for @integrations_syncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing...'**
+  String get integrations_syncing;
+
+  /// No description provided for @integrations_refreshApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Apps'**
+  String get integrations_refreshApps;
+
+  /// No description provided for @integrations_lastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced: {date}'**
+  String integrations_lastSynced(String date);
+
+  /// No description provided for @integrations_connectedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected on {date}'**
+  String integrations_connectedOn(String date);
+
+  /// No description provided for @integrations_appsImported.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 app imported} other{{count} apps imported}}'**
+  String integrations_appsImported(int count);
+
+  /// No description provided for @alertBuilder_nameYourRule.
+  ///
+  /// In en, this message translates to:
+  /// **'NAME YOUR RULE'**
+  String get alertBuilder_nameYourRule;
+
+  /// No description provided for @alertBuilder_nameDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your alert rule a descriptive name'**
+  String get alertBuilder_nameDescription;
+
+  /// No description provided for @alertBuilder_nameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Daily Position Alert'**
+  String get alertBuilder_nameHint;
+
+  /// No description provided for @alertBuilder_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'SUMMARY'**
+  String get alertBuilder_summary;
+
+  /// No description provided for @alertBuilder_saveAlertRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Alert Rule'**
+  String get alertBuilder_saveAlertRule;
+
+  /// No description provided for @alertBuilder_selectAlertType.
+  ///
+  /// In en, this message translates to:
+  /// **'SELECT ALERT TYPE'**
+  String get alertBuilder_selectAlertType;
+
+  /// No description provided for @alertBuilder_selectAlertTypeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what kind of alert you want to create'**
+  String get alertBuilder_selectAlertTypeDescription;
+
+  /// No description provided for @alertBuilder_deleteRuleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will delete \"{ruleName}\".'**
+  String alertBuilder_deleteRuleConfirm(String ruleName);
+
+  /// No description provided for @alertBuilder_activateTemplateOrCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet. Activate a template or create your own!'**
+  String get alertBuilder_activateTemplateOrCreate;
+
+  /// No description provided for @billing_cancelSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Subscription'**
+  String get billing_cancelSubscription;
+
+  /// No description provided for @billing_keepSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Subscription'**
+  String get billing_keepSubscription;
+
+  /// No description provided for @billing_billingPortal.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing Portal'**
+  String get billing_billingPortal;
+
+  /// No description provided for @billing_resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get billing_resume;
+
+  /// No description provided for @keywords_noCompetitorsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No competitors found. Add competitors first.'**
+  String get keywords_noCompetitorsFound;
+
+  /// No description provided for @keywords_noCompetitorsForApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No competitors for this app. Add a competitor first.'**
+  String get keywords_noCompetitorsForApp;
+
+  /// No description provided for @keywords_failedToAddKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add keywords: {error}'**
+  String keywords_failedToAddKeywords(String error);
+
+  /// No description provided for @keywords_bulkAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'budget tracker\nexpense manager\nmoney app'**
+  String get keywords_bulkAddHint;
+
+  /// No description provided for @appOverview_urlCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Store URL copied to clipboard'**
+  String get appOverview_urlCopied;
+
+  /// No description provided for @country_us.
+  ///
+  /// In en, this message translates to:
+  /// **'United States'**
+  String get country_us;
+
+  /// No description provided for @country_gb.
+  ///
+  /// In en, this message translates to:
+  /// **'United Kingdom'**
+  String get country_gb;
+
+  /// No description provided for @country_fr.
+  ///
+  /// In en, this message translates to:
+  /// **'France'**
+  String get country_fr;
+
+  /// No description provided for @country_de.
+  ///
+  /// In en, this message translates to:
+  /// **'Germany'**
+  String get country_de;
+
+  /// No description provided for @country_ca.
+  ///
+  /// In en, this message translates to:
+  /// **'Canada'**
+  String get country_ca;
+
+  /// No description provided for @country_au.
+  ///
+  /// In en, this message translates to:
+  /// **'Australia'**
+  String get country_au;
+
+  /// No description provided for @country_jp.
+  ///
+  /// In en, this message translates to:
+  /// **'Japan'**
+  String get country_jp;
+
+  /// No description provided for @country_cn.
+  ///
+  /// In en, this message translates to:
+  /// **'China'**
+  String get country_cn;
+
+  /// No description provided for @country_kr.
+  ///
+  /// In en, this message translates to:
+  /// **'South Korea'**
+  String get country_kr;
+
+  /// No description provided for @country_br.
+  ///
+  /// In en, this message translates to:
+  /// **'Brazil'**
+  String get country_br;
+
+  /// No description provided for @country_es.
+  ///
+  /// In en, this message translates to:
+  /// **'Spain'**
+  String get country_es;
+
+  /// No description provided for @country_it.
+  ///
+  /// In en, this message translates to:
+  /// **'Italy'**
+  String get country_it;
+
+  /// No description provided for @countryCode_us.
+  ///
+  /// In en, this message translates to:
+  /// **'🇺🇸 US'**
+  String get countryCode_us;
+
+  /// No description provided for @countryCode_gb.
+  ///
+  /// In en, this message translates to:
+  /// **'🇬🇧 UK'**
+  String get countryCode_gb;
+
+  /// No description provided for @countryCode_fr.
+  ///
+  /// In en, this message translates to:
+  /// **'🇫🇷 FR'**
+  String get countryCode_fr;
+
+  /// No description provided for @countryCode_de.
+  ///
+  /// In en, this message translates to:
+  /// **'🇩🇪 DE'**
+  String get countryCode_de;
+
+  /// No description provided for @countryCode_ca.
+  ///
+  /// In en, this message translates to:
+  /// **'🇨🇦 CA'**
+  String get countryCode_ca;
+
+  /// No description provided for @countryCode_au.
+  ///
+  /// In en, this message translates to:
+  /// **'🇦🇺 AU'**
+  String get countryCode_au;
+
+  /// No description provided for @alertBuilder_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get alertBuilder_type;
+
+  /// No description provided for @alertBuilder_scope.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get alertBuilder_scope;
+
+  /// No description provided for @alertBuilder_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get alertBuilder_name;
+
+  /// No description provided for @alertBuilder_scopeGlobal.
+  ///
+  /// In en, this message translates to:
+  /// **'All Apps'**
+  String get alertBuilder_scopeGlobal;
+
+  /// No description provided for @alertBuilder_scopeApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Specific App'**
+  String get alertBuilder_scopeApp;
+
+  /// No description provided for @alertBuilder_scopeCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get alertBuilder_scopeCategory;
+
+  /// No description provided for @alertBuilder_scopeKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword'**
+  String get alertBuilder_scopeKeyword;
+
+  /// No description provided for @alertType_positionChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Position Change'**
+  String get alertType_positionChange;
+
+  /// No description provided for @alertType_positionChangeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert when app rank changes significantly'**
+  String get alertType_positionChangeDesc;
+
+  /// No description provided for @alertType_ratingChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating Change'**
+  String get alertType_ratingChange;
+
+  /// No description provided for @alertType_ratingChangeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert when app rating changes'**
+  String get alertType_ratingChangeDesc;
+
+  /// No description provided for @alertType_reviewSpike.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Spike'**
+  String get alertType_reviewSpike;
+
+  /// No description provided for @alertType_reviewSpikeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert on unusual review activity'**
+  String get alertType_reviewSpikeDesc;
+
+  /// No description provided for @alertType_reviewKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Keyword'**
+  String get alertType_reviewKeyword;
+
+  /// No description provided for @alertType_reviewKeywordDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert when keywords appear in reviews'**
+  String get alertType_reviewKeywordDesc;
+
+  /// No description provided for @alertType_newCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'New Competitor'**
+  String get alertType_newCompetitor;
+
+  /// No description provided for @alertType_newCompetitorDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert when new apps enter your space'**
+  String get alertType_newCompetitorDesc;
+
+  /// No description provided for @alertType_competitorPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitor Passed'**
+  String get alertType_competitorPassed;
+
+  /// No description provided for @alertType_competitorPassedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert when you overtake a competitor'**
+  String get alertType_competitorPassedDesc;
+
+  /// No description provided for @alertType_massMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Mass Movement'**
+  String get alertType_massMovement;
+
+  /// No description provided for @alertType_massMovementDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert on large ranking shifts'**
+  String get alertType_massMovementDesc;
+
+  /// No description provided for @alertType_keywordTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword Trend'**
+  String get alertType_keywordTrend;
+
+  /// No description provided for @alertType_keywordTrendDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert when keyword popularity changes'**
+  String get alertType_keywordTrendDesc;
+
+  /// No description provided for @alertType_opportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity'**
+  String get alertType_opportunity;
+
+  /// No description provided for @alertType_opportunityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert on new ranking opportunities'**
+  String get alertType_opportunityDesc;
+
+  /// No description provided for @billing_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing & Plans'**
+  String get billing_title;
+
+  /// No description provided for @billing_subscriptionActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription activated successfully!'**
+  String get billing_subscriptionActivated;
+
+  /// No description provided for @billing_changePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Plan'**
+  String get billing_changePlan;
+
+  /// No description provided for @billing_choosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Plan'**
+  String get billing_choosePlan;
+
+  /// No description provided for @billing_cancelMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription will remain active until the end of the current billing period. After that, you will lose access to premium features.'**
+  String get billing_cancelMessage;
+
+  /// No description provided for @billing_currentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT PLAN'**
+  String get billing_currentPlan;
+
+  /// No description provided for @billing_trial.
+  ///
+  /// In en, this message translates to:
+  /// **'TRIAL'**
+  String get billing_trial;
+
+  /// No description provided for @billing_canceling.
+  ///
+  /// In en, this message translates to:
+  /// **'CANCELING'**
+  String get billing_canceling;
+
+  /// No description provided for @billing_accessUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Access until {date}'**
+  String billing_accessUntil(String date);
+
+  /// No description provided for @billing_renewsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews {date}'**
+  String billing_renewsOn(String date);
+
+  /// No description provided for @billing_manageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'MANAGE SUBSCRIPTION'**
+  String get billing_manageSubscription;
+
+  /// No description provided for @billing_monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get billing_monthly;
+
+  /// No description provided for @billing_yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get billing_yearly;
+
+  /// No description provided for @billing_savePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String billing_savePercent(int percent);
+
+  /// No description provided for @billing_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get billing_current;
+
+  /// No description provided for @billing_apps.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps'**
+  String get billing_apps;
+
+  /// No description provided for @billing_unlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get billing_unlimited;
+
+  /// No description provided for @billing_keywordsPerApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords per app'**
+  String get billing_keywordsPerApp;
+
+  /// No description provided for @billing_history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get billing_history;
+
+  /// No description provided for @billing_days.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String billing_days(int count);
+
+  /// No description provided for @billing_exports.
+  ///
+  /// In en, this message translates to:
+  /// **'Exports'**
+  String get billing_exports;
+
+  /// No description provided for @billing_aiInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Insights'**
+  String get billing_aiInsights;
+
+  /// No description provided for @billing_apiAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'API Access'**
+  String get billing_apiAccess;
+
+  /// No description provided for @billing_yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get billing_yes;
+
+  /// No description provided for @billing_no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get billing_no;
+
+  /// No description provided for @billing_currentPlanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Plan'**
+  String get billing_currentPlanButton;
+
+  /// No description provided for @billing_upgradeTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to {planName}'**
+  String billing_upgradeTo(String planName);
+
+  /// No description provided for @billing_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get billing_cancel;
+
+  /// No description provided for @keywords_compareWithCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with Competitor'**
+  String get keywords_compareWithCompetitor;
+
+  /// No description provided for @keywords_selectCompetitorToCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a competitor to compare keywords:'**
+  String get keywords_selectCompetitorToCompare;
+
+  /// No description provided for @keywords_addToCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Competitor'**
+  String get keywords_addToCompetitor;
+
+  /// No description provided for @keywords_addKeywordsTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {count} keyword(s) to:'**
+  String keywords_addKeywordsTo(int count);
+
+  /// No description provided for @keywords_avgPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Position'**
+  String get keywords_avgPosition;
+
+  /// No description provided for @keywords_declined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get keywords_declined;
+
+  /// No description provided for @keywords_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get keywords_total;
+
+  /// No description provided for @keywords_ranked.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked'**
+  String get keywords_ranked;
+
+  /// No description provided for @keywords_improved.
+  ///
+  /// In en, this message translates to:
+  /// **'Improved'**
+  String get keywords_improved;
+
+  /// No description provided for @onboarding_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboarding_skip;
+
+  /// No description provided for @onboarding_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboarding_back;
+
+  /// No description provided for @onboarding_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboarding_continue;
+
+  /// No description provided for @onboarding_getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboarding_getStarted;
+
+  /// No description provided for @onboarding_welcomeToKeyrank.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Keyrank'**
+  String get onboarding_welcomeToKeyrank;
+
+  /// No description provided for @onboarding_welcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your app rankings, manage reviews, and optimize your ASO strategy.'**
+  String get onboarding_welcomeSubtitle;
+
+  /// No description provided for @onboarding_connectStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Your Store'**
+  String get onboarding_connectStore;
+
+  /// No description provided for @onboarding_connectStoreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: Connect to import apps and reply to reviews.'**
+  String get onboarding_connectStoreSubtitle;
+
+  /// No description provided for @onboarding_couldNotLoadIntegrations.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load integrations'**
+  String get onboarding_couldNotLoadIntegrations;
+
+  /// No description provided for @onboarding_tapToConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to connect'**
+  String get onboarding_tapToConnect;
+
+  /// No description provided for @onboarding_allSet.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re All Set!'**
+  String get onboarding_allSet;
+
+  /// No description provided for @onboarding_allSetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by adding an app to track, or explore the keyword inspector.'**
+  String get onboarding_allSetSubtitle;
+
+  /// No description provided for @team_you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get team_you;
+
+  /// No description provided for @team_changeRoleButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Role'**
+  String get team_changeRoleButton;
+
+  /// No description provided for @team_removeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get team_removeButton;
+
+  /// No description provided for @competitors_removeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Competitor'**
+  String get competitors_removeTitle;
+
+  /// No description provided for @competitors_removeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove \"{name}\" from your competitors?'**
+  String competitors_removeConfirm(String name);
+
+  /// No description provided for @competitors_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed'**
+  String competitors_removed(String name);
+
+  /// No description provided for @competitors_removeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove competitor: {error}'**
+  String competitors_removeFailed(String error);
+
+  /// No description provided for @competitors_addCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add competitor'**
+  String get competitors_addCompetitor;
+
+  /// No description provided for @competitors_filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get competitors_filterAll;
+
+  /// No description provided for @competitors_filterGlobal.
+  ///
+  /// In en, this message translates to:
+  /// **'Global'**
+  String get competitors_filterGlobal;
+
+  /// No description provided for @competitors_filterContextual.
+  ///
+  /// In en, this message translates to:
+  /// **'Contextual'**
+  String get competitors_filterContextual;
+
+  /// No description provided for @competitors_noCompetitorsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No competitors tracked yet'**
+  String get competitors_noCompetitorsYet;
+
+  /// No description provided for @competitors_noGlobalCompetitors.
+  ///
+  /// In en, this message translates to:
+  /// **'No global competitors'**
+  String get competitors_noGlobalCompetitors;
+
+  /// No description provided for @competitors_noContextualCompetitors.
+  ///
+  /// In en, this message translates to:
+  /// **'No contextual competitors'**
+  String get competitors_noContextualCompetitors;
+
+  /// No description provided for @competitors_emptySubtitleAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for apps and add them as competitors to track their rankings'**
+  String get competitors_emptySubtitleAll;
+
+  /// No description provided for @competitors_emptySubtitleGlobal.
+  ///
+  /// In en, this message translates to:
+  /// **'Global competitors appear across all your apps'**
+  String get competitors_emptySubtitleGlobal;
+
+  /// No description provided for @competitors_emptySubtitleContextual.
+  ///
+  /// In en, this message translates to:
+  /// **'Contextual competitors are linked to specific apps'**
+  String get competitors_emptySubtitleContextual;
+
+  /// No description provided for @competitors_searchForCompetitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for competitors'**
+  String get competitors_searchForCompetitors;
+
+  /// No description provided for @competitors_viewKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'View Keywords'**
+  String get competitors_viewKeywords;
+
+  /// No description provided for @common_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get common_remove;
+
+  /// No description provided for @competitors_addTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Competitor'**
+  String get competitors_addTitle;
+
+  /// No description provided for @competitors_addedAsCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added as competitor'**
+  String competitors_addedAsCompetitor(String name);
+
+  /// No description provided for @competitors_addFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add competitor: {error}'**
+  String competitors_addFailed(String error);
+
+  /// No description provided for @competitors_searchForCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a competitor'**
+  String get competitors_searchForCompetitor;
+
+  /// No description provided for @appPreview_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get appPreview_back;
+
+  /// No description provided for @alerts_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get alerts_edit;
+
+  /// No description provided for @alerts_scopeGlobal.
+  ///
+  /// In en, this message translates to:
+  /// **'All apps'**
+  String get alerts_scopeGlobal;
+
+  /// No description provided for @alerts_scopeApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Specific app'**
+  String get alerts_scopeApp;
+
+  /// No description provided for @alerts_scopeCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get alerts_scopeCategory;
+
+  /// No description provided for @alerts_scopeKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword'**
+  String get alerts_scopeKeyword;
+
+  /// No description provided for @ratings_showMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more ({count} remaining)'**
+  String ratings_showMore(int count);
+
+  /// No description provided for @ratings_showLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get ratings_showLess;
+
+  /// No description provided for @insights_aiInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Insights'**
+  String get insights_aiInsights;
+
+  /// No description provided for @insights_viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get insights_viewAll;
+
+  /// No description provided for @insights_viewMore.
+  ///
+  /// In en, this message translates to:
+  /// **'View {count} more insights'**
+  String insights_viewMore(int count);
+
+  /// No description provided for @insights_noInsightsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-powered insights will appear here as we analyze your apps'**
+  String get insights_noInsightsDesc;
+
+  /// No description provided for @insights_loadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load insights'**
+  String get insights_loadFailed;
+
+  /// No description provided for @chat_createFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create conversation: {error}'**
+  String chat_createFailed(String error);
+
+  /// No description provided for @chat_deleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete: {error}'**
+  String chat_deleteFailed(String error);
+
+  /// No description provided for @notifications_manageAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage alerts'**
+  String get notifications_manageAlerts;
 }
 
 class _AppLocalizationsDelegate

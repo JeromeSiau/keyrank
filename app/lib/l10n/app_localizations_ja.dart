@@ -155,34 +155,56 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dashboard_changeFilterCriteria => 'フィルター条件を変更してください';
 
   @override
-  String get dashboard_reviews => 'Reviews';
+  String get dashboard_reviews => 'レビュー';
 
   @override
-  String get dashboard_avgRating => 'Avg Rating';
+  String get dashboard_avgRating => '平均評価';
 
   @override
-  String get dashboard_topPerformingApps => 'Top Performing Apps';
+  String get dashboard_topPerformingApps => '高パフォーマンスのアプリ';
 
   @override
-  String get dashboard_topCountries => 'Top Countries';
+  String get dashboard_topCountries => '上位の国';
 
   @override
-  String get dashboard_sentimentOverview => 'Sentiment Overview';
+  String get dashboard_sentimentOverview => 'センチメント概要';
 
   @override
-  String get dashboard_overallSentiment => 'Overall Sentiment';
+  String get dashboard_overallSentiment => '総合センチメント';
 
   @override
-  String get dashboard_positive => 'Positive';
+  String get dashboard_positive => 'ポジティブ';
 
   @override
-  String get dashboard_positiveReviews => 'Positive';
+  String get dashboard_positiveReviews => 'ポジティブ';
 
   @override
-  String get dashboard_negativeReviews => 'Negative';
+  String get dashboard_negativeReviews => 'ネガティブ';
 
   @override
-  String get dashboard_viewReviews => 'View reviews';
+  String get dashboard_viewReviews => 'レビューを見る';
+
+  @override
+  String get dashboard_tableApp => 'アプリ';
+
+  @override
+  String get dashboard_tableKeywords => 'キーワード';
+
+  @override
+  String get dashboard_tableAvgRank => '平均順位';
+
+  @override
+  String get dashboard_tableTrend => 'トレンド';
+
+  @override
+  String get dashboard_connectYourStores => 'ストアを接続';
+
+  @override
+  String get dashboard_connectStoresDescription =>
+      'App Store ConnectまたはGoogle Playを連携して、アプリのインポートとレビューへの返信を有効にします。';
+
+  @override
+  String get dashboard_connect => '接続';
 
   @override
   String get apps_title => 'マイアプリ';
@@ -433,6 +455,44 @@ class AppLocalizationsJa extends AppLocalizations {
   String get insights_selectCountryFirst => '少なくとも1つの国を選択してください';
 
   @override
+  String get insights_title => 'インサイト';
+
+  @override
+  String insights_titleWithApp(String appName) {
+    return 'インサイト - $appName';
+  }
+
+  @override
+  String get insights_allApps => 'インサイト（すべてのアプリ）';
+
+  @override
+  String get insights_noInsightsYet => 'まだインサイトがありません';
+
+  @override
+  String get insights_selectAppToGenerate => 'アプリを選択してレビューからインサイトを生成';
+
+  @override
+  String insights_appsWithInsights(int count) {
+    return '$count個のアプリにインサイトあり';
+  }
+
+  @override
+  String get insights_errorLoading => 'インサイトの読み込みエラー';
+
+  @override
+  String insights_reviewsAnalyzed(int count) {
+    return '$count件のレビューを分析済み';
+  }
+
+  @override
+  String get insights_avgScore => '平均スコア';
+
+  @override
+  String insights_updatedOn(String date) {
+    return '$dateに更新';
+  }
+
+  @override
   String compare_selectAppsToCompare(String appName) {
     return '$appNameと比較する最大3つのアプリを選択';
   }
@@ -654,32 +714,32 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get keywordSuggestions_categoryAll => 'All';
+  String get keywordSuggestions_categoryAll => 'すべて';
 
   @override
-  String get keywordSuggestions_categoryHighOpportunity => 'High Opportunity';
+  String get keywordSuggestions_categoryHighOpportunity => 'チャンス';
 
   @override
-  String get keywordSuggestions_categoryCompetitor => 'Competitor Keywords';
+  String get keywordSuggestions_categoryCompetitor => '競合キーワード';
 
   @override
-  String get keywordSuggestions_categoryLongTail => 'Long-tail';
+  String get keywordSuggestions_categoryLongTail => 'ロングテール';
 
   @override
-  String get keywordSuggestions_categoryTrending => 'Trending';
+  String get keywordSuggestions_categoryTrending => 'トレンド';
 
   @override
-  String get keywordSuggestions_categoryRelated => 'Related';
+  String get keywordSuggestions_categoryRelated => '関連';
 
   @override
-  String get keywordSuggestions_generating => 'Generating suggestions...';
+  String get keywordSuggestions_generating => '候補を生成中...';
 
   @override
   String get keywordSuggestions_generatingSubtitle =>
-      'This may take a few minutes. Please check back later.';
+      '数分かかる場合があります。後でまたご確認ください。';
 
   @override
-  String get keywordSuggestions_checkAgain => 'Check again';
+  String get keywordSuggestions_checkAgain => '再確認';
 
   @override
   String get sidebar_favorites => 'お気に入り';
@@ -734,179 +794,179 @@ class AppLocalizationsJa extends AppLocalizations {
   String get keywordSearch_trackApp => 'このアプリを追跡';
 
   @override
-  String get discover_title => 'Discover';
+  String get discover_title => 'ディスカバー';
 
   @override
-  String get discover_tabKeywords => 'Keywords';
+  String get discover_tabKeywords => 'キーワード';
 
   @override
-  String get discover_tabCategories => 'Categories';
+  String get discover_tabCategories => 'カテゴリ';
 
   @override
-  String get discover_selectCategory => 'Select a category';
+  String get discover_selectCategory => 'カテゴリを選択';
 
   @override
-  String get discover_topFree => 'Free';
+  String get discover_topFree => '無料';
 
   @override
-  String get discover_topPaid => 'Paid';
+  String get discover_topPaid => '有料';
 
   @override
-  String get discover_topGrossing => 'Grossing';
+  String get discover_topGrossing => '売上';
 
   @override
-  String get discover_noResults => 'No results';
+  String get discover_noResults => '結果がありません';
 
   @override
-  String get discover_loadingTopApps => 'Loading top apps...';
+  String get discover_loadingTopApps => 'トップアプリを読み込み中...';
 
   @override
   String discover_topAppsIn(String collection, String category) {
-    return 'Top $collection in $category';
+    return '$categoryの$collectionトップ';
   }
 
   @override
   String discover_appsCount(int count) {
-    return '$count apps';
+    return '$count個のアプリ';
   }
 
   @override
-  String get discover_allCategories => 'All categories';
+  String get discover_allCategories => 'すべてのカテゴリ';
 
   @override
-  String get category_games => 'Games';
+  String get category_games => 'ゲーム';
 
   @override
-  String get category_business => 'Business';
+  String get category_business => 'ビジネス';
 
   @override
-  String get category_education => 'Education';
+  String get category_education => '教育';
 
   @override
-  String get category_entertainment => 'Entertainment';
+  String get category_entertainment => 'エンターテインメント';
 
   @override
-  String get category_finance => 'Finance';
+  String get category_finance => 'ファイナンス';
 
   @override
-  String get category_food_drink => 'Food & Drink';
+  String get category_food_drink => 'フード＆ドリンク';
 
   @override
-  String get category_health_fitness => 'Health & Fitness';
+  String get category_health_fitness => 'ヘルスケア＆フィットネス';
 
   @override
-  String get category_lifestyle => 'Lifestyle';
+  String get category_lifestyle => 'ライフスタイル';
 
   @override
-  String get category_medical => 'Medical';
+  String get category_medical => 'メディカル';
 
   @override
-  String get category_music => 'Music';
+  String get category_music => 'ミュージック';
 
   @override
-  String get category_navigation => 'Navigation';
+  String get category_navigation => 'ナビゲーション';
 
   @override
-  String get category_news => 'News';
+  String get category_news => 'ニュース';
 
   @override
-  String get category_photo_video => 'Photo & Video';
+  String get category_photo_video => '写真＆ビデオ';
 
   @override
-  String get category_productivity => 'Productivity';
+  String get category_productivity => '仕事効率化';
 
   @override
-  String get category_reference => 'Reference';
+  String get category_reference => '辞書＆辞典';
 
   @override
-  String get category_shopping => 'Shopping';
+  String get category_shopping => 'ショッピング';
 
   @override
-  String get category_social => 'Social Networking';
+  String get category_social => 'ソーシャルネットワーキング';
 
   @override
-  String get category_sports => 'Sports';
+  String get category_sports => 'スポーツ';
 
   @override
-  String get category_travel => 'Travel';
+  String get category_travel => '旅行';
 
   @override
-  String get category_utilities => 'Utilities';
+  String get category_utilities => 'ユーティリティ';
 
   @override
-  String get category_weather => 'Weather';
+  String get category_weather => '天気';
 
   @override
-  String get category_books => 'Books';
+  String get category_books => 'ブック';
 
   @override
-  String get category_developer_tools => 'Developer Tools';
+  String get category_developer_tools => '開発ツール';
 
   @override
-  String get category_graphics_design => 'Graphics & Design';
+  String get category_graphics_design => 'グラフィック＆デザイン';
 
   @override
-  String get category_magazines => 'Magazines & Newspapers';
+  String get category_magazines => '雑誌＆新聞';
 
   @override
-  String get category_stickers => 'Stickers';
+  String get category_stickers => 'ステッカー';
 
   @override
-  String get category_catalogs => 'Catalogs';
+  String get category_catalogs => 'カタログ';
 
   @override
-  String get category_art_design => 'Art & Design';
+  String get category_art_design => 'アート＆デザイン';
 
   @override
-  String get category_auto_vehicles => 'Auto & Vehicles';
+  String get category_auto_vehicles => '自動車';
 
   @override
-  String get category_beauty => 'Beauty';
+  String get category_beauty => '美容';
 
   @override
-  String get category_comics => 'Comics';
+  String get category_comics => 'マンガ';
 
   @override
-  String get category_communication => 'Communication';
+  String get category_communication => 'コミュニケーション';
 
   @override
-  String get category_dating => 'Dating';
+  String get category_dating => '出会い';
 
   @override
-  String get category_events => 'Events';
+  String get category_events => 'イベント';
 
   @override
-  String get category_house_home => 'House & Home';
+  String get category_house_home => '住まい＆インテリア';
 
   @override
-  String get category_libraries => 'Libraries & Demo';
+  String get category_libraries => 'ライブラリ';
 
   @override
-  String get category_maps_navigation => 'Maps & Navigation';
+  String get category_maps_navigation => '地図＆ナビ';
 
   @override
-  String get category_music_audio => 'Music & Audio';
+  String get category_music_audio => '音楽＆オーディオ';
 
   @override
-  String get category_news_magazines => 'News & Magazines';
+  String get category_news_magazines => 'ニュース＆雑誌';
 
   @override
-  String get category_parenting => 'Parenting';
+  String get category_parenting => '出産＆育児';
 
   @override
-  String get category_personalization => 'Personalization';
+  String get category_personalization => 'カスタマイズ';
 
   @override
-  String get category_photography => 'Photography';
+  String get category_photography => '写真';
 
   @override
-  String get category_tools => 'Tools';
+  String get category_tools => 'ツール';
 
   @override
-  String get category_video_players => 'Video Players & Editors';
+  String get category_video_players => '動画プレーヤー';
 
   @override
-  String get category_all_apps => 'All Apps';
+  String get category_all_apps => 'すべてのアプリ';
 
   @override
   String reviews_reviewsFor(String appName) {
@@ -1039,34 +1099,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get nav_keywords => 'キーワード';
 
   @override
-  String get nav_discover => '発見';
+  String get nav_discover => 'ディスカバー';
 
   @override
-  String get nav_engagement => 'ENGAGEMENT';
+  String get nav_engagement => 'エンゲージメント';
 
   @override
-  String get nav_reviewsInbox => 'Reviews Inbox';
+  String get nav_reviewsInbox => '受信トレイ';
 
   @override
-  String get nav_notifications => '通知';
+  String get nav_notifications => 'アラート';
 
   @override
-  String get nav_optimization => 'OPTIMIZATION';
+  String get nav_optimization => '最適化';
 
   @override
-  String get nav_keywordInspector => 'Keyword Inspector';
+  String get nav_keywordInspector => 'キーワードインスペクター';
 
   @override
-  String get nav_ratingsAnalysis => 'Ratings Analysis';
+  String get nav_ratingsAnalysis => '評価分析';
 
   @override
-  String get nav_intelligence => 'INTELLIGENCE';
+  String get nav_intelligence => 'インテリジェンス';
 
   @override
-  String get nav_topCharts => 'Top Charts';
+  String get nav_topCharts => 'トップチャート';
 
   @override
-  String get nav_competitors => 'Competitors';
+  String get nav_competitors => '競合';
 
   @override
   String get common_save => '保存';
@@ -1095,34 +1155,34 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get appDetail_currentTags => 'Current Tags';
+  String get appDetail_currentTags => '現在のタグ';
 
   @override
-  String get appDetail_noTagsOnKeyword => 'No tags on this keyword';
+  String get appDetail_noTagsOnKeyword => 'このキーワードにタグはありません';
 
   @override
-  String get appDetail_addExistingTag => 'Add Existing Tag';
+  String get appDetail_addExistingTag => '既存のタグを追加';
 
   @override
-  String get appDetail_allTagsUsed => 'All tags already added';
+  String get appDetail_allTagsUsed => 'すべてのタグが使用中です';
 
   @override
-  String get appDetail_createNewTag => 'Create New Tag';
+  String get appDetail_createNewTag => '新しいタグを作成';
 
   @override
-  String get appDetail_tagNameHint => 'Tag name...';
+  String get appDetail_tagNameHint => 'タグ名...';
 
   @override
-  String get appDetail_note => 'Note';
+  String get appDetail_note => 'メモ';
 
   @override
-  String get appDetail_noteHint => 'Add a note about this keyword...';
+  String get appDetail_noteHint => 'このキーワードについてのメモを追加...';
 
   @override
-  String get appDetail_saveNote => 'Save Note';
+  String get appDetail_saveNote => 'メモを保存';
 
   @override
-  String get appDetail_done => 'Done';
+  String get appDetail_done => '完了';
 
   @override
   String appDetail_importFailed(String error) {
@@ -1161,19 +1221,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appDetail_period90d => '90日';
 
   @override
-  String get keywords_difficultyFilter => 'Difficulty:';
+  String get keywords_difficultyFilter => '難易度:';
 
   @override
-  String get keywords_difficultyAll => 'All';
+  String get keywords_difficultyAll => 'すべて';
 
   @override
-  String get keywords_difficultyEasy => 'Easy < 40';
+  String get keywords_difficultyEasy => '簡単 < 40';
 
   @override
-  String get keywords_difficultyMedium => 'Medium 40-70';
+  String get keywords_difficultyMedium => '普通 40-70';
 
   @override
-  String get keywords_difficultyHard => 'Hard > 70';
+  String get keywords_difficultyHard => '難しい > 70';
 
   @override
   String reviews_version(String version) {
@@ -1181,59 +1241,58 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get appPreview_title => 'App Details';
+  String get appPreview_title => 'アプリ詳細';
 
   @override
-  String get appPreview_notFound => 'App not found';
+  String get appPreview_notFound => 'アプリが見つかりません';
 
   @override
-  String get appPreview_screenshots => 'Screenshots';
+  String get appPreview_screenshots => 'スクリーンショット';
 
   @override
-  String get appPreview_description => 'Description';
+  String get appPreview_description => '説明';
 
   @override
-  String get appPreview_details => 'Details';
+  String get appPreview_details => '詳細';
 
   @override
-  String get appPreview_version => 'Version';
+  String get appPreview_version => 'バージョン';
 
   @override
-  String get appPreview_updated => 'Updated';
+  String get appPreview_updated => '更新日';
 
   @override
-  String get appPreview_released => 'Released';
+  String get appPreview_released => 'リリース日';
 
   @override
-  String get appPreview_size => 'Size';
+  String get appPreview_size => 'サイズ';
 
   @override
-  String get appPreview_minimumOs => 'Requires';
+  String get appPreview_minimumOs => '必要条件';
 
   @override
-  String get appPreview_price => 'Price';
+  String get appPreview_price => '価格';
 
   @override
-  String get appPreview_free => 'Free';
+  String get appPreview_free => '無料';
 
   @override
-  String get appPreview_openInStore => 'Open in Store';
+  String get appPreview_openInStore => 'ストアで開く';
 
   @override
-  String get appPreview_addToMyApps => 'Add to My Apps';
+  String get appPreview_addToMyApps => 'マイアプリに追加';
 
   @override
-  String get appPreview_added => 'Added';
+  String get appPreview_added => '追加済み';
 
   @override
-  String get appPreview_showMore => 'Show more';
+  String get appPreview_showMore => 'もっと見る';
 
   @override
-  String get appPreview_showLess => 'Show less';
+  String get appPreview_showLess => '閉じる';
 
   @override
-  String get appPreview_keywordsPlaceholder =>
-      'Add this app to your tracked apps to enable keyword tracking';
+  String get appPreview_keywordsPlaceholder => 'このアプリを追跡中のアプリに追加してキーワード追跡を有効化';
 
   @override
   String get notifications_title => '通知';
@@ -1269,6 +1328,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get alerts_deleteConfirm => 'ルールを削除しますか？';
 
   @override
+  String get alerts_createCustomRule => 'カスタムルールを作成';
+
+  @override
+  String alerts_ruleActivated(String name) {
+    return '$nameを有効化しました！';
+  }
+
+  @override
+  String alerts_deleteMessage(String name) {
+    return '「$name」を削除します。';
+  }
+
+  @override
+  String get alerts_noRulesDescription => 'テンプレートを有効化するか、独自のルールを作成してください！';
+
+  @override
+  String get alerts_create => '作成';
+
+  @override
   String get settings_notifications => '通知';
 
   @override
@@ -1278,203 +1356,263 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_manageAlertsDesc => '受け取るアラートを設定';
 
   @override
-  String get settings_storeConnections => 'Store Connections';
+  String get settings_storeConnections => 'ストア接続';
 
   @override
-  String get settings_storeConnectionsDesc =>
-      'Connect your App Store and Google Play accounts';
+  String get settings_storeConnectionsDesc => 'App StoreとGoogle Playアカウントを接続';
 
   @override
-  String get storeConnections_title => 'Store Connections';
+  String get settings_alertDelivery => 'アラート配信';
+
+  @override
+  String get settings_team => 'チーム';
+
+  @override
+  String get settings_teamManagement => 'チーム管理';
+
+  @override
+  String get settings_teamManagementDesc =>
+      'Invite members, manage roles & permissions';
+
+  @override
+  String get settings_integrations => 'インテグレーション';
+
+  @override
+  String get settings_manageIntegrations => 'Manage Integrations';
+
+  @override
+  String get settings_manageIntegrationsDesc =>
+      'Connect App Store Connect & Google Play Console';
+
+  @override
+  String get settings_billing => 'BILLING';
+
+  @override
+  String get settings_plansBilling => 'Plans & Billing';
+
+  @override
+  String get settings_plansBillingDesc =>
+      'Manage your subscription and payment';
+
+  @override
+  String get settings_rememberApp => 'Remember selected app';
+
+  @override
+  String get settings_rememberAppDesc =>
+      'Restore app selection when you open the app';
+
+  @override
+  String get storeConnections_title => 'ストア接続';
 
   @override
   String get storeConnections_description =>
-      'Connect your App Store and Google Play accounts to enable advanced features like sales data and app analytics.';
+      'App StoreとGoogle Playアカウントを接続して、売上データやアプリ分析などの高度な機能を有効にします。';
 
   @override
   String get storeConnections_appStoreConnect => 'App Store Connect';
 
   @override
-  String get storeConnections_appStoreConnectDesc =>
-      'Connect your Apple Developer account';
+  String get storeConnections_appStoreConnectDesc => 'Apple開発者アカウントを接続';
 
   @override
   String get storeConnections_googlePlayConsole => 'Google Play Console';
 
   @override
-  String get storeConnections_googlePlayConsoleDesc =>
-      'Connect your Google Play account';
+  String get storeConnections_googlePlayConsoleDesc => 'Google Playアカウントを接続';
 
   @override
-  String get storeConnections_connect => 'Connect';
+  String get storeConnections_connect => '接続';
 
   @override
-  String get storeConnections_disconnect => 'Disconnect';
+  String get storeConnections_disconnect => '切断';
 
   @override
-  String get storeConnections_connected => 'Connected';
+  String get storeConnections_connected => '接続済み';
 
   @override
-  String get storeConnections_disconnectConfirm => 'Disconnect?';
+  String get storeConnections_disconnectConfirm => '切断しますか？';
 
   @override
   String storeConnections_disconnectMessage(String platform) {
-    return 'Are you sure you want to disconnect this $platform account?';
+    return 'この$platformアカウントを切断してもよろしいですか？';
   }
 
   @override
-  String get storeConnections_disconnectSuccess => 'Disconnected successfully';
+  String get storeConnections_disconnectSuccess => '切断しました';
 
   @override
   String storeConnections_lastSynced(String date) {
-    return 'Last synced: $date';
+    return '最終同期: $date';
   }
 
   @override
   String storeConnections_connectedOn(String date) {
-    return 'Connected on $date';
+    return '$dateに接続';
   }
 
   @override
-  String get reviewsInbox_title => 'Reviews Inbox';
+  String get storeConnections_syncApps => 'アプリを同期';
 
   @override
-  String get reviewsInbox_filterUnanswered => 'Unanswered';
+  String get storeConnections_syncing => '同期中...';
 
   @override
-  String get reviewsInbox_filterNegative => 'Negative';
+  String get storeConnections_syncDescription =>
+      '同期により、このアカウントのアプリが所有アプリとしてマークされ、レビューへの返信が可能になります。';
 
   @override
-  String get reviewsInbox_noReviews => 'No reviews found';
+  String storeConnections_syncedApps(int count) {
+    return '$count個のアプリを所有として同期しました';
+  }
 
   @override
-  String get reviewsInbox_noReviewsDesc => 'Try adjusting your filters';
+  String storeConnections_syncFailed(String error) {
+    return '同期に失敗しました: $error';
+  }
 
   @override
-  String get reviewsInbox_reply => 'Reply';
+  String storeConnections_errorLoading(String error) {
+    return '接続の読み込みエラー: $error';
+  }
 
   @override
-  String get reviewsInbox_responded => 'Response';
+  String get reviewsInbox_title => '受信トレイ';
+
+  @override
+  String get reviewsInbox_filterUnanswered => '未回答';
+
+  @override
+  String get reviewsInbox_filterNegative => 'ネガティブ';
+
+  @override
+  String get reviewsInbox_noReviews => 'レビューが見つかりません';
+
+  @override
+  String get reviewsInbox_noReviewsDesc => 'フィルターを調整してみてください';
+
+  @override
+  String get reviewsInbox_reply => '返信';
+
+  @override
+  String get reviewsInbox_responded => '返信済み';
 
   @override
   String reviewsInbox_respondedAt(String date) {
-    return 'Responded $date';
+    return '$dateに返信';
   }
 
   @override
-  String get reviewsInbox_replyModalTitle => 'Reply to Review';
+  String get reviewsInbox_replyModalTitle => 'レビューに返信';
 
   @override
-  String get reviewsInbox_generateAi => 'Generate AI suggestion';
+  String get reviewsInbox_generateAi => 'AI提案を生成';
 
   @override
-  String get reviewsInbox_generating => 'Generating...';
+  String get reviewsInbox_generating => '生成中...';
 
   @override
-  String get reviewsInbox_sendReply => 'Send Reply';
+  String get reviewsInbox_sendReply => '返信を送信';
 
   @override
-  String get reviewsInbox_sending => 'Sending...';
+  String get reviewsInbox_sending => '送信中...';
 
   @override
-  String get reviewsInbox_replyPlaceholder => 'Write your response...';
+  String get reviewsInbox_replyPlaceholder => '返信を入力...';
 
   @override
   String reviewsInbox_charLimit(int count) {
-    return '$count/5970 characters';
+    return '$count/5970文字';
   }
 
   @override
-  String get reviewsInbox_replySent => 'Reply sent successfully';
+  String get reviewsInbox_replySent => '返信を送信しました';
 
   @override
   String reviewsInbox_replyError(String error) {
-    return 'Failed to send reply: $error';
+    return '返信の送信に失敗しました: $error';
   }
 
   @override
   String reviewsInbox_aiError(String error) {
-    return 'Failed to generate suggestion: $error';
+    return '提案の生成に失敗しました: $error';
   }
 
   @override
   String reviewsInbox_stars(int count) {
-    return '$count stars';
+    return '$countつ星';
   }
 
   @override
-  String get reviewsInbox_totalReviews => 'Total Reviews';
+  String get reviewsInbox_totalReviews => 'レビュー総数';
 
   @override
-  String get reviewsInbox_unanswered => 'Unanswered';
+  String get reviewsInbox_unanswered => '未回答';
 
   @override
-  String get reviewsInbox_positive => 'Positive';
+  String get reviewsInbox_positive => 'ポジティブ';
 
   @override
-  String get reviewsInbox_avgRating => 'Avg Rating';
+  String get reviewsInbox_avgRating => '平均評価';
 
   @override
-  String get reviewsInbox_sentimentOverview => 'Sentiment Overview';
+  String get reviewsInbox_sentimentOverview => 'センチメント概要';
 
   @override
-  String get reviewsInbox_aiSuggestions => 'AI Suggested Replies';
+  String get reviewsInbox_aiSuggestions => 'AI提案';
 
   @override
-  String get reviewsInbox_regenerate => 'Regenerate';
+  String get reviewsInbox_regenerate => '再生成';
 
   @override
-  String get reviewsInbox_toneProfessional => 'Professional';
+  String get reviewsInbox_toneProfessional => 'プロフェッショナル';
 
   @override
-  String get reviewsInbox_toneEmpathetic => 'Empathetic';
+  String get reviewsInbox_toneEmpathetic => '共感的';
 
   @override
-  String get reviewsInbox_toneBrief => 'Brief';
+  String get reviewsInbox_toneBrief => '簡潔';
 
   @override
-  String get reviewsInbox_selectTone => 'Select tone:';
+  String get reviewsInbox_selectTone => 'トーンを選択:';
 
   @override
-  String get reviewsInbox_detectedIssues => 'Issues detected:';
+  String get reviewsInbox_detectedIssues => '検出された問題:';
 
   @override
-  String get reviewsInbox_aiPrompt =>
-      'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones';
+  String get reviewsInbox_aiPrompt => '「AI提案を生成」をクリックして、3つの異なるトーンで返信の提案を取得します';
 
   @override
-  String get reviewIntelligence_title => 'Review Intelligence';
+  String get reviewIntelligence_title => 'レビューインテリジェンス';
 
   @override
-  String get reviewIntelligence_featureRequests => 'Feature Requests';
+  String get reviewIntelligence_featureRequests => '機能リクエスト';
 
   @override
-  String get reviewIntelligence_bugReports => 'Bug Reports';
+  String get reviewIntelligence_bugReports => 'バグ報告';
 
   @override
-  String get reviewIntelligence_sentimentByVersion => 'Sentiment by Version';
+  String get reviewIntelligence_sentimentByVersion => 'バージョン別センチメント';
 
   @override
-  String get reviewIntelligence_openFeatures => 'Open Features';
+  String get reviewIntelligence_openFeatures => 'オープンな機能';
 
   @override
-  String get reviewIntelligence_openBugs => 'Open Bugs';
+  String get reviewIntelligence_openBugs => 'オープンなバグ';
 
   @override
-  String get reviewIntelligence_highPriority => 'High Priority';
+  String get reviewIntelligence_highPriority => '高優先度';
 
   @override
-  String get reviewIntelligence_total => 'total';
+  String get reviewIntelligence_total => '合計';
 
   @override
-  String get reviewIntelligence_mentions => 'mentions';
+  String get reviewIntelligence_mentions => '言及';
 
   @override
-  String get reviewIntelligence_noData => 'No insights yet';
+  String get reviewIntelligence_noData => 'インサイトがまだありません';
 
   @override
-  String get reviewIntelligence_noDataHint =>
-      'Insights will appear after reviews are analyzed';
+  String get reviewIntelligence_noDataHint => 'レビューを分析するとインサイトが表示されます';
 
   @override
   String get analytics_title => '分析';
@@ -1519,38 +1657,38 @@ class AppLocalizationsJa extends AppLocalizations {
   String get analytics_export => 'CSVエクスポート';
 
   @override
-  String get funnel_title => 'Conversion Funnel';
+  String get funnel_title => 'コンバージョンファネル';
 
   @override
-  String get funnel_impressions => 'Impressions';
+  String get funnel_impressions => 'インプレッション';
 
   @override
-  String get funnel_pageViews => 'Page Views';
+  String get funnel_pageViews => 'ページビュー';
 
   @override
-  String get funnel_downloads => 'Downloads';
+  String get funnel_downloads => 'ダウンロード';
 
   @override
-  String get funnel_overallCvr => 'Overall CVR';
+  String get funnel_overallCvr => '全体CVR';
 
   @override
-  String get funnel_categoryAvg => 'Category avg';
+  String get funnel_categoryAvg => 'カテゴリ平均';
 
   @override
-  String get funnel_vsCategory => 'vs category';
+  String get funnel_vsCategory => '対カテゴリ';
 
   @override
-  String get funnel_bySource => 'By Source';
+  String get funnel_bySource => 'ソース別';
 
   @override
-  String get funnel_noData => 'No funnel data available';
+  String get funnel_noData => 'ファネルデータがありません';
 
   @override
   String get funnel_noDataHint =>
-      'Funnel data will be synced automatically from App Store Connect or Google Play Console.';
+      'ファネルデータはApp Store ConnectまたはGoogle Play Consoleから自動的に同期されます。';
 
   @override
-  String get funnel_insight => 'INSIGHT';
+  String get funnel_insight => 'インサイト';
 
   @override
   String funnel_insightText(
@@ -1559,387 +1697,383 @@ class AppLocalizationsJa extends AppLocalizations {
     String worstSource,
     String recommendation,
   ) {
-    return '$bestSource traffic converts ${ratio}x better than $worstSource. $recommendation';
+    return '$bestSourceのトラフィックは$worstSourceより$ratio倍高いコンバージョン率です。$recommendation';
   }
 
   @override
   String get funnel_insightRecommendSearch =>
-      'Focus on keyword optimization to increase Search impressions.';
+      'キーワード最適化に注力して検索インプレッションを増やしましょう。';
 
   @override
   String get funnel_insightRecommendBrowse =>
-      'Improve your app\'s visibility in Browse by optimizing categories and featured placement.';
+      'カテゴリ最適化とおすすめ配置を改善してブラウズでの露出を高めましょう。';
 
   @override
   String get funnel_insightRecommendReferral =>
-      'Leverage referral programs and partnerships to drive more traffic.';
+      '紹介プログラムやパートナーシップを活用してトラフィックを増やしましょう。';
 
   @override
   String get funnel_insightRecommendAppReferrer =>
-      'Consider cross-promotion strategies with complementary apps.';
+      '補完的なアプリとのクロスプロモーション戦略を検討しましょう。';
 
   @override
   String get funnel_insightRecommendWebReferrer =>
-      'Optimize your website and landing pages for app downloads.';
+      'ウェブサイトやランディングページをダウンロード向けに最適化しましょう。';
 
   @override
-  String get funnel_insightRecommendDefault =>
-      'Analyze what makes this source perform well and replicate it.';
+  String get funnel_insightRecommendDefault => 'このソースが効果的な理由を分析し、再現しましょう。';
 
   @override
-  String get funnel_trendTitle => 'Conversion Rate Trend';
+  String get funnel_trendTitle => 'コンバージョン率のトレンド';
 
   @override
-  String get funnel_connectStore => 'Connect Store';
+  String get funnel_connectStore => 'ストアを接続';
 
   @override
-  String get nav_chat => 'AI Assistant';
+  String get nav_chat => 'AIアシスタント';
 
   @override
-  String get chat_title => 'AI Assistant';
+  String get chat_title => 'AIアシスタント';
 
   @override
-  String get chat_newConversation => 'New Chat';
+  String get chat_newConversation => '新しい会話';
 
   @override
-  String get chat_loadingConversations => 'Loading conversations...';
+  String get chat_loadingConversations => '会話を読み込み中...';
 
   @override
-  String get chat_loadingMessages => 'Loading messages...';
+  String get chat_loadingMessages => 'メッセージを読み込み中...';
 
   @override
-  String get chat_noConversations => 'No conversations yet';
+  String get chat_noConversations => '会話がありません';
 
   @override
-  String get chat_noConversationsDesc =>
-      'Start a new conversation to get AI-powered insights about your apps';
+  String get chat_noConversationsDesc => '新しい会話を開始してアプリについてのAIインサイトを取得しましょう';
 
   @override
-  String get chat_startConversation => 'Start Conversation';
+  String get chat_startConversation => '会話を開始';
 
   @override
-  String get chat_deleteConversation => 'Delete Conversation';
+  String get chat_deleteConversation => '会話を削除';
 
   @override
-  String get chat_deleteConversationConfirm =>
-      'Are you sure you want to delete this conversation?';
+  String get chat_deleteConversationConfirm => 'この会話を削除してもよろしいですか？';
 
   @override
-  String get chat_askAnything => 'Ask me anything';
+  String get chat_askAnything => '何でも聞いてください';
 
   @override
-  String get chat_askAnythingDesc =>
-      'I can help you understand your app\'s reviews, rankings, and analytics';
+  String get chat_askAnythingDesc => 'アプリのレビュー、ランキング、分析について理解するお手伝いをします';
 
   @override
-  String get chat_typeMessage => 'Type your question...';
+  String get chat_typeMessage => '質問を入力...';
 
   @override
-  String get chat_suggestedQuestions => 'Suggested Questions';
+  String get chat_suggestedQuestions => 'おすすめの質問';
 
   @override
-  String get chatActionConfirm => 'Confirm';
+  String get chatActionConfirm => '確認';
 
   @override
-  String get chatActionCancel => 'Cancel';
+  String get chatActionCancel => 'キャンセル';
 
   @override
-  String get chatActionExecuting => 'Executing...';
+  String get chatActionExecuting => '実行中...';
 
   @override
-  String get chatActionExecuted => 'Done';
+  String get chatActionExecuted => '完了';
 
   @override
-  String get chatActionFailed => 'Failed';
+  String get chatActionFailed => '失敗';
 
   @override
-  String get chatActionCancelled => 'Cancelled';
+  String get chatActionCancelled => 'キャンセル済み';
 
   @override
-  String get chatActionDownload => 'Download';
+  String get chatActionDownload => 'ダウンロード';
 
   @override
-  String get chatActionReversible => 'This action can be undone';
+  String get chatActionReversible => 'この操作は元に戻せます';
 
   @override
-  String get chatActionAddKeywords => 'Add Keywords to Tracking';
+  String get chatActionAddKeywords => 'キーワードを追加';
 
   @override
-  String get chatActionRemoveKeywords => 'Remove Keywords';
+  String get chatActionRemoveKeywords => 'キーワードを削除';
 
   @override
-  String get chatActionCreateAlert => 'Create Alert Rule';
+  String get chatActionCreateAlert => 'アラートを作成';
 
   @override
-  String get chatActionAddCompetitor => 'Add Competitor';
+  String get chatActionAddCompetitor => '競合を追加';
 
   @override
-  String get chatActionExportData => 'Export Data';
+  String get chatActionExportData => 'データをエクスポート';
 
   @override
-  String get chatActionKeywords => 'Keywords';
+  String get chatActionKeywords => 'キーワード';
 
   @override
-  String get chatActionCountry => 'Country';
+  String get chatActionCountry => '国';
 
   @override
-  String get chatActionAlertCondition => 'Condition';
+  String get chatActionAlertCondition => '条件';
 
   @override
-  String get chatActionNotifyVia => 'Notify via';
+  String get chatActionNotifyVia => '通知方法';
 
   @override
-  String get chatActionCompetitor => 'Competitor';
+  String get chatActionCompetitor => '競合';
 
   @override
-  String get chatActionExportType => 'Export type';
+  String get chatActionExportType => 'エクスポート形式';
 
   @override
-  String get chatActionDateRange => 'Date range';
+  String get chatActionDateRange => '期間';
 
   @override
-  String get chatActionKeywordsLabel => 'Keywords';
+  String get chatActionKeywordsLabel => 'キーワード';
 
   @override
-  String get chatActionAnalyticsLabel => 'Analytics';
+  String get chatActionAnalyticsLabel => '統計';
 
   @override
-  String get chatActionReviewsLabel => 'Reviews';
+  String get chatActionReviewsLabel => 'レビュー';
 
   @override
-  String get common_cancel => 'Cancel';
+  String get common_cancel => 'キャンセル';
 
   @override
-  String get common_delete => 'Delete';
+  String get common_delete => '削除';
 
   @override
-  String get appDetail_tabOverview => 'Overview';
+  String get appDetail_tabOverview => '概要';
 
   @override
-  String get appDetail_tabKeywords => 'Keywords';
+  String get appDetail_tabKeywords => 'キーワード';
 
   @override
-  String get appDetail_tabReviews => 'Reviews';
+  String get appDetail_tabReviews => 'レビュー';
 
   @override
-  String get appDetail_tabRatings => 'Ratings';
+  String get appDetail_tabRatings => '評価';
 
   @override
-  String get appDetail_tabInsights => 'Insights';
+  String get appDetail_tabInsights => 'インサイト';
 
   @override
-  String get dateRange_title => 'Date Range';
+  String get dateRange_title => '期間';
 
   @override
-  String get dateRange_today => 'Today';
+  String get dateRange_today => '今日';
 
   @override
-  String get dateRange_yesterday => 'Yesterday';
+  String get dateRange_yesterday => '昨日';
 
   @override
-  String get dateRange_last7Days => 'Last 7 Days';
+  String get dateRange_last7Days => '過去7日間';
 
   @override
-  String get dateRange_last30Days => 'Last 30 Days';
+  String get dateRange_last30Days => '過去30日間';
 
   @override
-  String get dateRange_thisMonth => 'This Month';
+  String get dateRange_thisMonth => '今月';
 
   @override
-  String get dateRange_lastMonth => 'Last Month';
+  String get dateRange_lastMonth => '先月';
 
   @override
-  String get dateRange_last90Days => 'Last 90 Days';
+  String get dateRange_last90Days => '過去90日間';
 
   @override
-  String get dateRange_yearToDate => 'Year to Date';
+  String get dateRange_yearToDate => '年初から今日まで';
 
   @override
-  String get dateRange_allTime => 'All Time';
+  String get dateRange_allTime => 'すべて';
 
   @override
-  String get dateRange_custom => 'Custom...';
+  String get dateRange_custom => 'カスタム...';
 
   @override
-  String get dateRange_compareToPrevious => 'Compare to previous period';
+  String get dateRange_compareToPrevious => '前の期間と比較';
 
   @override
-  String get export_keywordsTitle => 'Export Keywords';
+  String get export_keywordsTitle => 'キーワードをエクスポート';
 
   @override
-  String get export_reviewsTitle => 'Export Reviews';
+  String get export_reviewsTitle => 'レビューをエクスポート';
 
   @override
-  String get export_analyticsTitle => 'Export Analytics';
+  String get export_analyticsTitle => '分析をエクスポート';
 
   @override
-  String get export_columnsToInclude => 'Columns to include:';
+  String get export_columnsToInclude => '含める列:';
 
   @override
-  String get export_button => 'Export';
+  String get export_button => 'エクスポート';
 
   @override
-  String get export_keyword => 'Keyword';
+  String get export_keyword => 'キーワード';
 
   @override
-  String get export_position => 'Position';
+  String get export_position => '順位';
 
   @override
-  String get export_change => 'Change';
+  String get export_change => '変動';
 
   @override
-  String get export_popularity => 'Popularity';
+  String get export_popularity => '人気度';
 
   @override
-  String get export_difficulty => 'Difficulty';
+  String get export_difficulty => '難易度';
 
   @override
-  String get export_tags => 'Tags';
+  String get export_tags => 'タグ';
 
   @override
-  String get export_notes => 'Notes';
+  String get export_notes => 'メモ';
 
   @override
-  String get export_trackedSince => 'Tracked Since';
+  String get export_trackedSince => '追跡開始日';
 
   @override
-  String get export_date => 'Date';
+  String get export_date => '日付';
 
   @override
-  String get export_rating => 'Rating';
+  String get export_rating => '評価';
 
   @override
-  String get export_author => 'Author';
+  String get export_author => '著者';
 
   @override
-  String get export_title => 'Title';
+  String get export_title => 'タイトル';
 
   @override
-  String get export_content => 'Content';
+  String get export_content => '内容';
 
   @override
-  String get export_country => 'Country';
+  String get export_country => '国';
 
   @override
-  String get export_version => 'Version';
+  String get export_version => 'バージョン';
 
   @override
-  String get export_sentiment => 'Sentiment';
+  String get export_sentiment => 'センチメント';
 
   @override
-  String get export_response => 'Our Response';
+  String get export_response => '返信';
 
   @override
-  String get export_responseDate => 'Response Date';
+  String get export_responseDate => '返信日';
 
   @override
   String export_keywordsCount(int count) {
-    return '$count keywords will be exported';
+    return '$count個のキーワードがエクスポートされます';
   }
 
   @override
   String export_reviewsCount(int count) {
-    return '$count reviews will be exported';
+    return '$count件のレビューがエクスポートされます';
   }
 
   @override
   String export_success(String filename) {
-    return 'Export saved: $filename';
+    return 'エクスポートを保存しました: $filename';
   }
 
   @override
   String export_error(String error) {
-    return 'Export failed: $error';
+    return 'エクスポート失敗: $error';
   }
 
   @override
-  String get metadata_editor => 'Metadata Editor';
+  String get metadata_editor => 'メタデータエディター';
 
   @override
-  String get metadata_selectLocale => 'Select a locale to edit';
+  String get metadata_selectLocale => '編集するロケールを選択';
 
   @override
-  String get metadata_refreshed => 'Metadata refreshed from store';
+  String get metadata_refreshed => 'ストアからメタデータを更新しました';
 
   @override
-  String get metadata_connectRequired => 'Connect to edit metadata';
+  String get metadata_connectRequired => '編集するには接続が必要です';
 
   @override
   String get metadata_connectDescription =>
-      'Connect your App Store Connect account to edit your app\'s metadata directly from Keyrank.';
+      'App Store Connectアカウントを接続して、Keyrankから直接アプリのメタデータを編集できます。';
 
   @override
-  String get metadata_connectStore => 'Connect App Store';
+  String get metadata_connectStore => 'App Storeに接続';
 
   @override
-  String get metadata_publishTitle => 'Publish Metadata';
+  String get metadata_publishTitle => 'メタデータを公開';
 
   @override
   String metadata_publishConfirm(String locale) {
-    return 'Publish changes to $locale? This will update your app\'s listing on the App Store.';
+    return '$localeの変更を公開しますか？これによりApp Storeのアプリ掲載情報が更新されます。';
   }
 
   @override
-  String get metadata_publish => 'Publish';
+  String get metadata_publish => '公開';
 
   @override
-  String get metadata_publishSuccess => 'Metadata published successfully';
+  String get metadata_publishSuccess => 'メタデータを公開しました';
 
   @override
-  String get metadata_saveDraft => 'Save Draft';
+  String get metadata_saveDraft => '下書きを保存';
 
   @override
-  String get metadata_draftSaved => 'Draft saved';
+  String get metadata_draftSaved => '下書きを保存しました';
 
   @override
-  String get metadata_discardChanges => 'Discard Changes';
+  String get metadata_discardChanges => '変更を破棄';
 
   @override
-  String get metadata_title => 'Title';
+  String get metadata_title => 'タイトル';
 
   @override
   String metadata_titleHint(int limit) {
-    return 'App name (max $limit chars)';
+    return 'アプリ名（最大$limit文字）';
   }
 
   @override
-  String get metadata_subtitle => 'Subtitle';
+  String get metadata_subtitle => 'サブタイトル';
 
   @override
   String metadata_subtitleHint(int limit) {
-    return 'Brief tagline (max $limit chars)';
+    return '短いキャッチフレーズ（最大$limit文字）';
   }
 
   @override
-  String get metadata_keywords => 'Keywords';
+  String get metadata_keywords => 'キーワード';
 
   @override
   String metadata_keywordsHint(int limit) {
-    return 'Comma-separated keywords (max $limit chars)';
+    return 'カンマ区切りのキーワード（最大$limit文字）';
   }
 
   @override
-  String get metadata_description => 'Description';
+  String get metadata_description => '説明';
 
   @override
   String metadata_descriptionHint(int limit) {
-    return 'Full app description (max $limit chars)';
+    return 'アプリの詳細説明（最大$limit文字）';
   }
 
   @override
-  String get metadata_promotionalText => 'Promotional Text';
+  String get metadata_promotionalText => 'プロモーションテキスト';
 
   @override
   String metadata_promotionalTextHint(int limit) {
-    return 'Short promotional message (max $limit chars)';
+    return '短いプロモーションメッセージ（最大$limit文字）';
   }
 
   @override
-  String get metadata_whatsNew => 'What\'s New';
+  String get metadata_whatsNew => '新機能';
 
   @override
   String metadata_whatsNewHint(int limit) {
-    return 'Release notes (max $limit chars)';
+    return 'リリースノート（最大$limit文字）';
   }
 
   @override
@@ -1948,304 +2082,1034 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get metadata_hasChanges => 'Has unsaved changes';
+  String get metadata_hasChanges => '未保存の変更があります';
 
   @override
-  String get metadata_noChanges => 'No changes';
+  String get metadata_noChanges => '変更なし';
 
   @override
-  String get metadata_keywordAnalysis => 'Keyword Analysis';
+  String get metadata_keywordAnalysis => 'キーワード分析';
 
   @override
-  String get metadata_keywordPresent => 'Present';
+  String get metadata_keywordPresent => 'あり';
 
   @override
-  String get metadata_keywordMissing => 'Missing';
+  String get metadata_keywordMissing => 'なし';
 
   @override
-  String get metadata_inTitle => 'In Title';
+  String get metadata_inTitle => 'タイトル内';
 
   @override
-  String get metadata_inSubtitle => 'In Subtitle';
+  String get metadata_inSubtitle => 'サブタイトル内';
 
   @override
-  String get metadata_inKeywords => 'In Keywords';
+  String get metadata_inKeywords => 'キーワード内';
 
   @override
-  String get metadata_inDescription => 'In Description';
+  String get metadata_inDescription => '説明内';
 
   @override
-  String get metadata_history => 'Change History';
+  String get metadata_history => '変更履歴';
 
   @override
-  String get metadata_noHistory => 'No changes recorded';
+  String get metadata_noHistory => '変更履歴がありません';
 
   @override
-  String get metadata_localeComplete => 'Complete';
+  String get metadata_localeComplete => '完了';
 
   @override
-  String get metadata_localeIncomplete => 'Incomplete';
+  String get metadata_localeIncomplete => '未完了';
 
   @override
-  String get metadata_shortDescription => 'Short Description';
+  String get metadata_shortDescription => '短い説明';
 
   @override
   String metadata_shortDescriptionHint(int limit) {
-    return 'Brief tagline shown in search (max $limit chars)';
+    return '検索に表示されるキャッチフレーズ（最大$limit文字）';
   }
 
   @override
-  String get metadata_fullDescription => 'Full Description';
+  String get metadata_fullDescription => '詳細説明';
 
   @override
   String metadata_fullDescriptionHint(int limit) {
-    return 'Complete app description (max $limit chars)';
+    return 'アプリの詳細説明（最大$limit文字）';
   }
 
   @override
-  String get metadata_releaseNotes => 'Release Notes';
+  String get metadata_releaseNotes => 'リリースノート';
 
   @override
   String metadata_releaseNotesHint(int limit) {
-    return 'What\'s new in this version (max $limit chars)';
+    return 'このバージョンの新機能（最大$limit文字）';
   }
 
   @override
-  String get metadata_selectAppFirst => 'Select an app to edit metadata';
+  String get metadata_selectAppFirst => 'アプリを選択してください';
 
   @override
-  String get metadata_selectAppHint =>
-      'Use the app selector in the sidebar to choose an app, or connect a store to get started.';
+  String get metadata_selectAppHint => 'サイドバーのアプリセレクターを使用するか、ストアを接続して開始してください。';
 
   @override
-  String get metadata_noStoreConnection => 'Store connection required';
+  String get metadata_noStoreConnection => 'ストア接続が必要です';
 
   @override
   String metadata_noStoreConnectionDesc(String storeName) {
-    return 'Connect your $storeName account to fetch and edit your app\'s metadata.';
+    return '$storeNameアカウントを接続して、アプリのメタデータを取得・編集できます。';
   }
 
   @override
   String metadata_connectStoreButton(String storeName) {
-    return 'Connect $storeName';
+    return '$storeNameに接続';
   }
 
   @override
-  String get metadataLocalization => 'Localizations';
+  String get metadataLocalization => 'ローカライゼーション';
 
   @override
-  String get metadataLive => 'Live';
+  String get metadataLive => '公開中';
 
   @override
-  String get metadataDraft => 'Draft';
+  String get metadataDraft => '下書き';
 
   @override
-  String get metadataEmpty => 'Empty';
+  String get metadataEmpty => '空';
 
   @override
   String metadataCoverageInsight(int count) {
-    return '$count locales need content. Consider localizing for your top markets.';
+    return '$count個のロケールにコンテンツが必要です。主要市場向けにローカライズを検討してください。';
   }
 
   @override
-  String get metadataFilterAll => 'All';
+  String get metadataFilterAll => 'すべて';
 
   @override
-  String get metadataFilterLive => 'Live';
+  String get metadataFilterLive => '公開中';
 
   @override
-  String get metadataFilterDraft => 'Drafts';
+  String get metadataFilterDraft => '下書き';
 
   @override
-  String get metadataFilterEmpty => 'Empty';
+  String get metadataFilterEmpty => '空';
 
   @override
-  String get metadataBulkActions => 'Bulk Actions';
+  String get metadataBulkActions => '一括操作';
 
   @override
-  String get metadataCopyTo => 'Copy to selected';
+  String get metadataCopyTo => '選択にコピー';
 
   @override
-  String get metadataTranslateTo => 'Translate to selected';
+  String get metadataTranslateTo => '選択に翻訳';
 
   @override
-  String get metadataPublishSelected => 'Publish selected';
+  String get metadataPublishSelected => '選択を公開';
 
   @override
-  String get metadataDeleteDrafts => 'Delete drafts';
+  String get metadataDeleteDrafts => '下書きを削除';
 
   @override
-  String get metadataSelectSource => 'Select source locale';
+  String get metadataSelectSource => 'ソースロケールを選択';
 
   @override
-  String get metadataSelectTarget => 'Select target locales';
+  String get metadataSelectTarget => 'ターゲットロケールを選択';
 
   @override
   String metadataCopySuccess(int count) {
-    return 'Content copied to $count locales';
+    return '$count個のロケールにコピーしました';
   }
 
   @override
   String metadataTranslateSuccess(int count) {
-    return 'Translated to $count locales';
+    return '$count個のロケールに翻訳しました';
   }
 
   @override
-  String get metadataTranslating => 'Translating...';
+  String get metadataTranslating => '翻訳中...';
 
   @override
-  String get metadataNoSelection => 'Select locales first';
+  String get metadataNoSelection => 'まずロケールを選択してください';
 
   @override
-  String get metadataSelectAll => 'Select all';
+  String get metadataSelectAll => 'すべて選択';
 
   @override
-  String get metadataDeselectAll => 'Deselect all';
+  String get metadataDeselectAll => 'すべて解除';
 
   @override
   String metadataSelected(int count) {
-    return '$count selected';
+    return '$count個選択';
   }
 
   @override
-  String get metadataTableView => 'Table view';
+  String get metadataTableView => 'テーブル表示';
 
   @override
-  String get metadataListView => 'List view';
+  String get metadataListView => 'リスト表示';
 
   @override
-  String get metadataStatus => 'Status';
+  String get metadataStatus => 'ステータス';
 
   @override
-  String get metadataCompletion => 'Completion';
+  String get metadataCompletion => '完成度';
 
   @override
-  String get common_back => 'Back';
+  String get common_back => '戻る';
 
   @override
-  String get common_next => 'Next';
+  String get common_next => '次へ';
 
   @override
-  String get common_edit => 'Edit';
+  String get common_edit => '編集';
 
   @override
-  String get metadata_aiOptimize => 'AI Optimize';
+  String get metadata_aiOptimize => 'AIで最適化';
 
   @override
-  String get wizard_title => 'AI Optimization Wizard';
+  String get wizard_title => 'AI最適化ウィザード';
 
   @override
-  String get wizard_step => 'Step';
+  String get wizard_step => 'ステップ';
 
   @override
-  String get wizard_of => 'of';
+  String get wizard_of => '/';
 
   @override
-  String get wizard_stepTitle => 'Title';
+  String get wizard_stepTitle => 'タイトル';
 
   @override
-  String get wizard_stepSubtitle => 'Subtitle';
+  String get wizard_stepSubtitle => 'サブタイトル';
 
   @override
-  String get wizard_stepKeywords => 'Keywords';
+  String get wizard_stepKeywords => 'キーワード';
 
   @override
-  String get wizard_stepDescription => 'Description';
+  String get wizard_stepDescription => '説明';
 
   @override
-  String get wizard_stepReview => 'Review & Save';
+  String get wizard_stepReview => '確認して保存';
 
   @override
-  String get wizard_skip => 'Skip';
+  String get wizard_skip => 'スキップ';
 
   @override
-  String get wizard_saveDrafts => 'Save Drafts';
+  String get wizard_saveDrafts => '下書きを保存';
 
   @override
-  String get wizard_draftsSaved => 'Drafts saved successfully';
+  String get wizard_draftsSaved => '下書きを保存しました';
 
   @override
-  String get wizard_exitTitle => 'Exit Wizard?';
+  String get wizard_exitTitle => 'ウィザードを終了しますか？';
 
   @override
-  String get wizard_exitMessage =>
-      'You have unsaved changes. Are you sure you want to exit?';
+  String get wizard_exitMessage => '未保存の変更があります。本当に終了しますか？';
 
   @override
-  String get wizard_exitConfirm => 'Exit';
+  String get wizard_exitConfirm => '終了';
 
   @override
-  String get wizard_aiSuggestions => 'AI Suggestions';
+  String get wizard_aiSuggestions => 'AI提案';
 
   @override
-  String get wizard_chooseSuggestion =>
-      'Choose one of the AI-generated suggestions or write your own';
+  String get wizard_chooseSuggestion => 'AIが生成した提案を選択するか、自分で入力してください';
 
   @override
-  String get wizard_currentValue => 'Current Value';
+  String get wizard_currentValue => '現在の値';
 
   @override
-  String get wizard_noCurrentValue => 'No current value set';
+  String get wizard_noCurrentValue => '値が設定されていません';
 
   @override
   String wizard_contextInfo(int keywordsCount, int competitorsCount) {
-    return 'Based on $keywordsCount tracked keywords and $competitorsCount competitors';
+    return '$keywordsCount個の追跡キーワードと$competitorsCount個の競合に基づく';
   }
 
   @override
-  String get wizard_writeOwn => 'Write my own';
+  String get wizard_writeOwn => '自分で入力';
 
   @override
-  String get wizard_customPlaceholder => 'Enter your custom value...';
+  String get wizard_customPlaceholder => 'カスタム値を入力...';
 
   @override
-  String get wizard_useCustom => 'Use Custom';
+  String get wizard_useCustom => 'カスタムを使用';
 
   @override
-  String get wizard_keepCurrent => 'Keep Current';
+  String get wizard_keepCurrent => '現在の値を維持';
 
   @override
-  String get wizard_recommended => 'Recommended';
+  String get wizard_recommended => 'おすすめ';
 
   @override
-  String get wizard_characters => 'characters';
+  String get wizard_characters => '文字';
 
   @override
-  String get wizard_reviewTitle => 'Review Changes';
+  String get wizard_reviewTitle => '変更を確認';
 
   @override
-  String get wizard_reviewDescription =>
-      'Review your optimizations before saving them as drafts';
+  String get wizard_reviewDescription => '下書きとして保存する前に最適化内容を確認してください';
 
   @override
-  String get wizard_noChanges => 'No changes selected';
+  String get wizard_noChanges => '変更が選択されていません';
 
   @override
-  String get wizard_noChangesHint =>
-      'Go back and select suggestions for the fields you want to optimize';
+  String get wizard_noChangesHint => '戻って最適化するフィールドの提案を選択してください';
 
   @override
   String wizard_changesCount(int count) {
-    return '$count fields updated';
+    return '$count個のフィールドを更新';
   }
 
   @override
-  String get wizard_changesSummary => 'These changes will be saved as drafts';
+  String get wizard_changesSummary => 'これらの変更は下書きとして保存されます';
 
   @override
-  String get wizard_before => 'Before';
+  String get wizard_before => '変更前';
 
   @override
-  String get wizard_after => 'After';
+  String get wizard_after => '変更後';
 
   @override
-  String get wizard_nextStepsTitle => 'What happens next?';
+  String get wizard_nextStepsTitle => '次のステップ';
 
   @override
   String get wizard_nextStepsWithChanges =>
-      'Your changes will be saved as drafts. You can review and publish them from the Metadata Editor.';
+      '変更は下書きとして保存されます。メタデータエディターで確認して公開できます。';
 
   @override
   String get wizard_nextStepsNoChanges =>
-      'No changes to save. Go back and select suggestions to optimize your metadata.';
+      '保存する変更がありません。戻って提案を選択し、メタデータを最適化してください。';
+
+  @override
+  String get team_title => 'チーム管理';
+
+  @override
+  String get team_createTeam => 'チームを作成';
+
+  @override
+  String get team_teamName => 'チーム名';
+
+  @override
+  String get team_teamNameHint => 'チーム名を入力';
+
+  @override
+  String get team_description => '説明（任意）';
+
+  @override
+  String get team_descriptionHint => 'このチームは何のためですか？';
+
+  @override
+  String get team_teamNameRequired => 'チーム名は必須です';
+
+  @override
+  String get team_teamNameMinLength => 'チーム名は2文字以上必要です';
+
+  @override
+  String get team_inviteMember => 'メンバーを招待';
+
+  @override
+  String get team_emailAddress => 'メールアドレス';
+
+  @override
+  String get team_emailHint => 'colleague@example.com';
+
+  @override
+  String get team_emailRequired => 'メールアドレスは必須です';
+
+  @override
+  String get team_emailInvalid => '有効なメールアドレスを入力してください';
+
+  @override
+  String team_invitationSent(String email) {
+    return '$emailに招待を送信しました';
+  }
+
+  @override
+  String get team_members => 'メンバー';
+
+  @override
+  String get team_invite => '招待';
+
+  @override
+  String get team_pendingInvitations => '保留中の招待';
+
+  @override
+  String get team_noPendingInvitations => '保留中の招待はありません';
+
+  @override
+  String get team_teamSettings => 'チーム設定';
+
+  @override
+  String team_changeRole(String name) {
+    return '$nameの役割を変更';
+  }
+
+  @override
+  String get team_removeMember => 'メンバーを削除';
+
+  @override
+  String team_removeMemberConfirm(String name) {
+    return '$nameをこのチームから削除しますか？';
+  }
+
+  @override
+  String get team_remove => '削除';
+
+  @override
+  String get team_leaveTeam => 'チームを退出';
+
+  @override
+  String team_leaveTeamConfirm(String teamName) {
+    return '「$teamName」を退出しますか？';
+  }
+
+  @override
+  String get team_leave => '退出';
+
+  @override
+  String get team_deleteTeam => 'チームを削除';
+
+  @override
+  String team_deleteTeamConfirm(String teamName) {
+    return '「$teamName」を削除しますか？この操作は取り消せません。';
+  }
+
+  @override
+  String get team_yourTeams => 'あなたのチーム';
+
+  @override
+  String get team_failedToLoadTeam => 'チームの読み込みに失敗しました';
+
+  @override
+  String get team_failedToLoadMembers => 'メンバーの読み込みに失敗しました';
+
+  @override
+  String get team_failedToLoadInvitations => '招待の読み込みに失敗しました';
+
+  @override
+  String team_memberCount(int count) {
+    return '$count人のメンバー';
+  }
+
+  @override
+  String team_invitedAs(String role) {
+    return '$roleとして招待';
+  }
+
+  @override
+  String team_joinedTeam(String teamName) {
+    return '$teamNameに参加しました';
+  }
+
+  @override
+  String get team_invitationDeclined => '招待を辞退しました';
+
+  @override
+  String get team_noTeamsYet => 'チームがありません';
+
+  @override
+  String get team_noTeamsDescription => 'チームを作成して他のメンバーと協力しましょう';
+
+  @override
+  String get team_createFirstTeam => '最初のチームを作成';
+
+  @override
+  String get integrations_title => '連携';
+
+  @override
+  String integrations_syncFailed(String error) {
+    return '同期に失敗しました: $error';
+  }
+
+  @override
+  String get integrations_disconnectConfirm => '接続を解除しますか？';
+
+  @override
+  String get integrations_disconnectedSuccess => '正常に接続解除されました';
+
+  @override
+  String get integrations_connectGooglePlay => 'Google Play Consoleに接続';
+
+  @override
+  String get integrations_connectAppStore => 'App Store Connectに接続';
+
+  @override
+  String integrations_connectedApps(int count) {
+    return '接続完了！$count個のアプリをインポートしました。';
+  }
+
+  @override
+  String integrations_syncedApps(int count) {
+    return '$count個のアプリを所有者として同期しました';
+  }
+
+  @override
+  String get integrations_appStoreConnected => 'App Store Connectに正常に接続しました！';
+
+  @override
+  String get integrations_googlePlayConnected =>
+      'Google Play Consoleに正常に接続しました！';
+
+  @override
+  String get integrations_description =>
+      'Connect your store accounts to import apps, reply to reviews, and access analytics.';
+
+  @override
+  String integrations_errorLoading(String error) {
+    return 'Error loading integrations: $error';
+  }
+
+  @override
+  String integrations_syncedAppsDetails(int imported, int discovered) {
+    return 'Synced $imported apps ($discovered discovered)';
+  }
+
+  @override
+  String get integrations_appStoreConnect => 'App Store Connect';
+
+  @override
+  String get integrations_connectAppleAccount =>
+      'Connect your Apple Developer account';
+
+  @override
+  String get integrations_googlePlayConsole => 'Google Play Console';
+
+  @override
+  String get integrations_connectGoogleAccount =>
+      'Connect your Google Play account';
+
+  @override
+  String integrations_disconnectConfirmMessage(String type, int count) {
+    return 'Are you sure you want to disconnect $type? This will remove $count imported apps.';
+  }
+
+  @override
+  String get integrations_disconnect => 'Disconnect';
+
+  @override
+  String get integrations_connect => 'Connect';
+
+  @override
+  String get integrations_connected => 'Connected';
+
+  @override
+  String get integrations_error => 'Error';
+
+  @override
+  String get integrations_syncing => 'Syncing...';
+
+  @override
+  String get integrations_refreshApps => 'Refresh Apps';
+
+  @override
+  String integrations_lastSynced(String date) {
+    return 'Last synced: $date';
+  }
+
+  @override
+  String integrations_connectedOn(String date) {
+    return 'Connected on $date';
+  }
+
+  @override
+  String integrations_appsImported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apps imported',
+      one: '1 app imported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertBuilder_nameYourRule => 'ルールに名前を付ける';
+
+  @override
+  String get alertBuilder_nameDescription => 'アラートルールにわかりやすい名前を付けてください';
+
+  @override
+  String get alertBuilder_nameHint => '例: 毎日の順位アラート';
+
+  @override
+  String get alertBuilder_summary => '概要';
+
+  @override
+  String get alertBuilder_saveAlertRule => 'アラートルールを保存';
+
+  @override
+  String get alertBuilder_selectAlertType => 'アラートタイプを選択';
+
+  @override
+  String get alertBuilder_selectAlertTypeDescription => '作成するアラートの種類を選択してください';
+
+  @override
+  String alertBuilder_deleteRuleConfirm(String ruleName) {
+    return '「$ruleName」が削除されます。';
+  }
+
+  @override
+  String get alertBuilder_activateTemplateOrCreate =>
+      'ルールがまだありません。テンプレートを有効にするか、独自のルールを作成してください！';
+
+  @override
+  String get billing_cancelSubscription => 'サブスクリプションをキャンセル';
+
+  @override
+  String get billing_keepSubscription => 'サブスクリプションを維持';
+
+  @override
+  String get billing_billingPortal => '請求ポータル';
+
+  @override
+  String get billing_resume => '再開';
+
+  @override
+  String get keywords_noCompetitorsFound => '競合が見つかりません。先に競合を追加してください。';
+
+  @override
+  String get keywords_noCompetitorsForApp => 'このアプリに競合がありません。先に競合を追加してください。';
+
+  @override
+  String keywords_failedToAddKeywords(String error) {
+    return 'キーワードの追加に失敗: $error';
+  }
+
+  @override
+  String get keywords_bulkAddHint => '予算トラッカー\n支出管理\nマネーアプリ';
+
+  @override
+  String get appOverview_urlCopied => 'ストアURLをクリップボードにコピーしました';
+
+  @override
+  String get country_us => 'アメリカ合衆国';
+
+  @override
+  String get country_gb => 'イギリス';
+
+  @override
+  String get country_fr => 'フランス';
+
+  @override
+  String get country_de => 'ドイツ';
+
+  @override
+  String get country_ca => 'カナダ';
+
+  @override
+  String get country_au => 'オーストラリア';
+
+  @override
+  String get country_jp => '日本';
+
+  @override
+  String get country_cn => '中国';
+
+  @override
+  String get country_kr => '韓国';
+
+  @override
+  String get country_br => 'ブラジル';
+
+  @override
+  String get country_es => 'スペイン';
+
+  @override
+  String get country_it => 'イタリア';
+
+  @override
+  String get countryCode_us => '🇺🇸 US';
+
+  @override
+  String get countryCode_gb => '🇬🇧 UK';
+
+  @override
+  String get countryCode_fr => '🇫🇷 FR';
+
+  @override
+  String get countryCode_de => '🇩🇪 DE';
+
+  @override
+  String get countryCode_ca => '🇨🇦 CA';
+
+  @override
+  String get countryCode_au => '🇦🇺 AU';
+
+  @override
+  String get alertBuilder_type => 'タイプ';
+
+  @override
+  String get alertBuilder_scope => 'スコープ';
+
+  @override
+  String get alertBuilder_name => '名前';
+
+  @override
+  String get alertBuilder_scopeGlobal => '全てのアプリ';
+
+  @override
+  String get alertBuilder_scopeApp => '特定のアプリ';
+
+  @override
+  String get alertBuilder_scopeCategory => 'カテゴリ';
+
+  @override
+  String get alertBuilder_scopeKeyword => 'キーワード';
+
+  @override
+  String get alertType_positionChange => '順位変動';
+
+  @override
+  String get alertType_positionChangeDesc => 'アプリのランキングが大きく変動した時にアラート';
+
+  @override
+  String get alertType_ratingChange => '評価変動';
+
+  @override
+  String get alertType_ratingChangeDesc => 'アプリの評価が変動した時にアラート';
+
+  @override
+  String get alertType_reviewSpike => 'レビュー急増';
+
+  @override
+  String get alertType_reviewSpikeDesc => '異常なレビュー活動があった時にアラート';
+
+  @override
+  String get alertType_reviewKeyword => 'レビューキーワード';
+
+  @override
+  String get alertType_reviewKeywordDesc => 'レビューにキーワードが出現した時にアラート';
+
+  @override
+  String get alertType_newCompetitor => '新規競合';
+
+  @override
+  String get alertType_newCompetitorDesc => '新しいアプリが参入した時にアラート';
+
+  @override
+  String get alertType_competitorPassed => '競合を追い越し';
+
+  @override
+  String get alertType_competitorPassedDesc => '競合を追い越した時にアラート';
+
+  @override
+  String get alertType_massMovement => '大規模変動';
+
+  @override
+  String get alertType_massMovementDesc => 'ランキングの大規模な変動があった時にアラート';
+
+  @override
+  String get alertType_keywordTrend => 'キーワードトレンド';
+
+  @override
+  String get alertType_keywordTrendDesc => 'キーワードの人気度が変動した時にアラート';
+
+  @override
+  String get alertType_opportunity => '機会';
+
+  @override
+  String get alertType_opportunityDesc => '新しいランキング機会があった時にアラート';
+
+  @override
+  String get billing_title => '請求とプラン';
+
+  @override
+  String get billing_subscriptionActivated => 'サブスクリプションが正常に有効化されました！';
+
+  @override
+  String get billing_changePlan => 'プラン変更';
+
+  @override
+  String get billing_choosePlan => 'プランを選択';
+
+  @override
+  String get billing_cancelMessage =>
+      'サブスクリプションは現在の請求期間の終了まで有効です。その後、プレミアム機能へのアクセスが失われます。';
+
+  @override
+  String get billing_currentPlan => '現在のプラン';
+
+  @override
+  String get billing_trial => 'トライアル';
+
+  @override
+  String get billing_canceling => 'キャンセル中';
+
+  @override
+  String billing_accessUntil(String date) {
+    return '$dateまでアクセス可能';
+  }
+
+  @override
+  String billing_renewsOn(String date) {
+    return '$dateに更新';
+  }
+
+  @override
+  String get billing_manageSubscription => 'サブスクリプション管理';
+
+  @override
+  String get billing_monthly => '月額';
+
+  @override
+  String get billing_yearly => '年額';
+
+  @override
+  String billing_savePercent(int percent) {
+    return '$percent%お得';
+  }
+
+  @override
+  String get billing_current => '現在';
+
+  @override
+  String get billing_apps => 'アプリ';
+
+  @override
+  String get billing_unlimited => '無制限';
+
+  @override
+  String get billing_keywordsPerApp => 'アプリあたりのキーワード';
+
+  @override
+  String get billing_history => '履歴';
+
+  @override
+  String billing_days(int count) {
+    return '$count日間';
+  }
+
+  @override
+  String get billing_exports => 'エクスポート';
+
+  @override
+  String get billing_aiInsights => 'AI分析';
+
+  @override
+  String get billing_apiAccess => 'APIアクセス';
+
+  @override
+  String get billing_yes => 'はい';
+
+  @override
+  String get billing_no => 'いいえ';
+
+  @override
+  String get billing_currentPlanButton => '現在のプラン';
+
+  @override
+  String billing_upgradeTo(String planName) {
+    return '$planNameにアップグレード';
+  }
+
+  @override
+  String get billing_cancel => 'キャンセル';
+
+  @override
+  String get keywords_compareWithCompetitor => '競合と比較';
+
+  @override
+  String get keywords_selectCompetitorToCompare => 'キーワードを比較する競合を選択:';
+
+  @override
+  String get keywords_addToCompetitor => '競合に追加';
+
+  @override
+  String keywords_addKeywordsTo(int count) {
+    return '$count個のキーワードを追加:';
+  }
+
+  @override
+  String get keywords_avgPosition => '平均順位';
+
+  @override
+  String get keywords_declined => '下降';
+
+  @override
+  String get keywords_total => '合計';
+
+  @override
+  String get keywords_ranked => 'ランク済み';
+
+  @override
+  String get keywords_improved => '上昇';
+
+  @override
+  String get onboarding_skip => 'スキップ';
+
+  @override
+  String get onboarding_back => 'Back';
+
+  @override
+  String get onboarding_continue => 'Continue';
+
+  @override
+  String get onboarding_getStarted => '始める';
+
+  @override
+  String get onboarding_welcomeToKeyrank => 'Keyrankへようこそ';
+
+  @override
+  String get onboarding_welcomeSubtitle =>
+      'Track your app rankings, manage reviews, and optimize your ASO strategy.';
+
+  @override
+  String get onboarding_connectStore => 'Connect Your Store';
+
+  @override
+  String get onboarding_connectStoreSubtitle =>
+      'Optional: Connect to import apps and reply to reviews.';
+
+  @override
+  String get onboarding_couldNotLoadIntegrations =>
+      'Could not load integrations';
+
+  @override
+  String get onboarding_tapToConnect => 'Tap to connect';
+
+  @override
+  String get onboarding_allSet => 'You\'re All Set!';
+
+  @override
+  String get onboarding_allSetSubtitle =>
+      'Start by adding an app to track, or explore the keyword inspector.';
+
+  @override
+  String get team_you => 'あなた';
+
+  @override
+  String get team_changeRoleButton => 'Change Role';
+
+  @override
+  String get team_removeButton => 'Remove';
+
+  @override
+  String get competitors_removeTitle => 'Remove Competitor';
+
+  @override
+  String competitors_removeConfirm(String name) {
+    return '「$name」を競合から削除してもよろしいですか？';
+  }
+
+  @override
+  String competitors_removed(String name) {
+    return '$name removed';
+  }
+
+  @override
+  String competitors_removeFailed(String error) {
+    return 'Failed to remove competitor: $error';
+  }
+
+  @override
+  String get competitors_addCompetitor => 'Add competitor';
+
+  @override
+  String get competitors_filterAll => 'All';
+
+  @override
+  String get competitors_filterGlobal => 'Global';
+
+  @override
+  String get competitors_filterContextual => 'Contextual';
+
+  @override
+  String get competitors_noCompetitorsYet => 'No competitors tracked yet';
+
+  @override
+  String get competitors_noGlobalCompetitors => 'No global competitors';
+
+  @override
+  String get competitors_noContextualCompetitors => 'No contextual competitors';
+
+  @override
+  String get competitors_emptySubtitleAll =>
+      'Search for apps and add them as competitors to track their rankings';
+
+  @override
+  String get competitors_emptySubtitleGlobal =>
+      'Global competitors appear across all your apps';
+
+  @override
+  String get competitors_emptySubtitleContextual =>
+      'Contextual competitors are linked to specific apps';
+
+  @override
+  String get competitors_searchForCompetitors => 'Search for competitors';
+
+  @override
+  String get competitors_viewKeywords => 'View Keywords';
+
+  @override
+  String get common_remove => 'Remove';
+
+  @override
+  String get competitors_addTitle => 'Add Competitor';
+
+  @override
+  String competitors_addedAsCompetitor(String name) {
+    return '$name added as competitor';
+  }
+
+  @override
+  String competitors_addFailed(String error) {
+    return '競合の追加に失敗: $error';
+  }
+
+  @override
+  String get competitors_searchForCompetitor => 'Search for a competitor';
+
+  @override
+  String get appPreview_back => 'Back';
+
+  @override
+  String get alerts_edit => '編集';
+
+  @override
+  String get alerts_scopeGlobal => 'グローバル';
+
+  @override
+  String get alerts_scopeApp => 'アプリ';
+
+  @override
+  String get alerts_scopeCategory => 'カテゴリ';
+
+  @override
+  String get alerts_scopeKeyword => 'キーワード';
+
+  @override
+  String ratings_showMore(int count) {
+    return 'Show more ($count remaining)';
+  }
+
+  @override
+  String get ratings_showLess => 'Show less';
+
+  @override
+  String get insights_aiInsights => 'AI Insights';
+
+  @override
+  String get insights_viewAll => 'View all';
+
+  @override
+  String insights_viewMore(int count) {
+    return 'さらに$count件のインサイトを表示';
+  }
+
+  @override
+  String get insights_noInsightsDesc => 'アプリの最適化機会を発見したときにインサイトが表示されます。';
+
+  @override
+  String get insights_loadFailed => 'インサイトの読み込みに失敗しました';
+
+  @override
+  String chat_createFailed(String error) {
+    return 'Failed to create conversation: $error';
+  }
+
+  @override
+  String chat_deleteFailed(String error) {
+    return 'Failed to delete: $error';
+  }
+
+  @override
+  String get notifications_manageAlerts => 'Manage alerts';
 }

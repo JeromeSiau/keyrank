@@ -171,7 +171,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dashboard_topCountries => 'Principaux pays';
 
   @override
-  String get dashboard_sentimentOverview => 'Apercu du sentiment';
+  String get dashboard_sentimentOverview => 'Aperçu du sentiment';
 
   @override
   String get dashboard_overallSentiment => 'Sentiment global';
@@ -183,10 +183,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dashboard_positiveReviews => 'Positif';
 
   @override
-  String get dashboard_negativeReviews => 'Negatif';
+  String get dashboard_negativeReviews => 'Négatif';
 
   @override
   String get dashboard_viewReviews => 'Voir les avis';
+
+  @override
+  String get dashboard_tableApp => 'APP';
+
+  @override
+  String get dashboard_tableKeywords => 'MOTS-CLÉS';
+
+  @override
+  String get dashboard_tableAvgRank => 'RANG MOY.';
+
+  @override
+  String get dashboard_tableTrend => 'TENDANCE';
+
+  @override
+  String get dashboard_connectYourStores => 'Connectez vos stores';
+
+  @override
+  String get dashboard_connectStoresDescription =>
+      'Liez App Store Connect ou Google Play pour importer vos apps et répondre aux avis.';
+
+  @override
+  String get dashboard_connect => 'Connecter';
 
   @override
   String get apps_title => 'Mes Apps';
@@ -436,6 +458,45 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get insights_selectCountryFirst => 'Sélectionnez au moins un pays';
+
+  @override
+  String get insights_title => 'Analyses';
+
+  @override
+  String insights_titleWithApp(String appName) {
+    return 'Analyses - $appName';
+  }
+
+  @override
+  String get insights_allApps => 'Analyses (Toutes les apps)';
+
+  @override
+  String get insights_noInsightsYet => 'Pas encore d\'analyses';
+
+  @override
+  String get insights_selectAppToGenerate =>
+      'Sélectionnez une app pour générer des analyses à partir des avis';
+
+  @override
+  String insights_appsWithInsights(int count) {
+    return '$count apps avec analyses';
+  }
+
+  @override
+  String get insights_errorLoading => 'Erreur de chargement des analyses';
+
+  @override
+  String insights_reviewsAnalyzed(int count) {
+    return '$count avis analysés';
+  }
+
+  @override
+  String get insights_avgScore => 'score moyen';
+
+  @override
+  String insights_updatedOn(String date) {
+    return 'Mis à jour le $date';
+  }
 
   @override
   String compare_selectAppsToCompare(String appName) {
@@ -1116,34 +1177,34 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get appDetail_currentTags => 'Current Tags';
+  String get appDetail_currentTags => 'Tags actuels';
 
   @override
-  String get appDetail_noTagsOnKeyword => 'No tags on this keyword';
+  String get appDetail_noTagsOnKeyword => 'Aucun tag sur ce mot-clé';
 
   @override
-  String get appDetail_addExistingTag => 'Add Existing Tag';
+  String get appDetail_addExistingTag => 'Ajouter un tag existant';
 
   @override
-  String get appDetail_allTagsUsed => 'All tags already added';
+  String get appDetail_allTagsUsed => 'Tous les tags sont déjà utilisés';
 
   @override
-  String get appDetail_createNewTag => 'Create New Tag';
+  String get appDetail_createNewTag => 'Créer un nouveau tag';
 
   @override
-  String get appDetail_tagNameHint => 'Tag name...';
+  String get appDetail_tagNameHint => 'Nom du tag...';
 
   @override
   String get appDetail_note => 'Note';
 
   @override
-  String get appDetail_noteHint => 'Add a note about this keyword...';
+  String get appDetail_noteHint => 'Ajouter une note sur ce mot-clé...';
 
   @override
-  String get appDetail_saveNote => 'Save Note';
+  String get appDetail_saveNote => 'Enregistrer la note';
 
   @override
-  String get appDetail_done => 'Done';
+  String get appDetail_done => 'Terminé';
 
   @override
   String appDetail_importFailed(String error) {
@@ -1184,19 +1245,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appDetail_period90d => '90j';
 
   @override
-  String get keywords_difficultyFilter => 'Difficulty:';
+  String get keywords_difficultyFilter => 'Difficulté :';
 
   @override
-  String get keywords_difficultyAll => 'All';
+  String get keywords_difficultyAll => 'Toutes';
 
   @override
-  String get keywords_difficultyEasy => 'Easy < 40';
+  String get keywords_difficultyEasy => 'Facile < 40';
 
   @override
-  String get keywords_difficultyMedium => 'Medium 40-70';
+  String get keywords_difficultyMedium => 'Moyen 40-70';
 
   @override
-  String get keywords_difficultyHard => 'Hard > 70';
+  String get keywords_difficultyHard => 'Difficile > 70';
 
   @override
   String reviews_version(String version) {
@@ -1293,6 +1354,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get alerts_deleteConfirm => 'Supprimer la règle ?';
 
   @override
+  String get alerts_createCustomRule => 'Créer une règle personnalisée';
+
+  @override
+  String alerts_ruleActivated(String name) {
+    return '$name activé !';
+  }
+
+  @override
+  String alerts_deleteMessage(String name) {
+    return 'Cela supprimera \"$name\".';
+  }
+
+  @override
+  String get alerts_noRulesDescription =>
+      'Activez un modèle ou créez le vôtre !';
+
+  @override
+  String get alerts_create => 'Créer';
+
+  @override
   String get settings_notifications => 'NOTIFICATIONS';
 
   @override
@@ -1308,6 +1389,45 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settings_storeConnectionsDesc =>
       'Connectez vos comptes App Store et Google Play';
+
+  @override
+  String get settings_alertDelivery => 'LIVRAISON DES ALERTES';
+
+  @override
+  String get settings_team => 'ÉQUIPE';
+
+  @override
+  String get settings_teamManagement => 'Gestion de l\'équipe';
+
+  @override
+  String get settings_teamManagementDesc =>
+      'Inviter des membres, gérer les rôles et permissions';
+
+  @override
+  String get settings_integrations => 'INTÉGRATIONS';
+
+  @override
+  String get settings_manageIntegrations => 'Gérer les intégrations';
+
+  @override
+  String get settings_manageIntegrationsDesc =>
+      'Connecter App Store Connect et Google Play Console';
+
+  @override
+  String get settings_billing => 'FACTURATION';
+
+  @override
+  String get settings_plansBilling => 'Plans et facturation';
+
+  @override
+  String get settings_plansBillingDesc => 'Gérer votre abonnement et paiement';
+
+  @override
+  String get settings_rememberApp => 'Mémoriser l\'app sélectionnée';
+
+  @override
+  String get settings_rememberAppDesc =>
+      'Restaurer la sélection d\'app au lancement';
 
   @override
   String get storeConnections_title => 'Connexions aux stores';
@@ -1358,6 +1478,31 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String storeConnections_connectedOn(String date) {
     return 'Connecté le $date';
+  }
+
+  @override
+  String get storeConnections_syncApps => 'Synchroniser les apps';
+
+  @override
+  String get storeConnections_syncing => 'Synchronisation...';
+
+  @override
+  String get storeConnections_syncDescription =>
+      'La synchronisation marquera vos apps de ce compte comme possédées, permettant de répondre aux avis.';
+
+  @override
+  String storeConnections_syncedApps(int count) {
+    return '$count apps synchronisées comme possédées';
+  }
+
+  @override
+  String storeConnections_syncFailed(String error) {
+    return 'Échec de la synchronisation : $error';
+  }
+
+  @override
+  String storeConnections_errorLoading(String error) {
+    return 'Erreur de chargement des connexions : $error';
   }
 
   @override
@@ -1443,29 +1588,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reviewsInbox_sentimentOverview => 'Aperçu du sentiment';
 
   @override
-  String get reviewsInbox_aiSuggestions => 'AI Suggested Replies';
+  String get reviewsInbox_aiSuggestions => 'Suggestions IA';
 
   @override
-  String get reviewsInbox_regenerate => 'Regenerate';
+  String get reviewsInbox_regenerate => 'Régénérer';
 
   @override
-  String get reviewsInbox_toneProfessional => 'Professional';
+  String get reviewsInbox_toneProfessional => 'Professionnel';
 
   @override
-  String get reviewsInbox_toneEmpathetic => 'Empathetic';
+  String get reviewsInbox_toneEmpathetic => 'Empathique';
 
   @override
-  String get reviewsInbox_toneBrief => 'Brief';
+  String get reviewsInbox_toneBrief => 'Bref';
 
   @override
-  String get reviewsInbox_selectTone => 'Select tone:';
+  String get reviewsInbox_selectTone => 'Sélectionnez le ton :';
 
   @override
-  String get reviewsInbox_detectedIssues => 'Issues detected:';
+  String get reviewsInbox_detectedIssues => 'Problèmes détectés :';
 
   @override
   String get reviewsInbox_aiPrompt =>
-      'Click \'Generate AI suggestion\' to get reply suggestions in 3 different tones';
+      'Cliquez sur \'Générer une suggestion IA\' pour obtenir des suggestions de réponse en 3 tons différents';
 
   @override
   String get reviewIntelligence_title => 'Intelligence des avis';
@@ -1619,49 +1764,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String get funnel_connectStore => 'Connecter le store';
 
   @override
-  String get nav_chat => 'AI Assistant';
+  String get nav_chat => 'Assistant IA';
 
   @override
-  String get chat_title => 'AI Assistant';
+  String get chat_title => 'Assistant IA';
 
   @override
-  String get chat_newConversation => 'New Chat';
+  String get chat_newConversation => 'Nouvelle conversation';
 
   @override
-  String get chat_loadingConversations => 'Loading conversations...';
+  String get chat_loadingConversations => 'Chargement des conversations...';
 
   @override
-  String get chat_loadingMessages => 'Loading messages...';
+  String get chat_loadingMessages => 'Chargement des messages...';
 
   @override
-  String get chat_noConversations => 'No conversations yet';
+  String get chat_noConversations => 'Aucune conversation';
 
   @override
   String get chat_noConversationsDesc =>
-      'Start a new conversation to get AI-powered insights about your apps';
+      'Démarrez une nouvelle conversation pour obtenir des insights IA sur vos apps';
 
   @override
-  String get chat_startConversation => 'Start Conversation';
+  String get chat_startConversation => 'Démarrer une conversation';
 
   @override
-  String get chat_deleteConversation => 'Delete Conversation';
+  String get chat_deleteConversation => 'Supprimer la conversation';
 
   @override
   String get chat_deleteConversationConfirm =>
-      'Are you sure you want to delete this conversation?';
+      'Êtes-vous sûr de vouloir supprimer cette conversation ?';
 
   @override
-  String get chat_askAnything => 'Ask me anything';
+  String get chat_askAnything => 'Posez-moi une question';
 
   @override
   String get chat_askAnythingDesc =>
-      'I can help you understand your app\'s reviews, rankings, and analytics';
+      'Je peux vous aider à comprendre les avis, classements et analyses de votre app';
 
   @override
-  String get chat_typeMessage => 'Type your question...';
+  String get chat_typeMessage => 'Tapez votre question...';
 
   @override
-  String get chat_suggestedQuestions => 'Suggested Questions';
+  String get chat_suggestedQuestions => 'Questions suggérées';
 
   @override
   String get chatActionConfirm => 'Confirmer';
@@ -1733,16 +1878,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chatActionReviewsLabel => 'Avis';
 
   @override
-  String get common_cancel => 'Cancel';
+  String get common_cancel => 'Annuler';
 
   @override
-  String get common_delete => 'Delete';
+  String get common_delete => 'Supprimer';
 
   @override
-  String get appDetail_tabOverview => 'Apercu';
+  String get appDetail_tabOverview => 'Aperçu';
 
   @override
-  String get appDetail_tabKeywords => 'Mots-cles';
+  String get appDetail_tabKeywords => 'Mots-clés';
 
   @override
   String get appDetail_tabReviews => 'Avis';
@@ -1754,70 +1899,70 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appDetail_tabInsights => 'Analyses';
 
   @override
-  String get dateRange_title => 'Date Range';
+  String get dateRange_title => 'Période';
 
   @override
-  String get dateRange_today => 'Today';
+  String get dateRange_today => 'Aujourd\'hui';
 
   @override
-  String get dateRange_yesterday => 'Yesterday';
+  String get dateRange_yesterday => 'Hier';
 
   @override
-  String get dateRange_last7Days => 'Last 7 Days';
+  String get dateRange_last7Days => '7 derniers jours';
 
   @override
-  String get dateRange_last30Days => 'Last 30 Days';
+  String get dateRange_last30Days => '30 derniers jours';
 
   @override
-  String get dateRange_thisMonth => 'This Month';
+  String get dateRange_thisMonth => 'Ce mois';
 
   @override
-  String get dateRange_lastMonth => 'Last Month';
+  String get dateRange_lastMonth => 'Mois dernier';
 
   @override
-  String get dateRange_last90Days => 'Last 90 Days';
+  String get dateRange_last90Days => '90 derniers jours';
 
   @override
-  String get dateRange_yearToDate => 'Year to Date';
+  String get dateRange_yearToDate => 'Depuis le début de l\'année';
 
   @override
-  String get dateRange_allTime => 'All Time';
+  String get dateRange_allTime => 'Tout';
 
   @override
-  String get dateRange_custom => 'Custom...';
+  String get dateRange_custom => 'Personnalisé...';
 
   @override
-  String get dateRange_compareToPrevious => 'Compare to previous period';
+  String get dateRange_compareToPrevious => 'Comparer à la période précédente';
 
   @override
-  String get export_keywordsTitle => 'Export Keywords';
+  String get export_keywordsTitle => 'Exporter les mots-clés';
 
   @override
-  String get export_reviewsTitle => 'Export Reviews';
+  String get export_reviewsTitle => 'Exporter les avis';
 
   @override
-  String get export_analyticsTitle => 'Export Analytics';
+  String get export_analyticsTitle => 'Exporter les analytiques';
 
   @override
-  String get export_columnsToInclude => 'Columns to include:';
+  String get export_columnsToInclude => 'Colonnes à inclure :';
 
   @override
-  String get export_button => 'Export';
+  String get export_button => 'Exporter';
 
   @override
-  String get export_keyword => 'Keyword';
+  String get export_keyword => 'Mot-clé';
 
   @override
   String get export_position => 'Position';
 
   @override
-  String get export_change => 'Change';
+  String get export_change => 'Changement';
 
   @override
-  String get export_popularity => 'Popularity';
+  String get export_popularity => 'Popularité';
 
   @override
-  String get export_difficulty => 'Difficulty';
+  String get export_difficulty => 'Difficulté';
 
   @override
   String get export_tags => 'Tags';
@@ -1826,25 +1971,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get export_notes => 'Notes';
 
   @override
-  String get export_trackedSince => 'Tracked Since';
+  String get export_trackedSince => 'Suivi depuis';
 
   @override
   String get export_date => 'Date';
 
   @override
-  String get export_rating => 'Rating';
+  String get export_rating => 'Note';
 
   @override
-  String get export_author => 'Author';
+  String get export_author => 'Auteur';
 
   @override
-  String get export_title => 'Title';
+  String get export_title => 'Titre';
 
   @override
-  String get export_content => 'Content';
+  String get export_content => 'Contenu';
 
   @override
-  String get export_country => 'Country';
+  String get export_country => 'Pays';
 
   @override
   String get export_version => 'Version';
@@ -1853,95 +1998,95 @@ class AppLocalizationsFr extends AppLocalizations {
   String get export_sentiment => 'Sentiment';
 
   @override
-  String get export_response => 'Our Response';
+  String get export_response => 'Notre réponse';
 
   @override
-  String get export_responseDate => 'Response Date';
+  String get export_responseDate => 'Date de réponse';
 
   @override
   String export_keywordsCount(int count) {
-    return '$count keywords will be exported';
+    return '$count mots-clés seront exportés';
   }
 
   @override
   String export_reviewsCount(int count) {
-    return '$count reviews will be exported';
+    return '$count avis seront exportés';
   }
 
   @override
   String export_success(String filename) {
-    return 'Export saved: $filename';
+    return 'Export enregistré : $filename';
   }
 
   @override
   String export_error(String error) {
-    return 'Export failed: $error';
+    return 'Échec de l\'export : $error';
   }
 
   @override
-  String get metadata_editor => 'Metadata Editor';
+  String get metadata_editor => 'Éditeur de métadonnées';
 
   @override
-  String get metadata_selectLocale => 'Select a locale to edit';
+  String get metadata_selectLocale => 'Sélectionnez une locale à modifier';
 
   @override
-  String get metadata_refreshed => 'Metadata refreshed from store';
+  String get metadata_refreshed => 'Métadonnées actualisées depuis le store';
 
   @override
-  String get metadata_connectRequired => 'Connect to edit metadata';
+  String get metadata_connectRequired => 'Connexion requise pour modifier';
 
   @override
   String get metadata_connectDescription =>
-      'Connect your App Store Connect account to edit your app\'s metadata directly from Keyrank.';
+      'Connectez votre compte App Store Connect pour modifier les métadonnées de votre app directement depuis Keyrank.';
 
   @override
-  String get metadata_connectStore => 'Connect App Store';
+  String get metadata_connectStore => 'Connecter App Store';
 
   @override
-  String get metadata_publishTitle => 'Publish Metadata';
+  String get metadata_publishTitle => 'Publier les métadonnées';
 
   @override
   String metadata_publishConfirm(String locale) {
-    return 'Publish changes to $locale? This will update your app\'s listing on the App Store.';
+    return 'Publier les modifications pour $locale ? Cela mettra à jour la fiche de votre app sur l\'App Store.';
   }
 
   @override
-  String get metadata_publish => 'Publish';
+  String get metadata_publish => 'Publier';
 
   @override
-  String get metadata_publishSuccess => 'Metadata published successfully';
+  String get metadata_publishSuccess => 'Métadonnées publiées avec succès';
 
   @override
-  String get metadata_saveDraft => 'Save Draft';
+  String get metadata_saveDraft => 'Enregistrer le brouillon';
 
   @override
-  String get metadata_draftSaved => 'Draft saved';
+  String get metadata_draftSaved => 'Brouillon enregistré';
 
   @override
-  String get metadata_discardChanges => 'Discard Changes';
+  String get metadata_discardChanges => 'Annuler les modifications';
 
   @override
-  String get metadata_title => 'Title';
+  String get metadata_title => 'Titre';
 
   @override
   String metadata_titleHint(int limit) {
-    return 'App name (max $limit chars)';
+    return 'Nom de l\'app (max $limit car.)';
   }
 
   @override
-  String get metadata_subtitle => 'Subtitle';
+  String get metadata_subtitle => 'Sous-titre';
 
   @override
   String metadata_subtitleHint(int limit) {
-    return 'Brief tagline (max $limit chars)';
+    return 'Accroche courte (max $limit car.)';
   }
 
   @override
-  String get metadata_keywords => 'Keywords';
+  String get metadata_keywords => 'Mots-clés';
 
   @override
   String metadata_keywordsHint(int limit) {
-    return 'Comma-separated keywords (max $limit chars)';
+    return 'Mots-clés séparés par des virgules (max $limit car.)';
   }
 
   @override
@@ -1949,23 +2094,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String metadata_descriptionHint(int limit) {
-    return 'Full app description (max $limit chars)';
+    return 'Description complète de l\'app (max $limit car.)';
   }
 
   @override
-  String get metadata_promotionalText => 'Promotional Text';
+  String get metadata_promotionalText => 'Texte promotionnel';
 
   @override
   String metadata_promotionalTextHint(int limit) {
-    return 'Short promotional message (max $limit chars)';
+    return 'Message promotionnel court (max $limit car.)';
   }
 
   @override
-  String get metadata_whatsNew => 'What\'s New';
+  String get metadata_whatsNew => 'Nouveautés';
 
   @override
   String metadata_whatsNewHint(int limit) {
-    return 'Release notes (max $limit chars)';
+    return 'Notes de version (max $limit car.)';
   }
 
   @override
@@ -1974,66 +2119,66 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get metadata_hasChanges => 'Has unsaved changes';
+  String get metadata_hasChanges => 'Modifications non enregistrées';
 
   @override
-  String get metadata_noChanges => 'No changes';
+  String get metadata_noChanges => 'Aucune modification';
 
   @override
-  String get metadata_keywordAnalysis => 'Keyword Analysis';
+  String get metadata_keywordAnalysis => 'Analyse des mots-clés';
 
   @override
-  String get metadata_keywordPresent => 'Present';
+  String get metadata_keywordPresent => 'Présent';
 
   @override
-  String get metadata_keywordMissing => 'Missing';
+  String get metadata_keywordMissing => 'Manquant';
 
   @override
-  String get metadata_inTitle => 'In Title';
+  String get metadata_inTitle => 'Dans le titre';
 
   @override
-  String get metadata_inSubtitle => 'In Subtitle';
+  String get metadata_inSubtitle => 'Dans le sous-titre';
 
   @override
-  String get metadata_inKeywords => 'In Keywords';
+  String get metadata_inKeywords => 'Dans les mots-clés';
 
   @override
-  String get metadata_inDescription => 'In Description';
+  String get metadata_inDescription => 'Dans la description';
 
   @override
-  String get metadata_history => 'Change History';
+  String get metadata_history => 'Historique des modifications';
 
   @override
-  String get metadata_noHistory => 'No changes recorded';
+  String get metadata_noHistory => 'Aucune modification enregistrée';
 
   @override
-  String get metadata_localeComplete => 'Complete';
+  String get metadata_localeComplete => 'Complet';
 
   @override
-  String get metadata_localeIncomplete => 'Incomplete';
+  String get metadata_localeIncomplete => 'Incomplet';
 
   @override
-  String get metadata_shortDescription => 'Short Description';
+  String get metadata_shortDescription => 'Description courte';
 
   @override
   String metadata_shortDescriptionHint(int limit) {
-    return 'Brief tagline shown in search (max $limit chars)';
+    return 'Accroche affichée dans la recherche (max $limit car.)';
   }
 
   @override
-  String get metadata_fullDescription => 'Full Description';
+  String get metadata_fullDescription => 'Description complète';
 
   @override
   String metadata_fullDescriptionHint(int limit) {
-    return 'Complete app description (max $limit chars)';
+    return 'Description complète de l\'app (max $limit car.)';
   }
 
   @override
-  String get metadata_releaseNotes => 'Release Notes';
+  String get metadata_releaseNotes => 'Notes de version';
 
   @override
   String metadata_releaseNotesHint(int limit) {
-    return 'What\'s new in this version (max $limit chars)';
+    return 'Nouveautés de cette version (max $limit car.)';
   }
 
   @override
@@ -2146,132 +2291,896 @@ class AppLocalizationsFr extends AppLocalizations {
   String get metadataCompletion => 'Complétion';
 
   @override
-  String get common_back => 'Back';
+  String get common_back => 'Retour';
 
   @override
-  String get common_next => 'Next';
+  String get common_next => 'Suivant';
 
   @override
-  String get common_edit => 'Edit';
+  String get common_edit => 'Modifier';
 
   @override
-  String get metadata_aiOptimize => 'AI Optimize';
+  String get metadata_aiOptimize => 'Optimiser avec l\'IA';
 
   @override
-  String get wizard_title => 'AI Optimization Wizard';
+  String get wizard_title => 'Assistant d\'optimisation IA';
 
   @override
-  String get wizard_step => 'Step';
+  String get wizard_step => 'Étape';
 
   @override
-  String get wizard_of => 'of';
+  String get wizard_of => 'sur';
 
   @override
-  String get wizard_stepTitle => 'Title';
+  String get wizard_stepTitle => 'Titre';
 
   @override
-  String get wizard_stepSubtitle => 'Subtitle';
+  String get wizard_stepSubtitle => 'Sous-titre';
 
   @override
-  String get wizard_stepKeywords => 'Keywords';
+  String get wizard_stepKeywords => 'Mots-clés';
 
   @override
   String get wizard_stepDescription => 'Description';
 
   @override
-  String get wizard_stepReview => 'Review & Save';
+  String get wizard_stepReview => 'Révision et enregistrement';
 
   @override
-  String get wizard_skip => 'Skip';
+  String get wizard_skip => 'Passer';
 
   @override
-  String get wizard_saveDrafts => 'Save Drafts';
+  String get wizard_saveDrafts => 'Enregistrer les brouillons';
 
   @override
-  String get wizard_draftsSaved => 'Drafts saved successfully';
+  String get wizard_draftsSaved => 'Brouillons enregistrés avec succès';
 
   @override
-  String get wizard_exitTitle => 'Exit Wizard?';
+  String get wizard_exitTitle => 'Quitter l\'assistant ?';
 
   @override
   String get wizard_exitMessage =>
-      'You have unsaved changes. Are you sure you want to exit?';
+      'Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter ?';
 
   @override
-  String get wizard_exitConfirm => 'Exit';
+  String get wizard_exitConfirm => 'Quitter';
 
   @override
-  String get wizard_aiSuggestions => 'AI Suggestions';
+  String get wizard_aiSuggestions => 'Suggestions IA';
 
   @override
   String get wizard_chooseSuggestion =>
-      'Choose one of the AI-generated suggestions or write your own';
+      'Choisissez une suggestion générée par l\'IA ou écrivez la vôtre';
 
   @override
-  String get wizard_currentValue => 'Current Value';
+  String get wizard_currentValue => 'Valeur actuelle';
 
   @override
-  String get wizard_noCurrentValue => 'No current value set';
+  String get wizard_noCurrentValue => 'Aucune valeur définie';
 
   @override
   String wizard_contextInfo(int keywordsCount, int competitorsCount) {
-    return 'Based on $keywordsCount tracked keywords and $competitorsCount competitors';
+    return 'Basé sur $keywordsCount mots-clés suivis et $competitorsCount concurrents';
   }
 
   @override
-  String get wizard_writeOwn => 'Write my own';
+  String get wizard_writeOwn => 'Écrire le mien';
 
   @override
-  String get wizard_customPlaceholder => 'Enter your custom value...';
+  String get wizard_customPlaceholder => 'Entrez votre valeur personnalisée...';
 
   @override
-  String get wizard_useCustom => 'Use Custom';
+  String get wizard_useCustom => 'Utiliser personnalisé';
 
   @override
-  String get wizard_keepCurrent => 'Keep Current';
+  String get wizard_keepCurrent => 'Garder l\'actuel';
 
   @override
-  String get wizard_recommended => 'Recommended';
+  String get wizard_recommended => 'Recommandé';
 
   @override
-  String get wizard_characters => 'characters';
+  String get wizard_characters => 'caractères';
 
   @override
-  String get wizard_reviewTitle => 'Review Changes';
+  String get wizard_reviewTitle => 'Réviser les modifications';
 
   @override
   String get wizard_reviewDescription =>
-      'Review your optimizations before saving them as drafts';
+      'Révisez vos optimisations avant de les enregistrer comme brouillons';
 
   @override
-  String get wizard_noChanges => 'No changes selected';
+  String get wizard_noChanges => 'Aucune modification sélectionnée';
 
   @override
   String get wizard_noChangesHint =>
-      'Go back and select suggestions for the fields you want to optimize';
+      'Revenez en arrière et sélectionnez des suggestions pour les champs à optimiser';
 
   @override
   String wizard_changesCount(int count) {
-    return '$count fields updated';
+    return '$count champs mis à jour';
   }
 
   @override
-  String get wizard_changesSummary => 'These changes will be saved as drafts';
+  String get wizard_changesSummary =>
+      'Ces modifications seront enregistrées comme brouillons';
 
   @override
-  String get wizard_before => 'Before';
+  String get wizard_before => 'Avant';
 
   @override
-  String get wizard_after => 'After';
+  String get wizard_after => 'Après';
 
   @override
-  String get wizard_nextStepsTitle => 'What happens next?';
+  String get wizard_nextStepsTitle => 'Que se passe-t-il ensuite ?';
 
   @override
   String get wizard_nextStepsWithChanges =>
-      'Your changes will be saved as drafts. You can review and publish them from the Metadata Editor.';
+      'Vos modifications seront enregistrées comme brouillons. Vous pouvez les réviser et les publier depuis l\'éditeur de métadonnées.';
 
   @override
   String get wizard_nextStepsNoChanges =>
-      'No changes to save. Go back and select suggestions to optimize your metadata.';
+      'Aucune modification à enregistrer. Revenez en arrière et sélectionnez des suggestions pour optimiser vos métadonnées.';
+
+  @override
+  String get team_title => 'Gestion d\'équipe';
+
+  @override
+  String get team_createTeam => 'Créer une équipe';
+
+  @override
+  String get team_teamName => 'Nom de l\'équipe';
+
+  @override
+  String get team_teamNameHint => 'Entrez le nom de l\'équipe';
+
+  @override
+  String get team_description => 'Description (optionnel)';
+
+  @override
+  String get team_descriptionHint => 'À quoi sert cette équipe ?';
+
+  @override
+  String get team_teamNameRequired => 'Le nom de l\'équipe est requis';
+
+  @override
+  String get team_teamNameMinLength =>
+      'Le nom de l\'équipe doit contenir au moins 2 caractères';
+
+  @override
+  String get team_inviteMember => 'Inviter un membre';
+
+  @override
+  String get team_emailAddress => 'Adresse e-mail';
+
+  @override
+  String get team_emailHint => 'collegue@exemple.com';
+
+  @override
+  String get team_emailRequired => 'L\'e-mail est requis';
+
+  @override
+  String get team_emailInvalid => 'Entrez une adresse e-mail valide';
+
+  @override
+  String team_invitationSent(String email) {
+    return 'Invitation envoyée à $email';
+  }
+
+  @override
+  String get team_members => 'MEMBRES';
+
+  @override
+  String get team_invite => 'Inviter';
+
+  @override
+  String get team_pendingInvitations => 'INVITATIONS EN ATTENTE';
+
+  @override
+  String get team_noPendingInvitations => 'Aucune invitation en attente';
+
+  @override
+  String get team_teamSettings => 'Paramètres de l\'équipe';
+
+  @override
+  String team_changeRole(String name) {
+    return 'Changer le rôle de $name';
+  }
+
+  @override
+  String get team_removeMember => 'Retirer le membre';
+
+  @override
+  String team_removeMemberConfirm(String name) {
+    return 'Êtes-vous sûr de vouloir retirer $name de cette équipe ?';
+  }
+
+  @override
+  String get team_remove => 'Retirer';
+
+  @override
+  String get team_leaveTeam => 'Quitter l\'équipe';
+
+  @override
+  String team_leaveTeamConfirm(String teamName) {
+    return 'Êtes-vous sûr de vouloir quitter « $teamName » ?';
+  }
+
+  @override
+  String get team_leave => 'Quitter';
+
+  @override
+  String get team_deleteTeam => 'Supprimer l\'équipe';
+
+  @override
+  String team_deleteTeamConfirm(String teamName) {
+    return 'Êtes-vous sûr de vouloir supprimer « $teamName » ? Cette action est irréversible.';
+  }
+
+  @override
+  String get team_yourTeams => 'VOS ÉQUIPES';
+
+  @override
+  String get team_failedToLoadTeam => 'Échec du chargement de l\'équipe';
+
+  @override
+  String get team_failedToLoadMembers => 'Échec du chargement des membres';
+
+  @override
+  String get team_failedToLoadInvitations =>
+      'Échec du chargement des invitations';
+
+  @override
+  String team_memberCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count membres',
+      one: '1 membre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String team_invitedAs(String role) {
+    return 'Invité en tant que $role';
+  }
+
+  @override
+  String team_joinedTeam(String teamName) {
+    return 'Rejoint $teamName';
+  }
+
+  @override
+  String get team_invitationDeclined => 'Invitation refusée';
+
+  @override
+  String get team_noTeamsYet => 'Pas encore d\'équipes';
+
+  @override
+  String get team_noTeamsDescription =>
+      'Créez une équipe pour collaborer avec d\'autres sur vos applications';
+
+  @override
+  String get team_createFirstTeam => 'Créer votre première équipe';
+
+  @override
+  String get integrations_title => 'Intégrations';
+
+  @override
+  String integrations_syncFailed(String error) {
+    return 'Échec de la synchronisation : $error';
+  }
+
+  @override
+  String get integrations_disconnectConfirm => 'Déconnecter ?';
+
+  @override
+  String get integrations_disconnectedSuccess => 'Déconnecté avec succès';
+
+  @override
+  String get integrations_connectGooglePlay => 'Connecter Google Play Console';
+
+  @override
+  String get integrations_connectAppStore => 'Connecter App Store Connect';
+
+  @override
+  String integrations_connectedApps(int count) {
+    return 'Connecté ! $count apps importées.';
+  }
+
+  @override
+  String integrations_syncedApps(int count) {
+    return '$count apps synchronisées comme propriétaire';
+  }
+
+  @override
+  String get integrations_appStoreConnected =>
+      'App Store Connect connecté avec succès !';
+
+  @override
+  String get integrations_googlePlayConnected =>
+      'Google Play Console connecté avec succès !';
+
+  @override
+  String get integrations_description =>
+      'Connect your store accounts to import apps, reply to reviews, and access analytics.';
+
+  @override
+  String integrations_errorLoading(String error) {
+    return 'Error loading integrations: $error';
+  }
+
+  @override
+  String integrations_syncedAppsDetails(int imported, int discovered) {
+    return 'Synced $imported apps ($discovered discovered)';
+  }
+
+  @override
+  String get integrations_appStoreConnect => 'App Store Connect';
+
+  @override
+  String get integrations_connectAppleAccount =>
+      'Connect your Apple Developer account';
+
+  @override
+  String get integrations_googlePlayConsole => 'Google Play Console';
+
+  @override
+  String get integrations_connectGoogleAccount =>
+      'Connect your Google Play account';
+
+  @override
+  String integrations_disconnectConfirmMessage(String type, int count) {
+    return 'Are you sure you want to disconnect $type? This will remove $count imported apps.';
+  }
+
+  @override
+  String get integrations_disconnect => 'Disconnect';
+
+  @override
+  String get integrations_connect => 'Connect';
+
+  @override
+  String get integrations_connected => 'Connected';
+
+  @override
+  String get integrations_error => 'Error';
+
+  @override
+  String get integrations_syncing => 'Syncing...';
+
+  @override
+  String get integrations_refreshApps => 'Refresh Apps';
+
+  @override
+  String integrations_lastSynced(String date) {
+    return 'Last synced: $date';
+  }
+
+  @override
+  String integrations_connectedOn(String date) {
+    return 'Connected on $date';
+  }
+
+  @override
+  String integrations_appsImported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apps imported',
+      one: '1 app imported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertBuilder_nameYourRule => 'NOMMEZ VOTRE RÈGLE';
+
+  @override
+  String get alertBuilder_nameDescription =>
+      'Donnez un nom descriptif à votre règle d\'alerte';
+
+  @override
+  String get alertBuilder_nameHint => 'ex : Alerte position quotidienne';
+
+  @override
+  String get alertBuilder_summary => 'RÉSUMÉ';
+
+  @override
+  String get alertBuilder_saveAlertRule => 'Enregistrer la règle d\'alerte';
+
+  @override
+  String get alertBuilder_selectAlertType => 'SÉLECTIONNER LE TYPE D\'ALERTE';
+
+  @override
+  String get alertBuilder_selectAlertTypeDescription =>
+      'Choisissez le type d\'alerte que vous souhaitez créer';
+
+  @override
+  String alertBuilder_deleteRuleConfirm(String ruleName) {
+    return 'Cela supprimera « $ruleName ».';
+  }
+
+  @override
+  String get alertBuilder_activateTemplateOrCreate =>
+      'Aucune règle pour le moment. Activez un modèle ou créez la vôtre !';
+
+  @override
+  String get billing_cancelSubscription => 'Annuler l\'abonnement';
+
+  @override
+  String get billing_keepSubscription => 'Conserver l\'abonnement';
+
+  @override
+  String get billing_billingPortal => 'Portail de facturation';
+
+  @override
+  String get billing_resume => 'Reprendre';
+
+  @override
+  String get keywords_noCompetitorsFound =>
+      'Aucun concurrent trouvé. Ajoutez d\'abord des concurrents.';
+
+  @override
+  String get keywords_noCompetitorsForApp =>
+      'Aucun concurrent pour cette app. Ajoutez d\'abord un concurrent.';
+
+  @override
+  String keywords_failedToAddKeywords(String error) {
+    return 'Échec de l\'ajout des mots-clés : $error';
+  }
+
+  @override
+  String get keywords_bulkAddHint =>
+      'suivi budget\ngestionnaire dépenses\napp argent';
+
+  @override
+  String get appOverview_urlCopied =>
+      'URL du store copiée dans le presse-papiers';
+
+  @override
+  String get country_us => 'États-Unis';
+
+  @override
+  String get country_gb => 'Royaume-Uni';
+
+  @override
+  String get country_fr => 'France';
+
+  @override
+  String get country_de => 'Allemagne';
+
+  @override
+  String get country_ca => 'Canada';
+
+  @override
+  String get country_au => 'Australie';
+
+  @override
+  String get country_jp => 'Japon';
+
+  @override
+  String get country_cn => 'Chine';
+
+  @override
+  String get country_kr => 'Corée du Sud';
+
+  @override
+  String get country_br => 'Brésil';
+
+  @override
+  String get country_es => 'Espagne';
+
+  @override
+  String get country_it => 'Italie';
+
+  @override
+  String get countryCode_us => '🇺🇸 US';
+
+  @override
+  String get countryCode_gb => '🇬🇧 UK';
+
+  @override
+  String get countryCode_fr => '🇫🇷 FR';
+
+  @override
+  String get countryCode_de => '🇩🇪 DE';
+
+  @override
+  String get countryCode_ca => '🇨🇦 CA';
+
+  @override
+  String get countryCode_au => '🇦🇺 AU';
+
+  @override
+  String get alertBuilder_type => 'Type';
+
+  @override
+  String get alertBuilder_scope => 'Portée';
+
+  @override
+  String get alertBuilder_name => 'Nom';
+
+  @override
+  String get alertBuilder_scopeGlobal => 'Toutes les apps';
+
+  @override
+  String get alertBuilder_scopeApp => 'App spécifique';
+
+  @override
+  String get alertBuilder_scopeCategory => 'Catégorie';
+
+  @override
+  String get alertBuilder_scopeKeyword => 'Mot-clé';
+
+  @override
+  String get alertType_positionChange => 'Changement de position';
+
+  @override
+  String get alertType_positionChangeDesc =>
+      'Alerte quand le rang de l\'app change significativement';
+
+  @override
+  String get alertType_ratingChange => 'Changement de note';
+
+  @override
+  String get alertType_ratingChangeDesc =>
+      'Alerte quand la note de l\'app change';
+
+  @override
+  String get alertType_reviewSpike => 'Pic d\'avis';
+
+  @override
+  String get alertType_reviewSpikeDesc =>
+      'Alerte lors d\'une activité inhabituelle d\'avis';
+
+  @override
+  String get alertType_reviewKeyword => 'Mot-clé dans les avis';
+
+  @override
+  String get alertType_reviewKeywordDesc =>
+      'Alerte quand des mots-clés apparaissent dans les avis';
+
+  @override
+  String get alertType_newCompetitor => 'Nouveau concurrent';
+
+  @override
+  String get alertType_newCompetitorDesc =>
+      'Alerte quand de nouvelles apps entrent dans votre espace';
+
+  @override
+  String get alertType_competitorPassed => 'Concurrent dépassé';
+
+  @override
+  String get alertType_competitorPassedDesc =>
+      'Alerte quand vous dépassez un concurrent';
+
+  @override
+  String get alertType_massMovement => 'Mouvement de masse';
+
+  @override
+  String get alertType_massMovementDesc =>
+      'Alerte lors de grands changements de classement';
+
+  @override
+  String get alertType_keywordTrend => 'Tendance mot-clé';
+
+  @override
+  String get alertType_keywordTrendDesc =>
+      'Alerte quand la popularité d\'un mot-clé change';
+
+  @override
+  String get alertType_opportunity => 'Opportunité';
+
+  @override
+  String get alertType_opportunityDesc =>
+      'Alerte sur de nouvelles opportunités de classement';
+
+  @override
+  String get billing_title => 'Facturation & Plans';
+
+  @override
+  String get billing_subscriptionActivated => 'Abonnement activé avec succès !';
+
+  @override
+  String get billing_changePlan => 'Changer de plan';
+
+  @override
+  String get billing_choosePlan => 'Choisir un plan';
+
+  @override
+  String get billing_cancelMessage =>
+      'Votre abonnement restera actif jusqu\'à la fin de la période de facturation actuelle. Après cela, vous perdrez l\'accès aux fonctionnalités premium.';
+
+  @override
+  String get billing_currentPlan => 'PLAN ACTUEL';
+
+  @override
+  String get billing_trial => 'ESSAI';
+
+  @override
+  String get billing_canceling => 'ANNULATION';
+
+  @override
+  String billing_accessUntil(String date) {
+    return 'Accès jusqu\'au $date';
+  }
+
+  @override
+  String billing_renewsOn(String date) {
+    return 'Renouvellement le $date';
+  }
+
+  @override
+  String get billing_manageSubscription => 'GÉRER L\'ABONNEMENT';
+
+  @override
+  String get billing_monthly => 'Mensuel';
+
+  @override
+  String get billing_yearly => 'Annuel';
+
+  @override
+  String billing_savePercent(int percent) {
+    return 'Économisez $percent%';
+  }
+
+  @override
+  String get billing_current => 'Actuel';
+
+  @override
+  String get billing_apps => 'Apps';
+
+  @override
+  String get billing_unlimited => 'Illimité';
+
+  @override
+  String get billing_keywordsPerApp => 'Mots-clés par app';
+
+  @override
+  String get billing_history => 'Historique';
+
+  @override
+  String billing_days(int count) {
+    return '$count jours';
+  }
+
+  @override
+  String get billing_exports => 'Exports';
+
+  @override
+  String get billing_aiInsights => 'Analyses IA';
+
+  @override
+  String get billing_apiAccess => 'Accès API';
+
+  @override
+  String get billing_yes => 'Oui';
+
+  @override
+  String get billing_no => 'Non';
+
+  @override
+  String get billing_currentPlanButton => 'Plan actuel';
+
+  @override
+  String billing_upgradeTo(String planName) {
+    return 'Passer à $planName';
+  }
+
+  @override
+  String get billing_cancel => 'Annuler';
+
+  @override
+  String get keywords_compareWithCompetitor => 'Comparer avec un concurrent';
+
+  @override
+  String get keywords_selectCompetitorToCompare =>
+      'Sélectionnez un concurrent pour comparer les mots-clés :';
+
+  @override
+  String get keywords_addToCompetitor => 'Ajouter au concurrent';
+
+  @override
+  String keywords_addKeywordsTo(int count) {
+    return 'Ajouter $count mot(s)-clé(s) à :';
+  }
+
+  @override
+  String get keywords_avgPosition => 'Position moy.';
+
+  @override
+  String get keywords_declined => 'En baisse';
+
+  @override
+  String get keywords_total => 'Total';
+
+  @override
+  String get keywords_ranked => 'Classés';
+
+  @override
+  String get keywords_improved => 'En hausse';
+
+  @override
+  String get onboarding_skip => 'Passer';
+
+  @override
+  String get onboarding_back => 'Retour';
+
+  @override
+  String get onboarding_continue => 'Continuer';
+
+  @override
+  String get onboarding_getStarted => 'Commencer';
+
+  @override
+  String get onboarding_welcomeToKeyrank => 'Bienvenue sur Keyrank';
+
+  @override
+  String get onboarding_welcomeSubtitle =>
+      'Suivez le classement de vos apps, gérez les avis et optimisez votre stratégie ASO.';
+
+  @override
+  String get onboarding_connectStore => 'Connectez votre Store';
+
+  @override
+  String get onboarding_connectStoreSubtitle =>
+      'Optionnel : connectez-vous pour importer des apps et répondre aux avis.';
+
+  @override
+  String get onboarding_couldNotLoadIntegrations =>
+      'Impossible de charger les intégrations';
+
+  @override
+  String get onboarding_tapToConnect => 'Appuyez pour connecter';
+
+  @override
+  String get onboarding_allSet => 'Vous êtes prêt !';
+
+  @override
+  String get onboarding_allSetSubtitle =>
+      'Commencez par ajouter une app à suivre ou explorez l\'inspecteur de mots-clés.';
+
+  @override
+  String get team_you => 'Vous';
+
+  @override
+  String get team_changeRoleButton => 'Changer le rôle';
+
+  @override
+  String get team_removeButton => 'Supprimer';
+
+  @override
+  String get competitors_removeTitle => 'Supprimer le concurrent';
+
+  @override
+  String competitors_removeConfirm(String name) {
+    return 'Êtes-vous sûr de vouloir supprimer « $name » de vos concurrents ?';
+  }
+
+  @override
+  String competitors_removed(String name) {
+    return '$name supprimé';
+  }
+
+  @override
+  String competitors_removeFailed(String error) {
+    return 'Échec de la suppression : $error';
+  }
+
+  @override
+  String get competitors_addCompetitor => 'Ajouter un concurrent';
+
+  @override
+  String get competitors_filterAll => 'Tous';
+
+  @override
+  String get competitors_filterGlobal => 'Globaux';
+
+  @override
+  String get competitors_filterContextual => 'Contextuels';
+
+  @override
+  String get competitors_noCompetitorsYet => 'Aucun concurrent suivi';
+
+  @override
+  String get competitors_noGlobalCompetitors => 'Aucun concurrent global';
+
+  @override
+  String get competitors_noContextualCompetitors =>
+      'Aucun concurrent contextuel';
+
+  @override
+  String get competitors_emptySubtitleAll =>
+      'Recherchez des apps et ajoutez-les comme concurrents pour suivre leurs classements';
+
+  @override
+  String get competitors_emptySubtitleGlobal =>
+      'Les concurrents globaux apparaissent pour toutes vos apps';
+
+  @override
+  String get competitors_emptySubtitleContextual =>
+      'Les concurrents contextuels sont liés à des apps spécifiques';
+
+  @override
+  String get competitors_searchForCompetitors => 'Rechercher des concurrents';
+
+  @override
+  String get competitors_viewKeywords => 'Voir les mots-clés';
+
+  @override
+  String get common_remove => 'Supprimer';
+
+  @override
+  String get competitors_addTitle => 'Ajouter un concurrent';
+
+  @override
+  String competitors_addedAsCompetitor(String name) {
+    return '$name ajouté comme concurrent';
+  }
+
+  @override
+  String competitors_addFailed(String error) {
+    return 'Échec de l\'ajout du concurrent : $error';
+  }
+
+  @override
+  String get competitors_searchForCompetitor => 'Rechercher un concurrent';
+
+  @override
+  String get appPreview_back => 'Retour';
+
+  @override
+  String get alerts_edit => 'Modifier';
+
+  @override
+  String get alerts_scopeGlobal => 'Toutes les apps';
+
+  @override
+  String get alerts_scopeApp => 'App spécifique';
+
+  @override
+  String get alerts_scopeCategory => 'Catégorie';
+
+  @override
+  String get alerts_scopeKeyword => 'Mot-clé';
+
+  @override
+  String ratings_showMore(int count) {
+    return 'Afficher plus ($count restants)';
+  }
+
+  @override
+  String get ratings_showLess => 'Afficher moins';
+
+  @override
+  String get insights_aiInsights => 'Analyses IA';
+
+  @override
+  String get insights_viewAll => 'Tout voir';
+
+  @override
+  String insights_viewMore(int count) {
+    return 'Voir $count analyses de plus';
+  }
+
+  @override
+  String get insights_noInsightsDesc =>
+      'Les analyses IA apparaîtront ici au fur et à mesure de l\'analyse de vos apps';
+
+  @override
+  String get insights_loadFailed => 'Échec du chargement des analyses';
+
+  @override
+  String chat_createFailed(String error) {
+    return 'Échec de la création de la conversation : $error';
+  }
+
+  @override
+  String chat_deleteFailed(String error) {
+    return 'Échec de la suppression : $error';
+  }
+
+  @override
+  String get notifications_manageAlerts => 'Gérer les alertes';
 }

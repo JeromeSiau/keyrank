@@ -28,6 +28,11 @@
 
   "common_retry": "Réessayer",
   "common_error": "Erreur : {message}",
+  "@common_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "common_loading": "Chargement...",
   "common_add": "Ajouter",
   "common_filter": "Filtrer",
@@ -36,6 +41,12 @@
   "common_settings": "Paramètres",
   "common_search": "Rechercher...",
   "common_noResults": "Aucun résultat",
+  "common_save": "Enregistrer",
+  "common_cancel": "Annuler",
+  "common_delete": "Supprimer",
+  "common_back": "Retour",
+  "common_next": "Suivant",
+  "common_edit": "Modifier",
 
   "dashboard_title": "Tableau de bord",
   "dashboard_addApp": "Ajouter une app",
@@ -56,15 +67,27 @@
   "dashboard_avgRating": "Note moyenne",
   "dashboard_topPerformingApps": "Apps les plus performantes",
   "dashboard_topCountries": "Principaux pays",
-  "dashboard_sentimentOverview": "Apercu du sentiment",
+  "dashboard_sentimentOverview": "Aperçu du sentiment",
   "dashboard_overallSentiment": "Sentiment global",
   "dashboard_positive": "Positif",
   "dashboard_positiveReviews": "Positif",
-  "dashboard_negativeReviews": "Negatif",
+  "dashboard_negativeReviews": "Négatif",
   "dashboard_viewReviews": "Voir les avis",
+  "dashboard_tableApp": "APP",
+  "dashboard_tableKeywords": "MOTS-CLÉS",
+  "dashboard_tableAvgRank": "RANG MOY.",
+  "dashboard_tableTrend": "TENDANCE",
+  "dashboard_connectYourStores": "Connectez vos stores",
+  "dashboard_connectStoresDescription": "Liez App Store Connect ou Google Play pour importer vos apps et répondre aux avis.",
+  "dashboard_connect": "Connecter",
 
   "apps_title": "Mes Apps",
   "apps_appCount": "{count} apps",
+  "@apps_appCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "apps_tableApp": "APP",
   "apps_tableDeveloper": "DÉVELOPPEUR",
   "apps_tableKeywords": "MOTS-CLÉS",
@@ -81,6 +104,11 @@
   "addApp_enterAtLeast2Chars": "Entrez au moins 2 caractères",
   "addApp_noResults": "Aucun résultat trouvé",
   "addApp_addedSuccess": "{name} ajouté avec succès",
+  "@addApp_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
 
   "settings_title": "Paramètres",
   "settings_language": "Langue",
@@ -93,6 +121,11 @@
   "settings_memberSince": "Membre depuis",
   "settings_logout": "Se déconnecter",
   "settings_languageSystem": "Système",
+  "settings_notifications": "NOTIFICATIONS",
+  "settings_manageAlerts": "Gérer les règles d'alerte",
+  "settings_manageAlertsDesc": "Configurez les alertes que vous recevez",
+  "settings_storeConnections": "Connexions aux stores",
+  "settings_storeConnectionsDesc": "Connectez vos comptes App Store et Google Play",
 
   "filter_all": "Tout",
   "filter_allApps": "Toutes les apps",
@@ -159,6 +192,36 @@
   "insights_emergentThemes": "Thèmes émergents",
   "insights_exampleQuotes": "Exemples de citations :",
   "insights_selectCountryFirst": "Sélectionnez au moins un pays",
+  "insights_title": "Analyses",
+  "insights_titleWithApp": "Analyses - {appName}",
+  "@insights_titleWithApp": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "insights_allApps": "Analyses (Toutes les apps)",
+  "insights_noInsightsYet": "Aucune analyse générée",
+  "insights_selectAppToGenerate": "Sélectionnez une app pour générer des analyses à partir des avis",
+  "insights_appsWithInsights": "{count} apps avec analyses",
+  "@insights_appsWithInsights": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_errorLoading": "Erreur de chargement des analyses",
+  "insights_reviewsAnalyzed": "{count} avis analysés",
+  "@insights_reviewsAnalyzed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_avgScore": "score moyen",
+  "insights_updatedOn": "Mis à jour le {date}",
+  "@insights_updatedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "compare_selectAppsToCompare": "Sélectionnez jusqu'à 3 apps à comparer avec {appName}",
   "@compare_selectAppsToCompare": {
@@ -264,6 +327,66 @@
   "appDetail_nameZA": "Nom Z-A",
   "appDetail_bestPosition": "Meilleure position",
   "appDetail_recentlyTracked": "Récemment suivi",
+  "appDetail_noKeywordsTracked": "Aucun mot-clé suivi",
+  "appDetail_addKeywordHint": "Ajoutez un mot-clé ci-dessus pour commencer le suivi",
+  "appDetail_noKeywordsMatchFilter": "Aucun mot-clé ne correspond au filtre",
+  "appDetail_tryChangingFilter": "Essayez de modifier les critères du filtre",
+  "appDetail_addTag": "Ajouter un tag",
+  "appDetail_addNote": "Ajouter une note",
+  "appDetail_positionHistory": "Historique des positions",
+  "appDetail_store": "STORE",
+  "appDetail_manageTags": "Gérer les tags",
+  "appDetail_newTagHint": "Nom du nouveau tag...",
+  "appDetail_availableTags": "Tags disponibles",
+  "appDetail_noTagsYet": "Aucun tag pour l'instant. Créez-en un ci-dessus.",
+  "appDetail_addTagsTitle": "Ajouter des tags",
+  "appDetail_selectTagsDescription": "Sélectionnez les tags à ajouter aux mots-clés sélectionnés :",
+  "appDetail_addTagsCount": "Ajouter {count} {count, plural, =1{tag} other{tags}}",
+  "@appDetail_addTagsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_currentTags": "Tags actuels",
+  "appDetail_noTagsOnKeyword": "Aucun tag sur ce mot-clé",
+  "appDetail_addExistingTag": "Ajouter un tag existant",
+  "appDetail_allTagsUsed": "Tous les tags sont déjà utilisés",
+  "appDetail_createNewTag": "Créer un nouveau tag",
+  "appDetail_tagNameHint": "Nom du tag...",
+  "appDetail_note": "Note",
+  "appDetail_noteHint": "Ajouter une note sur ce mot-clé...",
+  "appDetail_saveNote": "Enregistrer la note",
+  "appDetail_done": "Terminé",
+  "appDetail_importFailed": "Échec de l'import : {error}",
+  "@appDetail_importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importKeywordsTitle": "Importer des mots-clés",
+  "appDetail_pasteKeywordsHint": "Collez les mots-clés ci-dessous, un par ligne :",
+  "appDetail_keywordPlaceholder": "mot-clé un\nmot-clé deux\nmot-clé trois",
+  "appDetail_storefront": "Storefront :",
+  "appDetail_keywordsCount": "{count} mots-clés",
+  "@appDetail_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importKeywordsCount": "Importer {count} mots-clés",
+  "@appDetail_importKeywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_period7d": "7j",
+  "appDetail_period30d": "30j",
+  "appDetail_period90d": "90j",
+  "appDetail_tabOverview": "Aperçu",
+  "appDetail_tabKeywords": "Mots-clés",
+  "appDetail_tabReviews": "Avis",
+  "appDetail_tabRatings": "Notes",
+  "appDetail_tabInsights": "Analyses",
 
   "keywordSuggestions_title": "Suggestions de mots-clés",
   "keywordSuggestions_appInCountry": "{appName} en {country}",
@@ -456,6 +579,12 @@
       "count": { "type": "int" }
     }
   },
+  "reviews_version": "v{version}",
+  "@reviews_version": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
 
   "ratings_byCountry": "Notes par pays",
   "ratings_noRatingsAvailable": "Aucune note disponible",
@@ -497,15 +626,6 @@
     }
   },
 
-  "appDetail_noKeywordsTracked": "Aucun mot-clé suivi",
-  "appDetail_addKeywordHint": "Ajoutez un mot-clé ci-dessus pour commencer le suivi",
-  "appDetail_noKeywordsMatchFilter": "Aucun mot-clé ne correspond au filtre",
-  "appDetail_tryChangingFilter": "Essayez de modifier les critères du filtre",
-  "appDetail_addTag": "Ajouter un tag",
-  "appDetail_addNote": "Ajouter une note",
-  "appDetail_positionHistory": "Historique des positions",
-  "appDetail_store": "STORE",
-
   "nav_overview": "VUE D'ENSEMBLE",
   "nav_dashboard": "Tableau de bord",
   "nav_myApps": "Mes Apps",
@@ -521,28 +641,13 @@
   "nav_intelligence": "INTELLIGENCE",
   "nav_topCharts": "Top Charts",
   "nav_competitors": "Concurrents",
+  "nav_chat": "Assistant IA",
 
-  "common_save": "Enregistrer",
-
-  "appDetail_manageTags": "Gérer les tags",
-  "appDetail_newTagHint": "Nom du nouveau tag...",
-  "appDetail_availableTags": "Tags disponibles",
-  "appDetail_noTagsYet": "Aucun tag pour l'instant. Créez-en un ci-dessus.",
-  "appDetail_addTagsTitle": "Ajouter des tags",
-  "appDetail_selectTagsDescription": "Sélectionnez les tags à ajouter aux mots-clés sélectionnés :",
-  "appDetail_addTagsCount": "Ajouter {count} {count, plural, =1{tag} other{tags}}",
-  "appDetail_importFailed": "Échec de l'import : {error}",
-  "appDetail_importKeywordsTitle": "Importer des mots-clés",
-  "appDetail_pasteKeywordsHint": "Collez les mots-clés ci-dessous, un par ligne :",
-  "appDetail_keywordPlaceholder": "mot-clé un\nmot-clé deux\nmot-clé trois",
-  "appDetail_storefront": "Storefront :",
-  "appDetail_keywordsCount": "{count} mots-clés",
-  "appDetail_importKeywordsCount": "Importer {count} mots-clés",
-  "appDetail_period7d": "7j",
-  "appDetail_period30d": "30j",
-  "appDetail_period90d": "90j",
-
-  "reviews_version": "v{version}",
+  "keywords_difficultyFilter": "Difficulté :",
+  "keywords_difficultyAll": "Toutes",
+  "keywords_difficultyEasy": "Facile < 40",
+  "keywords_difficultyMedium": "Moyen 40-70",
+  "keywords_difficultyHard": "Difficile > 70",
 
   "appPreview_title": "Détails de l'app",
   "appPreview_notFound": "Application introuvable",
@@ -575,12 +680,11 @@
   "alerts_editRule": "Modifier la règle",
   "alerts_noRulesYet": "Aucune règle pour le moment",
   "alerts_deleteConfirm": "Supprimer la règle ?",
-
-  "settings_notifications": "NOTIFICATIONS",
-  "settings_manageAlerts": "Gérer les règles d'alerte",
-  "settings_manageAlertsDesc": "Configurez les alertes que vous recevez",
-  "settings_storeConnections": "Connexions aux stores",
-  "settings_storeConnectionsDesc": "Connectez vos comptes App Store et Google Play",
+  "alerts_createCustomRule": "Créer une règle personnalisée",
+  "alerts_ruleActivated": "{name} activé !",
+  "alerts_deleteMessage": "Cela supprimera \"{name}\".",
+  "alerts_noRulesDescription": "Activez un modèle ou créez le vôtre !",
+  "alerts_create": "Créer",
 
   "storeConnections_title": "Connexions aux stores",
   "storeConnections_description": "Connectez vos comptes App Store et Google Play pour activer des fonctionnalités avancées comme les données de ventes et les analyses d'applications.",
@@ -593,9 +697,30 @@
   "storeConnections_connected": "Connecté",
   "storeConnections_disconnectConfirm": "Déconnecter ?",
   "storeConnections_disconnectMessage": "Êtes-vous sûr de vouloir déconnecter ce compte {platform} ?",
+  "@storeConnections_disconnectMessage": {
+    "placeholders": {
+      "platform": { "type": "String" }
+    }
+  },
   "storeConnections_disconnectSuccess": "Déconnecté avec succès",
   "storeConnections_lastSynced": "Dernière sync : {date}",
+  "@storeConnections_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
   "storeConnections_connectedOn": "Connecté le {date}",
+  "@storeConnections_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_syncApps": "Synchroniser les apps",
+  "storeConnections_syncing": "Synchronisation...",
+  "storeConnections_syncDescription": "La synchronisation marquera vos apps de ce compte comme possédées, permettant de répondre aux avis.",
+  "storeConnections_syncedApps": "{count} apps synchronisées comme possédées",
+  "storeConnections_syncFailed": "Échec de la synchronisation : {error}",
+  "storeConnections_errorLoading": "Erreur de chargement des connexions : {error}",
 
   "reviewsInbox_title": "Boîte de réception",
   "reviewsInbox_filterUnanswered": "Sans réponse",
@@ -605,6 +730,11 @@
   "reviewsInbox_reply": "Répondre",
   "reviewsInbox_responded": "Réponse",
   "reviewsInbox_respondedAt": "Répondu le {date}",
+  "@reviewsInbox_respondedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
   "reviewsInbox_replyModalTitle": "Répondre à l'avis",
   "reviewsInbox_generateAi": "Générer une suggestion IA",
   "reviewsInbox_generating": "Génération...",
@@ -612,15 +742,43 @@
   "reviewsInbox_sending": "Envoi...",
   "reviewsInbox_replyPlaceholder": "Écrivez votre réponse...",
   "reviewsInbox_charLimit": "{count}/5970 caractères",
+  "@reviewsInbox_charLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "reviewsInbox_replySent": "Réponse envoyée avec succès",
   "reviewsInbox_replyError": "Échec de l'envoi de la réponse : {error}",
+  "@reviewsInbox_replyError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "reviewsInbox_aiError": "Échec de la génération de suggestion : {error}",
+  "@reviewsInbox_aiError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "reviewsInbox_stars": "{count} étoiles",
+  "@reviewsInbox_stars": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "reviewsInbox_totalReviews": "Total des avis",
   "reviewsInbox_unanswered": "Sans réponse",
   "reviewsInbox_positive": "Positifs",
   "reviewsInbox_avgRating": "Note moyenne",
   "reviewsInbox_sentimentOverview": "Aperçu du sentiment",
+  "reviewsInbox_aiSuggestions": "Suggestions IA",
+  "reviewsInbox_regenerate": "Régénérer",
+  "reviewsInbox_toneProfessional": "Professionnel",
+  "reviewsInbox_toneEmpathetic": "Empathique",
+  "reviewsInbox_toneBrief": "Bref",
+  "reviewsInbox_selectTone": "Sélectionnez le ton :",
+  "reviewsInbox_detectedIssues": "Problèmes détectés :",
+  "reviewsInbox_aiPrompt": "Cliquez sur 'Générer une suggestion IA' pour obtenir des suggestions de réponse en 3 tons différents",
 
   "reviewIntelligence_title": "Intelligence des avis",
   "reviewIntelligence_featureRequests": "Demandes de fonctionnalités",
@@ -665,6 +823,14 @@
   "funnel_noDataHint": "Les données d'entonnoir seront synchronisées automatiquement depuis App Store Connect ou Google Play Console.",
   "funnel_insight": "INSIGHT",
   "funnel_insightText": "Le trafic {bestSource} convertit {ratio}x mieux que {worstSource}. {recommendation}",
+  "@funnel_insightText": {
+    "placeholders": {
+      "bestSource": { "type": "String" },
+      "ratio": { "type": "String" },
+      "worstSource": { "type": "String" },
+      "recommendation": { "type": "String" }
+    }
+  },
   "funnel_insightRecommendSearch": "Concentrez-vous sur l'optimisation des mots-clés pour augmenter les impressions de recherche.",
   "funnel_insightRecommendBrowse": "Améliorez la visibilité de votre app dans la navigation en optimisant les catégories et le placement en vedette.",
   "funnel_insightRecommendReferral": "Exploitez les programmes de parrainage et les partenariats pour générer plus de trafic.",
@@ -674,45 +840,19 @@
   "funnel_trendTitle": "Tendance du taux de conversion",
   "funnel_connectStore": "Connecter le store",
 
-  "appDetail_tabOverview": "Apercu",
-  "appDetail_tabKeywords": "Mots-cles",
-  "appDetail_tabReviews": "Avis",
-  "appDetail_tabRatings": "Notes",
-  "appDetail_tabInsights": "Analyses",
-
-  "metadata_selectAppFirst": "Sélectionnez une application",
-  "metadata_selectAppHint": "Utilisez le sélecteur d'app dans la barre latérale ou connectez un store pour commencer.",
-  "metadata_noStoreConnection": "Connexion au store requise",
-  "metadata_noStoreConnectionDesc": "Connectez votre compte {storeName} pour récupérer et modifier les métadonnées de votre app.",
-  "metadata_connectStoreButton": "Connecter {storeName}",
-
-  "metadataLocalization": "Localisations",
-  "metadataLive": "En ligne",
-  "metadataDraft": "Brouillon",
-  "metadataEmpty": "Vide",
-  "metadataCoverageInsight": "{count} locales nécessitent du contenu. Pensez à localiser pour vos marchés principaux.",
-  "metadataFilterAll": "Tous",
-  "metadataFilterLive": "En ligne",
-  "metadataFilterDraft": "Brouillons",
-  "metadataFilterEmpty": "Vides",
-  "metadataBulkActions": "Actions groupées",
-  "metadataCopyTo": "Copier vers la sélection",
-  "metadataTranslateTo": "Traduire vers la sélection",
-  "metadataPublishSelected": "Publier la sélection",
-  "metadataDeleteDrafts": "Supprimer les brouillons",
-  "metadataSelectSource": "Sélectionner la locale source",
-  "metadataSelectTarget": "Sélectionner les locales cibles",
-  "metadataCopySuccess": "Contenu copié vers {count} locales",
-  "metadataTranslateSuccess": "Traduit vers {count} locales",
-  "metadataTranslating": "Traduction en cours...",
-  "metadataNoSelection": "Sélectionnez d'abord des locales",
-  "metadataSelectAll": "Tout sélectionner",
-  "metadataDeselectAll": "Tout désélectionner",
-  "metadataSelected": "{count} sélectionnée(s)",
-  "metadataTableView": "Vue tableau",
-  "metadataListView": "Vue liste",
-  "metadataStatus": "Statut",
-  "metadataCompletion": "Complétion",
+  "chat_title": "Assistant IA",
+  "chat_newConversation": "Nouvelle conversation",
+  "chat_loadingConversations": "Chargement des conversations...",
+  "chat_loadingMessages": "Chargement des messages...",
+  "chat_noConversations": "Aucune conversation",
+  "chat_noConversationsDesc": "Démarrez une nouvelle conversation pour obtenir des insights IA sur vos apps",
+  "chat_startConversation": "Démarrer une conversation",
+  "chat_deleteConversation": "Supprimer la conversation",
+  "chat_deleteConversationConfirm": "Êtes-vous sûr de vouloir supprimer cette conversation ?",
+  "chat_askAnything": "Posez-moi une question",
+  "chat_askAnythingDesc": "Je peux vous aider à comprendre les avis, classements et analyses de votre app",
+  "chat_typeMessage": "Tapez votre question...",
+  "chat_suggestedQuestions": "Questions suggérées",
 
   "chatActionConfirm": "Confirmer",
   "chatActionCancel": "Annuler",
@@ -738,5 +878,665 @@
   "chatActionDateRange": "Période",
   "chatActionKeywordsLabel": "Mots-clés",
   "chatActionAnalyticsLabel": "Statistiques",
-  "chatActionReviewsLabel": "Avis"
+  "chatActionReviewsLabel": "Avis",
+
+  "dateRange_title": "Période",
+  "dateRange_today": "Aujourd'hui",
+  "dateRange_yesterday": "Hier",
+  "dateRange_last7Days": "7 derniers jours",
+  "dateRange_last30Days": "30 derniers jours",
+  "dateRange_thisMonth": "Ce mois",
+  "dateRange_lastMonth": "Mois dernier",
+  "dateRange_last90Days": "90 derniers jours",
+  "dateRange_yearToDate": "Depuis le début de l'année",
+  "dateRange_allTime": "Tout",
+  "dateRange_custom": "Personnalisé...",
+  "dateRange_compareToPrevious": "Comparer à la période précédente",
+
+  "export_keywordsTitle": "Exporter les mots-clés",
+  "export_reviewsTitle": "Exporter les avis",
+  "export_analyticsTitle": "Exporter les analytiques",
+  "export_columnsToInclude": "Colonnes à inclure :",
+  "export_button": "Exporter",
+  "export_keyword": "Mot-clé",
+  "export_position": "Position",
+  "export_change": "Changement",
+  "export_popularity": "Popularité",
+  "export_difficulty": "Difficulté",
+  "export_tags": "Tags",
+  "export_notes": "Notes",
+  "export_trackedSince": "Suivi depuis",
+  "export_date": "Date",
+  "export_rating": "Note",
+  "export_author": "Auteur",
+  "export_title": "Titre",
+  "export_content": "Contenu",
+  "export_country": "Pays",
+  "export_version": "Version",
+  "export_sentiment": "Sentiment",
+  "export_response": "Notre réponse",
+  "export_responseDate": "Date de réponse",
+  "export_keywordsCount": "{count} mots-clés seront exportés",
+  "@export_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_reviewsCount": "{count} avis seront exportés",
+  "@export_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_success": "Export enregistré : {filename}",
+  "@export_success": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "export_error": "Échec de l'export : {error}",
+  "@export_error": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "metadata_editor": "Éditeur de métadonnées",
+  "metadata_selectLocale": "Sélectionnez une locale à modifier",
+  "metadata_refreshed": "Métadonnées actualisées depuis le store",
+  "metadata_connectRequired": "Connexion requise pour modifier",
+  "metadata_connectDescription": "Connectez votre compte App Store Connect pour modifier les métadonnées de votre app directement depuis Keyrank.",
+  "metadata_connectStore": "Connecter App Store",
+  "metadata_publishTitle": "Publier les métadonnées",
+  "metadata_publishConfirm": "Publier les modifications pour {locale} ? Cela mettra à jour la fiche de votre app sur l'App Store.",
+  "@metadata_publishConfirm": {
+    "placeholders": {
+      "locale": { "type": "String" }
+    }
+  },
+  "metadata_publish": "Publier",
+  "metadata_publishSuccess": "Métadonnées publiées avec succès",
+  "metadata_saveDraft": "Enregistrer le brouillon",
+  "metadata_draftSaved": "Brouillon enregistré",
+  "metadata_discardChanges": "Annuler les modifications",
+  "metadata_title": "Titre",
+  "metadata_titleHint": "Nom de l'app (max {limit} car.)",
+  "@metadata_titleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_subtitle": "Sous-titre",
+  "metadata_subtitleHint": "Accroche courte (max {limit} car.)",
+  "@metadata_subtitleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_keywords": "Mots-clés",
+  "metadata_keywordsHint": "Mots-clés séparés par des virgules (max {limit} car.)",
+  "@metadata_keywordsHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_description": "Description",
+  "metadata_descriptionHint": "Description complète de l'app (max {limit} car.)",
+  "@metadata_descriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_promotionalText": "Texte promotionnel",
+  "metadata_promotionalTextHint": "Message promotionnel court (max {limit} car.)",
+  "@metadata_promotionalTextHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_whatsNew": "Nouveautés",
+  "metadata_whatsNewHint": "Notes de version (max {limit} car.)",
+  "@metadata_whatsNewHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_charCount": "{count}/{limit}",
+  "@metadata_charCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_hasChanges": "Modifications non enregistrées",
+  "metadata_noChanges": "Aucune modification",
+  "metadata_keywordAnalysis": "Analyse des mots-clés",
+  "metadata_keywordPresent": "Présent",
+  "metadata_keywordMissing": "Manquant",
+  "metadata_inTitle": "Dans le titre",
+  "metadata_inSubtitle": "Dans le sous-titre",
+  "metadata_inKeywords": "Dans les mots-clés",
+  "metadata_inDescription": "Dans la description",
+  "metadata_history": "Historique des modifications",
+  "metadata_noHistory": "Aucune modification enregistrée",
+  "metadata_localeComplete": "Complet",
+  "metadata_localeIncomplete": "Incomplet",
+  "metadata_shortDescription": "Description courte",
+  "metadata_shortDescriptionHint": "Accroche affichée dans la recherche (max {limit} car.)",
+  "@metadata_shortDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_fullDescription": "Description complète",
+  "metadata_fullDescriptionHint": "Description complète de l'app (max {limit} car.)",
+  "@metadata_fullDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_releaseNotes": "Notes de version",
+  "metadata_releaseNotesHint": "Nouveautés de cette version (max {limit} car.)",
+  "@metadata_releaseNotesHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_selectAppFirst": "Sélectionnez une application",
+  "metadata_selectAppHint": "Utilisez le sélecteur d'app dans la barre latérale ou connectez un store pour commencer.",
+  "metadata_noStoreConnection": "Connexion au store requise",
+  "metadata_noStoreConnectionDesc": "Connectez votre compte {storeName} pour récupérer et modifier les métadonnées de votre app.",
+  "@metadata_noStoreConnectionDesc": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_connectStoreButton": "Connecter {storeName}",
+  "@metadata_connectStoreButton": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_aiOptimize": "Optimiser avec l'IA",
+
+  "metadataLocalization": "Localisations",
+  "metadataLive": "En ligne",
+  "metadataDraft": "Brouillon",
+  "metadataEmpty": "Vide",
+  "metadataCoverageInsight": "{count} locales nécessitent du contenu. Pensez à localiser pour vos marchés principaux.",
+  "@metadataCoverageInsight": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataFilterAll": "Tous",
+  "metadataFilterLive": "En ligne",
+  "metadataFilterDraft": "Brouillons",
+  "metadataFilterEmpty": "Vides",
+  "metadataBulkActions": "Actions groupées",
+  "metadataCopyTo": "Copier vers la sélection",
+  "metadataTranslateTo": "Traduire vers la sélection",
+  "metadataPublishSelected": "Publier la sélection",
+  "metadataDeleteDrafts": "Supprimer les brouillons",
+  "metadataSelectSource": "Sélectionner la locale source",
+  "metadataSelectTarget": "Sélectionner les locales cibles",
+  "metadataCopySuccess": "Contenu copié vers {count} locales",
+  "@metadataCopySuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslateSuccess": "Traduit vers {count} locales",
+  "@metadataTranslateSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslating": "Traduction en cours...",
+  "metadataNoSelection": "Sélectionnez d'abord des locales",
+  "metadataSelectAll": "Tout sélectionner",
+  "metadataDeselectAll": "Tout désélectionner",
+  "metadataSelected": "{count} sélectionnée(s)",
+  "@metadataSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTableView": "Vue tableau",
+  "metadataListView": "Vue liste",
+  "metadataStatus": "Statut",
+  "metadataCompletion": "Complétion",
+
+  "wizard_title": "Assistant d'optimisation IA",
+  "wizard_step": "Étape",
+  "wizard_of": "sur",
+  "wizard_stepTitle": "Titre",
+  "wizard_stepSubtitle": "Sous-titre",
+  "wizard_stepKeywords": "Mots-clés",
+  "wizard_stepDescription": "Description",
+  "wizard_stepReview": "Révision et enregistrement",
+  "wizard_skip": "Passer",
+  "wizard_saveDrafts": "Enregistrer les brouillons",
+  "wizard_draftsSaved": "Brouillons enregistrés avec succès",
+  "wizard_exitTitle": "Quitter l'assistant ?",
+  "wizard_exitMessage": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter ?",
+  "wizard_exitConfirm": "Quitter",
+  "wizard_aiSuggestions": "Suggestions IA",
+  "wizard_chooseSuggestion": "Choisissez une suggestion générée par l'IA ou écrivez la vôtre",
+  "wizard_currentValue": "Valeur actuelle",
+  "wizard_noCurrentValue": "Aucune valeur définie",
+  "wizard_contextInfo": "Basé sur {keywordsCount} mots-clés suivis et {competitorsCount} concurrents",
+  "@wizard_contextInfo": {
+    "placeholders": {
+      "keywordsCount": { "type": "int" },
+      "competitorsCount": { "type": "int" }
+    }
+  },
+  "wizard_writeOwn": "Écrire le mien",
+  "wizard_customPlaceholder": "Entrez votre valeur personnalisée...",
+  "wizard_useCustom": "Utiliser personnalisé",
+  "wizard_keepCurrent": "Garder l'actuel",
+  "wizard_recommended": "Recommandé",
+  "wizard_characters": "caractères",
+  "wizard_reviewTitle": "Réviser les modifications",
+  "wizard_reviewDescription": "Révisez vos optimisations avant de les enregistrer comme brouillons",
+  "wizard_noChanges": "Aucune modification sélectionnée",
+  "wizard_noChangesHint": "Revenez en arrière et sélectionnez des suggestions pour les champs à optimiser",
+  "wizard_changesCount": "{count} champs mis à jour",
+  "@wizard_changesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wizard_changesSummary": "Ces modifications seront enregistrées comme brouillons",
+  "wizard_before": "Avant",
+  "wizard_after": "Après",
+  "wizard_nextStepsTitle": "Que se passe-t-il ensuite ?",
+  "wizard_nextStepsWithChanges": "Vos modifications seront enregistrées comme brouillons. Vous pouvez les réviser et les publier depuis l'éditeur de métadonnées.",
+  "wizard_nextStepsNoChanges": "Aucune modification à enregistrer. Revenez en arrière et sélectionnez des suggestions pour optimiser vos métadonnées.",
+
+  "team_title": "Gestion d'équipe",
+  "team_createTeam": "Créer une équipe",
+  "team_teamName": "Nom de l'équipe",
+  "team_teamNameHint": "Entrez le nom de l'équipe",
+  "team_description": "Description (optionnel)",
+  "team_descriptionHint": "À quoi sert cette équipe ?",
+  "team_teamNameRequired": "Le nom de l'équipe est requis",
+  "team_teamNameMinLength": "Le nom de l'équipe doit contenir au moins 2 caractères",
+  "team_inviteMember": "Inviter un membre",
+  "team_emailAddress": "Adresse e-mail",
+  "team_emailHint": "collegue@exemple.com",
+  "team_emailRequired": "L'e-mail est requis",
+  "team_emailInvalid": "Entrez une adresse e-mail valide",
+  "team_invitationSent": "Invitation envoyée à {email}",
+  "@team_invitationSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "team_members": "MEMBRES",
+  "team_invite": "Inviter",
+  "team_pendingInvitations": "INVITATIONS EN ATTENTE",
+  "team_noPendingInvitations": "Aucune invitation en attente",
+  "team_teamSettings": "Paramètres de l'équipe",
+  "team_changeRole": "Changer le rôle de {name}",
+  "@team_changeRole": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_removeMember": "Retirer le membre",
+  "team_removeMemberConfirm": "Êtes-vous sûr de vouloir retirer {name} de cette équipe ?",
+  "@team_removeMemberConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_remove": "Retirer",
+  "team_leaveTeam": "Quitter l'équipe",
+  "team_leaveTeamConfirm": "Êtes-vous sûr de vouloir quitter « {teamName} » ?",
+  "@team_leaveTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_leave": "Quitter",
+  "team_deleteTeam": "Supprimer l'équipe",
+  "team_deleteTeamConfirm": "Êtes-vous sûr de vouloir supprimer « {teamName} » ? Cette action est irréversible.",
+  "@team_deleteTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_yourTeams": "VOS ÉQUIPES",
+  "team_failedToLoadTeam": "Échec du chargement de l'équipe",
+  "team_failedToLoadMembers": "Échec du chargement des membres",
+  "team_failedToLoadInvitations": "Échec du chargement des invitations",
+  "team_memberCount": "{count, plural, =1{1 membre} other{{count} membres}}",
+  "@team_memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "team_invitedAs": "Invité en tant que {role}",
+  "@team_invitedAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
+  "team_joinedTeam": "Rejoint {teamName}",
+  "@team_joinedTeam": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_invitationDeclined": "Invitation refusée",
+  "team_noTeamsYet": "Pas encore d'équipes",
+  "team_noTeamsDescription": "Créez une équipe pour collaborer avec d'autres sur vos applications",
+  "team_createFirstTeam": "Créer votre première équipe",
+
+  "integrations_title": "Intégrations",
+  "integrations_syncFailed": "Échec de la synchronisation : {error}",
+  "@integrations_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_disconnectConfirm": "Déconnecter ?",
+  "integrations_disconnectedSuccess": "Déconnecté avec succès",
+  "integrations_connectGooglePlay": "Connecter Google Play Console",
+  "integrations_connectAppStore": "Connecter App Store Connect",
+  "integrations_connectedApps": "Connecté ! {count} apps importées.",
+  "@integrations_connectedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_syncedApps": "{count} apps synchronisées comme propriétaire",
+  "@integrations_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnected": "App Store Connect connecté avec succès !",
+  "integrations_googlePlayConnected": "Google Play Console connecté avec succès !",
+
+  "alertBuilder_nameYourRule": "NOMMEZ VOTRE RÈGLE",
+  "alertBuilder_nameDescription": "Donnez un nom descriptif à votre règle d'alerte",
+  "alertBuilder_nameHint": "ex : Alerte position quotidienne",
+  "alertBuilder_summary": "RÉSUMÉ",
+  "alertBuilder_saveAlertRule": "Enregistrer la règle d'alerte",
+  "alertBuilder_selectAlertType": "SÉLECTIONNER LE TYPE D'ALERTE",
+  "alertBuilder_selectAlertTypeDescription": "Choisissez le type d'alerte que vous souhaitez créer",
+  "alertBuilder_deleteRuleConfirm": "Cela supprimera « {ruleName} ».",
+  "@alertBuilder_deleteRuleConfirm": {
+    "placeholders": {
+      "ruleName": { "type": "String" }
+    }
+  },
+  "alertBuilder_activateTemplateOrCreate": "Aucune règle pour le moment. Activez un modèle ou créez la vôtre !",
+
+  "billing_cancelSubscription": "Annuler l'abonnement",
+  "billing_keepSubscription": "Conserver l'abonnement",
+  "billing_billingPortal": "Portail de facturation",
+  "billing_resume": "Reprendre",
+
+  "keywords_noCompetitorsFound": "Aucun concurrent trouvé. Ajoutez d'abord des concurrents.",
+  "keywords_noCompetitorsForApp": "Aucun concurrent pour cette app. Ajoutez d'abord un concurrent.",
+  "keywords_failedToAddKeywords": "Échec de l'ajout des mots-clés : {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_bulkAddHint": "suivi budget\ngestionnaire dépenses\napp argent",
+
+  "appOverview_urlCopied": "URL du store copiée dans le presse-papiers",
+
+  "country_us": "États-Unis",
+  "country_gb": "Royaume-Uni",
+  "country_fr": "France",
+  "country_de": "Allemagne",
+  "country_ca": "Canada",
+  "country_au": "Australie",
+  "country_jp": "Japon",
+  "country_cn": "Chine",
+  "country_kr": "Corée du Sud",
+  "country_br": "Brésil",
+  "country_es": "Espagne",
+  "country_it": "Italie",
+
+  "countryCode_us": "🇺🇸 US",
+  "countryCode_gb": "🇬🇧 UK",
+  "countryCode_fr": "🇫🇷 FR",
+  "countryCode_de": "🇩🇪 DE",
+  "countryCode_ca": "🇨🇦 CA",
+  "countryCode_au": "🇦🇺 AU",
+
+  "alertBuilder_type": "Type",
+  "alertBuilder_scope": "Portée",
+  "alertBuilder_name": "Nom",
+  "alertBuilder_scopeGlobal": "Toutes les apps",
+  "alertBuilder_scopeApp": "App spécifique",
+  "alertBuilder_scopeCategory": "Catégorie",
+  "alertBuilder_scopeKeyword": "Mot-clé",
+
+  "alertType_positionChange": "Changement de position",
+  "alertType_positionChangeDesc": "Alerte quand le rang de l'app change significativement",
+  "alertType_ratingChange": "Changement de note",
+  "alertType_ratingChangeDesc": "Alerte quand la note de l'app change",
+  "alertType_reviewSpike": "Pic d'avis",
+  "alertType_reviewSpikeDesc": "Alerte lors d'une activité inhabituelle d'avis",
+  "alertType_reviewKeyword": "Mot-clé dans les avis",
+  "alertType_reviewKeywordDesc": "Alerte quand des mots-clés apparaissent dans les avis",
+  "alertType_newCompetitor": "Nouveau concurrent",
+  "alertType_newCompetitorDesc": "Alerte quand de nouvelles apps entrent dans votre espace",
+  "alertType_competitorPassed": "Concurrent dépassé",
+  "alertType_competitorPassedDesc": "Alerte quand vous dépassez un concurrent",
+  "alertType_massMovement": "Mouvement de masse",
+  "alertType_massMovementDesc": "Alerte lors de grands changements de classement",
+  "alertType_keywordTrend": "Tendance mot-clé",
+  "alertType_keywordTrendDesc": "Alerte quand la popularité d'un mot-clé change",
+  "alertType_opportunity": "Opportunité",
+  "alertType_opportunityDesc": "Alerte sur de nouvelles opportunités de classement",
+
+  "billing_title": "Facturation & Plans",
+  "billing_subscriptionActivated": "Abonnement activé avec succès !",
+  "billing_changePlan": "Changer de plan",
+  "billing_choosePlan": "Choisir un plan",
+  "billing_cancelMessage": "Votre abonnement restera actif jusqu'à la fin de la période de facturation actuelle. Après cela, vous perdrez l'accès aux fonctionnalités premium.",
+  "billing_currentPlan": "PLAN ACTUEL",
+  "billing_trial": "ESSAI",
+  "billing_canceling": "ANNULATION",
+  "billing_accessUntil": "Accès jusqu'au {date}",
+  "@billing_accessUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_renewsOn": "Renouvellement le {date}",
+  "@billing_renewsOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_manageSubscription": "GÉRER L'ABONNEMENT",
+  "billing_monthly": "Mensuel",
+  "billing_yearly": "Annuel",
+  "billing_savePercent": "Économisez {percent}%",
+  "@billing_savePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "billing_current": "Actuel",
+  "billing_apps": "Apps",
+  "billing_unlimited": "Illimité",
+  "billing_keywordsPerApp": "Mots-clés par app",
+  "billing_history": "Historique",
+  "billing_days": "{count} jours",
+  "@billing_days": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "billing_exports": "Exports",
+  "billing_aiInsights": "Analyses IA",
+  "billing_apiAccess": "Accès API",
+  "billing_yes": "Oui",
+  "billing_no": "Non",
+  "billing_currentPlanButton": "Plan actuel",
+  "billing_upgradeTo": "Passer à {planName}",
+  "@billing_upgradeTo": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "billing_cancel": "Annuler",
+
+  "keywords_compareWithCompetitor": "Comparer avec un concurrent",
+  "keywords_selectCompetitorToCompare": "Sélectionnez un concurrent pour comparer les mots-clés :",
+  "keywords_noCompetitorsFound": "Aucun concurrent trouvé. Ajoutez d'abord des concurrents.",
+  "keywords_noCompetitorsForApp": "Aucun concurrent pour cette app. Ajoutez d'abord un concurrent.",
+  "keywords_failedToAddKeywords": "Échec de l'ajout des mots-clés : {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_addToCompetitor": "Ajouter au concurrent",
+  "keywords_addKeywordsTo": "Ajouter {count} mot(s)-clé(s) à :",
+  "@keywords_addKeywordsTo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywords_avgPosition": "Position moy.",
+  "keywords_declined": "En baisse",
+  "keywords_total": "Total",
+  "keywords_ranked": "Classés",
+  "keywords_improved": "En hausse",
+
+  "settings_alertDelivery": "LIVRAISON DES ALERTES",
+  "settings_team": "ÉQUIPE",
+  "settings_teamManagement": "Gestion de l'équipe",
+  "settings_teamManagementDesc": "Inviter des membres, gérer les rôles et permissions",
+  "settings_integrations": "INTÉGRATIONS",
+  "settings_manageIntegrations": "Gérer les intégrations",
+  "settings_manageIntegrationsDesc": "Connecter App Store Connect et Google Play Console",
+  "settings_billing": "FACTURATION",
+  "settings_plansBilling": "Plans et facturation",
+  "settings_plansBillingDesc": "Gérer votre abonnement et paiement",
+  "settings_rememberApp": "Mémoriser l'app sélectionnée",
+  "settings_rememberAppDesc": "Restaurer la sélection d'app au lancement",
+
+  "onboarding_skip": "Passer",
+  "onboarding_back": "Retour",
+  "onboarding_continue": "Continuer",
+  "onboarding_getStarted": "Commencer",
+  "onboarding_welcomeToKeyrank": "Bienvenue sur Keyrank",
+  "onboarding_welcomeSubtitle": "Suivez le classement de vos apps, gérez les avis et optimisez votre stratégie ASO.",
+  "onboarding_connectStore": "Connectez votre Store",
+  "onboarding_connectStoreSubtitle": "Optionnel : connectez-vous pour importer des apps et répondre aux avis.",
+  "onboarding_couldNotLoadIntegrations": "Impossible de charger les intégrations",
+  "onboarding_tapToConnect": "Appuyez pour connecter",
+  "onboarding_allSet": "Vous êtes prêt !",
+  "onboarding_allSetSubtitle": "Commencez par ajouter une app à suivre ou explorez l'inspecteur de mots-clés.",
+
+  "team_you": "Vous",
+  "team_changeRoleButton": "Changer le rôle",
+  "team_removeButton": "Supprimer",
+
+  "competitors_removeTitle": "Supprimer le concurrent",
+  "competitors_removeConfirm": "Êtes-vous sûr de vouloir supprimer « {name} » de vos concurrents ?",
+  "@competitors_removeConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_removed": "{name} supprimé",
+  "@competitors_removed": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_removeFailed": "Échec de la suppression : {error}",
+  "@competitors_removeFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_addCompetitor": "Ajouter un concurrent",
+  "competitors_filterAll": "Tous",
+  "competitors_filterGlobal": "Globaux",
+  "competitors_filterContextual": "Contextuels",
+  "competitors_noCompetitorsYet": "Aucun concurrent suivi",
+  "competitors_noGlobalCompetitors": "Aucun concurrent global",
+  "competitors_noContextualCompetitors": "Aucun concurrent contextuel",
+  "competitors_emptySubtitleAll": "Recherchez des apps et ajoutez-les comme concurrents pour suivre leurs classements",
+  "competitors_emptySubtitleGlobal": "Les concurrents globaux apparaissent pour toutes vos apps",
+  "competitors_emptySubtitleContextual": "Les concurrents contextuels sont liés à des apps spécifiques",
+  "competitors_searchForCompetitors": "Rechercher des concurrents",
+  "competitors_viewKeywords": "Voir les mots-clés",
+
+  "common_remove": "Supprimer",
+
+  "competitors_addTitle": "Ajouter un concurrent",
+  "competitors_addedAsCompetitor": "{name} ajouté comme concurrent",
+  "@competitors_addedAsCompetitor": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_addFailed": "Échec de l'ajout du concurrent : {error}",
+  "@competitors_addFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_searchForCompetitor": "Rechercher un concurrent",
+
+  "appPreview_back": "Retour",
+
+  "alerts_edit": "Modifier",
+  "alerts_scopeGlobal": "Toutes les apps",
+  "alerts_scopeApp": "App spécifique",
+  "alerts_scopeCategory": "Catégorie",
+  "alerts_scopeKeyword": "Mot-clé",
+
+  "ratings_showMore": "Afficher plus ({count} restants)",
+  "@ratings_showMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "ratings_showLess": "Afficher moins",
+
+  "insights_aiInsights": "Analyses IA",
+  "insights_viewAll": "Tout voir",
+  "insights_viewMore": "Voir {count} analyses de plus",
+  "@insights_viewMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_noInsightsYet": "Pas encore d'analyses",
+  "insights_noInsightsDesc": "Les analyses IA apparaîtront ici au fur et à mesure de l'analyse de vos apps",
+  "insights_loadFailed": "Échec du chargement des analyses",
+
+  "chat_createFailed": "Échec de la création de la conversation : {error}",
+  "@chat_createFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "chat_deleteFailed": "Échec de la suppression : {error}",
+  "@chat_deleteFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "notifications_markAllRead": "Tout marquer comme lu",
+  "notifications_manageAlerts": "Gérer les alertes"
 }

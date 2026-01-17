@@ -18,7 +18,7 @@
   "auth_signUpLink": "가입하기",
   "auth_signInLink": "로그인",
   "auth_emailRequired": "이메일을 입력해 주세요",
-  "auth_emailInvalid": "유효하지 않은 이메일",
+  "auth_emailInvalid": "유효하지 않은 이메일입니다",
   "auth_passwordRequired": "비밀번호를 입력해 주세요",
   "auth_enterPassword": "비밀번호를 입력해 주세요",
   "auth_nameRequired": "이름을 입력해 주세요",
@@ -28,6 +28,11 @@
 
   "common_retry": "다시 시도",
   "common_error": "오류: {message}",
+  "@common_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "common_loading": "로딩 중...",
   "common_add": "추가",
   "common_filter": "필터",
@@ -36,6 +41,12 @@
   "common_settings": "설정",
   "common_search": "검색...",
   "common_noResults": "결과 없음",
+  "common_save": "저장",
+  "common_cancel": "취소",
+  "common_delete": "삭제",
+  "common_back": "뒤로",
+  "common_next": "다음",
+  "common_edit": "편집",
 
   "dashboard_title": "대시보드",
   "dashboard_addApp": "앱 추가",
@@ -52,9 +63,31 @@
   "dashboard_addAppToStart": "앱을 추가하여 키워드 추적을 시작하세요",
   "dashboard_noAppsMatchFilter": "필터와 일치하는 앱이 없습니다",
   "dashboard_changeFilterCriteria": "필터 조건을 변경해 보세요",
+  "dashboard_reviews": "리뷰",
+  "dashboard_avgRating": "평균 평점",
+  "dashboard_topPerformingApps": "최고 성과 앱",
+  "dashboard_topCountries": "상위 국가",
+  "dashboard_sentimentOverview": "감성 분석 개요",
+  "dashboard_overallSentiment": "전체 감성",
+  "dashboard_positive": "긍정",
+  "dashboard_positiveReviews": "긍정",
+  "dashboard_negativeReviews": "부정",
+  "dashboard_viewReviews": "리뷰 보기",
+  "dashboard_tableApp": "앱",
+  "dashboard_tableKeywords": "키워드",
+  "dashboard_tableAvgRank": "평균 순위",
+  "dashboard_tableTrend": "추세",
+  "dashboard_connectYourStores": "스토어 연결",
+  "dashboard_connectStoresDescription": "App Store Connect 또는 Google Play를 연결하여 앱을 가져오고 리뷰에 응답하세요.",
+  "dashboard_connect": "연결",
 
   "apps_title": "내 앱",
-  "apps_appCount": "{count}개의 앱",
+  "apps_appCount": "{count}개 앱",
+  "@apps_appCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "apps_tableApp": "앱",
   "apps_tableDeveloper": "개발자",
   "apps_tableKeywords": "키워드",
@@ -71,6 +104,11 @@
   "addApp_enterAtLeast2Chars": "2자 이상 입력하세요",
   "addApp_noResults": "결과를 찾을 수 없습니다",
   "addApp_addedSuccess": "{name} 추가 완료",
+  "@addApp_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
 
   "settings_title": "설정",
   "settings_language": "언어",
@@ -83,6 +121,11 @@
   "settings_memberSince": "가입일",
   "settings_logout": "로그아웃",
   "settings_languageSystem": "시스템",
+  "settings_notifications": "알림",
+  "settings_manageAlerts": "알림 규칙 관리",
+  "settings_manageAlertsDesc": "받을 알림을 설정합니다",
+  "settings_storeConnections": "스토어 연결",
+  "settings_storeConnectionsDesc": "App Store 및 Google Play 계정을 연결합니다",
 
   "filter_all": "전체",
   "filter_allApps": "모든 앱",
@@ -144,11 +187,41 @@
   "insights_save": "저장",
   "insights_clickToAddNotes": "클릭하여 메모 추가...",
   "insights_noteSaved": "메모가 저장되었습니다",
-  "insights_noteHint": "이 인사이트 분석에 대한 메모를 추가하세요...",
+  "insights_noteHint": "이 분석에 대한 메모를 추가하세요...",
   "insights_categoryScores": "카테고리 점수",
   "insights_emergentThemes": "주요 테마",
   "insights_exampleQuotes": "예시 인용:",
   "insights_selectCountryFirst": "최소 한 개의 국가를 선택하세요",
+  "insights_title": "인사이트",
+  "insights_titleWithApp": "인사이트 - {appName}",
+  "@insights_titleWithApp": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "insights_allApps": "인사이트 (모든 앱)",
+  "insights_noInsightsYet": "생성된 인사이트가 없습니다",
+  "insights_selectAppToGenerate": "앱을 선택하여 리뷰에서 인사이트를 생성하세요",
+  "insights_appsWithInsights": "인사이트가 있는 앱 {count}개",
+  "@insights_appsWithInsights": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_errorLoading": "인사이트 로딩 오류",
+  "insights_reviewsAnalyzed": "{count}개 리뷰 분석됨",
+  "@insights_reviewsAnalyzed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_avgScore": "평균 점수",
+  "insights_updatedOn": "{date}에 업데이트됨",
+  "@insights_updatedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "compare_selectAppsToCompare": "{appName}과(와) 비교할 앱을 최대 3개까지 선택하세요",
   "@compare_selectAppsToCompare": {
@@ -254,6 +327,66 @@
   "appDetail_nameZA": "이름 Z-A",
   "appDetail_bestPosition": "최고 순위",
   "appDetail_recentlyTracked": "최근 추적됨",
+  "appDetail_noKeywordsTracked": "추적 중인 키워드 없음",
+  "appDetail_addKeywordHint": "위에 키워드를 추가하여 추적을 시작하세요",
+  "appDetail_noKeywordsMatchFilter": "필터와 일치하는 키워드 없음",
+  "appDetail_tryChangingFilter": "필터 조건을 변경해 보세요",
+  "appDetail_addTag": "태그 추가",
+  "appDetail_addNote": "메모 추가",
+  "appDetail_positionHistory": "순위 기록",
+  "appDetail_store": "스토어",
+  "appDetail_manageTags": "태그 관리",
+  "appDetail_newTagHint": "새 태그 이름...",
+  "appDetail_availableTags": "사용 가능한 태그",
+  "appDetail_noTagsYet": "아직 태그가 없습니다. 위에서 만드세요.",
+  "appDetail_addTagsTitle": "태그 추가",
+  "appDetail_selectTagsDescription": "선택한 키워드에 추가할 태그를 선택하세요:",
+  "appDetail_addTagsCount": "{count}개 태그 추가",
+  "@appDetail_addTagsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_currentTags": "현재 태그",
+  "appDetail_noTagsOnKeyword": "이 키워드에 태그가 없습니다",
+  "appDetail_addExistingTag": "기존 태그 추가",
+  "appDetail_allTagsUsed": "모든 태그가 이미 사용 중입니다",
+  "appDetail_createNewTag": "새 태그 만들기",
+  "appDetail_tagNameHint": "태그 이름...",
+  "appDetail_note": "메모",
+  "appDetail_noteHint": "이 키워드에 대한 메모 추가...",
+  "appDetail_saveNote": "메모 저장",
+  "appDetail_done": "완료",
+  "appDetail_importFailed": "가져오기 실패: {error}",
+  "@appDetail_importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importKeywordsTitle": "키워드 가져오기",
+  "appDetail_pasteKeywordsHint": "아래에 키워드를 붙여넣기 (줄당 하나씩):",
+  "appDetail_keywordPlaceholder": "키워드 하나\n키워드 둘\n키워드 셋",
+  "appDetail_storefront": "스토어프론트:",
+  "appDetail_keywordsCount": "{count}개 키워드",
+  "@appDetail_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importKeywordsCount": "{count}개 키워드 가져오기",
+  "@appDetail_importKeywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_period7d": "7일",
+  "appDetail_period30d": "30일",
+  "appDetail_period90d": "90일",
+  "appDetail_tabOverview": "개요",
+  "appDetail_tabKeywords": "키워드",
+  "appDetail_tabReviews": "리뷰",
+  "appDetail_tabRatings": "평점",
+  "appDetail_tabInsights": "인사이트",
 
   "keywordSuggestions_title": "키워드 추천",
   "keywordSuggestions_appInCountry": "{country}의 {appName}",
@@ -298,16 +431,25 @@
       "error": { "type": "String" }
     }
   },
+  "keywordSuggestions_categoryAll": "전체",
+  "keywordSuggestions_categoryHighOpportunity": "기회",
+  "keywordSuggestions_categoryCompetitor": "경쟁사 키워드",
+  "keywordSuggestions_categoryLongTail": "롱테일",
+  "keywordSuggestions_categoryTrending": "트렌드",
+  "keywordSuggestions_categoryRelated": "관련",
+  "keywordSuggestions_generating": "추천 생성 중...",
+  "keywordSuggestions_generatingSubtitle": "몇 분 정도 소요될 수 있습니다. 나중에 다시 확인하세요.",
+  "keywordSuggestions_checkAgain": "다시 확인",
 
   "sidebar_favorites": "즐겨찾기",
   "sidebar_tooManyFavorites": "즐겨찾기는 5개 이하로 유지하는 것을 권장합니다",
   "sidebar_iphone": "iPHONE",
   "sidebar_android": "ANDROID",
 
-  "keywordSearch_title": "키워드 리서치",
+  "keywordSearch_title": "키워드 검색",
   "keywordSearch_searchPlaceholder": "키워드 검색...",
   "keywordSearch_searchTitle": "키워드 검색",
-  "keywordSearch_searchSubtitle": "모든 키워드에 대해 순위를 차지하고 있는 앱을 확인하세요",
+  "keywordSearch_searchSubtitle": "특정 키워드에 대해 순위를 차지하고 있는 앱을 확인하세요",
   "keywordSearch_appsRanked": "{count}개 앱 순위",
   "@keywordSearch_appsRanked": {
     "placeholders": {
@@ -326,6 +468,76 @@
   "keywordSearch_headerRating": "평점",
   "keywordSearch_headerTrack": "추적",
   "keywordSearch_trackApp": "이 앱 추적하기",
+
+  "discover_title": "탐색",
+  "discover_tabKeywords": "키워드",
+  "discover_tabCategories": "카테고리",
+  "discover_selectCategory": "카테고리 선택",
+  "discover_topFree": "무료",
+  "discover_topPaid": "유료",
+  "discover_topGrossing": "수익",
+  "discover_noResults": "결과 없음",
+  "discover_loadingTopApps": "인기 앱 로딩 중...",
+  "discover_topAppsIn": "{category}의 {collection} 상위 앱",
+  "@discover_topAppsIn": {
+    "placeholders": {
+      "collection": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "discover_appsCount": "{count}개 앱",
+  "@discover_appsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "discover_allCategories": "모든 카테고리",
+
+  "category_games": "게임",
+  "category_business": "비즈니스",
+  "category_education": "교육",
+  "category_entertainment": "엔터테인먼트",
+  "category_finance": "금융",
+  "category_food_drink": "음식 및 음료",
+  "category_health_fitness": "건강 및 피트니스",
+  "category_lifestyle": "라이프스타일",
+  "category_medical": "의료",
+  "category_music": "음악",
+  "category_navigation": "내비게이션",
+  "category_news": "뉴스",
+  "category_photo_video": "사진 및 비디오",
+  "category_productivity": "생산성",
+  "category_reference": "참고",
+  "category_shopping": "쇼핑",
+  "category_social": "소셜 네트워킹",
+  "category_sports": "스포츠",
+  "category_travel": "여행",
+  "category_utilities": "유틸리티",
+  "category_weather": "날씨",
+  "category_books": "도서",
+  "category_developer_tools": "개발자 도구",
+  "category_graphics_design": "그래픽 및 디자인",
+  "category_magazines": "잡지 및 신문",
+  "category_stickers": "스티커",
+  "category_catalogs": "카탈로그",
+  "category_art_design": "아트 및 디자인",
+  "category_auto_vehicles": "자동차",
+  "category_beauty": "뷰티",
+  "category_comics": "만화",
+  "category_communication": "커뮤니케이션",
+  "category_dating": "데이팅",
+  "category_events": "이벤트",
+  "category_house_home": "주거",
+  "category_libraries": "라이브러리",
+  "category_maps_navigation": "지도 및 내비게이션",
+  "category_music_audio": "음악 및 오디오",
+  "category_news_magazines": "뉴스 및 잡지",
+  "category_parenting": "육아",
+  "category_personalization": "맞춤 설정",
+  "category_photography": "사진",
+  "category_tools": "도구",
+  "category_video_players": "동영상 플레이어",
+  "category_all_apps": "모든 앱",
 
   "reviews_reviewsFor": "{appName} 리뷰",
   "@reviews_reviewsFor": {
@@ -365,6 +577,12 @@
   "@reviews_monthsAgo": {
     "placeholders": {
       "count": { "type": "int" }
+    }
+  },
+  "reviews_version": "v{version}",
+  "@reviews_version": {
+    "placeholders": {
+      "version": { "type": "String" }
     }
   },
 
@@ -408,44 +626,47 @@
     }
   },
 
-  "appDetail_noKeywordsTracked": "추적 중인 키워드 없음",
-  "appDetail_addKeywordHint": "위에 키워드를 추가하여 추적을 시작하세요",
-  "appDetail_noKeywordsMatchFilter": "필터와 일치하는 키워드 없음",
-  "appDetail_tryChangingFilter": "필터 조건을 변경해 보세요",
-  "appDetail_addTag": "태그 추가",
-  "appDetail_addNote": "메모 추가",
-  "appDetail_positionHistory": "순위 기록",
-  "appDetail_store": "STORE",
-
   "nav_overview": "개요",
   "nav_dashboard": "대시보드",
   "nav_myApps": "내 앱",
   "nav_research": "리서치",
   "nav_keywords": "키워드",
   "nav_discover": "탐색",
+  "nav_engagement": "참여",
+  "nav_reviewsInbox": "리뷰 받은편지함",
   "nav_notifications": "알림",
+  "nav_optimization": "최적화",
+  "nav_keywordInspector": "키워드 검사기",
+  "nav_ratingsAnalysis": "평점 분석",
+  "nav_intelligence": "인텔리전스",
+  "nav_topCharts": "인기 차트",
+  "nav_competitors": "경쟁사",
+  "nav_chat": "AI 어시스턴트",
 
-  "common_save": "저장",
+  "keywords_difficultyFilter": "난이도:",
+  "keywords_difficultyAll": "전체",
+  "keywords_difficultyEasy": "쉬움 < 40",
+  "keywords_difficultyMedium": "보통 40-70",
+  "keywords_difficultyHard": "어려움 > 70",
 
-  "appDetail_manageTags": "태그 관리",
-  "appDetail_newTagHint": "새 태그 이름...",
-  "appDetail_availableTags": "사용 가능한 태그",
-  "appDetail_noTagsYet": "아직 태그가 없습니다. 위에서 만드세요.",
-  "appDetail_addTagsTitle": "태그 추가",
-  "appDetail_selectTagsDescription": "선택한 키워드에 추가할 태그 선택:",
-  "appDetail_addTagsCount": "{count}개 태그 추가",
-  "appDetail_importFailed": "가져오기 실패: {error}",
-  "appDetail_importKeywordsTitle": "키워드 가져오기",
-  "appDetail_pasteKeywordsHint": "아래에 키워드를 붙여넣기 (줄당 하나씩):",
-  "appDetail_keywordPlaceholder": "키워드 하나\n키워드 둘\n키워드 셋",
-  "appDetail_storefront": "스토어프론트:",
-  "appDetail_keywordsCount": "{count}개 키워드",
-  "appDetail_importKeywordsCount": "{count}개 키워드 가져오기",
-  "appDetail_period7d": "7일",
-  "appDetail_period30d": "30일",
-  "appDetail_period90d": "90일",
-
-  "reviews_version": "v{version}",
+  "appPreview_title": "앱 상세 정보",
+  "appPreview_notFound": "앱을 찾을 수 없습니다",
+  "appPreview_screenshots": "스크린샷",
+  "appPreview_description": "설명",
+  "appPreview_details": "상세 정보",
+  "appPreview_version": "버전",
+  "appPreview_updated": "업데이트",
+  "appPreview_released": "출시일",
+  "appPreview_size": "크기",
+  "appPreview_minimumOs": "요구 사항",
+  "appPreview_price": "가격",
+  "appPreview_free": "무료",
+  "appPreview_openInStore": "스토어에서 열기",
+  "appPreview_addToMyApps": "내 앱에 추가",
+  "appPreview_added": "추가됨",
+  "appPreview_showMore": "더 보기",
+  "appPreview_showLess": "접기",
+  "appPreview_keywordsPlaceholder": "키워드 추적을 활성화하려면 이 앱을 추적 중인 앱에 추가하세요",
 
   "notifications_title": "알림",
   "notifications_markAllRead": "모두 읽음으로 표시",
@@ -453,16 +674,123 @@
 
   "alerts_title": "알림 규칙",
   "alerts_templatesTitle": "빠른 템플릿",
-  "alerts_templatesSubtitle": "한 번 탭으로 일반 알림 활성화",
+  "alerts_templatesSubtitle": "한 번의 클릭으로 일반 알림 활성화",
   "alerts_myRulesTitle": "내 규칙",
   "alerts_createRule": "규칙 만들기",
   "alerts_editRule": "규칙 편집",
   "alerts_noRulesYet": "아직 규칙이 없습니다",
   "alerts_deleteConfirm": "규칙을 삭제하시겠습니까?",
+  "alerts_createCustomRule": "사용자 정의 규칙 만들기",
+  "alerts_ruleActivated": "{name} 활성화됨!",
+  "alerts_deleteMessage": "\"{name}\"이(가) 삭제됩니다.",
+  "alerts_noRulesDescription": "템플릿을 활성화하거나 직접 만드세요!",
+  "alerts_create": "만들기",
 
-  "settings_notifications": "알림",
-  "settings_manageAlerts": "알림 규칙 관리",
-  "settings_manageAlertsDesc": "받을 알림 설정",
+  "storeConnections_title": "스토어 연결",
+  "storeConnections_description": "App Store 및 Google Play 계정을 연결하여 판매 데이터 및 앱 분석과 같은 고급 기능을 활성화하세요.",
+  "storeConnections_appStoreConnect": "App Store Connect",
+  "storeConnections_appStoreConnectDesc": "Apple 개발자 계정 연결",
+  "storeConnections_googlePlayConsole": "Google Play Console",
+  "storeConnections_googlePlayConsoleDesc": "Google Play 계정 연결",
+  "storeConnections_connect": "연결",
+  "storeConnections_disconnect": "연결 해제",
+  "storeConnections_connected": "연결됨",
+  "storeConnections_disconnectConfirm": "연결을 해제하시겠습니까?",
+  "storeConnections_disconnectMessage": "이 {platform} 계정의 연결을 해제하시겠습니까?",
+  "@storeConnections_disconnectMessage": {
+    "placeholders": {
+      "platform": { "type": "String" }
+    }
+  },
+  "storeConnections_disconnectSuccess": "연결이 해제되었습니다",
+  "storeConnections_lastSynced": "마지막 동기화: {date}",
+  "@storeConnections_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_connectedOn": "{date}에 연결됨",
+  "@storeConnections_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_syncApps": "앱 동기화",
+  "storeConnections_syncing": "동기화 중...",
+  "storeConnections_syncDescription": "동기화하면 이 계정의 앱이 소유로 표시되어 리뷰에 답변할 수 있습니다.",
+  "storeConnections_syncedApps": "{count}개 앱을 소유로 동기화함",
+  "storeConnections_syncFailed": "동기화 실패: {error}",
+  "storeConnections_errorLoading": "연결 로드 오류: {error}",
+
+  "reviewsInbox_title": "리뷰 받은편지함",
+  "reviewsInbox_filterUnanswered": "미답변",
+  "reviewsInbox_filterNegative": "부정",
+  "reviewsInbox_noReviews": "리뷰를 찾을 수 없습니다",
+  "reviewsInbox_noReviewsDesc": "필터를 조정해 보세요",
+  "reviewsInbox_reply": "답변",
+  "reviewsInbox_responded": "답변됨",
+  "reviewsInbox_respondedAt": "{date}에 답변됨",
+  "@reviewsInbox_respondedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "reviewsInbox_replyModalTitle": "리뷰에 답변",
+  "reviewsInbox_generateAi": "AI 제안 생성",
+  "reviewsInbox_generating": "생성 중...",
+  "reviewsInbox_sendReply": "답변 보내기",
+  "reviewsInbox_sending": "전송 중...",
+  "reviewsInbox_replyPlaceholder": "답변을 작성하세요...",
+  "reviewsInbox_charLimit": "{count}/5970자",
+  "@reviewsInbox_charLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_replySent": "답변이 전송되었습니다",
+  "reviewsInbox_replyError": "답변 전송 실패: {error}",
+  "@reviewsInbox_replyError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_aiError": "제안 생성 실패: {error}",
+  "@reviewsInbox_aiError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_stars": "{count}점",
+  "@reviewsInbox_stars": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_totalReviews": "총 리뷰",
+  "reviewsInbox_unanswered": "미답변",
+  "reviewsInbox_positive": "긍정",
+  "reviewsInbox_avgRating": "평균 평점",
+  "reviewsInbox_sentimentOverview": "감성 분석 개요",
+  "reviewsInbox_aiSuggestions": "AI 제안",
+  "reviewsInbox_regenerate": "다시 생성",
+  "reviewsInbox_toneProfessional": "전문적",
+  "reviewsInbox_toneEmpathetic": "공감적",
+  "reviewsInbox_toneBrief": "간결함",
+  "reviewsInbox_selectTone": "톤 선택:",
+  "reviewsInbox_detectedIssues": "감지된 문제:",
+  "reviewsInbox_aiPrompt": "'AI 제안 생성'을 클릭하여 3가지 다른 톤의 답변 제안을 받으세요",
+
+  "reviewIntelligence_title": "리뷰 인텔리전스",
+  "reviewIntelligence_featureRequests": "기능 요청",
+  "reviewIntelligence_bugReports": "버그 리포트",
+  "reviewIntelligence_sentimentByVersion": "버전별 감성",
+  "reviewIntelligence_openFeatures": "미결 기능",
+  "reviewIntelligence_openBugs": "미결 버그",
+  "reviewIntelligence_highPriority": "높은 우선순위",
+  "reviewIntelligence_total": "총계",
+  "reviewIntelligence_mentions": "언급",
+  "reviewIntelligence_noData": "아직 인사이트가 없습니다",
+  "reviewIntelligence_noDataHint": "리뷰 분석 후 인사이트가 표시됩니다",
 
   "analytics_title": "분석",
   "analytics_downloads": "다운로드",
@@ -475,11 +803,715 @@
   "analytics_noData": "데이터 없음",
   "analytics_noDataTitle": "분석 데이터 없음",
   "analytics_noDataDescription": "실제 판매 및 다운로드 데이터를 보려면 App Store Connect 또는 Google Play 계정을 연결하세요.",
-  "analytics_dataDelay": "{date} 기준 데이터. Apple 데이터는 24-48시간 지연됩니다.",
+  "analytics_dataDelay": "{date} 기준 데이터입니다. Apple 데이터는 24-48시간 지연됩니다.",
   "@analytics_dataDelay": {
     "placeholders": {
       "date": { "type": "String" }
     }
   },
-  "analytics_export": "CSV 내보내기"
+  "analytics_export": "CSV 내보내기",
+
+  "funnel_title": "전환 퍼널",
+  "funnel_impressions": "노출",
+  "funnel_pageViews": "페이지 조회",
+  "funnel_downloads": "다운로드",
+  "funnel_overallCvr": "전체 CVR",
+  "funnel_categoryAvg": "카테고리 평균",
+  "funnel_vsCategory": "vs 카테고리",
+  "funnel_bySource": "소스별",
+  "funnel_noData": "퍼널 데이터가 없습니다",
+  "funnel_noDataHint": "퍼널 데이터는 App Store Connect 또는 Google Play Console에서 자동으로 동기화됩니다.",
+  "funnel_insight": "인사이트",
+  "funnel_insightText": "{bestSource} 트래픽이 {worstSource}보다 {ratio}배 더 잘 전환됩니다. {recommendation}",
+  "@funnel_insightText": {
+    "placeholders": {
+      "bestSource": { "type": "String" },
+      "ratio": { "type": "String" },
+      "worstSource": { "type": "String" },
+      "recommendation": { "type": "String" }
+    }
+  },
+  "funnel_insightRecommendSearch": "검색 노출을 늘리기 위해 키워드 최적화에 집중하세요.",
+  "funnel_insightRecommendBrowse": "카테고리와 추천 배치를 최적화하여 탐색 가시성을 높이세요.",
+  "funnel_insightRecommendReferral": "추천 프로그램과 파트너십을 활용하여 더 많은 트래픽을 유도하세요.",
+  "funnel_insightRecommendAppReferrer": "보완적인 앱들과의 교차 프로모션 전략을 고려하세요.",
+  "funnel_insightRecommendWebReferrer": "웹사이트와 랜딩 페이지를 다운로드에 최적화하세요.",
+  "funnel_insightRecommendDefault": "이 소스의 성공 요인을 분석하고 재현하세요.",
+  "funnel_trendTitle": "전환율 추세",
+  "funnel_connectStore": "스토어 연결",
+
+  "chat_title": "AI 어시스턴트",
+  "chat_newConversation": "새 대화",
+  "chat_loadingConversations": "대화 로딩 중...",
+  "chat_loadingMessages": "메시지 로딩 중...",
+  "chat_noConversations": "대화 없음",
+  "chat_noConversationsDesc": "새 대화를 시작하여 앱에 대한 AI 인사이트를 얻으세요",
+  "chat_startConversation": "대화 시작",
+  "chat_deleteConversation": "대화 삭제",
+  "chat_deleteConversationConfirm": "이 대화를 삭제하시겠습니까?",
+  "chat_askAnything": "무엇이든 물어보세요",
+  "chat_askAnythingDesc": "앱의 리뷰, 순위 및 분석을 이해하는 데 도움을 드릴 수 있습니다",
+  "chat_typeMessage": "질문을 입력하세요...",
+  "chat_suggestedQuestions": "추천 질문",
+
+  "chatActionConfirm": "확인",
+  "chatActionCancel": "취소",
+  "chatActionExecuting": "실행 중...",
+  "chatActionExecuted": "완료",
+  "chatActionFailed": "실패",
+  "chatActionCancelled": "취소됨",
+  "chatActionDownload": "다운로드",
+  "chatActionReversible": "이 작업은 취소할 수 있습니다",
+
+  "chatActionAddKeywords": "키워드 추가",
+  "chatActionRemoveKeywords": "키워드 삭제",
+  "chatActionCreateAlert": "알림 생성",
+  "chatActionAddCompetitor": "경쟁사 추가",
+  "chatActionExportData": "데이터 내보내기",
+
+  "chatActionKeywords": "키워드",
+  "chatActionCountry": "국가",
+  "chatActionAlertCondition": "조건",
+  "chatActionNotifyVia": "알림 방법",
+  "chatActionCompetitor": "경쟁사",
+  "chatActionExportType": "내보내기 유형",
+  "chatActionDateRange": "기간",
+  "chatActionKeywordsLabel": "키워드",
+  "chatActionAnalyticsLabel": "통계",
+  "chatActionReviewsLabel": "리뷰",
+
+  "dateRange_title": "기간",
+  "dateRange_today": "오늘",
+  "dateRange_yesterday": "어제",
+  "dateRange_last7Days": "최근 7일",
+  "dateRange_last30Days": "최근 30일",
+  "dateRange_thisMonth": "이번 달",
+  "dateRange_lastMonth": "지난 달",
+  "dateRange_last90Days": "최근 90일",
+  "dateRange_yearToDate": "올해",
+  "dateRange_allTime": "전체",
+  "dateRange_custom": "사용자 지정...",
+  "dateRange_compareToPrevious": "이전 기간과 비교",
+
+  "export_keywordsTitle": "키워드 내보내기",
+  "export_reviewsTitle": "리뷰 내보내기",
+  "export_analyticsTitle": "분석 내보내기",
+  "export_columnsToInclude": "포함할 열:",
+  "export_button": "내보내기",
+  "export_keyword": "키워드",
+  "export_position": "순위",
+  "export_change": "변화",
+  "export_popularity": "인기도",
+  "export_difficulty": "난이도",
+  "export_tags": "태그",
+  "export_notes": "메모",
+  "export_trackedSince": "추적 시작일",
+  "export_date": "날짜",
+  "export_rating": "평점",
+  "export_author": "작성자",
+  "export_title": "제목",
+  "export_content": "내용",
+  "export_country": "국가",
+  "export_version": "버전",
+  "export_sentiment": "감성",
+  "export_response": "답변",
+  "export_responseDate": "답변 날짜",
+  "export_keywordsCount": "{count}개 키워드가 내보내집니다",
+  "@export_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_reviewsCount": "{count}개 리뷰가 내보내집니다",
+  "@export_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_success": "내보내기 저장됨: {filename}",
+  "@export_success": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "export_error": "내보내기 실패: {error}",
+  "@export_error": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "metadata_editor": "메타데이터 편집기",
+  "metadata_selectLocale": "편집할 로케일 선택",
+  "metadata_refreshed": "스토어에서 메타데이터가 새로고침되었습니다",
+  "metadata_connectRequired": "편집하려면 연결이 필요합니다",
+  "metadata_connectDescription": "App Store Connect 계정을 연결하여 Keyrank에서 직접 앱 메타데이터를 편집하세요.",
+  "metadata_connectStore": "App Store 연결",
+  "metadata_publishTitle": "메타데이터 게시",
+  "metadata_publishConfirm": "{locale}에 대한 변경 사항을 게시하시겠습니까? App Store의 앱 목록이 업데이트됩니다.",
+  "@metadata_publishConfirm": {
+    "placeholders": {
+      "locale": { "type": "String" }
+    }
+  },
+  "metadata_publish": "게시",
+  "metadata_publishSuccess": "메타데이터가 성공적으로 게시되었습니다",
+  "metadata_saveDraft": "임시 저장",
+  "metadata_draftSaved": "임시 저장됨",
+  "metadata_discardChanges": "변경 사항 취소",
+  "metadata_title": "제목",
+  "metadata_titleHint": "앱 이름 (최대 {limit}자)",
+  "@metadata_titleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_subtitle": "부제목",
+  "metadata_subtitleHint": "짧은 설명 (최대 {limit}자)",
+  "@metadata_subtitleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_keywords": "키워드",
+  "metadata_keywordsHint": "쉼표로 구분된 키워드 (최대 {limit}자)",
+  "@metadata_keywordsHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_description": "설명",
+  "metadata_descriptionHint": "앱 전체 설명 (최대 {limit}자)",
+  "@metadata_descriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_promotionalText": "프로모션 텍스트",
+  "metadata_promotionalTextHint": "짧은 프로모션 메시지 (최대 {limit}자)",
+  "@metadata_promotionalTextHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_whatsNew": "새로운 기능",
+  "metadata_whatsNewHint": "릴리스 노트 (최대 {limit}자)",
+  "@metadata_whatsNewHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_charCount": "{count}/{limit}",
+  "@metadata_charCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_hasChanges": "저장되지 않은 변경 사항",
+  "metadata_noChanges": "변경 사항 없음",
+  "metadata_keywordAnalysis": "키워드 분석",
+  "metadata_keywordPresent": "있음",
+  "metadata_keywordMissing": "없음",
+  "metadata_inTitle": "제목에",
+  "metadata_inSubtitle": "부제목에",
+  "metadata_inKeywords": "키워드에",
+  "metadata_inDescription": "설명에",
+  "metadata_history": "변경 기록",
+  "metadata_noHistory": "기록된 변경 사항 없음",
+  "metadata_localeComplete": "완료",
+  "metadata_localeIncomplete": "미완료",
+  "metadata_shortDescription": "짧은 설명",
+  "metadata_shortDescriptionHint": "검색에 표시되는 설명 (최대 {limit}자)",
+  "@metadata_shortDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_fullDescription": "전체 설명",
+  "metadata_fullDescriptionHint": "앱 전체 설명 (최대 {limit}자)",
+  "@metadata_fullDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_releaseNotes": "릴리스 노트",
+  "metadata_releaseNotesHint": "이 버전의 새로운 기능 (최대 {limit}자)",
+  "@metadata_releaseNotesHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_selectAppFirst": "앱을 선택하세요",
+  "metadata_selectAppHint": "사이드바의 앱 선택기를 사용하거나 스토어를 연결하여 시작하세요.",
+  "metadata_noStoreConnection": "스토어 연결 필요",
+  "metadata_noStoreConnectionDesc": "{storeName} 계정을 연결하여 앱 메타데이터를 가져오고 편집하세요.",
+  "@metadata_noStoreConnectionDesc": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_connectStoreButton": "{storeName} 연결",
+  "@metadata_connectStoreButton": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_aiOptimize": "AI로 최적화",
+
+  "metadataLocalization": "로컬라이제이션",
+  "metadataLive": "게시됨",
+  "metadataDraft": "임시 저장",
+  "metadataEmpty": "비어 있음",
+  "metadataCoverageInsight": "{count}개 로케일에 콘텐츠가 필요합니다. 주요 시장에 대한 로컬라이제이션을 고려하세요.",
+  "@metadataCoverageInsight": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataFilterAll": "전체",
+  "metadataFilterLive": "게시됨",
+  "metadataFilterDraft": "임시 저장",
+  "metadataFilterEmpty": "비어 있음",
+  "metadataBulkActions": "일괄 작업",
+  "metadataCopyTo": "선택 항목에 복사",
+  "metadataTranslateTo": "선택 항목에 번역",
+  "metadataPublishSelected": "선택 항목 게시",
+  "metadataDeleteDrafts": "임시 저장 삭제",
+  "metadataSelectSource": "소스 로케일 선택",
+  "metadataSelectTarget": "대상 로케일 선택",
+  "metadataCopySuccess": "{count}개 로케일에 콘텐츠 복사됨",
+  "@metadataCopySuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslateSuccess": "{count}개 로케일로 번역됨",
+  "@metadataTranslateSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslating": "번역 중...",
+  "metadataNoSelection": "먼저 로케일을 선택하세요",
+  "metadataSelectAll": "전체 선택",
+  "metadataDeselectAll": "전체 선택 해제",
+  "metadataSelected": "{count}개 선택됨",
+  "@metadataSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTableView": "표 보기",
+  "metadataListView": "목록 보기",
+  "metadataStatus": "상태",
+  "metadataCompletion": "완성도",
+
+  "wizard_title": "AI 최적화 마법사",
+  "wizard_step": "단계",
+  "wizard_of": "/",
+  "wizard_stepTitle": "제목",
+  "wizard_stepSubtitle": "부제목",
+  "wizard_stepKeywords": "키워드",
+  "wizard_stepDescription": "설명",
+  "wizard_stepReview": "검토 및 저장",
+  "wizard_skip": "건너뛰기",
+  "wizard_saveDrafts": "임시 저장",
+  "wizard_draftsSaved": "임시 저장이 완료되었습니다",
+  "wizard_exitTitle": "마법사를 종료하시겠습니까?",
+  "wizard_exitMessage": "저장되지 않은 변경 사항이 있습니다. 종료하시겠습니까?",
+  "wizard_exitConfirm": "종료",
+  "wizard_aiSuggestions": "AI 제안",
+  "wizard_chooseSuggestion": "AI가 생성한 제안을 선택하거나 직접 작성하세요",
+  "wizard_currentValue": "현재 값",
+  "wizard_noCurrentValue": "설정된 값 없음",
+  "wizard_contextInfo": "{keywordsCount}개 추적 중인 키워드와 {competitorsCount}개 경쟁사 기반",
+  "@wizard_contextInfo": {
+    "placeholders": {
+      "keywordsCount": { "type": "int" },
+      "competitorsCount": { "type": "int" }
+    }
+  },
+  "wizard_writeOwn": "직접 작성",
+  "wizard_customPlaceholder": "사용자 정의 값을 입력하세요...",
+  "wizard_useCustom": "사용자 정의 사용",
+  "wizard_keepCurrent": "현재 값 유지",
+  "wizard_recommended": "추천",
+  "wizard_characters": "자",
+  "wizard_reviewTitle": "변경 사항 검토",
+  "wizard_reviewDescription": "임시 저장하기 전에 최적화 내용을 검토하세요",
+  "wizard_noChanges": "선택된 변경 사항 없음",
+  "wizard_noChangesHint": "돌아가서 최적화할 필드의 제안을 선택하세요",
+  "wizard_changesCount": "{count}개 필드 업데이트됨",
+  "@wizard_changesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wizard_changesSummary": "이 변경 사항은 임시 저장으로 저장됩니다",
+  "wizard_before": "이전",
+  "wizard_after": "이후",
+  "wizard_nextStepsTitle": "다음 단계",
+  "wizard_nextStepsWithChanges": "변경 사항이 임시 저장으로 저장됩니다. 메타데이터 편집기에서 검토하고 게시할 수 있습니다.",
+  "wizard_nextStepsNoChanges": "저장할 변경 사항이 없습니다. 돌아가서 메타데이터를 최적화할 제안을 선택하세요.",
+
+  "team_title": "팀 관리",
+  "team_createTeam": "팀 만들기",
+  "team_teamName": "팀 이름",
+  "team_teamNameHint": "팀 이름 입력",
+  "team_description": "설명 (선택)",
+  "team_descriptionHint": "이 팀은 무엇을 위한 것인가요?",
+  "team_teamNameRequired": "팀 이름은 필수입니다",
+  "team_teamNameMinLength": "팀 이름은 2자 이상이어야 합니다",
+  "team_inviteMember": "팀원 초대",
+  "team_emailAddress": "이메일 주소",
+  "team_emailHint": "colleague@example.com",
+  "team_emailRequired": "이메일은 필수입니다",
+  "team_emailInvalid": "유효한 이메일 주소를 입력하세요",
+  "team_invitationSent": "{email}로 초대장을 보냈습니다",
+  "@team_invitationSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "team_members": "멤버",
+  "team_invite": "초대",
+  "team_pendingInvitations": "대기 중인 초대",
+  "team_noPendingInvitations": "대기 중인 초대가 없습니다",
+  "team_teamSettings": "팀 설정",
+  "team_changeRole": "{name}의 역할 변경",
+  "@team_changeRole": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_removeMember": "멤버 제거",
+  "team_removeMemberConfirm": "이 팀에서 {name}를 제거하시겠습니까?",
+  "@team_removeMemberConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_remove": "제거",
+  "team_leaveTeam": "팀 나가기",
+  "team_leaveTeamConfirm": "\"{teamName}\"에서 나가시겠습니까?",
+  "@team_leaveTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_leave": "나가기",
+  "team_deleteTeam": "팀 삭제",
+  "team_deleteTeamConfirm": "\"{teamName}\"을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+  "@team_deleteTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_yourTeams": "내 팀",
+  "team_failedToLoadTeam": "팀을 불러오지 못했습니다",
+  "team_failedToLoadMembers": "멤버를 불러오지 못했습니다",
+  "team_failedToLoadInvitations": "초대를 불러오지 못했습니다",
+  "team_memberCount": "{count}명의 멤버",
+  "@team_memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "team_invitedAs": "{role}로 초대됨",
+  "@team_invitedAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
+  "team_joinedTeam": "{teamName}에 가입했습니다",
+  "@team_joinedTeam": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_invitationDeclined": "초대가 거절되었습니다",
+  "team_noTeamsYet": "팀이 없습니다",
+  "team_noTeamsDescription": "팀을 만들어 다른 사람들과 협업하세요",
+  "team_createFirstTeam": "첫 번째 팀 만들기",
+
+  "integrations_title": "연동",
+  "integrations_syncFailed": "동기화 실패: {error}",
+  "@integrations_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_disconnectConfirm": "연결을 해제하시겠습니까?",
+  "integrations_disconnectedSuccess": "연결이 해제되었습니다",
+  "integrations_connectGooglePlay": "Google Play Console 연결",
+  "integrations_connectAppStore": "App Store Connect 연결",
+  "integrations_connectedApps": "연결 완료! {count}개 앱을 가져왔습니다.",
+  "@integrations_connectedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_syncedApps": "{count}개 앱을 소유자로 동기화했습니다",
+  "@integrations_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnected": "App Store Connect가 연결되었습니다!",
+  "integrations_googlePlayConnected": "Google Play Console이 연결되었습니다!",
+
+  "alertBuilder_nameYourRule": "규칙 이름 지정",
+  "alertBuilder_nameDescription": "알림 규칙에 설명이 포함된 이름을 지정하세요",
+  "alertBuilder_nameHint": "예: 일일 순위 알림",
+  "alertBuilder_summary": "요약",
+  "alertBuilder_saveAlertRule": "알림 규칙 저장",
+  "alertBuilder_selectAlertType": "알림 유형 선택",
+  "alertBuilder_selectAlertTypeDescription": "만들고 싶은 알림 종류를 선택하세요",
+  "alertBuilder_deleteRuleConfirm": "\"{ruleName}\"이 삭제됩니다.",
+  "@alertBuilder_deleteRuleConfirm": {
+    "placeholders": {
+      "ruleName": { "type": "String" }
+    }
+  },
+  "alertBuilder_activateTemplateOrCreate": "아직 규칙이 없습니다. 템플릿을 활성화하거나 직접 만들어보세요!",
+
+  "billing_cancelSubscription": "구독 취소",
+  "billing_keepSubscription": "구독 유지",
+  "billing_billingPortal": "결제 포털",
+  "billing_resume": "재개",
+
+  "keywords_noCompetitorsFound": "경쟁사가 없습니다. 먼저 경쟁사를 추가하세요.",
+  "keywords_noCompetitorsForApp": "이 앱의 경쟁사가 없습니다. 먼저 경쟁사를 추가하세요.",
+  "keywords_failedToAddKeywords": "키워드 추가 실패: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_bulkAddHint": "예산 추적기\n지출 관리자\n머니 앱",
+
+  "appOverview_urlCopied": "스토어 URL이 클립보드에 복사되었습니다",
+
+  "country_us": "미국",
+  "country_gb": "영국",
+  "country_fr": "프랑스",
+  "country_de": "독일",
+  "country_ca": "캐나다",
+  "country_au": "호주",
+  "country_jp": "일본",
+  "country_cn": "중국",
+  "country_kr": "대한민국",
+  "country_br": "브라질",
+  "country_es": "스페인",
+  "country_it": "이탈리아",
+
+  "countryCode_us": "🇺🇸 US",
+  "countryCode_gb": "🇬🇧 UK",
+  "countryCode_fr": "🇫🇷 FR",
+  "countryCode_de": "🇩🇪 DE",
+  "countryCode_ca": "🇨🇦 CA",
+  "countryCode_au": "🇦🇺 AU",
+
+  "alertBuilder_type": "유형",
+  "alertBuilder_scope": "범위",
+  "alertBuilder_name": "이름",
+  "alertBuilder_scopeGlobal": "모든 앱",
+  "alertBuilder_scopeApp": "특정 앱",
+  "alertBuilder_scopeCategory": "카테고리",
+  "alertBuilder_scopeKeyword": "키워드",
+
+  "alertType_positionChange": "순위 변동",
+  "alertType_positionChangeDesc": "앱 순위가 크게 변동될 때 알림",
+  "alertType_ratingChange": "평점 변동",
+  "alertType_ratingChangeDesc": "앱 평점이 변동될 때 알림",
+  "alertType_reviewSpike": "리뷰 급증",
+  "alertType_reviewSpikeDesc": "비정상적인 리뷰 활동 시 알림",
+  "alertType_reviewKeyword": "리뷰 키워드",
+  "alertType_reviewKeywordDesc": "리뷰에 키워드가 나타날 때 알림",
+  "alertType_newCompetitor": "새 경쟁자",
+  "alertType_newCompetitorDesc": "새로운 앱이 진입할 때 알림",
+  "alertType_competitorPassed": "경쟁자 추월",
+  "alertType_competitorPassedDesc": "경쟁자를 추월할 때 알림",
+  "alertType_massMovement": "대규모 변동",
+  "alertType_massMovementDesc": "순위의 대규모 변동 시 알림",
+  "alertType_keywordTrend": "키워드 트렌드",
+  "alertType_keywordTrendDesc": "키워드 인기도가 변동될 때 알림",
+  "alertType_opportunity": "기회",
+  "alertType_opportunityDesc": "새로운 순위 기회 시 알림",
+
+  "billing_title": "결제 및 플랜",
+  "billing_subscriptionActivated": "구독이 성공적으로 활성화되었습니다!",
+  "billing_changePlan": "플랜 변경",
+  "billing_choosePlan": "플랜 선택",
+  "billing_cancelMessage": "구독은 현재 결제 기간이 끝날 때까지 활성 상태로 유지됩니다. 그 후 프리미엄 기능에 대한 액세스 권한을 잃게 됩니다.",
+  "billing_currentPlan": "현재 플랜",
+  "billing_trial": "체험판",
+  "billing_canceling": "취소 중",
+  "billing_accessUntil": "{date}까지 액세스 가능",
+  "@billing_accessUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_renewsOn": "{date}에 갱신",
+  "@billing_renewsOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_manageSubscription": "구독 관리",
+  "billing_monthly": "월간",
+  "billing_yearly": "연간",
+  "billing_savePercent": "{percent}% 절약",
+  "@billing_savePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "billing_current": "현재",
+  "billing_apps": "앱",
+  "billing_unlimited": "무제한",
+  "billing_keywordsPerApp": "앱당 키워드",
+  "billing_history": "기록",
+  "billing_days": "{count}일",
+  "@billing_days": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "billing_exports": "내보내기",
+  "billing_aiInsights": "AI 분석",
+  "billing_apiAccess": "API 액세스",
+  "billing_yes": "예",
+  "billing_no": "아니오",
+  "billing_currentPlanButton": "현재 플랜",
+  "billing_upgradeTo": "{planName}으로 업그레이드",
+  "@billing_upgradeTo": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "billing_cancel": "취소",
+
+  "keywords_compareWithCompetitor": "경쟁자와 비교",
+  "keywords_selectCompetitorToCompare": "키워드를 비교할 경쟁자 선택:",
+  "keywords_noCompetitorsFound": "경쟁자를 찾을 수 없습니다. 먼저 경쟁자를 추가하세요.",
+  "keywords_noCompetitorsForApp": "이 앱에 경쟁자가 없습니다. 먼저 경쟁자를 추가하세요.",
+  "keywords_failedToAddKeywords": "키워드 추가 실패: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_addToCompetitor": "경쟁자에 추가",
+  "keywords_addKeywordsTo": "{count}개의 키워드 추가:",
+  "@keywords_addKeywordsTo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywords_avgPosition": "평균 순위",
+  "keywords_declined": "하락",
+  "keywords_total": "전체",
+  "keywords_ranked": "순위",
+  "keywords_improved": "상승",
+
+  "settings_alertDelivery": "알림 전달",
+  "settings_team": "팀",
+  "settings_teamManagement": "팀 관리",
+  "settings_manageTeam": "멤버, 역할 및 권한 관리",
+  "settings_storeConnections": "스토어 연결",
+  "settings_connectStores": "App Store Connect 및 Google Play 연결",
+  "settings_integrations": "연동",
+  "settings_connectServices": "타사 서비스 연결",
+  "settings_helpSupport": "도움말 및 지원",
+  "settings_documentation": "문서",
+  "settings_viewDocs": "가이드 및 튜토리얼 보기",
+
+  "onboarding_skip": "건너뛰기",
+  "onboarding_next": "다음",
+  "onboarding_getStarted": "시작하기",
+  "onboarding_welcomeToKeyrank": "Keyrank에 오신 것을 환영합니다",
+  "onboarding_welcomeDesc": "앱 스토어 가시성을 최적화하기 위한 완벽한 플랫폼",
+  "onboarding_trackKeywordsTitle": "키워드 추적",
+  "onboarding_trackKeywordsDesc": "여러 앱 스토어에서 중요한 검색어에 대한 앱 순위를 모니터링",
+  "onboarding_analyzeCompetitorsTitle": "경쟁사 분석",
+  "onboarding_analyzeCompetitorsDesc": "경쟁사를 주시하고 개선의 새로운 기회를 발견",
+  "onboarding_getInsightsTitle": "인사이트 얻기",
+  "onboarding_getInsightsDesc": "앱 스토어 존재감을 향상시키기 위한 실행 가능한 추천을 받으세요",
+
+  "team_you": "나",
+
+  "competitors_all": "전체",
+  "competitors_tracked": "추적 중",
+  "competitors_filterByStore": "스토어별 필터",
+  "competitors_allStores": "모든 스토어",
+  "competitors_removeCompetitor": "경쟁사 제거",
+  "competitors_removeConfirm": "\"{name}\"을(를) 경쟁사에서 제거하시겠습니까?",
+  "@competitors_removeConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_noCompetitorsTitle": "경쟁사 없음",
+  "competitors_noCompetitorsMessage": "아직 추적 중인 경쟁사가 없습니다. 순위를 모니터링하려면 추가하세요.",
+  "competitors_errorLoading": "경쟁사 로딩 오류",
+  "competitors_addedSuccess": "{name}이(가) 경쟁사로 추가되었습니다",
+  "@competitors_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_addFailed": "경쟁사 추가 실패: {error}",
+  "@competitors_addFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_noAppsMessage": "경쟁사를 추적하려면 먼저 앱을 선택하세요.",
+
+  "appPreview_rankings": "순위",
+  "appPreview_reviews": "리뷰",
+  "appPreview_price": "가격",
+  "appPreview_free": "무료",
+  "appPreview_developer": "개발자",
+  "appPreview_released": "출시일",
+  "appPreview_lastUpdate": "마지막 업데이트",
+  "appPreview_notAvailable": "N/A",
+  "appPreview_expandDescription": "설명 펼치기",
+  "appPreview_collapseDescription": "설명 접기",
+
+  "alerts_scopeGlobal": "전역",
+  "alerts_scopeApp": "앱",
+  "alerts_scopeCategory": "카테고리",
+  "alerts_scopeKeyword": "키워드",
+  "alerts_edit": "편집",
+
+  "ratings_pageInfo": "{total}페이지 중 {current}페이지",
+  "@ratings_pageInfo": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "ratings_noMoreReviews": "더 이상 리뷰가 없습니다",
+
+  "insights_viewMore": "{count}개의 인사이트 더 보기",
+  "@insights_viewMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_noInsightsYet": "아직 인사이트가 없습니다",
+  "insights_noInsightsDesc": "앱의 최적화 기회를 발견하면 인사이트가 표시됩니다.",
+  "insights_loadFailed": "인사이트 로딩 실패",
+
+  "chat_enterMessage": "메시지 입력...",
+  "chat_aiDisclaimer": "AI 응답에는 오류가 있을 수 있습니다. 중요한 정보는 항상 확인하세요.",
+  "chat_conversationError": "대화 로딩 오류",
+
+  "notifications_title": "알림",
+  "notifications_markAllRead": "모두 읽음 표시",
+  "notifications_clearAll": "모두 지우기"
 }

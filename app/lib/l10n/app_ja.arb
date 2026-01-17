@@ -28,6 +28,11 @@
 
   "common_retry": "再試行",
   "common_error": "エラー: {message}",
+  "@common_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "common_loading": "読み込み中...",
   "common_add": "追加",
   "common_filter": "フィルター",
@@ -36,6 +41,12 @@
   "common_settings": "設定",
   "common_search": "検索...",
   "common_noResults": "結果がありません",
+  "common_save": "保存",
+  "common_cancel": "キャンセル",
+  "common_delete": "削除",
+  "common_back": "戻る",
+  "common_next": "次へ",
+  "common_edit": "編集",
 
   "dashboard_title": "ダッシュボード",
   "dashboard_addApp": "アプリを追加",
@@ -52,9 +63,31 @@
   "dashboard_addAppToStart": "アプリを追加してキーワードの追跡を開始",
   "dashboard_noAppsMatchFilter": "フィルターに一致するアプリがありません",
   "dashboard_changeFilterCriteria": "フィルター条件を変更してください",
+  "dashboard_reviews": "レビュー",
+  "dashboard_avgRating": "平均評価",
+  "dashboard_topPerformingApps": "高パフォーマンスのアプリ",
+  "dashboard_topCountries": "上位の国",
+  "dashboard_sentimentOverview": "センチメント概要",
+  "dashboard_overallSentiment": "総合センチメント",
+  "dashboard_positive": "ポジティブ",
+  "dashboard_positiveReviews": "ポジティブ",
+  "dashboard_negativeReviews": "ネガティブ",
+  "dashboard_viewReviews": "レビューを見る",
+  "dashboard_tableApp": "アプリ",
+  "dashboard_tableKeywords": "キーワード",
+  "dashboard_tableAvgRank": "平均順位",
+  "dashboard_tableTrend": "トレンド",
+  "dashboard_connectYourStores": "ストアを接続",
+  "dashboard_connectStoresDescription": "App Store ConnectまたはGoogle Playを連携して、アプリのインポートとレビューへの返信を有効にします。",
+  "dashboard_connect": "接続",
 
   "apps_title": "マイアプリ",
   "apps_appCount": "{count}個のアプリ",
+  "@apps_appCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "apps_tableApp": "アプリ",
   "apps_tableDeveloper": "開発者",
   "apps_tableKeywords": "キーワード",
@@ -71,6 +104,11 @@
   "addApp_enterAtLeast2Chars": "2文字以上入力してください",
   "addApp_noResults": "結果が見つかりません",
   "addApp_addedSuccess": "{name}を追加しました",
+  "@addApp_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
 
   "settings_title": "設定",
   "settings_language": "言語",
@@ -83,6 +121,11 @@
   "settings_memberSince": "登録日",
   "settings_logout": "ログアウト",
   "settings_languageSystem": "システム",
+  "settings_notifications": "通知",
+  "settings_manageAlerts": "アラートルールを管理",
+  "settings_manageAlertsDesc": "受け取るアラートを設定",
+  "settings_storeConnections": "ストア接続",
+  "settings_storeConnectionsDesc": "App StoreとGoogle Playアカウントを接続",
 
   "filter_all": "すべて",
   "filter_allApps": "すべてのアプリ",
@@ -149,6 +192,36 @@
   "insights_emergentThemes": "浮上するテーマ",
   "insights_exampleQuotes": "引用例:",
   "insights_selectCountryFirst": "少なくとも1つの国を選択してください",
+  "insights_title": "インサイト",
+  "insights_titleWithApp": "インサイト - {appName}",
+  "@insights_titleWithApp": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "insights_allApps": "インサイト（すべてのアプリ）",
+  "insights_noInsightsYet": "インサイトがまだ生成されていません",
+  "insights_selectAppToGenerate": "アプリを選択してレビューからインサイトを生成",
+  "insights_appsWithInsights": "{count}個のアプリにインサイトあり",
+  "@insights_appsWithInsights": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_errorLoading": "インサイトの読み込みエラー",
+  "insights_reviewsAnalyzed": "{count}件のレビューを分析済み",
+  "@insights_reviewsAnalyzed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_avgScore": "平均スコア",
+  "insights_updatedOn": "{date}に更新",
+  "@insights_updatedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "compare_selectAppsToCompare": "{appName}と比較する最大3つのアプリを選択",
   "@compare_selectAppsToCompare": {
@@ -254,6 +327,66 @@
   "appDetail_nameZA": "名前 Z-A",
   "appDetail_bestPosition": "最高順位",
   "appDetail_recentlyTracked": "最近追跡",
+  "appDetail_noKeywordsTracked": "追跡中のキーワードがありません",
+  "appDetail_addKeywordHint": "上のフィールドにキーワードを追加して追跡を開始",
+  "appDetail_noKeywordsMatchFilter": "フィルターに一致するキーワードがありません",
+  "appDetail_tryChangingFilter": "フィルター条件を変更してください",
+  "appDetail_addTag": "タグを追加",
+  "appDetail_addNote": "メモを追加",
+  "appDetail_positionHistory": "順位履歴",
+  "appDetail_store": "STORE",
+  "appDetail_manageTags": "タグを管理",
+  "appDetail_newTagHint": "新しいタグ名...",
+  "appDetail_availableTags": "利用可能なタグ",
+  "appDetail_noTagsYet": "タグがまだありません。上で作成してください。",
+  "appDetail_addTagsTitle": "タグを追加",
+  "appDetail_selectTagsDescription": "選択したキーワードに追加するタグを選択:",
+  "appDetail_addTagsCount": "{count}個のタグを追加",
+  "@appDetail_addTagsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_currentTags": "現在のタグ",
+  "appDetail_noTagsOnKeyword": "このキーワードにタグはありません",
+  "appDetail_addExistingTag": "既存のタグを追加",
+  "appDetail_allTagsUsed": "すべてのタグが使用中です",
+  "appDetail_createNewTag": "新しいタグを作成",
+  "appDetail_tagNameHint": "タグ名...",
+  "appDetail_note": "メモ",
+  "appDetail_noteHint": "このキーワードについてのメモを追加...",
+  "appDetail_saveNote": "メモを保存",
+  "appDetail_done": "完了",
+  "appDetail_importFailed": "インポート失敗: {error}",
+  "@appDetail_importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importKeywordsTitle": "キーワードをインポート",
+  "appDetail_pasteKeywordsHint": "以下にキーワードを貼り付け（1行に1つ）:",
+  "appDetail_keywordPlaceholder": "キーワード1\nキーワード2\nキーワード3",
+  "appDetail_storefront": "ストアフロント:",
+  "appDetail_keywordsCount": "{count}個のキーワード",
+  "@appDetail_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importKeywordsCount": "{count}個のキーワードをインポート",
+  "@appDetail_importKeywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_period7d": "7日",
+  "appDetail_period30d": "30日",
+  "appDetail_period90d": "90日",
+  "appDetail_tabOverview": "概要",
+  "appDetail_tabKeywords": "キーワード",
+  "appDetail_tabReviews": "レビュー",
+  "appDetail_tabRatings": "評価",
+  "appDetail_tabInsights": "インサイト",
 
   "keywordSuggestions_title": "キーワード候補",
   "keywordSuggestions_appInCountry": "{country}の{appName}",
@@ -298,6 +431,15 @@
       "error": { "type": "String" }
     }
   },
+  "keywordSuggestions_categoryAll": "すべて",
+  "keywordSuggestions_categoryHighOpportunity": "チャンス",
+  "keywordSuggestions_categoryCompetitor": "競合キーワード",
+  "keywordSuggestions_categoryLongTail": "ロングテール",
+  "keywordSuggestions_categoryTrending": "トレンド",
+  "keywordSuggestions_categoryRelated": "関連",
+  "keywordSuggestions_generating": "候補を生成中...",
+  "keywordSuggestions_generatingSubtitle": "数分かかる場合があります。後でまたご確認ください。",
+  "keywordSuggestions_checkAgain": "再確認",
 
   "sidebar_favorites": "お気に入り",
   "sidebar_tooManyFavorites": "お気に入りは5個以下をお勧めします",
@@ -326,6 +468,76 @@
   "keywordSearch_headerRating": "評価",
   "keywordSearch_headerTrack": "追跡",
   "keywordSearch_trackApp": "このアプリを追跡",
+
+  "discover_title": "ディスカバー",
+  "discover_tabKeywords": "キーワード",
+  "discover_tabCategories": "カテゴリ",
+  "discover_selectCategory": "カテゴリを選択",
+  "discover_topFree": "無料",
+  "discover_topPaid": "有料",
+  "discover_topGrossing": "売上",
+  "discover_noResults": "結果がありません",
+  "discover_loadingTopApps": "トップアプリを読み込み中...",
+  "discover_topAppsIn": "{category}の{collection}トップ",
+  "@discover_topAppsIn": {
+    "placeholders": {
+      "collection": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "discover_appsCount": "{count}個のアプリ",
+  "@discover_appsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "discover_allCategories": "すべてのカテゴリ",
+
+  "category_games": "ゲーム",
+  "category_business": "ビジネス",
+  "category_education": "教育",
+  "category_entertainment": "エンターテインメント",
+  "category_finance": "ファイナンス",
+  "category_food_drink": "フード＆ドリンク",
+  "category_health_fitness": "ヘルスケア＆フィットネス",
+  "category_lifestyle": "ライフスタイル",
+  "category_medical": "メディカル",
+  "category_music": "ミュージック",
+  "category_navigation": "ナビゲーション",
+  "category_news": "ニュース",
+  "category_photo_video": "写真＆ビデオ",
+  "category_productivity": "仕事効率化",
+  "category_reference": "辞書＆辞典",
+  "category_shopping": "ショッピング",
+  "category_social": "ソーシャルネットワーキング",
+  "category_sports": "スポーツ",
+  "category_travel": "旅行",
+  "category_utilities": "ユーティリティ",
+  "category_weather": "天気",
+  "category_books": "ブック",
+  "category_developer_tools": "開発ツール",
+  "category_graphics_design": "グラフィック＆デザイン",
+  "category_magazines": "雑誌＆新聞",
+  "category_stickers": "ステッカー",
+  "category_catalogs": "カタログ",
+  "category_art_design": "アート＆デザイン",
+  "category_auto_vehicles": "自動車",
+  "category_beauty": "美容",
+  "category_comics": "マンガ",
+  "category_communication": "コミュニケーション",
+  "category_dating": "出会い",
+  "category_events": "イベント",
+  "category_house_home": "住まい＆インテリア",
+  "category_libraries": "ライブラリ",
+  "category_maps_navigation": "地図＆ナビ",
+  "category_music_audio": "音楽＆オーディオ",
+  "category_news_magazines": "ニュース＆雑誌",
+  "category_parenting": "出産＆育児",
+  "category_personalization": "カスタマイズ",
+  "category_photography": "写真",
+  "category_tools": "ツール",
+  "category_video_players": "動画プレーヤー",
+  "category_all_apps": "すべてのアプリ",
 
   "reviews_reviewsFor": "{appName}のレビュー",
   "@reviews_reviewsFor": {
@@ -365,6 +577,12 @@
   "@reviews_monthsAgo": {
     "placeholders": {
       "count": { "type": "int" }
+    }
+  },
+  "reviews_version": "v{version}",
+  "@reviews_version": {
+    "placeholders": {
+      "version": { "type": "String" }
     }
   },
 
@@ -408,44 +626,47 @@
     }
   },
 
-  "appDetail_noKeywordsTracked": "追跡中のキーワードがありません",
-  "appDetail_addKeywordHint": "上のフィールドにキーワードを追加して追跡を開始",
-  "appDetail_noKeywordsMatchFilter": "フィルターに一致するキーワードがありません",
-  "appDetail_tryChangingFilter": "フィルター条件を変更してください",
-  "appDetail_addTag": "タグを追加",
-  "appDetail_addNote": "メモを追加",
-  "appDetail_positionHistory": "順位履歴",
-  "appDetail_store": "STORE",
-
   "nav_overview": "概要",
   "nav_dashboard": "ダッシュボード",
   "nav_myApps": "マイアプリ",
   "nav_research": "リサーチ",
   "nav_keywords": "キーワード",
-  "nav_discover": "発見",
-  "nav_notifications": "通知",
+  "nav_discover": "ディスカバー",
+  "nav_engagement": "エンゲージメント",
+  "nav_reviewsInbox": "受信トレイ",
+  "nav_notifications": "アラート",
+  "nav_optimization": "最適化",
+  "nav_keywordInspector": "キーワードインスペクター",
+  "nav_ratingsAnalysis": "評価分析",
+  "nav_intelligence": "インテリジェンス",
+  "nav_topCharts": "トップチャート",
+  "nav_competitors": "競合",
+  "nav_chat": "AIアシスタント",
 
-  "common_save": "保存",
+  "keywords_difficultyFilter": "難易度:",
+  "keywords_difficultyAll": "すべて",
+  "keywords_difficultyEasy": "簡単 < 40",
+  "keywords_difficultyMedium": "普通 40-70",
+  "keywords_difficultyHard": "難しい > 70",
 
-  "appDetail_manageTags": "タグを管理",
-  "appDetail_newTagHint": "新しいタグ名...",
-  "appDetail_availableTags": "利用可能なタグ",
-  "appDetail_noTagsYet": "タグがまだありません。上で作成してください。",
-  "appDetail_addTagsTitle": "タグを追加",
-  "appDetail_selectTagsDescription": "選択したキーワードに追加するタグを選択:",
-  "appDetail_addTagsCount": "{count}個のタグを追加",
-  "appDetail_importFailed": "インポート失敗: {error}",
-  "appDetail_importKeywordsTitle": "キーワードをインポート",
-  "appDetail_pasteKeywordsHint": "以下にキーワードを貼り付け（1行に1つ）:",
-  "appDetail_keywordPlaceholder": "キーワード1\nキーワード2\nキーワード3",
-  "appDetail_storefront": "ストアフロント:",
-  "appDetail_keywordsCount": "{count}個のキーワード",
-  "appDetail_importKeywordsCount": "{count}個のキーワードをインポート",
-  "appDetail_period7d": "7日",
-  "appDetail_period30d": "30日",
-  "appDetail_period90d": "90日",
-
-  "reviews_version": "v{version}",
+  "appPreview_title": "アプリ詳細",
+  "appPreview_notFound": "アプリが見つかりません",
+  "appPreview_screenshots": "スクリーンショット",
+  "appPreview_description": "説明",
+  "appPreview_details": "詳細",
+  "appPreview_version": "バージョン",
+  "appPreview_updated": "更新日",
+  "appPreview_released": "リリース日",
+  "appPreview_size": "サイズ",
+  "appPreview_minimumOs": "必要条件",
+  "appPreview_price": "価格",
+  "appPreview_free": "無料",
+  "appPreview_openInStore": "ストアで開く",
+  "appPreview_addToMyApps": "マイアプリに追加",
+  "appPreview_added": "追加済み",
+  "appPreview_showMore": "もっと見る",
+  "appPreview_showLess": "閉じる",
+  "appPreview_keywordsPlaceholder": "このアプリを追跡中のアプリに追加してキーワード追跡を有効化",
 
   "notifications_title": "通知",
   "notifications_markAllRead": "すべて既読にする",
@@ -459,10 +680,117 @@
   "alerts_editRule": "ルールを編集",
   "alerts_noRulesYet": "まだルールがありません",
   "alerts_deleteConfirm": "ルールを削除しますか？",
+  "alerts_createCustomRule": "カスタムルールを作成",
+  "alerts_ruleActivated": "{name}を有効化しました！",
+  "alerts_deleteMessage": "「{name}」を削除します。",
+  "alerts_noRulesDescription": "テンプレートを有効化するか、独自のルールを作成してください！",
+  "alerts_create": "作成",
 
-  "settings_notifications": "通知",
-  "settings_manageAlerts": "アラートルールを管理",
-  "settings_manageAlertsDesc": "受け取るアラートを設定",
+  "storeConnections_title": "ストア接続",
+  "storeConnections_description": "App StoreとGoogle Playアカウントを接続して、売上データやアプリ分析などの高度な機能を有効にします。",
+  "storeConnections_appStoreConnect": "App Store Connect",
+  "storeConnections_appStoreConnectDesc": "Apple開発者アカウントを接続",
+  "storeConnections_googlePlayConsole": "Google Play Console",
+  "storeConnections_googlePlayConsoleDesc": "Google Playアカウントを接続",
+  "storeConnections_connect": "接続",
+  "storeConnections_disconnect": "切断",
+  "storeConnections_connected": "接続済み",
+  "storeConnections_disconnectConfirm": "切断しますか？",
+  "storeConnections_disconnectMessage": "この{platform}アカウントを切断してもよろしいですか？",
+  "@storeConnections_disconnectMessage": {
+    "placeholders": {
+      "platform": { "type": "String" }
+    }
+  },
+  "storeConnections_disconnectSuccess": "切断しました",
+  "storeConnections_lastSynced": "最終同期: {date}",
+  "@storeConnections_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_connectedOn": "{date}に接続",
+  "@storeConnections_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_syncApps": "アプリを同期",
+  "storeConnections_syncing": "同期中...",
+  "storeConnections_syncDescription": "同期により、このアカウントのアプリが所有アプリとしてマークされ、レビューへの返信が可能になります。",
+  "storeConnections_syncedApps": "{count}個のアプリを所有として同期しました",
+  "storeConnections_syncFailed": "同期に失敗しました: {error}",
+  "storeConnections_errorLoading": "接続の読み込みエラー: {error}",
+
+  "reviewsInbox_title": "受信トレイ",
+  "reviewsInbox_filterUnanswered": "未回答",
+  "reviewsInbox_filterNegative": "ネガティブ",
+  "reviewsInbox_noReviews": "レビューが見つかりません",
+  "reviewsInbox_noReviewsDesc": "フィルターを調整してみてください",
+  "reviewsInbox_reply": "返信",
+  "reviewsInbox_responded": "返信済み",
+  "reviewsInbox_respondedAt": "{date}に返信",
+  "@reviewsInbox_respondedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "reviewsInbox_replyModalTitle": "レビューに返信",
+  "reviewsInbox_generateAi": "AI提案を生成",
+  "reviewsInbox_generating": "生成中...",
+  "reviewsInbox_sendReply": "返信を送信",
+  "reviewsInbox_sending": "送信中...",
+  "reviewsInbox_replyPlaceholder": "返信を入力...",
+  "reviewsInbox_charLimit": "{count}/5970文字",
+  "@reviewsInbox_charLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_replySent": "返信を送信しました",
+  "reviewsInbox_replyError": "返信の送信に失敗しました: {error}",
+  "@reviewsInbox_replyError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_aiError": "提案の生成に失敗しました: {error}",
+  "@reviewsInbox_aiError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_stars": "{count}つ星",
+  "@reviewsInbox_stars": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_totalReviews": "レビュー総数",
+  "reviewsInbox_unanswered": "未回答",
+  "reviewsInbox_positive": "ポジティブ",
+  "reviewsInbox_avgRating": "平均評価",
+  "reviewsInbox_sentimentOverview": "センチメント概要",
+  "reviewsInbox_aiSuggestions": "AI提案",
+  "reviewsInbox_regenerate": "再生成",
+  "reviewsInbox_toneProfessional": "プロフェッショナル",
+  "reviewsInbox_toneEmpathetic": "共感的",
+  "reviewsInbox_toneBrief": "簡潔",
+  "reviewsInbox_selectTone": "トーンを選択:",
+  "reviewsInbox_detectedIssues": "検出された問題:",
+  "reviewsInbox_aiPrompt": "「AI提案を生成」をクリックして、3つの異なるトーンで返信の提案を取得します",
+
+  "reviewIntelligence_title": "レビューインテリジェンス",
+  "reviewIntelligence_featureRequests": "機能リクエスト",
+  "reviewIntelligence_bugReports": "バグ報告",
+  "reviewIntelligence_sentimentByVersion": "バージョン別センチメント",
+  "reviewIntelligence_openFeatures": "オープンな機能",
+  "reviewIntelligence_openBugs": "オープンなバグ",
+  "reviewIntelligence_highPriority": "高優先度",
+  "reviewIntelligence_total": "合計",
+  "reviewIntelligence_mentions": "言及",
+  "reviewIntelligence_noData": "インサイトがまだありません",
+  "reviewIntelligence_noDataHint": "レビューを分析するとインサイトが表示されます",
 
   "analytics_title": "分析",
   "analytics_downloads": "ダウンロード",
@@ -481,5 +809,709 @@
       "date": { "type": "String" }
     }
   },
-  "analytics_export": "CSVエクスポート"
+  "analytics_export": "CSVエクスポート",
+
+  "funnel_title": "コンバージョンファネル",
+  "funnel_impressions": "インプレッション",
+  "funnel_pageViews": "ページビュー",
+  "funnel_downloads": "ダウンロード",
+  "funnel_overallCvr": "全体CVR",
+  "funnel_categoryAvg": "カテゴリ平均",
+  "funnel_vsCategory": "対カテゴリ",
+  "funnel_bySource": "ソース別",
+  "funnel_noData": "ファネルデータがありません",
+  "funnel_noDataHint": "ファネルデータはApp Store ConnectまたはGoogle Play Consoleから自動的に同期されます。",
+  "funnel_insight": "インサイト",
+  "funnel_insightText": "{bestSource}のトラフィックは{worstSource}より{ratio}倍高いコンバージョン率です。{recommendation}",
+  "@funnel_insightText": {
+    "placeholders": {
+      "bestSource": { "type": "String" },
+      "ratio": { "type": "String" },
+      "worstSource": { "type": "String" },
+      "recommendation": { "type": "String" }
+    }
+  },
+  "funnel_insightRecommendSearch": "キーワード最適化に注力して検索インプレッションを増やしましょう。",
+  "funnel_insightRecommendBrowse": "カテゴリ最適化とおすすめ配置を改善してブラウズでの露出を高めましょう。",
+  "funnel_insightRecommendReferral": "紹介プログラムやパートナーシップを活用してトラフィックを増やしましょう。",
+  "funnel_insightRecommendAppReferrer": "補完的なアプリとのクロスプロモーション戦略を検討しましょう。",
+  "funnel_insightRecommendWebReferrer": "ウェブサイトやランディングページをダウンロード向けに最適化しましょう。",
+  "funnel_insightRecommendDefault": "このソースが効果的な理由を分析し、再現しましょう。",
+  "funnel_trendTitle": "コンバージョン率のトレンド",
+  "funnel_connectStore": "ストアを接続",
+
+  "chat_title": "AIアシスタント",
+  "chat_newConversation": "新しい会話",
+  "chat_loadingConversations": "会話を読み込み中...",
+  "chat_loadingMessages": "メッセージを読み込み中...",
+  "chat_noConversations": "会話がありません",
+  "chat_noConversationsDesc": "新しい会話を開始してアプリについてのAIインサイトを取得しましょう",
+  "chat_startConversation": "会話を開始",
+  "chat_deleteConversation": "会話を削除",
+  "chat_deleteConversationConfirm": "この会話を削除してもよろしいですか？",
+  "chat_askAnything": "何でも聞いてください",
+  "chat_askAnythingDesc": "アプリのレビュー、ランキング、分析について理解するお手伝いをします",
+  "chat_typeMessage": "質問を入力...",
+  "chat_suggestedQuestions": "おすすめの質問",
+
+  "chatActionConfirm": "確認",
+  "chatActionCancel": "キャンセル",
+  "chatActionExecuting": "実行中...",
+  "chatActionExecuted": "完了",
+  "chatActionFailed": "失敗",
+  "chatActionCancelled": "キャンセル済み",
+  "chatActionDownload": "ダウンロード",
+  "chatActionReversible": "この操作は元に戻せます",
+
+  "chatActionAddKeywords": "キーワードを追加",
+  "chatActionRemoveKeywords": "キーワードを削除",
+  "chatActionCreateAlert": "アラートを作成",
+  "chatActionAddCompetitor": "競合を追加",
+  "chatActionExportData": "データをエクスポート",
+
+  "chatActionKeywords": "キーワード",
+  "chatActionCountry": "国",
+  "chatActionAlertCondition": "条件",
+  "chatActionNotifyVia": "通知方法",
+  "chatActionCompetitor": "競合",
+  "chatActionExportType": "エクスポート形式",
+  "chatActionDateRange": "期間",
+  "chatActionKeywordsLabel": "キーワード",
+  "chatActionAnalyticsLabel": "統計",
+  "chatActionReviewsLabel": "レビュー",
+
+  "dateRange_title": "期間",
+  "dateRange_today": "今日",
+  "dateRange_yesterday": "昨日",
+  "dateRange_last7Days": "過去7日間",
+  "dateRange_last30Days": "過去30日間",
+  "dateRange_thisMonth": "今月",
+  "dateRange_lastMonth": "先月",
+  "dateRange_last90Days": "過去90日間",
+  "dateRange_yearToDate": "年初から今日まで",
+  "dateRange_allTime": "すべて",
+  "dateRange_custom": "カスタム...",
+  "dateRange_compareToPrevious": "前の期間と比較",
+
+  "export_keywordsTitle": "キーワードをエクスポート",
+  "export_reviewsTitle": "レビューをエクスポート",
+  "export_analyticsTitle": "分析をエクスポート",
+  "export_columnsToInclude": "含める列:",
+  "export_button": "エクスポート",
+  "export_keyword": "キーワード",
+  "export_position": "順位",
+  "export_change": "変動",
+  "export_popularity": "人気度",
+  "export_difficulty": "難易度",
+  "export_tags": "タグ",
+  "export_notes": "メモ",
+  "export_trackedSince": "追跡開始日",
+  "export_date": "日付",
+  "export_rating": "評価",
+  "export_author": "著者",
+  "export_title": "タイトル",
+  "export_content": "内容",
+  "export_country": "国",
+  "export_version": "バージョン",
+  "export_sentiment": "センチメント",
+  "export_response": "返信",
+  "export_responseDate": "返信日",
+  "export_keywordsCount": "{count}個のキーワードがエクスポートされます",
+  "@export_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_reviewsCount": "{count}件のレビューがエクスポートされます",
+  "@export_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_success": "エクスポートを保存しました: {filename}",
+  "@export_success": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "export_error": "エクスポート失敗: {error}",
+  "@export_error": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "metadata_editor": "メタデータエディター",
+  "metadata_selectLocale": "編集するロケールを選択",
+  "metadata_refreshed": "ストアからメタデータを更新しました",
+  "metadata_connectRequired": "編集するには接続が必要です",
+  "metadata_connectDescription": "App Store Connectアカウントを接続して、Keyrankから直接アプリのメタデータを編集できます。",
+  "metadata_connectStore": "App Storeに接続",
+  "metadata_publishTitle": "メタデータを公開",
+  "metadata_publishConfirm": "{locale}の変更を公開しますか？これによりApp Storeのアプリ掲載情報が更新されます。",
+  "@metadata_publishConfirm": {
+    "placeholders": {
+      "locale": { "type": "String" }
+    }
+  },
+  "metadata_publish": "公開",
+  "metadata_publishSuccess": "メタデータを公開しました",
+  "metadata_saveDraft": "下書きを保存",
+  "metadata_draftSaved": "下書きを保存しました",
+  "metadata_discardChanges": "変更を破棄",
+  "metadata_title": "タイトル",
+  "metadata_titleHint": "アプリ名（最大{limit}文字）",
+  "@metadata_titleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_subtitle": "サブタイトル",
+  "metadata_subtitleHint": "短いキャッチフレーズ（最大{limit}文字）",
+  "@metadata_subtitleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_keywords": "キーワード",
+  "metadata_keywordsHint": "カンマ区切りのキーワード（最大{limit}文字）",
+  "@metadata_keywordsHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_description": "説明",
+  "metadata_descriptionHint": "アプリの詳細説明（最大{limit}文字）",
+  "@metadata_descriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_promotionalText": "プロモーションテキスト",
+  "metadata_promotionalTextHint": "短いプロモーションメッセージ（最大{limit}文字）",
+  "@metadata_promotionalTextHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_whatsNew": "新機能",
+  "metadata_whatsNewHint": "リリースノート（最大{limit}文字）",
+  "@metadata_whatsNewHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_charCount": "{count}/{limit}",
+  "@metadata_charCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_hasChanges": "未保存の変更があります",
+  "metadata_noChanges": "変更なし",
+  "metadata_keywordAnalysis": "キーワード分析",
+  "metadata_keywordPresent": "あり",
+  "metadata_keywordMissing": "なし",
+  "metadata_inTitle": "タイトル内",
+  "metadata_inSubtitle": "サブタイトル内",
+  "metadata_inKeywords": "キーワード内",
+  "metadata_inDescription": "説明内",
+  "metadata_history": "変更履歴",
+  "metadata_noHistory": "変更履歴がありません",
+  "metadata_localeComplete": "完了",
+  "metadata_localeIncomplete": "未完了",
+  "metadata_shortDescription": "短い説明",
+  "metadata_shortDescriptionHint": "検索に表示されるキャッチフレーズ（最大{limit}文字）",
+  "@metadata_shortDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_fullDescription": "詳細説明",
+  "metadata_fullDescriptionHint": "アプリの詳細説明（最大{limit}文字）",
+  "@metadata_fullDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_releaseNotes": "リリースノート",
+  "metadata_releaseNotesHint": "このバージョンの新機能（最大{limit}文字）",
+  "@metadata_releaseNotesHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_selectAppFirst": "アプリを選択してください",
+  "metadata_selectAppHint": "サイドバーのアプリセレクターを使用するか、ストアを接続して開始してください。",
+  "metadata_noStoreConnection": "ストア接続が必要です",
+  "metadata_noStoreConnectionDesc": "{storeName}アカウントを接続して、アプリのメタデータを取得・編集できます。",
+  "@metadata_noStoreConnectionDesc": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_connectStoreButton": "{storeName}に接続",
+  "@metadata_connectStoreButton": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_aiOptimize": "AIで最適化",
+
+  "metadataLocalization": "ローカライゼーション",
+  "metadataLive": "公開中",
+  "metadataDraft": "下書き",
+  "metadataEmpty": "空",
+  "metadataCoverageInsight": "{count}個のロケールにコンテンツが必要です。主要市場向けにローカライズを検討してください。",
+  "@metadataCoverageInsight": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataFilterAll": "すべて",
+  "metadataFilterLive": "公開中",
+  "metadataFilterDraft": "下書き",
+  "metadataFilterEmpty": "空",
+  "metadataBulkActions": "一括操作",
+  "metadataCopyTo": "選択にコピー",
+  "metadataTranslateTo": "選択に翻訳",
+  "metadataPublishSelected": "選択を公開",
+  "metadataDeleteDrafts": "下書きを削除",
+  "metadataSelectSource": "ソースロケールを選択",
+  "metadataSelectTarget": "ターゲットロケールを選択",
+  "metadataCopySuccess": "{count}個のロケールにコピーしました",
+  "@metadataCopySuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslateSuccess": "{count}個のロケールに翻訳しました",
+  "@metadataTranslateSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslating": "翻訳中...",
+  "metadataNoSelection": "まずロケールを選択してください",
+  "metadataSelectAll": "すべて選択",
+  "metadataDeselectAll": "すべて解除",
+  "metadataSelected": "{count}個選択",
+  "@metadataSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTableView": "テーブル表示",
+  "metadataListView": "リスト表示",
+  "metadataStatus": "ステータス",
+  "metadataCompletion": "完成度",
+
+  "wizard_title": "AI最適化ウィザード",
+  "wizard_step": "ステップ",
+  "wizard_of": "/",
+  "wizard_stepTitle": "タイトル",
+  "wizard_stepSubtitle": "サブタイトル",
+  "wizard_stepKeywords": "キーワード",
+  "wizard_stepDescription": "説明",
+  "wizard_stepReview": "確認して保存",
+  "wizard_skip": "スキップ",
+  "wizard_saveDrafts": "下書きを保存",
+  "wizard_draftsSaved": "下書きを保存しました",
+  "wizard_exitTitle": "ウィザードを終了しますか？",
+  "wizard_exitMessage": "未保存の変更があります。本当に終了しますか？",
+  "wizard_exitConfirm": "終了",
+  "wizard_aiSuggestions": "AI提案",
+  "wizard_chooseSuggestion": "AIが生成した提案を選択するか、自分で入力してください",
+  "wizard_currentValue": "現在の値",
+  "wizard_noCurrentValue": "値が設定されていません",
+  "wizard_contextInfo": "{keywordsCount}個の追跡キーワードと{competitorsCount}個の競合に基づく",
+  "@wizard_contextInfo": {
+    "placeholders": {
+      "keywordsCount": { "type": "int" },
+      "competitorsCount": { "type": "int" }
+    }
+  },
+  "wizard_writeOwn": "自分で入力",
+  "wizard_customPlaceholder": "カスタム値を入力...",
+  "wizard_useCustom": "カスタムを使用",
+  "wizard_keepCurrent": "現在の値を維持",
+  "wizard_recommended": "おすすめ",
+  "wizard_characters": "文字",
+  "wizard_reviewTitle": "変更を確認",
+  "wizard_reviewDescription": "下書きとして保存する前に最適化内容を確認してください",
+  "wizard_noChanges": "変更が選択されていません",
+  "wizard_noChangesHint": "戻って最適化するフィールドの提案を選択してください",
+  "wizard_changesCount": "{count}個のフィールドを更新",
+  "@wizard_changesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wizard_changesSummary": "これらの変更は下書きとして保存されます",
+  "wizard_before": "変更前",
+  "wizard_after": "変更後",
+  "wizard_nextStepsTitle": "次のステップ",
+  "wizard_nextStepsWithChanges": "変更は下書きとして保存されます。メタデータエディターで確認して公開できます。",
+  "wizard_nextStepsNoChanges": "保存する変更がありません。戻って提案を選択し、メタデータを最適化してください。",
+
+  "team_title": "チーム管理",
+  "team_createTeam": "チームを作成",
+  "team_teamName": "チーム名",
+  "team_teamNameHint": "チーム名を入力",
+  "team_description": "説明（任意）",
+  "team_descriptionHint": "このチームは何のためですか？",
+  "team_teamNameRequired": "チーム名は必須です",
+  "team_teamNameMinLength": "チーム名は2文字以上必要です",
+  "team_inviteMember": "メンバーを招待",
+  "team_emailAddress": "メールアドレス",
+  "team_emailHint": "colleague@example.com",
+  "team_emailRequired": "メールアドレスは必須です",
+  "team_emailInvalid": "有効なメールアドレスを入力してください",
+  "team_invitationSent": "{email}に招待を送信しました",
+  "@team_invitationSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "team_members": "メンバー",
+  "team_invite": "招待",
+  "team_pendingInvitations": "保留中の招待",
+  "team_noPendingInvitations": "保留中の招待はありません",
+  "team_teamSettings": "チーム設定",
+  "team_changeRole": "{name}の役割を変更",
+  "@team_changeRole": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_removeMember": "メンバーを削除",
+  "team_removeMemberConfirm": "{name}をこのチームから削除しますか？",
+  "@team_removeMemberConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_remove": "削除",
+  "team_leaveTeam": "チームを退出",
+  "team_leaveTeamConfirm": "「{teamName}」を退出しますか？",
+  "@team_leaveTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_leave": "退出",
+  "team_deleteTeam": "チームを削除",
+  "team_deleteTeamConfirm": "「{teamName}」を削除しますか？この操作は取り消せません。",
+  "@team_deleteTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_yourTeams": "あなたのチーム",
+  "team_failedToLoadTeam": "チームの読み込みに失敗しました",
+  "team_failedToLoadMembers": "メンバーの読み込みに失敗しました",
+  "team_failedToLoadInvitations": "招待の読み込みに失敗しました",
+  "team_memberCount": "{count}人のメンバー",
+  "@team_memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "team_invitedAs": "{role}として招待",
+  "@team_invitedAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
+  "team_joinedTeam": "{teamName}に参加しました",
+  "@team_joinedTeam": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_invitationDeclined": "招待を辞退しました",
+  "team_noTeamsYet": "チームがありません",
+  "team_noTeamsDescription": "チームを作成して他のメンバーと協力しましょう",
+  "team_createFirstTeam": "最初のチームを作成",
+
+  "integrations_title": "連携",
+  "integrations_syncFailed": "同期に失敗しました: {error}",
+  "@integrations_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_disconnectConfirm": "接続を解除しますか？",
+  "integrations_disconnectedSuccess": "正常に接続解除されました",
+  "integrations_connectGooglePlay": "Google Play Consoleに接続",
+  "integrations_connectAppStore": "App Store Connectに接続",
+  "integrations_connectedApps": "接続完了！{count}個のアプリをインポートしました。",
+  "@integrations_connectedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_syncedApps": "{count}個のアプリを所有者として同期しました",
+  "@integrations_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnected": "App Store Connectに正常に接続しました！",
+  "integrations_googlePlayConnected": "Google Play Consoleに正常に接続しました！",
+
+  "alertBuilder_nameYourRule": "ルールに名前を付ける",
+  "alertBuilder_nameDescription": "アラートルールにわかりやすい名前を付けてください",
+  "alertBuilder_nameHint": "例: 毎日の順位アラート",
+  "alertBuilder_summary": "概要",
+  "alertBuilder_saveAlertRule": "アラートルールを保存",
+  "alertBuilder_selectAlertType": "アラートタイプを選択",
+  "alertBuilder_selectAlertTypeDescription": "作成するアラートの種類を選択してください",
+  "alertBuilder_deleteRuleConfirm": "「{ruleName}」が削除されます。",
+  "@alertBuilder_deleteRuleConfirm": {
+    "placeholders": {
+      "ruleName": { "type": "String" }
+    }
+  },
+  "alertBuilder_activateTemplateOrCreate": "ルールがまだありません。テンプレートを有効にするか、独自のルールを作成してください！",
+
+  "billing_cancelSubscription": "サブスクリプションをキャンセル",
+  "billing_keepSubscription": "サブスクリプションを維持",
+  "billing_billingPortal": "請求ポータル",
+  "billing_resume": "再開",
+
+  "keywords_noCompetitorsFound": "競合が見つかりません。先に競合を追加してください。",
+  "keywords_noCompetitorsForApp": "このアプリの競合がありません。先に競合を追加してください。",
+  "keywords_failedToAddKeywords": "キーワードの追加に失敗しました: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_bulkAddHint": "予算トラッカー\n支出管理\nマネーアプリ",
+
+  "appOverview_urlCopied": "ストアURLをクリップボードにコピーしました",
+
+  "country_us": "アメリカ合衆国",
+  "country_gb": "イギリス",
+  "country_fr": "フランス",
+  "country_de": "ドイツ",
+  "country_ca": "カナダ",
+  "country_au": "オーストラリア",
+  "country_jp": "日本",
+  "country_cn": "中国",
+  "country_kr": "韓国",
+  "country_br": "ブラジル",
+  "country_es": "スペイン",
+  "country_it": "イタリア",
+
+  "countryCode_us": "🇺🇸 US",
+  "countryCode_gb": "🇬🇧 UK",
+  "countryCode_fr": "🇫🇷 FR",
+  "countryCode_de": "🇩🇪 DE",
+  "countryCode_ca": "🇨🇦 CA",
+  "countryCode_au": "🇦🇺 AU",
+
+  "alertBuilder_type": "タイプ",
+  "alertBuilder_scope": "スコープ",
+  "alertBuilder_name": "名前",
+  "alertBuilder_scopeGlobal": "全てのアプリ",
+  "alertBuilder_scopeApp": "特定のアプリ",
+  "alertBuilder_scopeCategory": "カテゴリ",
+  "alertBuilder_scopeKeyword": "キーワード",
+
+  "alertType_positionChange": "順位変動",
+  "alertType_positionChangeDesc": "アプリのランキングが大きく変動した時にアラート",
+  "alertType_ratingChange": "評価変動",
+  "alertType_ratingChangeDesc": "アプリの評価が変動した時にアラート",
+  "alertType_reviewSpike": "レビュー急増",
+  "alertType_reviewSpikeDesc": "異常なレビュー活動があった時にアラート",
+  "alertType_reviewKeyword": "レビューキーワード",
+  "alertType_reviewKeywordDesc": "レビューにキーワードが出現した時にアラート",
+  "alertType_newCompetitor": "新規競合",
+  "alertType_newCompetitorDesc": "新しいアプリが参入した時にアラート",
+  "alertType_competitorPassed": "競合を追い越し",
+  "alertType_competitorPassedDesc": "競合を追い越した時にアラート",
+  "alertType_massMovement": "大規模変動",
+  "alertType_massMovementDesc": "ランキングの大規模な変動があった時にアラート",
+  "alertType_keywordTrend": "キーワードトレンド",
+  "alertType_keywordTrendDesc": "キーワードの人気度が変動した時にアラート",
+  "alertType_opportunity": "機会",
+  "alertType_opportunityDesc": "新しいランキング機会があった時にアラート",
+
+  "billing_title": "請求とプラン",
+  "billing_subscriptionActivated": "サブスクリプションが正常に有効化されました！",
+  "billing_changePlan": "プラン変更",
+  "billing_choosePlan": "プランを選択",
+  "billing_cancelMessage": "サブスクリプションは現在の請求期間の終了まで有効です。その後、プレミアム機能へのアクセスが失われます。",
+  "billing_currentPlan": "現在のプラン",
+  "billing_trial": "トライアル",
+  "billing_canceling": "キャンセル中",
+  "billing_accessUntil": "{date}までアクセス可能",
+  "@billing_accessUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_renewsOn": "{date}に更新",
+  "@billing_renewsOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_manageSubscription": "サブスクリプション管理",
+  "billing_monthly": "月額",
+  "billing_yearly": "年額",
+  "billing_savePercent": "{percent}%お得",
+  "@billing_savePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "billing_current": "現在",
+  "billing_apps": "アプリ",
+  "billing_unlimited": "無制限",
+  "billing_keywordsPerApp": "アプリあたりのキーワード",
+  "billing_history": "履歴",
+  "billing_days": "{count}日間",
+  "@billing_days": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "billing_exports": "エクスポート",
+  "billing_aiInsights": "AI分析",
+  "billing_apiAccess": "APIアクセス",
+  "billing_yes": "はい",
+  "billing_no": "いいえ",
+  "billing_currentPlanButton": "現在のプラン",
+  "billing_upgradeTo": "{planName}にアップグレード",
+  "@billing_upgradeTo": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "billing_cancel": "キャンセル",
+
+  "keywords_compareWithCompetitor": "競合と比較",
+  "keywords_selectCompetitorToCompare": "キーワードを比較する競合を選択:",
+  "keywords_noCompetitorsFound": "競合が見つかりません。先に競合を追加してください。",
+  "keywords_noCompetitorsForApp": "このアプリに競合がありません。先に競合を追加してください。",
+  "keywords_failedToAddKeywords": "キーワードの追加に失敗: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_addToCompetitor": "競合に追加",
+  "keywords_addKeywordsTo": "{count}個のキーワードを追加:",
+  "@keywords_addKeywordsTo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywords_avgPosition": "平均順位",
+  "keywords_declined": "下降",
+  "keywords_total": "合計",
+  "keywords_ranked": "ランク済み",
+  "keywords_improved": "上昇",
+
+  "settings_alertDelivery": "アラート配信",
+  "settings_team": "チーム",
+  "settings_teamManagement": "チーム管理",
+  "settings_manageTeam": "メンバー、ロール、権限を管理",
+  "settings_storeConnections": "ストア接続",
+  "settings_connectStores": "App Store ConnectとGoogle Playを接続",
+  "settings_integrations": "インテグレーション",
+  "settings_connectServices": "サードパーティサービスを接続",
+  "settings_helpSupport": "ヘルプとサポート",
+  "settings_documentation": "ドキュメント",
+  "settings_viewDocs": "ガイドとチュートリアルを見る",
+
+  "onboarding_skip": "スキップ",
+  "onboarding_next": "次へ",
+  "onboarding_getStarted": "始める",
+  "onboarding_welcomeToKeyrank": "Keyrankへようこそ",
+  "onboarding_welcomeDesc": "アプリストアでの可視性を最適化するための完全なプラットフォーム",
+  "onboarding_trackKeywordsTitle": "キーワードを追跡",
+  "onboarding_trackKeywordsDesc": "複数のアプリストアで重要な検索語のアプリランキングを監視",
+  "onboarding_analyzeCompetitorsTitle": "競合を分析",
+  "onboarding_analyzeCompetitorsDesc": "競合を監視し、改善の新しい機会を発見",
+  "onboarding_getInsightsTitle": "インサイトを取得",
+  "onboarding_getInsightsDesc": "アプリストアでのプレゼンスを向上させるための実用的な推奨事項を受け取る",
+
+  "team_you": "あなた",
+
+  "competitors_all": "すべて",
+  "competitors_tracked": "追跡中",
+  "competitors_filterByStore": "ストアで絞り込み",
+  "competitors_allStores": "全ストア",
+  "competitors_removeCompetitor": "競合を削除",
+  "competitors_removeConfirm": "「{name}」を競合から削除してもよろしいですか？",
+  "@competitors_removeConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_noCompetitorsTitle": "競合がありません",
+  "competitors_noCompetitorsMessage": "まだ競合を追跡していません。ランキングを監視するために追加してください。",
+  "competitors_errorLoading": "競合の読み込みエラー",
+  "competitors_addedSuccess": "{name}を競合として追加しました",
+  "@competitors_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_addFailed": "競合の追加に失敗: {error}",
+  "@competitors_addFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_noAppsMessage": "競合を追跡するには、まずアプリを選択してください。",
+
+  "appPreview_rankings": "ランキング",
+  "appPreview_reviews": "レビュー",
+  "appPreview_price": "価格",
+  "appPreview_free": "無料",
+  "appPreview_developer": "開発者",
+  "appPreview_released": "リリース日",
+  "appPreview_lastUpdate": "最終更新",
+  "appPreview_notAvailable": "N/A",
+  "appPreview_expandDescription": "説明を展開",
+  "appPreview_collapseDescription": "説明を折りたたむ",
+
+  "alerts_scopeGlobal": "グローバル",
+  "alerts_scopeApp": "アプリ",
+  "alerts_scopeCategory": "カテゴリ",
+  "alerts_scopeKeyword": "キーワード",
+  "alerts_edit": "編集",
+
+  "ratings_pageInfo": "{total}ページ中{current}ページ目",
+  "@ratings_pageInfo": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "ratings_noMoreReviews": "これ以上のレビューはありません",
+
+  "insights_viewMore": "さらに{count}件のインサイトを表示",
+  "@insights_viewMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_noInsightsYet": "まだインサイトがありません",
+  "insights_noInsightsDesc": "アプリの最適化機会を発見したときにインサイトが表示されます。",
+  "insights_loadFailed": "インサイトの読み込みに失敗しました",
+
+  "chat_enterMessage": "メッセージを入力...",
+  "chat_aiDisclaimer": "AI応答には誤りが含まれる場合があります。重要な情報は必ず確認してください。",
+  "chat_conversationError": "会話の読み込みエラー",
+
+  "notifications_title": "通知",
+  "notifications_markAllRead": "すべて既読にする",
+  "notifications_clearAll": "すべてクリア"
 }

@@ -28,6 +28,11 @@
 
   "common_retry": "重试",
   "common_error": "错误：{message}",
+  "@common_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "common_loading": "加载中...",
   "common_add": "添加",
   "common_filter": "筛选",
@@ -36,6 +41,12 @@
   "common_settings": "设置",
   "common_search": "搜索...",
   "common_noResults": "无结果",
+  "common_save": "保存",
+  "common_cancel": "取消",
+  "common_delete": "删除",
+  "common_back": "返回",
+  "common_next": "下一步",
+  "common_edit": "编辑",
 
   "dashboard_title": "仪表盘",
   "dashboard_addApp": "添加应用",
@@ -52,9 +63,31 @@
   "dashboard_addAppToStart": "添加应用以开始追踪关键词",
   "dashboard_noAppsMatchFilter": "没有符合筛选条件的应用",
   "dashboard_changeFilterCriteria": "尝试更改筛选条件",
+  "dashboard_reviews": "评论",
+  "dashboard_avgRating": "平均评分",
+  "dashboard_topPerformingApps": "表现最佳的应用",
+  "dashboard_topCountries": "主要国家",
+  "dashboard_sentimentOverview": "情感概览",
+  "dashboard_overallSentiment": "整体情感",
+  "dashboard_positive": "正面",
+  "dashboard_positiveReviews": "正面",
+  "dashboard_negativeReviews": "负面",
+  "dashboard_viewReviews": "查看评论",
+  "dashboard_tableApp": "应用",
+  "dashboard_tableKeywords": "关键词",
+  "dashboard_tableAvgRank": "平均排名",
+  "dashboard_tableTrend": "趋势",
+  "dashboard_connectYourStores": "连接您的商店",
+  "dashboard_connectStoresDescription": "连接 App Store Connect 或 Google Play 以导入您的应用并回复评论。",
+  "dashboard_connect": "连接",
 
   "apps_title": "我的应用",
   "apps_appCount": "{count} 个应用",
+  "@apps_appCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "apps_tableApp": "应用",
   "apps_tableDeveloper": "开发者",
   "apps_tableKeywords": "关键词",
@@ -71,6 +104,11 @@
   "addApp_enterAtLeast2Chars": "请输入至少2个字符",
   "addApp_noResults": "未找到结果",
   "addApp_addedSuccess": "{name} 添加成功",
+  "@addApp_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
 
   "settings_title": "设置",
   "settings_language": "语言",
@@ -83,6 +121,11 @@
   "settings_memberSince": "注册时间",
   "settings_logout": "退出登录",
   "settings_languageSystem": "跟随系统",
+  "settings_notifications": "通知",
+  "settings_manageAlerts": "管理警报规则",
+  "settings_manageAlertsDesc": "配置您收到的警报",
+  "settings_storeConnections": "商店连接",
+  "settings_storeConnectionsDesc": "连接您的 App Store 和 Google Play 账户",
 
   "filter_all": "全部",
   "filter_allApps": "所有应用",
@@ -149,6 +192,36 @@
   "insights_emergentThemes": "热门主题",
   "insights_exampleQuotes": "示例引用：",
   "insights_selectCountryFirst": "请至少选择一个国家",
+  "insights_title": "分析",
+  "insights_titleWithApp": "分析 - {appName}",
+  "@insights_titleWithApp": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "insights_allApps": "分析（所有应用）",
+  "insights_noInsightsYet": "暂无生成的分析",
+  "insights_selectAppToGenerate": "选择一个应用以从评论生成分析",
+  "insights_appsWithInsights": "{count} 个应用有分析",
+  "@insights_appsWithInsights": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_errorLoading": "加载分析时出错",
+  "insights_reviewsAnalyzed": "已分析 {count} 条评论",
+  "@insights_reviewsAnalyzed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_avgScore": "平均得分",
+  "insights_updatedOn": "更新于 {date}",
+  "@insights_updatedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
   "compare_selectAppsToCompare": "选择最多3个应用与 {appName} 进行对比",
   "@compare_selectAppsToCompare": {
@@ -233,7 +306,7 @@
     }
   },
   "appDetail_tag": "标签",
-  "appDetail_keywordAdded": "已添加关键词 \"{keyword}\"（{flag}）",
+  "appDetail_keywordAdded": "已添加关键词「{keyword}」（{flag}）",
   "@appDetail_keywordAdded": {
     "placeholders": {
       "keyword": { "type": "String" },
@@ -254,6 +327,66 @@
   "appDetail_nameZA": "名称 Z-A",
   "appDetail_bestPosition": "最佳排名",
   "appDetail_recentlyTracked": "最近追踪",
+  "appDetail_noKeywordsTracked": "暂无追踪的关键词",
+  "appDetail_addKeywordHint": "在上方添加关键词以开始追踪",
+  "appDetail_noKeywordsMatchFilter": "没有符合筛选条件的关键词",
+  "appDetail_tryChangingFilter": "尝试更改筛选条件",
+  "appDetail_addTag": "添加标签",
+  "appDetail_addNote": "添加笔记",
+  "appDetail_positionHistory": "排名历史",
+  "appDetail_store": "商店",
+  "appDetail_manageTags": "管理标签",
+  "appDetail_newTagHint": "新标签名称...",
+  "appDetail_availableTags": "可用标签",
+  "appDetail_noTagsYet": "还没有标签。在上方创建一个。",
+  "appDetail_addTagsTitle": "添加标签",
+  "appDetail_selectTagsDescription": "选择要添加到所选关键词的标签：",
+  "appDetail_addTagsCount": "添加 {count} 个标签",
+  "@appDetail_addTagsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_currentTags": "当前标签",
+  "appDetail_noTagsOnKeyword": "此关键词没有标签",
+  "appDetail_addExistingTag": "添加现有标签",
+  "appDetail_allTagsUsed": "所有标签均已使用",
+  "appDetail_createNewTag": "创建新标签",
+  "appDetail_tagNameHint": "标签名称...",
+  "appDetail_note": "笔记",
+  "appDetail_noteHint": "添加关于此关键词的笔记...",
+  "appDetail_saveNote": "保存笔记",
+  "appDetail_done": "完成",
+  "appDetail_importFailed": "导入失败：{error}",
+  "@appDetail_importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importKeywordsTitle": "导入关键词",
+  "appDetail_pasteKeywordsHint": "在下方粘贴关键词，每行一个：",
+  "appDetail_keywordPlaceholder": "关键词一\n关键词二\n关键词三",
+  "appDetail_storefront": "商店：",
+  "appDetail_keywordsCount": "{count} 个关键词",
+  "@appDetail_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importKeywordsCount": "导入 {count} 个关键词",
+  "@appDetail_importKeywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_period7d": "7天",
+  "appDetail_period30d": "30天",
+  "appDetail_period90d": "90天",
+  "appDetail_tabOverview": "概览",
+  "appDetail_tabKeywords": "关键词",
+  "appDetail_tabReviews": "评论",
+  "appDetail_tabRatings": "评分",
+  "appDetail_tabInsights": "分析",
 
   "keywordSuggestions_title": "关键词建议",
   "keywordSuggestions_appInCountry": "{appName}（{country}）",
@@ -298,6 +431,15 @@
       "error": { "type": "String" }
     }
   },
+  "keywordSuggestions_categoryAll": "全部",
+  "keywordSuggestions_categoryHighOpportunity": "机会",
+  "keywordSuggestions_categoryCompetitor": "竞争对手关键词",
+  "keywordSuggestions_categoryLongTail": "长尾词",
+  "keywordSuggestions_categoryTrending": "趋势",
+  "keywordSuggestions_categoryRelated": "相关",
+  "keywordSuggestions_generating": "正在生成建议...",
+  "keywordSuggestions_generatingSubtitle": "这可能需要几分钟。稍后再来查看。",
+  "keywordSuggestions_checkAgain": "再次检查",
 
   "sidebar_favorites": "收藏",
   "sidebar_tooManyFavorites": "建议保留5个或更少的收藏",
@@ -326,6 +468,76 @@
   "keywordSearch_headerRating": "评分",
   "keywordSearch_headerTrack": "追踪",
   "keywordSearch_trackApp": "追踪此应用",
+
+  "discover_title": "发现",
+  "discover_tabKeywords": "关键词",
+  "discover_tabCategories": "分类",
+  "discover_selectCategory": "选择分类",
+  "discover_topFree": "免费",
+  "discover_topPaid": "付费",
+  "discover_topGrossing": "畅销",
+  "discover_noResults": "无结果",
+  "discover_loadingTopApps": "正在加载热门应用...",
+  "discover_topAppsIn": "{category} 热门{collection}应用",
+  "@discover_topAppsIn": {
+    "placeholders": {
+      "collection": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "discover_appsCount": "{count} 个应用",
+  "@discover_appsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "discover_allCategories": "所有分类",
+
+  "category_games": "游戏",
+  "category_business": "商务",
+  "category_education": "教育",
+  "category_entertainment": "娱乐",
+  "category_finance": "财务",
+  "category_food_drink": "美食佳饮",
+  "category_health_fitness": "健康健美",
+  "category_lifestyle": "生活",
+  "category_medical": "医疗",
+  "category_music": "音乐",
+  "category_navigation": "导航",
+  "category_news": "新闻",
+  "category_photo_video": "摄影与录像",
+  "category_productivity": "效率",
+  "category_reference": "参考资料",
+  "category_shopping": "购物",
+  "category_social": "社交",
+  "category_sports": "体育",
+  "category_travel": "旅游",
+  "category_utilities": "工具",
+  "category_weather": "天气",
+  "category_books": "图书",
+  "category_developer_tools": "开发工具",
+  "category_graphics_design": "图形和设计",
+  "category_magazines": "杂志和报纸",
+  "category_stickers": "贴纸",
+  "category_catalogs": "目录",
+  "category_art_design": "艺术与设计",
+  "category_auto_vehicles": "汽车与车辆",
+  "category_beauty": "美妆",
+  "category_comics": "漫画",
+  "category_communication": "通讯",
+  "category_dating": "约会交友",
+  "category_events": "活动",
+  "category_house_home": "家居",
+  "category_libraries": "图书馆",
+  "category_maps_navigation": "地图和导航",
+  "category_music_audio": "音乐与音频",
+  "category_news_magazines": "新闻和杂志",
+  "category_parenting": "育儿",
+  "category_personalization": "个性化",
+  "category_photography": "摄影",
+  "category_tools": "工具",
+  "category_video_players": "视频播放器",
+  "category_all_apps": "所有应用",
 
   "reviews_reviewsFor": "{appName} 的评论",
   "@reviews_reviewsFor": {
@@ -365,6 +577,12 @@
   "@reviews_monthsAgo": {
     "placeholders": {
       "count": { "type": "int" }
+    }
+  },
+  "reviews_version": "v{version}",
+  "@reviews_version": {
+    "placeholders": {
+      "version": { "type": "String" }
     }
   },
 
@@ -408,44 +626,47 @@
     }
   },
 
-  "appDetail_noKeywordsTracked": "暂无追踪的关键词",
-  "appDetail_addKeywordHint": "在上方添加关键词以开始追踪",
-  "appDetail_noKeywordsMatchFilter": "没有符合筛选条件的关键词",
-  "appDetail_tryChangingFilter": "尝试更改筛选条件",
-  "appDetail_addTag": "添加标签",
-  "appDetail_addNote": "添加笔记",
-  "appDetail_positionHistory": "排名历史",
-  "appDetail_store": "STORE",
-
   "nav_overview": "概览",
   "nav_dashboard": "仪表盘",
   "nav_myApps": "我的应用",
   "nav_research": "研究",
   "nav_keywords": "关键词",
   "nav_discover": "发现",
+  "nav_engagement": "互动",
+  "nav_reviewsInbox": "收件箱",
   "nav_notifications": "通知",
+  "nav_optimization": "优化",
+  "nav_keywordInspector": "关键词检查器",
+  "nav_ratingsAnalysis": "评分分析",
+  "nav_intelligence": "智能分析",
+  "nav_topCharts": "排行榜",
+  "nav_competitors": "竞争对手",
+  "nav_chat": "AI 助手",
 
-  "common_save": "保存",
+  "keywords_difficultyFilter": "难度：",
+  "keywords_difficultyAll": "全部",
+  "keywords_difficultyEasy": "简单 < 40",
+  "keywords_difficultyMedium": "中等 40-70",
+  "keywords_difficultyHard": "困难 > 70",
 
-  "appDetail_manageTags": "管理标签",
-  "appDetail_newTagHint": "新标签名称...",
-  "appDetail_availableTags": "可用标签",
-  "appDetail_noTagsYet": "还没有标签。在上方创建一个。",
-  "appDetail_addTagsTitle": "添加标签",
-  "appDetail_selectTagsDescription": "选择要添加到所选关键词的标签：",
-  "appDetail_addTagsCount": "添加 {count} 个标签",
-  "appDetail_importFailed": "导入失败：{error}",
-  "appDetail_importKeywordsTitle": "导入关键词",
-  "appDetail_pasteKeywordsHint": "在下方粘贴关键词，每行一个：",
-  "appDetail_keywordPlaceholder": "关键词一\n关键词二\n关键词三",
-  "appDetail_storefront": "商店：",
-  "appDetail_keywordsCount": "{count} 个关键词",
-  "appDetail_importKeywordsCount": "导入 {count} 个关键词",
-  "appDetail_period7d": "7天",
-  "appDetail_period30d": "30天",
-  "appDetail_period90d": "90天",
-
-  "reviews_version": "v{version}",
+  "appPreview_title": "应用详情",
+  "appPreview_notFound": "未找到应用",
+  "appPreview_screenshots": "截图",
+  "appPreview_description": "描述",
+  "appPreview_details": "详情",
+  "appPreview_version": "版本",
+  "appPreview_updated": "更新时间",
+  "appPreview_released": "发布时间",
+  "appPreview_size": "大小",
+  "appPreview_minimumOs": "系统要求",
+  "appPreview_price": "价格",
+  "appPreview_free": "免费",
+  "appPreview_openInStore": "在商店中打开",
+  "appPreview_addToMyApps": "添加到我的应用",
+  "appPreview_added": "已添加",
+  "appPreview_showMore": "显示更多",
+  "appPreview_showLess": "收起",
+  "appPreview_keywordsPlaceholder": "将此应用添加到追踪列表以启用关键词追踪",
 
   "notifications_title": "通知",
   "notifications_markAllRead": "全部标为已读",
@@ -459,10 +680,117 @@
   "alerts_editRule": "编辑规则",
   "alerts_noRulesYet": "暂无规则",
   "alerts_deleteConfirm": "删除规则？",
+  "alerts_createCustomRule": "创建自定义规则",
+  "alerts_ruleActivated": "{name} 已激活！",
+  "alerts_deleteMessage": "这将删除 \"{name}\"。",
+  "alerts_noRulesDescription": "激活模板或创建您自己的规则！",
+  "alerts_create": "创建",
 
-  "settings_notifications": "通知",
-  "settings_manageAlerts": "管理警报规则",
-  "settings_manageAlertsDesc": "配置您收到的警报",
+  "storeConnections_title": "商店连接",
+  "storeConnections_description": "连接您的 App Store 和 Google Play 账户以启用高级功能，如销售数据和应用分析。",
+  "storeConnections_appStoreConnect": "App Store Connect",
+  "storeConnections_appStoreConnectDesc": "连接您的 Apple 开发者账户",
+  "storeConnections_googlePlayConsole": "Google Play Console",
+  "storeConnections_googlePlayConsoleDesc": "连接您的 Google Play 账户",
+  "storeConnections_connect": "连接",
+  "storeConnections_disconnect": "断开连接",
+  "storeConnections_connected": "已连接",
+  "storeConnections_disconnectConfirm": "断开连接？",
+  "storeConnections_disconnectMessage": "确定要断开此 {platform} 账户的连接吗？",
+  "@storeConnections_disconnectMessage": {
+    "placeholders": {
+      "platform": { "type": "String" }
+    }
+  },
+  "storeConnections_disconnectSuccess": "已成功断开连接",
+  "storeConnections_lastSynced": "上次同步：{date}",
+  "@storeConnections_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_connectedOn": "连接于 {date}",
+  "@storeConnections_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_syncApps": "同步应用",
+  "storeConnections_syncing": "同步中...",
+  "storeConnections_syncDescription": "同步将把此账户的应用标记为已拥有，从而可以回复评论。",
+  "storeConnections_syncedApps": "已同步 {count} 个应用为已拥有",
+  "storeConnections_syncFailed": "同步失败：{error}",
+  "storeConnections_errorLoading": "加载连接时出错：{error}",
+
+  "reviewsInbox_title": "收件箱",
+  "reviewsInbox_filterUnanswered": "未回复",
+  "reviewsInbox_filterNegative": "负面",
+  "reviewsInbox_noReviews": "未找到评论",
+  "reviewsInbox_noReviewsDesc": "尝试调整您的筛选条件",
+  "reviewsInbox_reply": "回复",
+  "reviewsInbox_responded": "已回复",
+  "reviewsInbox_respondedAt": "回复于 {date}",
+  "@reviewsInbox_respondedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "reviewsInbox_replyModalTitle": "回复评论",
+  "reviewsInbox_generateAi": "生成 AI 建议",
+  "reviewsInbox_generating": "生成中...",
+  "reviewsInbox_sendReply": "发送回复",
+  "reviewsInbox_sending": "发送中...",
+  "reviewsInbox_replyPlaceholder": "撰写您的回复...",
+  "reviewsInbox_charLimit": "{count}/5970 字符",
+  "@reviewsInbox_charLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_replySent": "回复发送成功",
+  "reviewsInbox_replyError": "发送回复失败：{error}",
+  "@reviewsInbox_replyError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_aiError": "生成建议失败：{error}",
+  "@reviewsInbox_aiError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_stars": "{count} 星",
+  "@reviewsInbox_stars": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_totalReviews": "评论总数",
+  "reviewsInbox_unanswered": "未回复",
+  "reviewsInbox_positive": "正面",
+  "reviewsInbox_avgRating": "平均评分",
+  "reviewsInbox_sentimentOverview": "情感概览",
+  "reviewsInbox_aiSuggestions": "AI 建议",
+  "reviewsInbox_regenerate": "重新生成",
+  "reviewsInbox_toneProfessional": "专业",
+  "reviewsInbox_toneEmpathetic": "同理心",
+  "reviewsInbox_toneBrief": "简洁",
+  "reviewsInbox_selectTone": "选择语气：",
+  "reviewsInbox_detectedIssues": "检测到的问题：",
+  "reviewsInbox_aiPrompt": "点击「生成 AI 建议」以获取3种不同语气的回复建议",
+
+  "reviewIntelligence_title": "评论智能",
+  "reviewIntelligence_featureRequests": "功能请求",
+  "reviewIntelligence_bugReports": "问题报告",
+  "reviewIntelligence_sentimentByVersion": "各版本情感",
+  "reviewIntelligence_openFeatures": "待处理功能",
+  "reviewIntelligence_openBugs": "待处理问题",
+  "reviewIntelligence_highPriority": "高优先级",
+  "reviewIntelligence_total": "总计",
+  "reviewIntelligence_mentions": "提及",
+  "reviewIntelligence_noData": "暂无洞察",
+  "reviewIntelligence_noDataHint": "分析评论后将显示洞察",
 
   "analytics_title": "分析",
   "analytics_downloads": "下载",
@@ -481,5 +809,709 @@
       "date": { "type": "String" }
     }
   },
-  "analytics_export": "导出 CSV"
+  "analytics_export": "导出 CSV",
+
+  "funnel_title": "转化漏斗",
+  "funnel_impressions": "展示次数",
+  "funnel_pageViews": "页面浏览",
+  "funnel_downloads": "下载",
+  "funnel_overallCvr": "整体转化率",
+  "funnel_categoryAvg": "分类平均",
+  "funnel_vsCategory": "对比分类",
+  "funnel_bySource": "按来源",
+  "funnel_noData": "无漏斗数据",
+  "funnel_noDataHint": "漏斗数据将从 App Store Connect 或 Google Play Console 自动同步。",
+  "funnel_insight": "洞察",
+  "funnel_insightText": "{bestSource} 流量的转化率是 {worstSource} 的 {ratio} 倍。{recommendation}",
+  "@funnel_insightText": {
+    "placeholders": {
+      "bestSource": { "type": "String" },
+      "ratio": { "type": "String" },
+      "worstSource": { "type": "String" },
+      "recommendation": { "type": "String" }
+    }
+  },
+  "funnel_insightRecommendSearch": "专注于关键词优化以增加搜索展示。",
+  "funnel_insightRecommendBrowse": "通过优化分类和推荐位置提高应用在浏览中的可见度。",
+  "funnel_insightRecommendReferral": "利用推荐计划和合作伙伴关系带来更多流量。",
+  "funnel_insightRecommendAppReferrer": "考虑与互补应用进行交叉推广策略。",
+  "funnel_insightRecommendWebReferrer": "优化您的网站和落地页以促进下载。",
+  "funnel_insightRecommendDefault": "分析此来源表现良好的原因并加以复制。",
+  "funnel_trendTitle": "转化率趋势",
+  "funnel_connectStore": "连接商店",
+
+  "chat_title": "AI 助手",
+  "chat_newConversation": "新对话",
+  "chat_loadingConversations": "正在加载对话...",
+  "chat_loadingMessages": "正在加载消息...",
+  "chat_noConversations": "暂无对话",
+  "chat_noConversationsDesc": "开始新对话以获取关于您应用的 AI 洞察",
+  "chat_startConversation": "开始对话",
+  "chat_deleteConversation": "删除对话",
+  "chat_deleteConversationConfirm": "确定要删除此对话吗？",
+  "chat_askAnything": "向我提问",
+  "chat_askAnythingDesc": "我可以帮助您了解应用的评论、排名和分析",
+  "chat_typeMessage": "输入您的问题...",
+  "chat_suggestedQuestions": "推荐问题",
+
+  "chatActionConfirm": "确认",
+  "chatActionCancel": "取消",
+  "chatActionExecuting": "执行中...",
+  "chatActionExecuted": "已完成",
+  "chatActionFailed": "失败",
+  "chatActionCancelled": "已取消",
+  "chatActionDownload": "下载",
+  "chatActionReversible": "此操作可以撤销",
+
+  "chatActionAddKeywords": "添加关键词",
+  "chatActionRemoveKeywords": "移除关键词",
+  "chatActionCreateAlert": "创建警报",
+  "chatActionAddCompetitor": "添加竞争对手",
+  "chatActionExportData": "导出数据",
+
+  "chatActionKeywords": "关键词",
+  "chatActionCountry": "国家",
+  "chatActionAlertCondition": "条件",
+  "chatActionNotifyVia": "通知方式",
+  "chatActionCompetitor": "竞争对手",
+  "chatActionExportType": "导出类型",
+  "chatActionDateRange": "日期范围",
+  "chatActionKeywordsLabel": "关键词",
+  "chatActionAnalyticsLabel": "分析数据",
+  "chatActionReviewsLabel": "评论",
+
+  "dateRange_title": "日期范围",
+  "dateRange_today": "今天",
+  "dateRange_yesterday": "昨天",
+  "dateRange_last7Days": "最近7天",
+  "dateRange_last30Days": "最近30天",
+  "dateRange_thisMonth": "本月",
+  "dateRange_lastMonth": "上月",
+  "dateRange_last90Days": "最近90天",
+  "dateRange_yearToDate": "年初至今",
+  "dateRange_allTime": "全部",
+  "dateRange_custom": "自定义...",
+  "dateRange_compareToPrevious": "与上一周期对比",
+
+  "export_keywordsTitle": "导出关键词",
+  "export_reviewsTitle": "导出评论",
+  "export_analyticsTitle": "导出分析数据",
+  "export_columnsToInclude": "包含的列：",
+  "export_button": "导出",
+  "export_keyword": "关键词",
+  "export_position": "排名",
+  "export_change": "变化",
+  "export_popularity": "热度",
+  "export_difficulty": "难度",
+  "export_tags": "标签",
+  "export_notes": "笔记",
+  "export_trackedSince": "追踪时间",
+  "export_date": "日期",
+  "export_rating": "评分",
+  "export_author": "作者",
+  "export_title": "标题",
+  "export_content": "内容",
+  "export_country": "国家",
+  "export_version": "版本",
+  "export_sentiment": "情感",
+  "export_response": "我们的回复",
+  "export_responseDate": "回复日期",
+  "export_keywordsCount": "将导出 {count} 个关键词",
+  "@export_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_reviewsCount": "将导出 {count} 条评论",
+  "@export_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_success": "导出已保存：{filename}",
+  "@export_success": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "export_error": "导出失败：{error}",
+  "@export_error": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "metadata_editor": "元数据编辑器",
+  "metadata_selectLocale": "选择要编辑的语言",
+  "metadata_refreshed": "元数据已从商店刷新",
+  "metadata_connectRequired": "需要连接才能编辑",
+  "metadata_connectDescription": "连接您的 App Store Connect 账户以直接从 Keyrank 编辑应用元数据。",
+  "metadata_connectStore": "连接 App Store",
+  "metadata_publishTitle": "发布元数据",
+  "metadata_publishConfirm": "发布 {locale} 的更改？这将更新您在 App Store 上的应用列表。",
+  "@metadata_publishConfirm": {
+    "placeholders": {
+      "locale": { "type": "String" }
+    }
+  },
+  "metadata_publish": "发布",
+  "metadata_publishSuccess": "元数据发布成功",
+  "metadata_saveDraft": "保存草稿",
+  "metadata_draftSaved": "草稿已保存",
+  "metadata_discardChanges": "放弃更改",
+  "metadata_title": "标题",
+  "metadata_titleHint": "应用名称（最多 {limit} 字符）",
+  "@metadata_titleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_subtitle": "副标题",
+  "metadata_subtitleHint": "简短标语（最多 {limit} 字符）",
+  "@metadata_subtitleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_keywords": "关键词",
+  "metadata_keywordsHint": "用逗号分隔的关键词（最多 {limit} 字符）",
+  "@metadata_keywordsHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_description": "描述",
+  "metadata_descriptionHint": "应用完整描述（最多 {limit} 字符）",
+  "@metadata_descriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_promotionalText": "推广文案",
+  "metadata_promotionalTextHint": "简短推广信息（最多 {limit} 字符）",
+  "@metadata_promotionalTextHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_whatsNew": "新功能",
+  "metadata_whatsNewHint": "版本说明（最多 {limit} 字符）",
+  "@metadata_whatsNewHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_charCount": "{count}/{limit}",
+  "@metadata_charCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_hasChanges": "有未保存的更改",
+  "metadata_noChanges": "无更改",
+  "metadata_keywordAnalysis": "关键词分析",
+  "metadata_keywordPresent": "存在",
+  "metadata_keywordMissing": "缺失",
+  "metadata_inTitle": "在标题中",
+  "metadata_inSubtitle": "在副标题中",
+  "metadata_inKeywords": "在关键词中",
+  "metadata_inDescription": "在描述中",
+  "metadata_history": "修改历史",
+  "metadata_noHistory": "无修改记录",
+  "metadata_localeComplete": "完整",
+  "metadata_localeIncomplete": "不完整",
+  "metadata_shortDescription": "简短描述",
+  "metadata_shortDescriptionHint": "搜索中显示的标语（最多 {limit} 字符）",
+  "@metadata_shortDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_fullDescription": "完整描述",
+  "metadata_fullDescriptionHint": "应用完整描述（最多 {limit} 字符）",
+  "@metadata_fullDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_releaseNotes": "版本说明",
+  "metadata_releaseNotesHint": "此版本的新功能（最多 {limit} 字符）",
+  "@metadata_releaseNotesHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_selectAppFirst": "请选择应用",
+  "metadata_selectAppHint": "使用侧边栏中的应用选择器或连接商店以开始。",
+  "metadata_noStoreConnection": "需要商店连接",
+  "metadata_noStoreConnectionDesc": "连接您的 {storeName} 账户以获取和编辑应用元数据。",
+  "@metadata_noStoreConnectionDesc": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_connectStoreButton": "连接 {storeName}",
+  "@metadata_connectStoreButton": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_aiOptimize": "AI 优化",
+
+  "metadataLocalization": "本地化",
+  "metadataLive": "已上线",
+  "metadataDraft": "草稿",
+  "metadataEmpty": "空",
+  "metadataCoverageInsight": "{count} 个语言需要内容。考虑为您的主要市场进行本地化。",
+  "@metadataCoverageInsight": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataFilterAll": "全部",
+  "metadataFilterLive": "已上线",
+  "metadataFilterDraft": "草稿",
+  "metadataFilterEmpty": "空",
+  "metadataBulkActions": "批量操作",
+  "metadataCopyTo": "复制到所选",
+  "metadataTranslateTo": "翻译到所选",
+  "metadataPublishSelected": "发布所选",
+  "metadataDeleteDrafts": "删除草稿",
+  "metadataSelectSource": "选择源语言",
+  "metadataSelectTarget": "选择目标语言",
+  "metadataCopySuccess": "内容已复制到 {count} 个语言",
+  "@metadataCopySuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslateSuccess": "已翻译到 {count} 个语言",
+  "@metadataTranslateSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslating": "正在翻译...",
+  "metadataNoSelection": "请先选择语言",
+  "metadataSelectAll": "全选",
+  "metadataDeselectAll": "取消全选",
+  "metadataSelected": "已选择 {count} 个",
+  "@metadataSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTableView": "表格视图",
+  "metadataListView": "列表视图",
+  "metadataStatus": "状态",
+  "metadataCompletion": "完成度",
+
+  "wizard_title": "AI 优化向导",
+  "wizard_step": "步骤",
+  "wizard_of": "/",
+  "wizard_stepTitle": "标题",
+  "wizard_stepSubtitle": "副标题",
+  "wizard_stepKeywords": "关键词",
+  "wizard_stepDescription": "描述",
+  "wizard_stepReview": "审核并保存",
+  "wizard_skip": "跳过",
+  "wizard_saveDrafts": "保存草稿",
+  "wizard_draftsSaved": "草稿保存成功",
+  "wizard_exitTitle": "退出向导？",
+  "wizard_exitMessage": "您有未保存的更改。确定要退出吗？",
+  "wizard_exitConfirm": "退出",
+  "wizard_aiSuggestions": "AI 建议",
+  "wizard_chooseSuggestion": "选择 AI 生成的建议或自行编写",
+  "wizard_currentValue": "当前值",
+  "wizard_noCurrentValue": "未设置值",
+  "wizard_contextInfo": "基于 {keywordsCount} 个追踪的关键词和 {competitorsCount} 个竞争对手",
+  "@wizard_contextInfo": {
+    "placeholders": {
+      "keywordsCount": { "type": "int" },
+      "competitorsCount": { "type": "int" }
+    }
+  },
+  "wizard_writeOwn": "自行编写",
+  "wizard_customPlaceholder": "输入您的自定义值...",
+  "wizard_useCustom": "使用自定义",
+  "wizard_keepCurrent": "保留当前",
+  "wizard_recommended": "推荐",
+  "wizard_characters": "字符",
+  "wizard_reviewTitle": "审核更改",
+  "wizard_reviewDescription": "在保存为草稿之前审核您的优化",
+  "wizard_noChanges": "未选择更改",
+  "wizard_noChangesHint": "返回并选择要优化的字段的建议",
+  "wizard_changesCount": "已更新 {count} 个字段",
+  "@wizard_changesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wizard_changesSummary": "这些更改将保存为草稿",
+  "wizard_before": "之前",
+  "wizard_after": "之后",
+  "wizard_nextStepsTitle": "接下来会发生什么？",
+  "wizard_nextStepsWithChanges": "您的更改将保存为草稿。您可以在元数据编辑器中审核并发布它们。",
+  "wizard_nextStepsNoChanges": "没有要保存的更改。返回并选择建议以优化您的元数据。",
+
+  "team_title": "团队管理",
+  "team_createTeam": "创建团队",
+  "team_teamName": "团队名称",
+  "team_teamNameHint": "输入团队名称",
+  "team_description": "描述（可选）",
+  "team_descriptionHint": "这个团队是做什么的？",
+  "team_teamNameRequired": "团队名称是必需的",
+  "team_teamNameMinLength": "团队名称至少需要2个字符",
+  "team_inviteMember": "邀请团队成员",
+  "team_emailAddress": "电子邮件地址",
+  "team_emailHint": "colleague@example.com",
+  "team_emailRequired": "电子邮件是必需的",
+  "team_emailInvalid": "请输入有效的电子邮件地址",
+  "team_invitationSent": "已向 {email} 发送邀请",
+  "@team_invitationSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "team_members": "成员",
+  "team_invite": "邀请",
+  "team_pendingInvitations": "待处理的邀请",
+  "team_noPendingInvitations": "没有待处理的邀请",
+  "team_teamSettings": "团队设置",
+  "team_changeRole": "更改 {name} 的角色",
+  "@team_changeRole": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_removeMember": "移除成员",
+  "team_removeMemberConfirm": "确定要将 {name} 从此团队中移除吗？",
+  "@team_removeMemberConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_remove": "移除",
+  "team_leaveTeam": "离开团队",
+  "team_leaveTeamConfirm": "确定要离开「{teamName}」吗？",
+  "@team_leaveTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_leave": "离开",
+  "team_deleteTeam": "删除团队",
+  "team_deleteTeamConfirm": "确定要删除「{teamName}」吗？此操作无法撤消。",
+  "@team_deleteTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_yourTeams": "您的团队",
+  "team_failedToLoadTeam": "无法加载团队",
+  "team_failedToLoadMembers": "无法加载成员",
+  "team_failedToLoadInvitations": "无法加载邀请",
+  "team_memberCount": "{count}个成员",
+  "@team_memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "team_invitedAs": "邀请为{role}",
+  "@team_invitedAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
+  "team_joinedTeam": "已加入{teamName}",
+  "@team_joinedTeam": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_invitationDeclined": "邀请已拒绝",
+  "team_noTeamsYet": "还没有团队",
+  "team_noTeamsDescription": "创建团队以与他人协作开发应用",
+  "team_createFirstTeam": "创建您的第一个团队",
+
+  "integrations_title": "集成",
+  "integrations_syncFailed": "同步失败: {error}",
+  "@integrations_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_disconnectConfirm": "断开连接？",
+  "integrations_disconnectedSuccess": "已成功断开连接",
+  "integrations_connectGooglePlay": "连接 Google Play Console",
+  "integrations_connectAppStore": "连接 App Store Connect",
+  "integrations_connectedApps": "已连接！导入了 {count} 个应用。",
+  "@integrations_connectedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_syncedApps": "已同步 {count} 个应用为所有者",
+  "@integrations_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnected": "App Store Connect 连接成功！",
+  "integrations_googlePlayConnected": "Google Play Console 连接成功！",
+
+  "alertBuilder_nameYourRule": "命名您的规则",
+  "alertBuilder_nameDescription": "为您的警报规则起一个描述性的名称",
+  "alertBuilder_nameHint": "例如：每日排名警报",
+  "alertBuilder_summary": "摘要",
+  "alertBuilder_saveAlertRule": "保存警报规则",
+  "alertBuilder_selectAlertType": "选择警报类型",
+  "alertBuilder_selectAlertTypeDescription": "选择您要创建的警报类型",
+  "alertBuilder_deleteRuleConfirm": "这将删除「{ruleName}」。",
+  "@alertBuilder_deleteRuleConfirm": {
+    "placeholders": {
+      "ruleName": { "type": "String" }
+    }
+  },
+  "alertBuilder_activateTemplateOrCreate": "还没有规则。激活模板或创建您自己的规则！",
+
+  "billing_cancelSubscription": "取消订阅",
+  "billing_keepSubscription": "保留订阅",
+  "billing_billingPortal": "账单门户",
+  "billing_resume": "恢复",
+
+  "keywords_noCompetitorsFound": "未找到竞争对手。请先添加竞争对手。",
+  "keywords_noCompetitorsForApp": "此应用没有竞争对手。请先添加竞争对手。",
+  "keywords_failedToAddKeywords": "添加关键词失败: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_bulkAddHint": "预算追踪器\n支出管理器\n理财应用",
+
+  "appOverview_urlCopied": "商店 URL 已复制到剪贴板",
+
+  "country_us": "美国",
+  "country_gb": "英国",
+  "country_fr": "法国",
+  "country_de": "德国",
+  "country_ca": "加拿大",
+  "country_au": "澳大利亚",
+  "country_jp": "日本",
+  "country_cn": "中国",
+  "country_kr": "韩国",
+  "country_br": "巴西",
+  "country_es": "西班牙",
+  "country_it": "意大利",
+
+  "countryCode_us": "🇺🇸 US",
+  "countryCode_gb": "🇬🇧 UK",
+  "countryCode_fr": "🇫🇷 FR",
+  "countryCode_de": "🇩🇪 DE",
+  "countryCode_ca": "🇨🇦 CA",
+  "countryCode_au": "🇦🇺 AU",
+
+  "alertBuilder_type": "类型",
+  "alertBuilder_scope": "范围",
+  "alertBuilder_name": "名称",
+  "alertBuilder_scopeGlobal": "所有应用",
+  "alertBuilder_scopeApp": "特定应用",
+  "alertBuilder_scopeCategory": "分类",
+  "alertBuilder_scopeKeyword": "关键词",
+
+  "alertType_positionChange": "排名变动",
+  "alertType_positionChangeDesc": "当应用排名发生显著变化时提醒",
+  "alertType_ratingChange": "评分变动",
+  "alertType_ratingChangeDesc": "当应用评分变动时提醒",
+  "alertType_reviewSpike": "评论激增",
+  "alertType_reviewSpikeDesc": "当出现异常评论活动时提醒",
+  "alertType_reviewKeyword": "评论关键词",
+  "alertType_reviewKeywordDesc": "当关键词出现在评论中时提醒",
+  "alertType_newCompetitor": "新竞争者",
+  "alertType_newCompetitorDesc": "当新应用进入您的领域时提醒",
+  "alertType_competitorPassed": "超越竞争者",
+  "alertType_competitorPassedDesc": "当您超越竞争者时提醒",
+  "alertType_massMovement": "大规模变动",
+  "alertType_massMovementDesc": "当排名发生大规模变动时提醒",
+  "alertType_keywordTrend": "关键词趋势",
+  "alertType_keywordTrendDesc": "当关键词热度变动时提醒",
+  "alertType_opportunity": "机会",
+  "alertType_opportunityDesc": "当出现新的排名机会时提醒",
+
+  "billing_title": "账单与套餐",
+  "billing_subscriptionActivated": "订阅已成功激活！",
+  "billing_changePlan": "更换套餐",
+  "billing_choosePlan": "选择套餐",
+  "billing_cancelMessage": "您的订阅将在当前计费周期结束前保持有效。之后，您将失去高级功能的访问权限。",
+  "billing_currentPlan": "当前套餐",
+  "billing_trial": "试用",
+  "billing_canceling": "取消中",
+  "billing_accessUntil": "访问有效期至 {date}",
+  "@billing_accessUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_renewsOn": "{date} 续订",
+  "@billing_renewsOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_manageSubscription": "管理订阅",
+  "billing_monthly": "月付",
+  "billing_yearly": "年付",
+  "billing_savePercent": "节省 {percent}%",
+  "@billing_savePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "billing_current": "当前",
+  "billing_apps": "应用",
+  "billing_unlimited": "无限制",
+  "billing_keywordsPerApp": "每应用关键词",
+  "billing_history": "历史",
+  "billing_days": "{count} 天",
+  "@billing_days": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "billing_exports": "导出",
+  "billing_aiInsights": "AI 分析",
+  "billing_apiAccess": "API 访问",
+  "billing_yes": "是",
+  "billing_no": "否",
+  "billing_currentPlanButton": "当前套餐",
+  "billing_upgradeTo": "升级到 {planName}",
+  "@billing_upgradeTo": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "billing_cancel": "取消",
+
+  "keywords_compareWithCompetitor": "与竞争者比较",
+  "keywords_selectCompetitorToCompare": "选择要比较关键词的竞争者：",
+  "keywords_noCompetitorsFound": "未找到竞争者。请先添加竞争者。",
+  "keywords_noCompetitorsForApp": "此应用没有竞争者。请先添加竞争者。",
+  "keywords_failedToAddKeywords": "添加关键词失败：{error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_addToCompetitor": "添加到竞争者",
+  "keywords_addKeywordsTo": "添加 {count} 个关键词到：",
+  "@keywords_addKeywordsTo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywords_avgPosition": "平均排名",
+  "keywords_declined": "下降",
+  "keywords_total": "总计",
+  "keywords_ranked": "已排名",
+  "keywords_improved": "上升",
+
+  "settings_alertDelivery": "警报推送",
+  "settings_team": "团队",
+  "settings_teamManagement": "团队管理",
+  "settings_manageTeam": "管理成员、角色和权限",
+  "settings_storeConnections": "商店连接",
+  "settings_connectStores": "连接 App Store Connect 和 Google Play",
+  "settings_integrations": "集成",
+  "settings_connectServices": "连接第三方服务",
+  "settings_helpSupport": "帮助与支持",
+  "settings_documentation": "文档",
+  "settings_viewDocs": "查看指南和教程",
+
+  "onboarding_skip": "跳过",
+  "onboarding_next": "下一步",
+  "onboarding_getStarted": "开始",
+  "onboarding_welcomeToKeyrank": "欢迎使用 Keyrank",
+  "onboarding_welcomeDesc": "优化应用商店可见度的完整平台",
+  "onboarding_trackKeywordsTitle": "追踪关键词",
+  "onboarding_trackKeywordsDesc": "在多个应用商店中监控您的应用在重要搜索词上的排名",
+  "onboarding_analyzeCompetitorsTitle": "分析竞争对手",
+  "onboarding_analyzeCompetitorsDesc": "关注您的竞争对手，发现新的改进机会",
+  "onboarding_getInsightsTitle": "获取洞察",
+  "onboarding_getInsightsDesc": "获得可操作的建议，提升您的应用商店表现",
+
+  "team_you": "你",
+
+  "competitors_all": "全部",
+  "competitors_tracked": "已追踪",
+  "competitors_filterByStore": "按商店筛选",
+  "competitors_allStores": "所有商店",
+  "competitors_removeCompetitor": "移除竞争对手",
+  "competitors_removeConfirm": "确定要将「{name}」从竞争对手中移除吗？",
+  "@competitors_removeConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_noCompetitorsTitle": "暂无竞争对手",
+  "competitors_noCompetitorsMessage": "您还没有追踪任何竞争对手。添加一些来监控他们的排名。",
+  "competitors_errorLoading": "加载竞争对手时出错",
+  "competitors_addedSuccess": "{name} 已添加为竞争对手",
+  "@competitors_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_addFailed": "添加竞争对手失败：{error}",
+  "@competitors_addFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_noAppsMessage": "请先选择一个应用来追踪竞争对手。",
+
+  "appPreview_rankings": "排名",
+  "appPreview_reviews": "评价",
+  "appPreview_price": "价格",
+  "appPreview_free": "免费",
+  "appPreview_developer": "开发者",
+  "appPreview_released": "发布日期",
+  "appPreview_lastUpdate": "最近更新",
+  "appPreview_notAvailable": "N/A",
+  "appPreview_expandDescription": "展开描述",
+  "appPreview_collapseDescription": "收起描述",
+
+  "alerts_scopeGlobal": "全局",
+  "alerts_scopeApp": "应用",
+  "alerts_scopeCategory": "分类",
+  "alerts_scopeKeyword": "关键词",
+  "alerts_edit": "编辑",
+
+  "ratings_pageInfo": "第 {current} 页，共 {total} 页",
+  "@ratings_pageInfo": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "ratings_noMoreReviews": "没有更多评价了",
+
+  "insights_viewMore": "查看更多 {count} 条洞察",
+  "@insights_viewMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_noInsightsYet": "暂无洞察",
+  "insights_noInsightsDesc": "当我们发现您应用的优化机会时，洞察将在此显示。",
+  "insights_loadFailed": "加载洞察失败",
+
+  "chat_enterMessage": "输入消息...",
+  "chat_aiDisclaimer": "AI 回复可能包含错误。请务必验证重要信息。",
+  "chat_conversationError": "加载对话时出错",
+
+  "notifications_title": "通知",
+  "notifications_markAllRead": "全部标为已读",
+  "notifications_clearAll": "清除全部"
 }

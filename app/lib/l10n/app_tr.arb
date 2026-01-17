@@ -1,91 +1,134 @@
 {
   "@@locale": "tr",
 
-  "appTagline": "App Store sıralamalarınızı takip edin",
+  "appTagline": "App Store siralamalarinizi takip edin",
 
-  "auth_welcomeBack": "Tekrar hoş geldiniz",
-  "auth_signInSubtitle": "Hesabınıza giriş yapın",
-  "auth_createAccount": "Hesap oluştur",
-  "auth_createAccountSubtitle": "Sıralamalarınızı takip etmeye başlayın",
+  "auth_welcomeBack": "Tekrar hos geldiniz",
+  "auth_signInSubtitle": "Hesabiniza giris yapin",
+  "auth_createAccount": "Hesap olustur",
+  "auth_createAccountSubtitle": "Siralamalarinizi takip etmeye baslayin",
   "auth_emailLabel": "E-posta",
-  "auth_passwordLabel": "Şifre",
-  "auth_nameLabel": "İsim",
-  "auth_confirmPasswordLabel": "Şifreyi onayla",
-  "auth_signInButton": "Giriş yap",
-  "auth_signUpButton": "Hesap oluştur",
-  "auth_noAccount": "Hesabınız yok mu?",
-  "auth_hasAccount": "Zaten hesabınız var mı?",
-  "auth_signUpLink": "Kayıt ol",
-  "auth_signInLink": "Giriş yap",
-  "auth_emailRequired": "Lütfen e-postanızı girin",
-  "auth_emailInvalid": "Geçersiz e-posta",
-  "auth_passwordRequired": "Lütfen şifrenizi girin",
-  "auth_enterPassword": "Lütfen bir şifre girin",
-  "auth_nameRequired": "Lütfen adınızı girin",
-  "auth_passwordMinLength": "Şifre en az 8 karakter olmalıdır",
-  "auth_passwordsNoMatch": "Şifreler eşleşmiyor",
-  "auth_errorOccurred": "Bir hata oluştu",
+  "auth_passwordLabel": "Sifre",
+  "auth_nameLabel": "Ad",
+  "auth_confirmPasswordLabel": "Sifreyi onayla",
+  "auth_signInButton": "Giris yap",
+  "auth_signUpButton": "Hesap olustur",
+  "auth_noAccount": "Hesabiniz yok mu?",
+  "auth_hasAccount": "Zaten hesabiniz var mi?",
+  "auth_signUpLink": "Kayit ol",
+  "auth_signInLink": "Giris yap",
+  "auth_emailRequired": "Lutfen e-postanizi girin",
+  "auth_emailInvalid": "Gecersiz e-posta",
+  "auth_passwordRequired": "Lutfen sifrenizi girin",
+  "auth_enterPassword": "Lutfen bir sifre girin",
+  "auth_nameRequired": "Lutfen adinizi girin",
+  "auth_passwordMinLength": "Sifre en az 8 karakter olmalidir",
+  "auth_passwordsNoMatch": "Sifreler eslesmiyor",
+  "auth_errorOccurred": "Bir hata olustu",
 
   "common_retry": "Tekrar dene",
   "common_error": "Hata: {message}",
-  "common_loading": "Yükleniyor...",
+  "@common_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "common_loading": "Yukleniyor...",
   "common_add": "Ekle",
   "common_filter": "Filtrele",
-  "common_sort": "Sırala",
+  "common_sort": "Sirala",
   "common_refresh": "Yenile",
   "common_settings": "Ayarlar",
   "common_search": "Ara...",
-  "common_noResults": "Sonuç bulunamadı",
+  "common_noResults": "Sonuc bulunamadi",
+  "common_save": "Kaydet",
+  "common_cancel": "Iptal",
+  "common_delete": "Sil",
+  "common_back": "Geri",
+  "common_next": "Ileri",
+  "common_edit": "Duzenle",
 
   "dashboard_title": "Kontrol Paneli",
   "dashboard_addApp": "Uygulama ekle",
   "dashboard_appsTracked": "Takip edilen uygulamalar",
   "dashboard_keywords": "Anahtar kelimeler",
-  "dashboard_avgPosition": "Ort. Sıralama",
-  "dashboard_top10": "İlk 10",
+  "dashboard_avgPosition": "Ortalama siralama",
+  "dashboard_top10": "Ilk 10",
   "dashboard_trackedApps": "Takip edilen uygulamalar",
-  "dashboard_quickActions": "Hızlı işlemler",
+  "dashboard_quickActions": "Hizli islemler",
   "dashboard_addNewApp": "Yeni uygulama ekle",
   "dashboard_searchKeywords": "Anahtar kelime ara",
-  "dashboard_viewAllApps": "Tüm uygulamaları görüntüle",
-  "dashboard_noAppsYet": "Henüz takip edilen uygulama yok",
-  "dashboard_addAppToStart": "Anahtar kelimeleri takip etmeye başlamak için bir uygulama ekleyin",
-  "dashboard_noAppsMatchFilter": "Filtreyle eşleşen uygulama yok",
-  "dashboard_changeFilterCriteria": "Filtre kriterlerini değiştirmeyi deneyin",
+  "dashboard_viewAllApps": "Tum uygulamalari goruntule",
+  "dashboard_noAppsYet": "Henuz takip edilen uygulama yok",
+  "dashboard_addAppToStart": "Anahtar kelimeleri takip etmeye baslamak icin bir uygulama ekleyin",
+  "dashboard_noAppsMatchFilter": "Filtreyle eslesen uygulama yok",
+  "dashboard_changeFilterCriteria": "Filtre kriterlerini degistirmeyi deneyin",
+  "dashboard_reviews": "Yorumlar",
+  "dashboard_avgRating": "Ortalama puan",
+  "dashboard_topPerformingApps": "En basarili uygulamalar",
+  "dashboard_topCountries": "En onemli ulkeler",
+  "dashboard_sentimentOverview": "Duygu analizi ozeti",
+  "dashboard_overallSentiment": "Genel duygu",
+  "dashboard_positive": "Olumlu",
+  "dashboard_positiveReviews": "Olumlu",
+  "dashboard_negativeReviews": "Olumsuz",
+  "dashboard_viewReviews": "Yorumlari goruntule",
+  "dashboard_tableApp": "UYGULAMA",
+  "dashboard_tableKeywords": "ANAHTAR KELIMELER",
+  "dashboard_tableAvgRank": "ORT. SIRALAMA",
+  "dashboard_tableTrend": "EGILIM",
+  "dashboard_connectYourStores": "Magazalarinizi baglayiniz",
+  "dashboard_connectStoresDescription": "Uygulamalarinizi ice aktarmak ve yorumlara yanit vermek icin App Store Connect veya Google Play hesabinizi baglayiniz.",
+  "dashboard_connect": "Bagla",
 
-  "apps_title": "Uygulamalarım",
+  "apps_title": "Uygulamalarim",
   "apps_appCount": "{count} uygulama",
+  "@apps_appCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "apps_tableApp": "UYGULAMA",
-  "apps_tableDeveloper": "GELİŞTİRİCİ",
-  "apps_tableKeywords": "ANAHTAR KELİMELER",
+  "apps_tableDeveloper": "GELISTIRICI",
+  "apps_tableKeywords": "ANAHTAR KELIMELER",
   "apps_tablePlatform": "PLATFORM",
   "apps_tableRating": "PUAN",
-  "apps_tableBestRank": "EN İYİ SIRALAMA",
-  "apps_noAppsYet": "Henüz takip edilen uygulama yok",
-  "apps_addAppToStart": "Sıralamalarını takip etmeye başlamak için bir uygulama ekleyin",
+  "apps_tableBestRank": "EN IYI SIRALAMA",
+  "apps_noAppsYet": "Henuz takip edilen uygulama yok",
+  "apps_addAppToStart": "Siralamalari takip etmeye baslamak icin bir uygulama ekleyin",
 
   "addApp_title": "Uygulama Ekle",
   "addApp_searchAppStore": "App Store'da ara...",
   "addApp_searchPlayStore": "Play Store'da ara...",
   "addApp_searchForApp": "Uygulama ara",
   "addApp_enterAtLeast2Chars": "En az 2 karakter girin",
-  "addApp_noResults": "Sonuç bulunamadı",
-  "addApp_addedSuccess": "{name} başarıyla eklendi",
+  "addApp_noResults": "Sonuc bulunamadi",
+  "addApp_addedSuccess": "{name} basariyla eklendi",
+  "@addApp_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
 
   "settings_title": "Ayarlar",
   "settings_language": "Dil",
-  "settings_appearance": "Görünüm",
+  "settings_appearance": "Gorunum",
   "settings_theme": "Tema",
   "settings_themeSystem": "Sistem",
   "settings_themeDark": "Koyu",
-  "settings_themeLight": "Açık",
+  "settings_themeLight": "Acik",
   "settings_account": "Hesap",
-  "settings_memberSince": "Üyelik tarihi",
-  "settings_logout": "Çıkış yap",
+  "settings_memberSince": "Uyelik tarihi",
+  "settings_logout": "Cikis yap",
   "settings_languageSystem": "Sistem",
+  "settings_notifications": "BILDIRIMLER",
+  "settings_manageAlerts": "Uyari kurallarini yonet",
+  "settings_manageAlertsDesc": "Hangi uyarilari alacaginizi yapilandirin",
+  "settings_storeConnections": "Magaza baglantilari",
+  "settings_storeConnectionsDesc": "App Store ve Google Play hesaplarinizi baglayiniz",
 
-  "filter_all": "Tümü",
-  "filter_allApps": "Tüm uygulamalar",
+  "filter_all": "Tumu",
+  "filter_allApps": "Tum uygulamalar",
   "filter_ios": "iOS",
   "filter_iosOnly": "Sadece iOS",
   "filter_android": "Android",
@@ -94,79 +137,109 @@
 
   "sort_recent": "Son",
   "sort_recentlyAdded": "Son eklenen",
-  "sort_nameAZ": "İsim A-Z",
-  "sort_nameZA": "İsim Z-A",
+  "sort_nameAZ": "Ad A-Z",
+  "sort_nameZA": "Ad Z-A",
   "sort_keywords": "Anahtar kelimeler",
-  "sort_mostKeywords": "En çok anahtar kelime",
-  "sort_bestRank": "En iyi sıralama",
+  "sort_mostKeywords": "En cok anahtar kelime",
+  "sort_bestRank": "En iyi siralama",
 
-  "userMenu_logout": "Çıkış yap",
+  "userMenu_logout": "Cikis yap",
 
-  "insights_compareTitle": "İçgörüleri Karşılaştır",
+  "insights_compareTitle": "Analizleri karsilastir",
   "insights_analyzingReviews": "Yorumlar analiz ediliyor...",
-  "insights_noInsightsAvailable": "İçgörü mevcut değil",
-  "insights_strengths": "Güçlü Yönler",
-  "insights_weaknesses": "Zayıf Yönler",
+  "insights_noInsightsAvailable": "Analiz mevcut degil",
+  "insights_strengths": "Guclu yonler",
+  "insights_weaknesses": "Zayif yonler",
   "insights_scores": "Puanlar",
-  "insights_opportunities": "Fırsatlar",
+  "insights_opportunities": "Firsatlar",
   "insights_categoryUx": "KD",
   "insights_categoryPerf": "Perf",
-  "insights_categoryFeatures": "Özellikler",
-  "insights_categoryPricing": "Fiyatlandırma",
+  "insights_categoryFeatures": "Ozellikler",
+  "insights_categoryPricing": "Fiyatlandirma",
   "insights_categorySupport": "Destek",
-  "insights_categoryOnboard": "Başlangıç",
-  "insights_categoryUxFull": "KD / Arayüz",
+  "insights_categoryOnboard": "Baslangic",
+  "insights_categoryUxFull": "KD / Arayuz",
   "insights_categoryPerformance": "Performans",
-  "insights_categoryOnboarding": "İlk Kullanım",
-  "insights_reviewInsights": "Yorum İçgörüleri",
-  "insights_generateFirst": "Önce içgörü oluşturun",
-  "insights_compareWithOther": "Diğer uygulamalarla karşılaştır",
-  "insights_compare": "Karşılaştır",
-  "insights_generateAnalysis": "Analiz Oluştur",
-  "insights_period": "Dönem:",
+  "insights_categoryOnboarding": "Ilk Kullanim",
+  "insights_reviewInsights": "Yorum analizleri",
+  "insights_generateFirst": "Once analiz olusturun",
+  "insights_compareWithOther": "Diger uygulamalarla karsilastir",
+  "insights_compare": "Karsilastir",
+  "insights_generateAnalysis": "Analiz olustur",
+  "insights_period": "Donem:",
   "insights_3months": "3 ay",
   "insights_6months": "6 ay",
   "insights_12months": "12 ay",
-  "insights_analyze": "Analiz Et",
+  "insights_analyze": "Analiz et",
   "insights_reviewsCount": "{count} yorum",
   "@insights_reviewsCount": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "insights_analyzedAgo": "{time} önce analiz edildi",
+  "insights_analyzedAgo": "{time} once analiz edildi",
   "@insights_analyzedAgo": {
     "placeholders": {
       "time": { "type": "String" }
     }
   },
-  "insights_yourNotes": "Notlarınız",
+  "insights_yourNotes": "Notlariniz",
   "insights_save": "Kaydet",
-  "insights_clickToAddNotes": "Not eklemek için tıklayın...",
+  "insights_clickToAddNotes": "Not eklemek icin tiklayin...",
   "insights_noteSaved": "Not kaydedildi",
-  "insights_noteHint": "Bu içgörü analizi hakkında notlarınızı ekleyin...",
-  "insights_categoryScores": "Kategori Puanları",
-  "insights_emergentThemes": "Öne Çıkan Temalar",
-  "insights_exampleQuotes": "Örnek alıntılar:",
-  "insights_selectCountryFirst": "En az bir ülke seçin",
+  "insights_noteHint": "Bu analiz hakkinda notlarinizi ekleyin...",
+  "insights_categoryScores": "Kategori puanlari",
+  "insights_emergentThemes": "One cikan temalar",
+  "insights_exampleQuotes": "Ornek alintilar:",
+  "insights_selectCountryFirst": "En az bir ulke secin",
+  "insights_title": "Analizler",
+  "insights_titleWithApp": "Analizler - {appName}",
+  "@insights_titleWithApp": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
+  "insights_allApps": "Analizler (Tum uygulamalar)",
+  "insights_noInsightsYet": "Henuz analiz olusturulmadi",
+  "insights_selectAppToGenerate": "Yorumlardan analiz olusturmak icin bir uygulama secin",
+  "insights_appsWithInsights": "{count} uygulama analizli",
+  "@insights_appsWithInsights": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_errorLoading": "Analizler yuklenirken hata olustu",
+  "insights_reviewsAnalyzed": "{count} yorum analiz edildi",
+  "@insights_reviewsAnalyzed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_avgScore": "ortalama puan",
+  "insights_updatedOn": "{date} tarihinde guncellendi",
+  "@insights_updatedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
 
-  "compare_selectAppsToCompare": "{appName} ile karşılaştırmak için en fazla 3 uygulama seçin",
+  "compare_selectAppsToCompare": "{appName} ile karsilastirmak icin en fazla 3 uygulama secin",
   "@compare_selectAppsToCompare": {
     "placeholders": {
       "appName": { "type": "String" }
     }
   },
   "compare_searchApps": "Uygulama ara...",
-  "compare_noOtherApps": "Karşılaştırılacak başka uygulama yok",
-  "compare_noMatchingApps": "Eşleşen uygulama yok",
-  "compare_appsSelected": "3 uygulamadan {count} tanesi seçildi",
+  "compare_noOtherApps": "Karsilastirilacak baska uygulama yok",
+  "compare_noMatchingApps": "Eslesen uygulama yok",
+  "compare_appsSelected": "3 uygulamadan {count} tanesi secildi",
   "@compare_appsSelected": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "compare_cancel": "İptal",
-  "compare_button": "{count} Uygulamayı Karşılaştır",
+  "compare_cancel": "Iptal",
+  "compare_button": "{count} uygulamayi karsilastir",
   "@compare_button": {
     "placeholders": {
       "count": { "type": "int" }
@@ -174,24 +247,24 @@
   },
 
   "appDetail_deleteAppTitle": "Uygulama silinsin mi?",
-  "appDetail_deleteAppConfirm": "Bu işlem geri alınamaz.",
-  "appDetail_cancel": "İptal",
+  "appDetail_deleteAppConfirm": "Bu islem geri alinamaz.",
+  "appDetail_cancel": "Iptal",
   "appDetail_delete": "Sil",
-  "appDetail_exporting": "Sıralamalar dışa aktarılıyor...",
+  "appDetail_exporting": "Siralamalar disa aktariliyor...",
   "appDetail_savedFile": "Kaydedildi: {filename}",
   "@appDetail_savedFile": {
     "placeholders": {
       "filename": { "type": "String" }
     }
   },
-  "appDetail_showInFinder": "Finder'da Göster",
-  "appDetail_exportFailed": "Dışa aktarma başarısız: {error}",
+  "appDetail_showInFinder": "Finder'da goster",
+  "appDetail_exportFailed": "Disa aktarma basarisiz: {error}",
   "@appDetail_exportFailed": {
     "placeholders": {
       "error": { "type": "String" }
     }
   },
-  "appDetail_importedKeywords": "{imported} anahtar kelime içe aktarıldı ({skipped} atlandı)",
+  "appDetail_importedKeywords": "{imported} anahtar kelime ice aktarildi ({skipped} atlandi)",
   "@appDetail_importedKeywords": {
     "placeholders": {
       "imported": { "type": "int" },
@@ -200,9 +273,9 @@
   },
   "appDetail_favorite": "Favori",
   "appDetail_ratings": "Puanlar",
-  "appDetail_insights": "İçgörüler",
-  "appDetail_import": "İçe Aktar",
-  "appDetail_export": "Dışa Aktar",
+  "appDetail_insights": "Analizler",
+  "appDetail_import": "Ice aktar",
+  "appDetail_export": "Disa aktar",
   "appDetail_reviewsCount": "{count} yorum",
   "@appDetail_reviewsCount": {
     "placeholders": {
@@ -211,22 +284,22 @@
   },
   "appDetail_keywords": "anahtar kelimeler",
   "appDetail_addKeyword": "Anahtar kelime ekle",
-  "appDetail_keywordHint": "örn. fitness takipçisi",
-  "appDetail_trackedKeywords": "Takip Edilen Anahtar Kelimeler",
-  "appDetail_selectedCount": "{count} seçildi",
+  "appDetail_keywordHint": "orn. fitness takipcisi",
+  "appDetail_trackedKeywords": "Takip edilen anahtar kelimeler",
+  "appDetail_selectedCount": "{count} secildi",
   "@appDetail_selectedCount": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "appDetail_allKeywords": "Tüm Anahtar Kelimeler",
+  "appDetail_allKeywords": "Tum anahtar kelimeler",
   "appDetail_hasTags": "Etiketli",
   "appDetail_hasNotes": "Notlu",
-  "appDetail_position": "Sıralama",
-  "appDetail_select": "Seç",
-  "appDetail_suggestions": "Öneriler",
-  "appDetail_deleteKeywordsTitle": "Anahtar Kelimeleri Sil",
-  "appDetail_deleteKeywordsConfirm": "{count} anahtar kelimeyi silmek istediğinizden emin misiniz?",
+  "appDetail_position": "Siralama",
+  "appDetail_select": "Sec",
+  "appDetail_suggestions": "Oneriler",
+  "appDetail_deleteKeywordsTitle": "Anahtar kelimeleri sil",
+  "appDetail_deleteKeywordsConfirm": "{count} anahtar kelimeyi silmek istediginizden emin misiniz?",
   "@appDetail_deleteKeywordsConfirm": {
     "placeholders": {
       "count": { "type": "int" }
@@ -246,76 +319,145 @@
       "count": { "type": "int" }
     }
   },
-  "appDetail_keywordsAddedSuccess": "Anahtar kelimeler başarıyla eklendi",
-  "appDetail_noTagsAvailable": "Etiket mevcut değil. Önce etiket oluşturun.",
+  "appDetail_keywordsAddedSuccess": "Anahtar kelimeler basariyla eklendi",
+  "appDetail_noTagsAvailable": "Etiket mevcut degil. Once etiket olusturun.",
   "appDetail_tagged": "Etiketli",
   "appDetail_withNotes": "Notlu",
-  "appDetail_nameAZ": "İsim A-Z",
-  "appDetail_nameZA": "İsim Z-A",
-  "appDetail_bestPosition": "En İyi Sıralama",
-  "appDetail_recentlyTracked": "Son Takip Edilen",
+  "appDetail_nameAZ": "Ad A-Z",
+  "appDetail_nameZA": "Ad Z-A",
+  "appDetail_bestPosition": "En iyi siralama",
+  "appDetail_recentlyTracked": "Son takip edilen",
+  "appDetail_noKeywordsTracked": "Takip edilen anahtar kelime yok",
+  "appDetail_addKeywordHint": "Takibe baslamak icin yukariya bir anahtar kelime ekleyin",
+  "appDetail_noKeywordsMatchFilter": "Filtreyle eslesen anahtar kelime yok",
+  "appDetail_tryChangingFilter": "Filtre kriterlerini degistirmeyi deneyin",
+  "appDetail_addTag": "Etiket ekle",
+  "appDetail_addNote": "Not ekle",
+  "appDetail_positionHistory": "Siralama gecmisi",
+  "appDetail_store": "MAGAZA",
+  "appDetail_manageTags": "Etiketleri yonet",
+  "appDetail_newTagHint": "Yeni etiket adi...",
+  "appDetail_availableTags": "Mevcut etiketler",
+  "appDetail_noTagsYet": "Henuz etiket yok. Yukarida bir tane olusturun.",
+  "appDetail_addTagsTitle": "Etiket ekle",
+  "appDetail_selectTagsDescription": "Secili anahtar kelimelere eklenecek etiketleri secin:",
+  "appDetail_addTagsCount": "{count} etiket ekle",
+  "@appDetail_addTagsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_currentTags": "Mevcut etiketler",
+  "appDetail_noTagsOnKeyword": "Bu anahtar kelimede etiket yok",
+  "appDetail_addExistingTag": "Mevcut etiket ekle",
+  "appDetail_allTagsUsed": "Tum etiketler zaten kullaniliyor",
+  "appDetail_createNewTag": "Yeni etiket olustur",
+  "appDetail_tagNameHint": "Etiket adi...",
+  "appDetail_note": "Not",
+  "appDetail_noteHint": "Bu anahtar kelime hakkinda bir not ekleyin...",
+  "appDetail_saveNote": "Notu kaydet",
+  "appDetail_done": "Tamamlandi",
+  "appDetail_importFailed": "Ice aktarma basarisiz: {error}",
+  "@appDetail_importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "appDetail_importKeywordsTitle": "Anahtar kelimeleri ice aktar",
+  "appDetail_pasteKeywordsHint": "Anahtar kelimeleri asagiya yapistirin, her satira bir tane:",
+  "appDetail_keywordPlaceholder": "anahtar kelime bir\nanahtar kelime iki\nanahtar kelime uc",
+  "appDetail_storefront": "Magaza:",
+  "appDetail_keywordsCount": "{count} anahtar kelime",
+  "@appDetail_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_importKeywordsCount": "{count} anahtar kelime ice aktar",
+  "@appDetail_importKeywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appDetail_period7d": "7g",
+  "appDetail_period30d": "30g",
+  "appDetail_period90d": "90g",
+  "appDetail_tabOverview": "Genel bakis",
+  "appDetail_tabKeywords": "Anahtar kelimeler",
+  "appDetail_tabReviews": "Yorumlar",
+  "appDetail_tabRatings": "Puanlar",
+  "appDetail_tabInsights": "Analizler",
 
-  "keywordSuggestions_title": "Anahtar Kelime Önerileri",
-  "keywordSuggestions_appInCountry": "{country} için {appName}",
+  "keywordSuggestions_title": "Anahtar kelime onerileri",
+  "keywordSuggestions_appInCountry": "{country} icin {appName}",
   "@keywordSuggestions_appInCountry": {
     "placeholders": {
       "appName": { "type": "String" },
       "country": { "type": "String" }
     }
   },
-  "keywordSuggestions_refresh": "Önerileri yenile",
-  "keywordSuggestions_search": "Önerilerde ara...",
-  "keywordSuggestions_selectAll": "Tümünü Seç",
+  "keywordSuggestions_refresh": "Onerileri yenile",
+  "keywordSuggestions_search": "Onerilerde ara...",
+  "keywordSuggestions_selectAll": "Tumunu sec",
   "keywordSuggestions_clear": "Temizle",
   "keywordSuggestions_analyzing": "Uygulama meta verileri analiz ediliyor...",
-  "keywordSuggestions_mayTakeFewSeconds": "Bu birkaç saniye sürebilir",
-  "keywordSuggestions_noSuggestions": "Öneri mevcut değil",
-  "keywordSuggestions_noMatchingSuggestions": "Eşleşen öneri yok",
-  "keywordSuggestions_headerKeyword": "ANAHTAR KELİME",
+  "keywordSuggestions_mayTakeFewSeconds": "Bu birkac saniye surebilir",
+  "keywordSuggestions_noSuggestions": "Oneri mevcut degil",
+  "keywordSuggestions_noMatchingSuggestions": "Eslesen oneri yok",
+  "keywordSuggestions_headerKeyword": "ANAHTAR KELIME",
   "keywordSuggestions_headerDifficulty": "ZORLUK",
   "keywordSuggestions_headerApps": "UYGULAMALAR",
-  "keywordSuggestions_rankedAt": "#{position}. sırada",
+  "keywordSuggestions_rankedAt": "#{position}. sirada",
   "@keywordSuggestions_rankedAt": {
     "placeholders": {
       "position": { "type": "int" }
     }
   },
-  "keywordSuggestions_keywordsSelected": "{count} anahtar kelime seçildi",
+  "keywordSuggestions_keywordsSelected": "{count} anahtar kelime secildi",
   "@keywordSuggestions_keywordsSelected": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "keywordSuggestions_addKeywords": "{count} Anahtar Kelime Ekle",
+  "keywordSuggestions_addKeywords": "{count} anahtar kelime ekle",
   "@keywordSuggestions_addKeywords": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "keywordSuggestions_errorAdding": "Anahtar kelime eklenirken hata oluştu: {error}",
+  "keywordSuggestions_errorAdding": "Anahtar kelime eklenirken hata olustu: {error}",
   "@keywordSuggestions_errorAdding": {
     "placeholders": {
       "error": { "type": "String" }
     }
   },
+  "keywordSuggestions_categoryAll": "Tumu",
+  "keywordSuggestions_categoryHighOpportunity": "Firsatlar",
+  "keywordSuggestions_categoryCompetitor": "Rakip anahtar kelimeleri",
+  "keywordSuggestions_categoryLongTail": "Uzun kuyruk",
+  "keywordSuggestions_categoryTrending": "Trendler",
+  "keywordSuggestions_categoryRelated": "Iliskili",
+  "keywordSuggestions_generating": "Oneriler olusturuluyor...",
+  "keywordSuggestions_generatingSubtitle": "Bu birkac dakika surebilir. Daha sonra tekrar kontrol edin.",
+  "keywordSuggestions_checkAgain": "Tekrar kontrol et",
 
-  "sidebar_favorites": "FAVORİLER",
-  "sidebar_tooManyFavorites": "5 veya daha az favori tutmayı düşünün",
+  "sidebar_favorites": "FAVORILER",
+  "sidebar_tooManyFavorites": "5 veya daha az favori tutmaya calisin",
   "sidebar_iphone": "iPHONE",
   "sidebar_android": "ANDROID",
 
-  "keywordSearch_title": "Anahtar Kelime Araştırması",
+  "keywordSearch_title": "Anahtar kelime arastirmasi",
   "keywordSearch_searchPlaceholder": "Anahtar kelime ara...",
   "keywordSearch_searchTitle": "Anahtar kelime ara",
-  "keywordSearch_searchSubtitle": "Hangi uygulamaların anahtar kelimeler için sıralandığını keşfedin",
-  "keywordSearch_appsRanked": "{count} uygulama sıralandı",
+  "keywordSearch_searchSubtitle": "Hangi uygulamalarin anahtar kelimeler icin siralandigini kesfet",
+  "keywordSearch_appsRanked": "{count} uygulama siralandi",
   "@keywordSearch_appsRanked": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "keywordSearch_popularity": "Popülerlik",
-  "keywordSearch_results": "{count} sonuç",
+  "keywordSearch_popularity": "Populerlik",
+  "keywordSearch_results": "{count} sonuc",
   "@keywordSearch_results": {
     "placeholders": {
       "count": { "type": "int" }
@@ -324,162 +466,1052 @@
   "keywordSearch_headerRank": "SIRALAMA",
   "keywordSearch_headerApp": "UYGULAMA",
   "keywordSearch_headerRating": "PUAN",
-  "keywordSearch_headerTrack": "TAKİP",
-  "keywordSearch_trackApp": "Bu uygulamayı takip et",
+  "keywordSearch_headerTrack": "TAKIP",
+  "keywordSearch_trackApp": "Bu uygulamayi takip et",
 
-  "reviews_reviewsFor": "{appName} için yorumlar",
+  "discover_title": "Kesfet",
+  "discover_tabKeywords": "Anahtar kelimeler",
+  "discover_tabCategories": "Kategoriler",
+  "discover_selectCategory": "Bir kategori secin",
+  "discover_topFree": "Ucretsiz",
+  "discover_topPaid": "Ucretli",
+  "discover_topGrossing": "En cok kazanan",
+  "discover_noResults": "Sonuc yok",
+  "discover_loadingTopApps": "En iyi uygulamalar yukleniyor...",
+  "discover_topAppsIn": "{category} kategorisinde en iyi {collection}",
+  "@discover_topAppsIn": {
+    "placeholders": {
+      "collection": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "discover_appsCount": "{count} uygulama",
+  "@discover_appsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "discover_allCategories": "Tum kategoriler",
+
+  "category_games": "Oyunlar",
+  "category_business": "Is",
+  "category_education": "Egitim",
+  "category_entertainment": "Eglence",
+  "category_finance": "Finans",
+  "category_food_drink": "Yiyecek ve Icecek",
+  "category_health_fitness": "Saglik ve Fitness",
+  "category_lifestyle": "Yasam Tarzi",
+  "category_medical": "Tip",
+  "category_music": "Muzik",
+  "category_navigation": "Navigasyon",
+  "category_news": "Haberler",
+  "category_photo_video": "Foto ve Video",
+  "category_productivity": "Verimlilik",
+  "category_reference": "Referans",
+  "category_shopping": "Alisveris",
+  "category_social": "Sosyal",
+  "category_sports": "Spor",
+  "category_travel": "Seyahat",
+  "category_utilities": "Yardimci Programlar",
+  "category_weather": "Hava Durumu",
+  "category_books": "Kitaplar",
+  "category_developer_tools": "Gelistirici Araclari",
+  "category_graphics_design": "Grafik ve Tasarim",
+  "category_magazines": "Dergiler ve Gazeteler",
+  "category_stickers": "Cikartmalar",
+  "category_catalogs": "Kataloglar",
+  "category_art_design": "Sanat ve Tasarim",
+  "category_auto_vehicles": "Otomotiv",
+  "category_beauty": "Guzellik",
+  "category_comics": "Cizgi Roman",
+  "category_communication": "Iletisim",
+  "category_dating": "Arkadas Bulma",
+  "category_events": "Etkinlikler",
+  "category_house_home": "Ev",
+  "category_libraries": "Kutuphaneler",
+  "category_maps_navigation": "Haritalar ve Navigasyon",
+  "category_music_audio": "Muzik ve Ses",
+  "category_news_magazines": "Haberler ve Dergiler",
+  "category_parenting": "Ebeveynlik",
+  "category_personalization": "Kisisellistirme",
+  "category_photography": "Fotograf",
+  "category_tools": "Araclar",
+  "category_video_players": "Video Oynaticilar",
+  "category_all_apps": "Tum uygulamalar",
+
+  "reviews_reviewsFor": "{appName} icin yorumlar",
   "@reviews_reviewsFor": {
     "placeholders": {
       "appName": { "type": "String" }
     }
   },
-  "reviews_loading": "Yorumlar yükleniyor...",
+  "reviews_loading": "Yorumlar yukleniyor...",
   "reviews_noReviews": "Yorum yok",
-  "reviews_noReviewsFor": "{countryName} için yorum bulunamadı",
+  "reviews_noReviewsFor": "{countryName} icin yorum bulunamadi",
   "@reviews_noReviewsFor": {
     "placeholders": {
       "countryName": { "type": "String" }
     }
   },
-  "reviews_showingRecent": "App Store'dan en son {count} yorum gösteriliyor.",
+  "reviews_showingRecent": "App Store'dan en son {count} yorum gosteriliyor.",
   "@reviews_showingRecent": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "reviews_today": "Bugün",
-  "reviews_yesterday": "Dün",
-  "reviews_daysAgo": "{count} gün önce",
+  "reviews_today": "Bugun",
+  "reviews_yesterday": "Dun",
+  "reviews_daysAgo": "{count} gun once",
   "@reviews_daysAgo": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "reviews_weeksAgo": "{count} hafta önce",
+  "reviews_weeksAgo": "{count} hafta once",
   "@reviews_weeksAgo": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "reviews_monthsAgo": "{count} ay önce",
+  "reviews_monthsAgo": "{count} ay once",
   "@reviews_monthsAgo": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
+  "reviews_version": "v{version}",
+  "@reviews_version": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
 
-  "ratings_byCountry": "Ülkeye Göre Puanlar",
-  "ratings_noRatingsAvailable": "Puan mevcut değil",
-  "ratings_noRatingsYet": "Bu uygulamanın henüz puanı yok",
-  "ratings_totalRatings": "Toplam Puanlar",
-  "ratings_averageRating": "Ortalama Puan",
-  "ratings_countriesCount": "{count} ülke",
+  "ratings_byCountry": "Ulkeye gore puanlar",
+  "ratings_noRatingsAvailable": "Puan mevcut degil",
+  "ratings_noRatingsYet": "Bu uygulamanin henuz puani yok",
+  "ratings_totalRatings": "Toplam puan",
+  "ratings_averageRating": "Ortalama puan",
+  "ratings_countriesCount": "{count} ulke",
   "@ratings_countriesCount": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "ratings_updated": "Güncellendi: {date}",
+  "ratings_updated": "Guncellendi: {date}",
   "@ratings_updated": {
     "placeholders": {
       "date": { "type": "String" }
     }
   },
-  "ratings_headerCountry": "ÜLKE",
+  "ratings_headerCountry": "ULKE",
   "ratings_headerRatings": "PUANLAR",
   "ratings_headerAverage": "ORTALAMA",
 
-  "time_minutesAgo": "{count}dk önce",
+  "time_minutesAgo": "{count}dk once",
   "@time_minutesAgo": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "time_hoursAgo": "{count}sa önce",
+  "time_hoursAgo": "{count}sa once",
   "@time_hoursAgo": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "time_daysAgo": "{count}g önce",
+  "time_daysAgo": "{count}g once",
   "@time_daysAgo": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
 
-  "appDetail_noKeywordsTracked": "Takip edilen anahtar kelime yok",
-  "appDetail_addKeywordHint": "Takibe başlamak için yukarıya bir anahtar kelime ekleyin",
-  "appDetail_noKeywordsMatchFilter": "Filtreyle eşleşen anahtar kelime yok",
-  "appDetail_tryChangingFilter": "Filtre kriterlerini değiştirmeyi deneyin",
-  "appDetail_addTag": "Etiket ekle",
-  "appDetail_addNote": "Not ekle",
-  "appDetail_positionHistory": "Sıralama Gecmisi",
-  "appDetail_store": "STORE",
-
-  "nav_overview": "GENEL BAKIŞ",
+  "nav_overview": "GENEL BAKIS",
   "nav_dashboard": "Kontrol Paneli",
-  "nav_myApps": "Uygulamalarım",
-  "nav_research": "ARAŞTIRMA",
+  "nav_myApps": "Uygulamalarim",
+  "nav_research": "ARASTIRMA",
   "nav_keywords": "Anahtar Kelimeler",
-  "nav_discover": "Keşfet",
-  "nav_notifications": "Bildirim",
+  "nav_discover": "Kesfet",
+  "nav_engagement": "ETKILESIM",
+  "nav_reviewsInbox": "Gelen Kutusu",
+  "nav_notifications": "Uyarilar",
+  "nav_optimization": "OPTIMIZASYON",
+  "nav_keywordInspector": "Anahtar Kelime Denetleyicisi",
+  "nav_ratingsAnalysis": "Puan Analizi",
+  "nav_intelligence": "ISTIHBARAT",
+  "nav_topCharts": "Populer Listeler",
+  "nav_competitors": "Rakipler",
+  "nav_chat": "Yapay Zeka Asistani",
 
-  "common_save": "Kaydet",
+  "keywords_difficultyFilter": "Zorluk:",
+  "keywords_difficultyAll": "Tumu",
+  "keywords_difficultyEasy": "Kolay < 40",
+  "keywords_difficultyMedium": "Orta 40-70",
+  "keywords_difficultyHard": "Zor > 70",
 
-  "appDetail_manageTags": "Etiketleri Yönet",
-  "appDetail_newTagHint": "Yeni etiket adı...",
-  "appDetail_availableTags": "Mevcut Etiketler",
-  "appDetail_noTagsYet": "Henüz etiket yok. Yukarıda bir tane oluşturun.",
-  "appDetail_addTagsTitle": "Etiket Ekle",
-  "appDetail_selectTagsDescription": "Seçili anahtar kelimelere eklenecek etiketleri seçin:",
-  "appDetail_addTagsCount": "{count} Etiket Ekle",
-  "appDetail_importFailed": "İçe aktarma başarısız: {error}",
-  "appDetail_importKeywordsTitle": "Anahtar Kelimeleri İçe Aktar",
-  "appDetail_pasteKeywordsHint": "Anahtar kelimeleri aşağıya yapıştırın, her satıra bir tane:",
-  "appDetail_keywordPlaceholder": "anahtar kelime bir\nanahtar kelime iki\nanahtar kelime üç",
-  "appDetail_storefront": "Mağaza:",
-  "appDetail_keywordsCount": "{count} anahtar kelime",
-  "appDetail_importKeywordsCount": "{count} Anahtar Kelime İçe Aktar",
-  "appDetail_period7d": "7g",
-  "appDetail_period30d": "30g",
-  "appDetail_period90d": "90g",
-
-  "reviews_version": "v{version}",
+  "appPreview_title": "Uygulama detaylari",
+  "appPreview_notFound": "Uygulama bulunamadi",
+  "appPreview_screenshots": "Ekran goruntuleri",
+  "appPreview_description": "Aciklama",
+  "appPreview_details": "Detaylar",
+  "appPreview_version": "Surum",
+  "appPreview_updated": "Guncelleme",
+  "appPreview_released": "Yayin tarihi",
+  "appPreview_size": "Boyut",
+  "appPreview_minimumOs": "Gereksinim",
+  "appPreview_price": "Fiyat",
+  "appPreview_free": "Ucretsiz",
+  "appPreview_openInStore": "Magazada ac",
+  "appPreview_addToMyApps": "Uygulamalarima ekle",
+  "appPreview_added": "Eklendi",
+  "appPreview_showMore": "Daha fazla goster",
+  "appPreview_showLess": "Daha az goster",
+  "appPreview_keywordsPlaceholder": "Anahtar kelime takibini etkinlestirmek icin bu uygulamayi takip edilen uygulamalariniza ekleyin",
 
   "notifications_title": "Bildirimler",
   "notifications_markAllRead": "Tumunu okundu olarak isaretle",
   "notifications_empty": "Henuz bildirim yok",
 
-  "alerts_title": "Uyari Kurallari",
-  "alerts_templatesTitle": "Hizli Sablonlar",
+  "alerts_title": "Uyari kurallari",
+  "alerts_templatesTitle": "Hizli sablonlar",
   "alerts_templatesSubtitle": "Yaygin uyarilari tek dokunusla etkinlestirin",
   "alerts_myRulesTitle": "Kurallarim",
   "alerts_createRule": "Kural olustur",
   "alerts_editRule": "Kurali duzenle",
   "alerts_noRulesYet": "Henuz kural yok",
   "alerts_deleteConfirm": "Kural silinsin mi?",
+  "alerts_createCustomRule": "Ozel kural olustur",
+  "alerts_ruleActivated": "{name} etkinlestirildi!",
+  "alerts_deleteMessage": "\"{name}\" silinecek.",
+  "alerts_noRulesDescription": "Bir sablon etkinlestirin veya kendinizinkini olusturun!",
+  "alerts_create": "Olustur",
 
-  "settings_notifications": "BILDIRIMLER",
-  "settings_manageAlerts": "Uyari kurallarini yonet",
-  "settings_manageAlertsDesc": "Hangi uyarilari alacaginizi yapilandirin",
+  "storeConnections_title": "Magaza baglantilari",
+  "storeConnections_description": "Satis verileri ve uygulama analizleri gibi gelismis ozellikleri etkinlestirmek icin App Store ve Google Play hesaplarinizi baglayiniz.",
+  "storeConnections_appStoreConnect": "App Store Connect",
+  "storeConnections_appStoreConnectDesc": "Apple gelistirici hesabinizi baglayiniz",
+  "storeConnections_googlePlayConsole": "Google Play Console",
+  "storeConnections_googlePlayConsoleDesc": "Google Play hesabinizi baglayiniz",
+  "storeConnections_connect": "Bagla",
+  "storeConnections_disconnect": "Baglantisini kes",
+  "storeConnections_connected": "Baglandi",
+  "storeConnections_disconnectConfirm": "Baglanti kesilsin mi?",
+  "storeConnections_disconnectMessage": "Bu {platform} hesabinin baglantisini kesmek istediginizden emin misiniz?",
+  "@storeConnections_disconnectMessage": {
+    "placeholders": {
+      "platform": { "type": "String" }
+    }
+  },
+  "storeConnections_disconnectSuccess": "Baglanti basariyla kesildi",
+  "storeConnections_lastSynced": "Son senkronizasyon: {date}",
+  "@storeConnections_lastSynced": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_connectedOn": "{date} tarihinde baglandi",
+  "@storeConnections_connectedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "storeConnections_syncApps": "Uygulamalari Senkronize Et",
+  "storeConnections_syncing": "Senkronize ediliyor...",
+  "storeConnections_syncDescription": "Senkronizasyon, bu hesaptaki uygulamalarinizi sahipli olarak isaretleyerek yorum yanitlamayi etkinlestirir.",
+  "storeConnections_syncedApps": "{count} uygulama sahipli olarak senkronize edildi",
+  "storeConnections_syncFailed": "Senkronizasyon basarisiz: {error}",
+  "storeConnections_errorLoading": "Baglantilar yuklenirken hata: {error}",
+
+  "reviewsInbox_title": "Gelen kutusu",
+  "reviewsInbox_filterUnanswered": "Yanitlanmamis",
+  "reviewsInbox_filterNegative": "Olumsuz",
+  "reviewsInbox_noReviews": "Yorum bulunamadi",
+  "reviewsInbox_noReviewsDesc": "Filtrelerinizi ayarlamayi deneyin",
+  "reviewsInbox_reply": "Yanitla",
+  "reviewsInbox_responded": "Yanitlandi",
+  "reviewsInbox_respondedAt": "{date} tarihinde yanitlandi",
+  "@reviewsInbox_respondedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "reviewsInbox_replyModalTitle": "Yorumu yanitla",
+  "reviewsInbox_generateAi": "Yapay zeka onerisi olustur",
+  "reviewsInbox_generating": "Olusturuluyor...",
+  "reviewsInbox_sendReply": "Yaniti gonder",
+  "reviewsInbox_sending": "Gonderiliyor...",
+  "reviewsInbox_replyPlaceholder": "Yanitinizi yazin...",
+  "reviewsInbox_charLimit": "{count}/5970 karakter",
+  "@reviewsInbox_charLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_replySent": "Yanit basariyla gonderildi",
+  "reviewsInbox_replyError": "Yanit gonderilemedi: {error}",
+  "@reviewsInbox_replyError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_aiError": "Oneri olusturulamadi: {error}",
+  "@reviewsInbox_aiError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "reviewsInbox_stars": "{count} yildiz",
+  "@reviewsInbox_stars": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewsInbox_totalReviews": "Toplam yorum",
+  "reviewsInbox_unanswered": "Yanitlanmamis",
+  "reviewsInbox_positive": "Olumlu",
+  "reviewsInbox_avgRating": "Ortalama puan",
+  "reviewsInbox_sentimentOverview": "Duygu analizi ozeti",
+  "reviewsInbox_aiSuggestions": "Yapay zeka onerileri",
+  "reviewsInbox_regenerate": "Yeniden olustur",
+  "reviewsInbox_toneProfessional": "Profesyonel",
+  "reviewsInbox_toneEmpathetic": "Empatik",
+  "reviewsInbox_toneBrief": "Kisa",
+  "reviewsInbox_selectTone": "Ton secin:",
+  "reviewsInbox_detectedIssues": "Tespit edilen sorunlar:",
+  "reviewsInbox_aiPrompt": "Farkli 3 tonda yanit onerileri almak icin 'Yapay zeka onerisi olustur' dugmesine tiklayin",
+
+  "reviewIntelligence_title": "Yorum istihbarati",
+  "reviewIntelligence_featureRequests": "Ozellik istekleri",
+  "reviewIntelligence_bugReports": "Hata raporlari",
+  "reviewIntelligence_sentimentByVersion": "Surume gore duygu analizi",
+  "reviewIntelligence_openFeatures": "Acik ozellikler",
+  "reviewIntelligence_openBugs": "Acik hatalar",
+  "reviewIntelligence_highPriority": "Yuksek oncelik",
+  "reviewIntelligence_total": "toplam",
+  "reviewIntelligence_mentions": "bahsedilme",
+  "reviewIntelligence_noData": "Henuz icerik yok",
+  "reviewIntelligence_noDataHint": "Icerikler yorumlar analiz edildikten sonra gorunecek",
 
   "analytics_title": "Analitik",
-  "analytics_downloads": "İndirmeler",
+  "analytics_downloads": "Indirmeler",
   "analytics_revenue": "Gelir",
-  "analytics_proceeds": "Kazanç",
+  "analytics_proceeds": "Kazanc",
   "analytics_subscribers": "Aboneler",
-  "analytics_downloadsOverTime": "Zaman İçinde İndirmeler",
-  "analytics_revenueOverTime": "Zaman İçinde Gelir",
-  "analytics_byCountry": "Ülkeye Göre",
+  "analytics_downloadsOverTime": "Zaman icinde indirmeler",
+  "analytics_revenueOverTime": "Zaman icinde gelir",
+  "analytics_byCountry": "Ulkeye gore",
   "analytics_noData": "Veri yok",
-  "analytics_noDataTitle": "Analitik Verisi Yok",
-  "analytics_noDataDescription": "Gerçek satış ve indirme verilerini görmek için App Store Connect veya Google Play hesabınızı bağlayın.",
-  "analytics_dataDelay": "{date} itibariyle veriler. Apple verileri 24-48 saat gecikmelidir.",
+  "analytics_noDataTitle": "Analitik verisi yok",
+  "analytics_noDataDescription": "Gercek satis ve indirme verilerini gormek icin App Store Connect veya Google Play hesabinizi baglayiniz.",
+  "analytics_dataDelay": "{date} itibariyle veriler. Apple verileri 24-48 saat gecikmeli olabilir.",
   "@analytics_dataDelay": {
     "placeholders": {
       "date": { "type": "String" }
     }
   },
-  "analytics_export": "CSV Dışa Aktar"
+  "analytics_export": "CSV disa aktar",
+
+  "funnel_title": "Donusum hunisi",
+  "funnel_impressions": "Gosterimler",
+  "funnel_pageViews": "Sayfa goruntulemeler",
+  "funnel_downloads": "Indirmeler",
+  "funnel_overallCvr": "Genel CVR",
+  "funnel_categoryAvg": "Kategori ort.",
+  "funnel_vsCategory": "kategoriye kiyasla",
+  "funnel_bySource": "Kaynaga gore",
+  "funnel_noData": "Huni verisi mevcut degil",
+  "funnel_noDataHint": "Huni verileri App Store Connect veya Google Play Console'dan otomatik olarak senkronize edilecektir.",
+  "funnel_insight": "BILGI",
+  "funnel_insightText": "{bestSource} trafigi {worstSource} trafikinden {ratio}x daha iyi donusturuyor. {recommendation}",
+  "@funnel_insightText": {
+    "placeholders": {
+      "bestSource": { "type": "String" },
+      "ratio": { "type": "String" },
+      "worstSource": { "type": "String" },
+      "recommendation": { "type": "String" }
+    }
+  },
+  "funnel_insightRecommendSearch": "Arama gosterimlerini artirmak icin anahtar kelime optimizasyonuna odaklanin.",
+  "funnel_insightRecommendBrowse": "Kategorileri ve one cikan yerlesimleri optimize ederek uygulamanizin gozetim gorunurlugunu artirin.",
+  "funnel_insightRecommendReferral": "Daha fazla trafik ceknek icin tavsiye programlarindan ve ortakliklardan yararlanin.",
+  "funnel_insightRecommendAppReferrer": "Tamamlayici uygulamalarla capraz tanitim stratejileri dusunun.",
+  "funnel_insightRecommendWebReferrer": "Web sitenizi ve hedef sayfalarinizi indirmeler icin optimize edin.",
+  "funnel_insightRecommendDefault": "Bu kaynagi basarili yapan seyleri analiz edin ve tekrarlayin.",
+  "funnel_trendTitle": "Donusum orani trendi",
+  "funnel_connectStore": "Magazayi bagla",
+
+  "chat_title": "Yapay Zeka Asistani",
+  "chat_newConversation": "Yeni konusma",
+  "chat_loadingConversations": "Konusmalar yukleniyor...",
+  "chat_loadingMessages": "Mesajlar yukleniyor...",
+  "chat_noConversations": "Konusma yok",
+  "chat_noConversationsDesc": "Uygulamalariniz hakkinda yapay zeka icerikleri almak icin yeni bir konusma baslatiniz",
+  "chat_startConversation": "Konusma baslat",
+  "chat_deleteConversation": "Konusmayi sil",
+  "chat_deleteConversationConfirm": "Bu konusmayi silmek istediginizden emin misiniz?",
+  "chat_askAnything": "Bana bir soru sorun",
+  "chat_askAnythingDesc": "Uygulamanizin yorumlarini, siralamalarini ve analizlerini anlamaniza yardimci olabilirim",
+  "chat_typeMessage": "Sorunuzu yazin...",
+  "chat_suggestedQuestions": "Onerilen sorular",
+
+  "chatActionConfirm": "Onayla",
+  "chatActionCancel": "Iptal",
+  "chatActionExecuting": "Yurutuluyur...",
+  "chatActionExecuted": "Tamamlandi",
+  "chatActionFailed": "Basarisiz",
+  "chatActionCancelled": "Iptal edildi",
+  "chatActionDownload": "Indir",
+  "chatActionReversible": "Bu islem geri alinabilir",
+
+  "chatActionAddKeywords": "Anahtar kelime ekle",
+  "chatActionRemoveKeywords": "Anahtar kelime kaldir",
+  "chatActionCreateAlert": "Uyari olustur",
+  "chatActionAddCompetitor": "Rakip ekle",
+  "chatActionExportData": "Verileri disa aktar",
+
+  "chatActionKeywords": "Anahtar kelimeler",
+  "chatActionCountry": "Ulke",
+  "chatActionAlertCondition": "Kosul",
+  "chatActionNotifyVia": "Bildirim yontemi",
+  "chatActionCompetitor": "Rakip",
+  "chatActionExportType": "Disa aktarma turu",
+  "chatActionDateRange": "Tarih araligi",
+  "chatActionKeywordsLabel": "Anahtar kelimeler",
+  "chatActionAnalyticsLabel": "Istatistikler",
+  "chatActionReviewsLabel": "Yorumlar",
+
+  "dateRange_title": "Tarih araligi",
+  "dateRange_today": "Bugun",
+  "dateRange_yesterday": "Dun",
+  "dateRange_last7Days": "Son 7 gun",
+  "dateRange_last30Days": "Son 30 gun",
+  "dateRange_thisMonth": "Bu ay",
+  "dateRange_lastMonth": "Gecen ay",
+  "dateRange_last90Days": "Son 90 gun",
+  "dateRange_yearToDate": "Yil basindan itibaren",
+  "dateRange_allTime": "Tum zamanlar",
+  "dateRange_custom": "Ozel...",
+  "dateRange_compareToPrevious": "Onceki donemle karsilastir",
+
+  "export_keywordsTitle": "Anahtar kelimeleri disa aktar",
+  "export_reviewsTitle": "Yorumlari disa aktar",
+  "export_analyticsTitle": "Analitikleri disa aktar",
+  "export_columnsToInclude": "Dahil edilecek sutunlar:",
+  "export_button": "Disa aktar",
+  "export_keyword": "Anahtar kelime",
+  "export_position": "Siralama",
+  "export_change": "Degisim",
+  "export_popularity": "Populerlik",
+  "export_difficulty": "Zorluk",
+  "export_tags": "Etiketler",
+  "export_notes": "Notlar",
+  "export_trackedSince": "Takip baslangici",
+  "export_date": "Tarih",
+  "export_rating": "Puan",
+  "export_author": "Yazar",
+  "export_title": "Baslik",
+  "export_content": "Icerik",
+  "export_country": "Ulke",
+  "export_version": "Surum",
+  "export_sentiment": "Duygu",
+  "export_response": "Yanitimiz",
+  "export_responseDate": "Yanit tarihi",
+  "export_keywordsCount": "{count} anahtar kelime disa aktarilacak",
+  "@export_keywordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_reviewsCount": "{count} yorum disa aktarilacak",
+  "@export_reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "export_success": "Disa aktarma kaydedildi: {filename}",
+  "@export_success": {
+    "placeholders": {
+      "filename": { "type": "String" }
+    }
+  },
+  "export_error": "Disa aktarma basarisiz: {error}",
+  "@export_error": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "metadata_editor": "Meta veri duzenleyicisi",
+  "metadata_selectLocale": "Duzenlenecek bir yerel ayar secin",
+  "metadata_refreshed": "Meta veriler magazadan yenilendi",
+  "metadata_connectRequired": "Duzenleme icin baglanti gerekli",
+  "metadata_connectDescription": "Uygulama meta verilerinizi dogrudan Keyrank'ten duzenlemek icin App Store Connect hesabinizi baglayiniz.",
+  "metadata_connectStore": "App Store'u bagla",
+  "metadata_publishTitle": "Meta verileri yayinla",
+  "metadata_publishConfirm": "{locale} icin degisiklikler yayinlansin mi? Bu, App Store'daki uygulama listenizi guncelleyecektir.",
+  "@metadata_publishConfirm": {
+    "placeholders": {
+      "locale": { "type": "String" }
+    }
+  },
+  "metadata_publish": "Yayinla",
+  "metadata_publishSuccess": "Meta veriler basariyla yayinlandi",
+  "metadata_saveDraft": "Taslagi kaydet",
+  "metadata_draftSaved": "Taslak kaydedildi",
+  "metadata_discardChanges": "Degisiklikleri iptal et",
+  "metadata_title": "Baslik",
+  "metadata_titleHint": "Uygulama adi (maks. {limit} karakter)",
+  "@metadata_titleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_subtitle": "Alt baslik",
+  "metadata_subtitleHint": "Kisa aciklama (maks. {limit} karakter)",
+  "@metadata_subtitleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_keywords": "Anahtar kelimeler",
+  "metadata_keywordsHint": "Virgullerle ayrilmis anahtar kelimeler (maks. {limit} karakter)",
+  "@metadata_keywordsHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_description": "Aciklama",
+  "metadata_descriptionHint": "Tam uygulama aciklamasi (maks. {limit} karakter)",
+  "@metadata_descriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_promotionalText": "Tanitim metni",
+  "metadata_promotionalTextHint": "Kisa tanitim mesaji (maks. {limit} karakter)",
+  "@metadata_promotionalTextHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_whatsNew": "Yenilikler",
+  "metadata_whatsNewHint": "Surum notlari (maks. {limit} karakter)",
+  "@metadata_whatsNewHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_charCount": "{count}/{limit}",
+  "@metadata_charCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_hasChanges": "Kaydedilmemis degisiklikler",
+  "metadata_noChanges": "Degisiklik yok",
+  "metadata_keywordAnalysis": "Anahtar kelime analizi",
+  "metadata_keywordPresent": "Mevcut",
+  "metadata_keywordMissing": "Eksik",
+  "metadata_inTitle": "Baslikta",
+  "metadata_inSubtitle": "Alt baslikta",
+  "metadata_inKeywords": "Anahtar kelimelerde",
+  "metadata_inDescription": "Aciklamada",
+  "metadata_history": "Degisiklik gecmisi",
+  "metadata_noHistory": "Kaydedilmis degisiklik yok",
+  "metadata_localeComplete": "Tamamlandi",
+  "metadata_localeIncomplete": "Tamamlanmadi",
+  "metadata_shortDescription": "Kisa aciklama",
+  "metadata_shortDescriptionHint": "Aramada gorunen aciklama (maks. {limit} karakter)",
+  "@metadata_shortDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_fullDescription": "Tam aciklama",
+  "metadata_fullDescriptionHint": "Tam uygulama aciklamasi (maks. {limit} karakter)",
+  "@metadata_fullDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_releaseNotes": "Surum notlari",
+  "metadata_releaseNotesHint": "Bu surumde yenilikler (maks. {limit} karakter)",
+  "@metadata_releaseNotesHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_selectAppFirst": "Bir uygulama secin",
+  "metadata_selectAppHint": "Baslamak icin kenar cubugundaki uygulama seciciyi kullanin veya bir magaza baglayiniz.",
+  "metadata_noStoreConnection": "Magaza baglantisi gerekli",
+  "metadata_noStoreConnectionDesc": "Uygulama meta verilerinizi almak ve duzenlemek icin {storeName} hesabinizi baglayiniz.",
+  "@metadata_noStoreConnectionDesc": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_connectStoreButton": "{storeName} bagla",
+  "@metadata_connectStoreButton": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_aiOptimize": "Yapay zeka ile optimize et",
+
+  "metadataLocalization": "Yerellestirilmeler",
+  "metadataLive": "Yayinda",
+  "metadataDraft": "Taslak",
+  "metadataEmpty": "Bos",
+  "metadataCoverageInsight": "{count} yerel ayar icin icerik gerekiyor. Ana pazarlariniz icin yerleslestirme yapmayidusunebiliniz.",
+  "@metadataCoverageInsight": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataFilterAll": "Tumu",
+  "metadataFilterLive": "Yayinda",
+  "metadataFilterDraft": "Taslaklar",
+  "metadataFilterEmpty": "Boslar",
+  "metadataBulkActions": "Toplu islemler",
+  "metadataCopyTo": "Secime kopyala",
+  "metadataTranslateTo": "Secime cevir",
+  "metadataPublishSelected": "Secimi yayinla",
+  "metadataDeleteDrafts": "Taslaklari sil",
+  "metadataSelectSource": "Kaynak yerel ayari secin",
+  "metadataSelectTarget": "Hedef yerel ayarlari secin",
+  "metadataCopySuccess": "Icerik {count} yerel ayara kopyalandi",
+  "@metadataCopySuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslateSuccess": "{count} yerel ayara cevirildi",
+  "@metadataTranslateSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslating": "Ceviriliyor...",
+  "metadataNoSelection": "Once yerel ayar secin",
+  "metadataSelectAll": "Tumunu sec",
+  "metadataDeselectAll": "Secimi kaldir",
+  "metadataSelected": "{count} secildi",
+  "@metadataSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTableView": "Tablo gorunumu",
+  "metadataListView": "Liste gorunumu",
+  "metadataStatus": "Durum",
+  "metadataCompletion": "Tamamlanma",
+
+  "wizard_title": "Yapay zeka optimizasyon sihirbazi",
+  "wizard_step": "Adim",
+  "wizard_of": "/",
+  "wizard_stepTitle": "Baslik",
+  "wizard_stepSubtitle": "Alt baslik",
+  "wizard_stepKeywords": "Anahtar kelimeler",
+  "wizard_stepDescription": "Aciklama",
+  "wizard_stepReview": "Gozden gecir ve kaydet",
+  "wizard_skip": "Atla",
+  "wizard_saveDrafts": "Taslaklari kaydet",
+  "wizard_draftsSaved": "Taslaklar basariyla kaydedildi",
+  "wizard_exitTitle": "Sihirbazdan cik?",
+  "wizard_exitMessage": "Kaydedilmemis degisiklikleriniz var. Cikmak istediginizden emin misiniz?",
+  "wizard_exitConfirm": "Cik",
+  "wizard_aiSuggestions": "Yapay zeka onerileri",
+  "wizard_chooseSuggestion": "Yapay zeka tarafindan olusturulan bir oneri secin veya kendiniz yazin",
+  "wizard_currentValue": "Mevcut deger",
+  "wizard_noCurrentValue": "Deger belirlenmemis",
+  "wizard_contextInfo": "{keywordsCount} takip edilen anahtar kelime ve {competitorsCount} rakibe dayali",
+  "@wizard_contextInfo": {
+    "placeholders": {
+      "keywordsCount": { "type": "int" },
+      "competitorsCount": { "type": "int" }
+    }
+  },
+  "wizard_writeOwn": "Kendim yaz",
+  "wizard_customPlaceholder": "Ozel degerinizi girin...",
+  "wizard_useCustom": "Ozeli kullan",
+  "wizard_keepCurrent": "Mevcut olanai koru",
+  "wizard_recommended": "Onerilen",
+  "wizard_characters": "karakter",
+  "wizard_reviewTitle": "Degisiklikleri gozden gecir",
+  "wizard_reviewDescription": "Taslak olarak kaydetmeden once optimizasyonlarinizi gozden gecirin",
+  "wizard_noChanges": "Secili degisiklik yok",
+  "wizard_noChangesHint": "Geri donun ve optimize edilecek alanlar icin oneriler secin",
+  "wizard_changesCount": "{count} alan guncellendi",
+  "@wizard_changesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wizard_changesSummary": "Bu degisiklikler taslak olarak kaydedilecek",
+  "wizard_before": "Once",
+  "wizard_after": "Sonra",
+  "wizard_nextStepsTitle": "Sirada ne var?",
+  "wizard_nextStepsWithChanges": "Degisiklikleriniz taslak olarak kaydedilecek. Meta veri duzenleyicisinden gozden gecirebilir ve yayinlayabilirsiniz.",
+  "wizard_nextStepsNoChanges": "Kaydedilecek degisiklik yok. Geri donun ve meta verilerinizi optimize etmek icin oneriler secin.",
+
+  "team_title": "Takim Yonetimi",
+  "team_createTeam": "Takim Olustur",
+  "team_teamName": "Takim Adi",
+  "team_teamNameHint": "Takim adini girin",
+  "team_description": "Aciklama (istege bagli)",
+  "team_descriptionHint": "Bu takim ne icin?",
+  "team_teamNameRequired": "Takim adi gereklidir",
+  "team_teamNameMinLength": "Takim adi en az 2 karakter olmalidir",
+  "team_inviteMember": "Uye Davet Et",
+  "team_emailAddress": "E-posta Adresi",
+  "team_emailHint": "meslektas@ornek.com",
+  "team_emailRequired": "E-posta gereklidir",
+  "team_emailInvalid": "Gecerli bir e-posta adresi girin",
+  "team_invitationSent": "{email} adresine davet gonderildi",
+  "@team_invitationSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "team_members": "UYELER",
+  "team_invite": "Davet Et",
+  "team_pendingInvitations": "BEKLEYEN DAVETLER",
+  "team_noPendingInvitations": "Bekleyen davet yok",
+  "team_teamSettings": "Takim Ayarlari",
+  "team_changeRole": "{name} icin rol degistir",
+  "@team_changeRole": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_removeMember": "Uyeyi Kaldir",
+  "team_removeMemberConfirm": "{name} adli uyeyi bu takimdan kaldirmak istediginizden emin misiniz?",
+  "@team_removeMemberConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "team_remove": "Kaldir",
+  "team_leaveTeam": "Takimdan Ayril",
+  "team_leaveTeamConfirm": "\"{teamName}\" takimindan ayrilmak istediginizden emin misiniz?",
+  "@team_leaveTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_leave": "Ayril",
+  "team_deleteTeam": "Takimi Sil",
+  "team_deleteTeamConfirm": "\"{teamName}\" takimini silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
+  "@team_deleteTeamConfirm": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_yourTeams": "TAKIMLARINIZ",
+  "team_failedToLoadTeam": "Takim yuklenemedi",
+  "team_failedToLoadMembers": "Uyeler yuklenemedi",
+  "team_failedToLoadInvitations": "Davetler yuklenemedi",
+  "team_memberCount": "{count, plural, =1{1 uye} other{{count} uye}}",
+  "@team_memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "team_invitedAs": "{role} olarak davet edildi",
+  "@team_invitedAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
+  "team_joinedTeam": "{teamName} takimina katildiniz",
+  "@team_joinedTeam": {
+    "placeholders": {
+      "teamName": { "type": "String" }
+    }
+  },
+  "team_invitationDeclined": "Davet reddedildi",
+  "team_noTeamsYet": "Henuz takim yok",
+  "team_noTeamsDescription": "Uygulamalarinizda baskalariyla isbirligi yapmak icin bir takim olusturun",
+  "team_createFirstTeam": "Ilk takiminizi olusturun",
+
+  "integrations_title": "Entegrasyonlar",
+  "integrations_syncFailed": "Senkronizasyon basarisiz: {error}",
+  "@integrations_syncFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "integrations_disconnectConfirm": "Baglanti kesilsin mi?",
+  "integrations_disconnectedSuccess": "Baglanti basariyla kesildi",
+  "integrations_connectGooglePlay": "Google Play Console Bagla",
+  "integrations_connectAppStore": "App Store Connect Bagla",
+  "integrations_connectedApps": "Baglandi! {count} uygulama iceri aktarildi.",
+  "@integrations_connectedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_syncedApps": "{count} uygulama sahip olarak senkronize edildi",
+  "@integrations_syncedApps": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "integrations_appStoreConnected": "App Store Connect basariyla baglandi!",
+  "integrations_googlePlayConnected": "Google Play Console basariyla baglandi!",
+
+  "alertBuilder_nameYourRule": "KURALINIZI ADLANDIRIN",
+  "alertBuilder_nameDescription": "Uyari kuraliniza aciklayici bir ad verin",
+  "alertBuilder_nameHint": "orn: Gunluk Pozisyon Uyarisi",
+  "alertBuilder_summary": "OZET",
+  "alertBuilder_saveAlertRule": "Uyari Kuralini Kaydet",
+  "alertBuilder_selectAlertType": "UYARI TURUNU SECIN",
+  "alertBuilder_selectAlertTypeDescription": "Ne tur bir uyari olusturmak istediginizi secin",
+  "alertBuilder_deleteRuleConfirm": "\"{ruleName}\" silinecek.",
+  "@alertBuilder_deleteRuleConfirm": {
+    "placeholders": {
+      "ruleName": { "type": "String" }
+    }
+  },
+  "alertBuilder_activateTemplateOrCreate": "Henuz kural yok. Bir sablon etkinlestirin veya kendiniz olusturun!",
+
+  "billing_cancelSubscription": "Aboneligi Iptal Et",
+  "billing_keepSubscription": "Aboneligi Koru",
+  "billing_billingPortal": "Fatura Portali",
+  "billing_resume": "Devam Et",
+
+  "keywords_noCompetitorsFound": "Rakip bulunamadi. Once rakip ekleyin.",
+  "keywords_noCompetitorsForApp": "Bu uygulama icin rakip yok. Once bir rakip ekleyin.",
+  "keywords_failedToAddKeywords": "Anahtar kelimeler eklenemedi: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_bulkAddHint": "butce takipcisi\nharcama yoneticisi\npara uygulamasi",
+
+  "appOverview_urlCopied": "Magaza URL'si panoya kopyalandi",
+
+  "country_us": "Amerika Birlesik Devletleri",
+  "country_gb": "Birlesik Krallik",
+  "country_fr": "Fransa",
+  "country_de": "Almanya",
+  "country_ca": "Kanada",
+  "country_au": "Avustralya",
+  "country_jp": "Japonya",
+  "country_cn": "Cin",
+  "country_kr": "Guney Kore",
+  "country_br": "Brezilya",
+  "country_es": "Ispanya",
+  "country_it": "Italya",
+
+  "countryCode_us": "🇺🇸 US",
+  "countryCode_gb": "🇬🇧 UK",
+  "countryCode_fr": "🇫🇷 FR",
+  "countryCode_de": "🇩🇪 DE",
+  "countryCode_ca": "🇨🇦 CA",
+  "countryCode_au": "🇦🇺 AU",
+
+  "alertBuilder_type": "Tür",
+  "alertBuilder_scope": "Kapsam",
+  "alertBuilder_name": "Ad",
+  "alertBuilder_scopeGlobal": "Tüm uygulamalar",
+  "alertBuilder_scopeApp": "Belirli uygulama",
+  "alertBuilder_scopeCategory": "Kategori",
+  "alertBuilder_scopeKeyword": "Anahtar kelime",
+
+  "alertType_positionChange": "Sıralama değişikliği",
+  "alertType_positionChangeDesc": "Uygulama sıralaması önemli ölçüde değiştiğinde uyarı",
+  "alertType_ratingChange": "Puan değişikliği",
+  "alertType_ratingChangeDesc": "Uygulama puanı değiştiğinde uyarı",
+  "alertType_reviewSpike": "Yorum artışı",
+  "alertType_reviewSpikeDesc": "Olağandışı yorum etkinliğinde uyarı",
+  "alertType_reviewKeyword": "Yorum anahtar kelimesi",
+  "alertType_reviewKeywordDesc": "Yorumlarda anahtar kelimeler göründüğünde uyarı",
+  "alertType_newCompetitor": "Yeni rakip",
+  "alertType_newCompetitorDesc": "Yeni uygulamalar alanınıza girdiğinde uyarı",
+  "alertType_competitorPassed": "Rakip geçildi",
+  "alertType_competitorPassedDesc": "Bir rakibi geçtiğinizde uyarı",
+  "alertType_massMovement": "Toplu hareket",
+  "alertType_massMovementDesc": "Büyük sıralama değişikliklerinde uyarı",
+  "alertType_keywordTrend": "Anahtar kelime trendi",
+  "alertType_keywordTrendDesc": "Anahtar kelime popülaritesi değiştiğinde uyarı",
+  "alertType_opportunity": "Fırsat",
+  "alertType_opportunityDesc": "Yeni sıralama fırsatlarında uyarı",
+
+  "billing_title": "Faturalandırma ve Planlar",
+  "billing_subscriptionActivated": "Abonelik başarıyla etkinleştirildi!",
+  "billing_changePlan": "Plan değiştir",
+  "billing_choosePlan": "Plan seç",
+  "billing_cancelMessage": "Aboneliğiniz mevcut faturalandırma döneminin sonuna kadar aktif kalacaktır. Bundan sonra premium özelliklere erişiminizi kaybedeceksiniz.",
+  "billing_currentPlan": "MEVCUT PLAN",
+  "billing_trial": "DENEME",
+  "billing_canceling": "İPTAL EDİLİYOR",
+  "billing_accessUntil": "{date} tarihine kadar erişim",
+  "@billing_accessUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_renewsOn": "{date} tarihinde yenilenir",
+  "@billing_renewsOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "billing_manageSubscription": "ABONELİĞİ YÖNET",
+  "billing_monthly": "Aylık",
+  "billing_yearly": "Yıllık",
+  "billing_savePercent": "%{percent} tasarruf",
+  "@billing_savePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "billing_current": "Mevcut",
+  "billing_apps": "Uygulamalar",
+  "billing_unlimited": "Sınırsız",
+  "billing_keywordsPerApp": "Uygulama başına anahtar kelime",
+  "billing_history": "Geçmiş",
+  "billing_days": "{count} gün",
+  "@billing_days": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "billing_exports": "Dışa aktarma",
+  "billing_aiInsights": "AI analizleri",
+  "billing_apiAccess": "API erişimi",
+  "billing_yes": "Evet",
+  "billing_no": "Hayır",
+  "billing_currentPlanButton": "Mevcut plan",
+  "billing_upgradeTo": "{planName}'a yükselt",
+  "@billing_upgradeTo": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "billing_cancel": "İptal",
+
+  "keywords_compareWithCompetitor": "Rakiple karşılaştır",
+  "keywords_selectCompetitorToCompare": "Anahtar kelimeleri karşılaştırmak için bir rakip seçin:",
+  "keywords_noCompetitorsFound": "Rakip bulunamadı. Önce rakip ekleyin.",
+  "keywords_noCompetitorsForApp": "Bu uygulama için rakip yok. Önce bir rakip ekleyin.",
+  "keywords_failedToAddKeywords": "Anahtar kelimeler eklenemedi: {error}",
+  "@keywords_failedToAddKeywords": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "keywords_addToCompetitor": "Rakibe ekle",
+  "keywords_addKeywordsTo": "{count} anahtar kelime ekle:",
+  "@keywords_addKeywordsTo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "keywords_avgPosition": "Ort. Sıralama",
+  "keywords_declined": "Düştü",
+  "keywords_total": "Toplam",
+  "keywords_ranked": "Sıralanmış",
+  "keywords_improved": "Yükselen",
+
+  "settings_alertDelivery": "UYARI TESLİMATI",
+  "settings_team": "EKİP",
+  "settings_teamManagement": "Ekip yönetimi",
+  "settings_manageTeam": "Üyeleri, rolleri ve izinleri yönet",
+  "settings_storeConnections": "Mağaza bağlantıları",
+  "settings_connectStores": "App Store Connect ve Google Play'i bağla",
+  "settings_integrations": "Entegrasyonlar",
+  "settings_connectServices": "Üçüncü parti servisleri bağla",
+  "settings_helpSupport": "Yardım ve destek",
+  "settings_documentation": "Dokümantasyon",
+  "settings_viewDocs": "Kılavuzları ve eğitimleri görüntüle",
+
+  "onboarding_skip": "Atla",
+  "onboarding_next": "İleri",
+  "onboarding_getStarted": "Başla",
+  "onboarding_welcomeToKeyrank": "Keyrank'e hoş geldiniz",
+  "onboarding_welcomeDesc": "Uygulamanızın mağaza görünürlüğünü optimize etmek için eksiksiz platform",
+  "onboarding_trackKeywordsTitle": "Anahtar kelimeleri takip et",
+  "onboarding_trackKeywordsDesc": "Birden fazla uygulama mağazasında önemli arama terimleri için uygulama sıralamanızı izleyin",
+  "onboarding_analyzeCompetitorsTitle": "Rakipleri analiz et",
+  "onboarding_analyzeCompetitorsDesc": "Rakiplerinizi takip edin ve iyileştirme için yeni fırsatlar keşfedin",
+  "onboarding_getInsightsTitle": "İçgörüler alın",
+  "onboarding_getInsightsDesc": "Uygulamanızın mağaza varlığını iyileştirmek için uygulanabilir öneriler alın",
+
+  "team_you": "Sen",
+
+  "competitors_all": "Tümü",
+  "competitors_tracked": "Takip edilen",
+  "competitors_filterByStore": "Mağazaya göre filtrele",
+  "competitors_allStores": "Tüm mağazalar",
+  "competitors_removeCompetitor": "Rakibi kaldır",
+  "competitors_removeConfirm": "\"{name}\" adlı rakibi kaldırmak istediğinizden emin misiniz?",
+  "@competitors_removeConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_noCompetitorsTitle": "Rakip yok",
+  "competitors_noCompetitorsMessage": "Henüz herhangi bir rakibi takip etmiyorsunuz. Sıralamalarını izlemek için ekleyin.",
+  "competitors_errorLoading": "Rakipler yüklenirken hata oluştu",
+  "competitors_addedSuccess": "{name} rakip olarak eklendi",
+  "@competitors_addedSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "competitors_addFailed": "Rakip eklenemedi: {error}",
+  "@competitors_addFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "competitors_noAppsMessage": "Rakipleri takip etmek için lütfen önce bir uygulama seçin.",
+
+  "appPreview_rankings": "Sıralamalar",
+  "appPreview_reviews": "Yorumlar",
+  "appPreview_price": "Fiyat",
+  "appPreview_free": "Ücretsiz",
+  "appPreview_developer": "Geliştirici",
+  "appPreview_released": "Yayınlanma",
+  "appPreview_lastUpdate": "Son güncelleme",
+  "appPreview_notAvailable": "Yok",
+  "appPreview_expandDescription": "Açıklamayı genişlet",
+  "appPreview_collapseDescription": "Açıklamayı daralt",
+
+  "alerts_scopeGlobal": "Global",
+  "alerts_scopeApp": "Uygulama",
+  "alerts_scopeCategory": "Kategori",
+  "alerts_scopeKeyword": "Anahtar kelime",
+  "alerts_edit": "Düzenle",
+
+  "ratings_pageInfo": "Sayfa {current} / {total}",
+  "@ratings_pageInfo": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "ratings_noMoreReviews": "Daha fazla yorum yok",
+
+  "insights_viewMore": "{count} içgörü daha görüntüle",
+  "@insights_viewMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insights_noInsightsYet": "Henüz içgörü yok",
+  "insights_noInsightsDesc": "Uygulamanız için optimizasyon fırsatları keşfettiğimizde içgörüler görünecektir.",
+  "insights_loadFailed": "İçgörüler yüklenemedi",
+
+  "chat_enterMessage": "Mesaj girin...",
+  "chat_aiDisclaimer": "Yapay zeka yanıtları hata içerebilir. Önemli bilgileri her zaman doğrulayın.",
+  "chat_conversationError": "Konuşma yüklenirken hata oluştu",
+
+  "notifications_title": "Bildirimler",
+  "notifications_markAllRead": "Tümünü okundu işaretle",
+  "notifications_clearAll": "Tümünü temizle"
 }
