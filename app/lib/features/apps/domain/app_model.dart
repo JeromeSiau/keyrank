@@ -1,338 +1,134 @@
-class AppModel {
-  final int id;
-  final String platform;
-  final String storeId;
-  final String? bundleId;
-  final String name;
-  final String? iconUrl;
-  final String? developer;
-  final String? description;
-  final List<String>? screenshots;
-  final String? version;
-  final DateTime? releaseDate;
-  final DateTime? updatedDate;
-  final int? sizeBytes;
-  final String? minimumOs;
-  final String? storeUrl;
-  final double? price;
-  final String? currency;
-  final double? rating;
-  final int ratingCount;
-  final String? storefront;
-  final String? categoryId;
-  final String? secondaryCategoryId;
-  final int? trackedKeywordsCount;
-  final int? bestRank;
-  final DateTime createdAt;
-  final bool isFavorite;
-  final DateTime? favoritedAt;
-  final bool isOwner;
-  final bool isCompetitor;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  AppModel({
-    required this.id,
-    required this.platform,
-    required this.storeId,
-    this.bundleId,
-    required this.name,
-    this.iconUrl,
-    this.developer,
-    this.description,
-    this.screenshots,
-    this.version,
-    this.releaseDate,
-    this.updatedDate,
-    this.sizeBytes,
-    this.minimumOs,
-    this.storeUrl,
-    this.price,
-    this.currency,
-    this.rating,
-    required this.ratingCount,
-    this.storefront,
-    this.categoryId,
-    this.secondaryCategoryId,
-    this.trackedKeywordsCount,
-    this.bestRank,
-    required this.createdAt,
-    this.isFavorite = false,
-    this.favoritedAt,
-    this.isOwner = false,
-    this.isCompetitor = false,
-  });
+part 'app_model.freezed.dart';
+part 'app_model.g.dart';
 
-  bool get isIos => platform == 'ios';
-  bool get isAndroid => platform == 'android';
+@freezed
+class AppModel with _$AppModel {
+  const AppModel._();
 
-  AppModel copyWith({
-    int? id,
-    String? platform,
-    String? storeId,
-    String? bundleId,
-    String? name,
-    String? iconUrl,
+  const factory AppModel({
+    required int id,
+    required String platform,
+    @JsonKey(name: 'store_id') required String storeId,
+    @JsonKey(name: 'bundle_id') String? bundleId,
+    required String name,
+    @JsonKey(name: 'icon_url') String? iconUrl,
     String? developer,
     String? description,
     List<String>? screenshots,
     String? version,
-    DateTime? releaseDate,
-    DateTime? updatedDate,
-    int? sizeBytes,
-    String? minimumOs,
-    String? storeUrl,
-    double? price,
+    @JsonKey(name: 'release_date') DateTime? releaseDate,
+    @JsonKey(name: 'updated_date') DateTime? updatedDate,
+    @JsonKey(name: 'size_bytes', fromJson: _parseInt) int? sizeBytes,
+    @JsonKey(name: 'minimum_os') String? minimumOs,
+    @JsonKey(name: 'store_url') String? storeUrl,
+    @JsonKey(fromJson: _parseDouble) double? price,
     String? currency,
-    double? rating,
-    int? ratingCount,
+    @JsonKey(fromJson: _parseDouble) double? rating,
+    @JsonKey(name: 'rating_count', fromJson: _parseIntOrZero) required int ratingCount,
     String? storefront,
-    String? categoryId,
-    String? secondaryCategoryId,
-    int? trackedKeywordsCount,
-    int? bestRank,
-    DateTime? createdAt,
-    bool? isFavorite,
-    DateTime? favoritedAt,
-    bool? isOwner,
-    bool? isCompetitor,
-  }) {
-    return AppModel(
-      id: id ?? this.id,
-      platform: platform ?? this.platform,
-      storeId: storeId ?? this.storeId,
-      bundleId: bundleId ?? this.bundleId,
-      name: name ?? this.name,
-      iconUrl: iconUrl ?? this.iconUrl,
-      developer: developer ?? this.developer,
-      description: description ?? this.description,
-      screenshots: screenshots ?? this.screenshots,
-      version: version ?? this.version,
-      releaseDate: releaseDate ?? this.releaseDate,
-      updatedDate: updatedDate ?? this.updatedDate,
-      sizeBytes: sizeBytes ?? this.sizeBytes,
-      minimumOs: minimumOs ?? this.minimumOs,
-      storeUrl: storeUrl ?? this.storeUrl,
-      price: price ?? this.price,
-      currency: currency ?? this.currency,
-      rating: rating ?? this.rating,
-      ratingCount: ratingCount ?? this.ratingCount,
-      storefront: storefront ?? this.storefront,
-      categoryId: categoryId ?? this.categoryId,
-      secondaryCategoryId: secondaryCategoryId ?? this.secondaryCategoryId,
-      trackedKeywordsCount: trackedKeywordsCount ?? this.trackedKeywordsCount,
-      bestRank: bestRank ?? this.bestRank,
-      createdAt: createdAt ?? this.createdAt,
-      isFavorite: isFavorite ?? this.isFavorite,
-      favoritedAt: favoritedAt ?? this.favoritedAt,
-      isOwner: isOwner ?? this.isOwner,
-      isCompetitor: isCompetitor ?? this.isCompetitor,
-    );
-  }
+    @JsonKey(name: 'category_id') String? categoryId,
+    @JsonKey(name: 'secondary_category_id') String? secondaryCategoryId,
+    @JsonKey(name: 'tracked_keywords_count', fromJson: _parseInt) int? trackedKeywordsCount,
+    @JsonKey(name: 'best_rank', fromJson: _parseInt) int? bestRank,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'is_favorite') @Default(false) bool isFavorite,
+    @JsonKey(name: 'favorited_at') DateTime? favoritedAt,
+    @JsonKey(name: 'is_owner') @Default(false) bool isOwner,
+    @JsonKey(name: 'is_competitor') @Default(false) bool isCompetitor,
+  }) = _AppModel;
 
-  factory AppModel.fromJson(Map<String, dynamic> json) {
-    return AppModel(
-      id: json['id'] as int,
-      platform: json['platform'] as String,
-      storeId: json['store_id'] as String,
-      bundleId: json['bundle_id'] as String?,
-      name: json['name'] as String,
-      iconUrl: json['icon_url'] as String?,
-      developer: json['developer'] as String?,
-      description: json['description'] as String?,
-      screenshots: (json['screenshots'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      version: json['version'] as String?,
-      releaseDate: json['release_date'] != null
-          ? DateTime.tryParse(json['release_date'] as String)
-          : null,
-      updatedDate: json['updated_date'] != null
-          ? DateTime.tryParse(json['updated_date'] as String)
-          : null,
-      sizeBytes: _parseInt(json['size_bytes']),
-      minimumOs: json['minimum_os'] as String?,
-      storeUrl: json['store_url'] as String?,
-      price: _parseDouble(json['price']),
-      currency: json['currency'] as String?,
-      rating: _parseDouble(json['rating']),
-      ratingCount: _parseInt(json['rating_count']) ?? 0,
-      storefront: json['storefront'] as String?,
-      categoryId: json['category_id'] as String?,
-      secondaryCategoryId: json['secondary_category_id'] as String?,
-      trackedKeywordsCount: _parseInt(json['tracked_keywords_count']),
-      bestRank: _parseInt(json['best_rank']),
-      createdAt: DateTime.parse(json['created_at'] as String),
-      isFavorite: json['is_favorite'] as bool? ?? false,
-      favoritedAt: json['favorited_at'] != null
-          ? DateTime.parse(json['favorited_at'] as String)
-          : null,
-      isOwner: json['is_owner'] as bool? ?? false,
-      isCompetitor: json['is_competitor'] as bool? ?? false,
-    );
-  }
-
-  static double? _parseDouble(dynamic value) {
-    if (value == null) return null;
-    if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value);
-    return null;
-  }
-
-  static int? _parseInt(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is num) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    return null;
-  }
-}
-
-class AppSearchResult {
-  final int position;
-  final String appleId;
-  final String name;
-  final String? bundleId;
-  final String? iconUrl;
-  final String? developer;
-  final double price;
-  final double? rating;
-  final int ratingCount;
-
-  AppSearchResult({
-    required this.position,
-    required this.appleId,
-    required this.name,
-    this.bundleId,
-    this.iconUrl,
-    this.developer,
-    required this.price,
-    this.rating,
-    required this.ratingCount,
-  });
-
-  factory AppSearchResult.fromJson(Map<String, dynamic> json) {
-    return AppSearchResult(
-      position: json['position'] as int,
-      appleId: json['apple_id'] as String,
-      name: json['name'] as String,
-      bundleId: json['bundle_id'] as String?,
-      iconUrl: json['icon_url'] as String?,
-      developer: json['developer'] as String?,
-      price: AppModel._parseDouble(json['price']) ?? 0.0,
-      rating: AppModel._parseDouble(json['rating']),
-      ratingCount: AppModel._parseInt(json['rating_count']) ?? 0,
-    );
-  }
-}
-
-class AndroidSearchResult {
-  final int position;
-  final String googlePlayId;
-  final String name;
-  final String? iconUrl;
-  final String? developer;
-  final double? rating;
-  final int ratingCount;
-  final bool free;
-
-  AndroidSearchResult({
-    required this.position,
-    required this.googlePlayId,
-    required this.name,
-    this.iconUrl,
-    this.developer,
-    this.rating,
-    required this.ratingCount,
-    required this.free,
-  });
-
-  factory AndroidSearchResult.fromJson(Map<String, dynamic> json) {
-    return AndroidSearchResult(
-      position: json['position'] as int,
-      googlePlayId: json['google_play_id'] as String,
-      name: json['name'] as String,
-      iconUrl: json['icon_url'] as String?,
-      developer: json['developer'] as String?,
-      rating: AppModel._parseDouble(json['rating']),
-      ratingCount: AppModel._parseInt(json['rating_count']) ?? 0,
-      free: json['free'] as bool? ?? true,
-    );
-  }
-}
-
-/// Preview of an app that is not yet tracked by the user
-class AppPreview {
-  final String platform;
-  final String storeId;
-  final String name;
-  final String? iconUrl;
-  final String? developer;
-  final String? description;
-  final List<String>? screenshots;
-  final String? version;
-  final DateTime? releaseDate;
-  final DateTime? updatedDate;
-  final int? sizeBytes;
-  final String? minimumOs;
-  final String? storeUrl;
-  final double? price;
-  final String? currency;
-  final double? rating;
-  final int ratingCount;
-  final String? categoryId;
-  final String? categoryName;
-
-  AppPreview({
-    required this.platform,
-    required this.storeId,
-    required this.name,
-    this.iconUrl,
-    this.developer,
-    this.description,
-    this.screenshots,
-    this.version,
-    this.releaseDate,
-    this.updatedDate,
-    this.sizeBytes,
-    this.minimumOs,
-    this.storeUrl,
-    this.price,
-    this.currency,
-    this.rating,
-    required this.ratingCount,
-    this.categoryId,
-    this.categoryName,
-  });
+  factory AppModel.fromJson(Map<String, dynamic> json) => _$AppModelFromJson(json);
 
   bool get isIos => platform == 'ios';
   bool get isAndroid => platform == 'android';
-
-  factory AppPreview.fromJson(Map<String, dynamic> json) {
-    return AppPreview(
-      platform: json['platform'] as String,
-      storeId: json['store_id'] as String,
-      name: json['name'] as String,
-      iconUrl: json['icon_url'] as String?,
-      developer: json['developer'] as String?,
-      description: json['description'] as String?,
-      screenshots: (json['screenshots'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      version: json['version'] as String?,
-      releaseDate: json['release_date'] != null
-          ? DateTime.tryParse(json['release_date'] as String)
-          : null,
-      updatedDate: json['updated_date'] != null
-          ? DateTime.tryParse(json['updated_date'] as String)
-          : null,
-      sizeBytes: AppModel._parseInt(json['size_bytes']),
-      minimumOs: json['minimum_os'] as String?,
-      storeUrl: json['store_url'] as String?,
-      price: AppModel._parseDouble(json['price']),
-      currency: json['currency'] as String?,
-      rating: AppModel._parseDouble(json['rating']),
-      ratingCount: AppModel._parseInt(json['rating_count']) ?? 0,
-      categoryId: json['category_id'] as String?,
-      categoryName: json['category_name'] as String?,
-    );
-  }
 }
+
+@freezed
+class AppSearchResult with _$AppSearchResult {
+  const factory AppSearchResult({
+    required int position,
+    @JsonKey(name: 'apple_id') required String appleId,
+    required String name,
+    @JsonKey(name: 'bundle_id') String? bundleId,
+    @JsonKey(name: 'icon_url') String? iconUrl,
+    String? developer,
+    @JsonKey(fromJson: _parseDoubleOrZero) required double price,
+    @JsonKey(fromJson: _parseDouble) double? rating,
+    @JsonKey(name: 'rating_count', fromJson: _parseIntOrZero) required int ratingCount,
+  }) = _AppSearchResult;
+
+  factory AppSearchResult.fromJson(Map<String, dynamic> json) =>
+      _$AppSearchResultFromJson(json);
+}
+
+@freezed
+class AndroidSearchResult with _$AndroidSearchResult {
+  const factory AndroidSearchResult({
+    required int position,
+    @JsonKey(name: 'google_play_id') required String googlePlayId,
+    required String name,
+    @JsonKey(name: 'icon_url') String? iconUrl,
+    String? developer,
+    @JsonKey(fromJson: _parseDouble) double? rating,
+    @JsonKey(name: 'rating_count', fromJson: _parseIntOrZero) required int ratingCount,
+    @Default(true) bool free,
+  }) = _AndroidSearchResult;
+
+  factory AndroidSearchResult.fromJson(Map<String, dynamic> json) =>
+      _$AndroidSearchResultFromJson(json);
+}
+
+/// Preview of an app that is not yet tracked by the user
+@freezed
+class AppPreview with _$AppPreview {
+  const AppPreview._();
+
+  const factory AppPreview({
+    required String platform,
+    @JsonKey(name: 'store_id') required String storeId,
+    required String name,
+    @JsonKey(name: 'icon_url') String? iconUrl,
+    String? developer,
+    String? description,
+    List<String>? screenshots,
+    String? version,
+    @JsonKey(name: 'release_date') DateTime? releaseDate,
+    @JsonKey(name: 'updated_date') DateTime? updatedDate,
+    @JsonKey(name: 'size_bytes', fromJson: _parseInt) int? sizeBytes,
+    @JsonKey(name: 'minimum_os') String? minimumOs,
+    @JsonKey(name: 'store_url') String? storeUrl,
+    @JsonKey(fromJson: _parseDouble) double? price,
+    String? currency,
+    @JsonKey(fromJson: _parseDouble) double? rating,
+    @JsonKey(name: 'rating_count', fromJson: _parseIntOrZero) required int ratingCount,
+    @JsonKey(name: 'category_id') String? categoryId,
+    @JsonKey(name: 'category_name') String? categoryName,
+  }) = _AppPreview;
+
+  factory AppPreview.fromJson(Map<String, dynamic> json) => _$AppPreviewFromJson(json);
+
+  bool get isIos => platform == 'ios';
+  bool get isAndroid => platform == 'android';
+}
+
+// JSON parsing helpers
+double? _parseDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toDouble();
+  if (value is String) return double.tryParse(value);
+  return null;
+}
+
+double _parseDoubleOrZero(dynamic value) => _parseDouble(value) ?? 0.0;
+
+int? _parseInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value);
+  return null;
+}
+
+int _parseIntOrZero(dynamic value) => _parseInt(value) ?? 0;

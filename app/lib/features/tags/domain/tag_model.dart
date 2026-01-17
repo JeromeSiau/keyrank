@@ -29,6 +29,13 @@ class TagModel {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'color': color,
+    if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
+  };
+
   TagModel copyWith({
     int? id,
     String? name,

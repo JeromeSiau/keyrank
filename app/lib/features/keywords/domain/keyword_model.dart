@@ -1,206 +1,102 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../features/tags/domain/tag_model.dart';
 
-class Keyword {
-  final int id;
-  final int? trackedKeywordId;
-  final String keyword;
-  final String storefront;
-  final int? popularity;
-  final int? position;
-  final int? change;
-  final DateTime? lastUpdated;
-  final DateTime? trackedSince;
-  final bool isFavorite;
-  final DateTime? favoritedAt;
-  final List<TagModel> tags;
-  final String? note;
-  final int? difficulty;
-  final String? difficultyLabel;
-  final int? competition;
-  final List<TopCompetitor>? topCompetitors;
+part 'keyword_model.freezed.dart';
+part 'keyword_model.g.dart';
 
-  Keyword({
-    required this.id,
-    this.trackedKeywordId,
-    required this.keyword,
-    required this.storefront,
-    this.popularity,
-    this.position,
-    this.change,
-    this.lastUpdated,
-    this.trackedSince,
-    this.isFavorite = false,
-    this.favoritedAt,
-    this.tags = const [],
-    this.note,
-    this.difficulty,
-    this.difficultyLabel,
-    this.competition,
-    this.topCompetitors,
-  });
+@freezed
+class Keyword with _$Keyword {
+  const Keyword._();
 
-  factory Keyword.fromJson(Map<String, dynamic> json) {
-    return Keyword(
-      id: json['id'] as int,
-      trackedKeywordId: json['tracked_keyword_id'] as int?,
-      keyword: json['keyword'] as String,
-      storefront: json['storefront'] as String,
-      popularity: json['popularity'] as int?,
-      position: json['position'] as int?,
-      change: json['change'] as int?,
-      lastUpdated: json['last_updated'] != null
-          ? DateTime.parse(json['last_updated'] as String)
-          : null,
-      trackedSince: json['tracked_since'] != null
-          ? DateTime.parse(json['tracked_since'] as String)
-          : null,
-      isFavorite: json['is_favorite'] as bool? ?? false,
-      favoritedAt: json['favorited_at'] != null
-          ? DateTime.parse(json['favorited_at'] as String)
-          : null,
-      tags: (json['tags'] as List<dynamic>?)
-              ?.map((e) => TagModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
-      note: json['note'] as String?,
-      difficulty: json['difficulty'] as int?,
-      difficultyLabel: json['difficulty_label'] as String?,
-      competition: json['competition'] as int?,
-      topCompetitors: (json['top_competitors'] as List<dynamic>?)
-          ?.map((e) => TopCompetitor.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  Keyword copyWith({
-    int? id,
-    int? trackedKeywordId,
-    String? keyword,
-    String? storefront,
+  const factory Keyword({
+    required int id,
+    @JsonKey(name: 'tracked_keyword_id') int? trackedKeywordId,
+    required String keyword,
+    required String storefront,
     int? popularity,
     int? position,
     int? change,
-    DateTime? lastUpdated,
-    DateTime? trackedSince,
-    bool? isFavorite,
-    DateTime? favoritedAt,
-    List<TagModel>? tags,
+    @JsonKey(name: 'last_updated') DateTime? lastUpdated,
+    @JsonKey(name: 'tracked_since') DateTime? trackedSince,
+    @JsonKey(name: 'is_favorite') @Default(false) bool isFavorite,
+    @JsonKey(name: 'favorited_at') DateTime? favoritedAt,
+    @Default([]) List<TagModel> tags,
     String? note,
     int? difficulty,
-    String? difficultyLabel,
+    @JsonKey(name: 'difficulty_label') String? difficultyLabel,
     int? competition,
-    List<TopCompetitor>? topCompetitors,
-  }) {
-    return Keyword(
-      id: id ?? this.id,
-      trackedKeywordId: trackedKeywordId ?? this.trackedKeywordId,
-      keyword: keyword ?? this.keyword,
-      storefront: storefront ?? this.storefront,
-      popularity: popularity ?? this.popularity,
-      position: position ?? this.position,
-      change: change ?? this.change,
-      lastUpdated: lastUpdated ?? this.lastUpdated,
-      trackedSince: trackedSince ?? this.trackedSince,
-      isFavorite: isFavorite ?? this.isFavorite,
-      favoritedAt: favoritedAt ?? this.favoritedAt,
-      tags: tags ?? this.tags,
-      note: note ?? this.note,
-      difficulty: difficulty ?? this.difficulty,
-      difficultyLabel: difficultyLabel ?? this.difficultyLabel,
-      competition: competition ?? this.competition,
-      topCompetitors: topCompetitors ?? this.topCompetitors,
-    );
-  }
+    @JsonKey(name: 'top_competitors') List<TopCompetitor>? topCompetitors,
+  }) = _Keyword;
+
+  factory Keyword.fromJson(Map<String, dynamic> json) => _$KeywordFromJson(json);
 
   bool get isRanked => position != null;
-
   bool get hasImproved => change != null && change! > 0;
   bool get hasDeclined => change != null && change! < 0;
 }
 
-class KeywordSearchResponse {
-  final KeywordInfo keyword;
-  final List<KeywordSearchResult> results;
-  final int totalResults;
+@freezed
+class KeywordSearchResponse with _$KeywordSearchResponse {
+  const factory KeywordSearchResponse({
+    required KeywordInfo keyword,
+    required List<KeywordSearchResult> results,
+    @JsonKey(name: 'total_results') required int totalResults,
+  }) = _KeywordSearchResponse;
 
-  KeywordSearchResponse({
-    required this.keyword,
-    required this.results,
-    required this.totalResults,
-  });
-
-  factory KeywordSearchResponse.fromJson(Map<String, dynamic> json) {
-    return KeywordSearchResponse(
-      keyword: KeywordInfo.fromJson(json['keyword'] as Map<String, dynamic>),
-      results: (json['results'] as List)
-          .map((e) => KeywordSearchResult.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      totalResults: json['total_results'] as int,
-    );
-  }
+  factory KeywordSearchResponse.fromJson(Map<String, dynamic> json) =>
+      _$KeywordSearchResponseFromJson(json);
 }
 
-class KeywordInfo {
-  final int id;
-  final String keyword;
-  final String storefront;
-  final int? popularity;
+@freezed
+class KeywordInfo with _$KeywordInfo {
+  const factory KeywordInfo({
+    required int id,
+    required String keyword,
+    required String storefront,
+    int? popularity,
+  }) = _KeywordInfo;
 
-  KeywordInfo({
-    required this.id,
-    required this.keyword,
-    required this.storefront,
-    this.popularity,
-  });
-
-  factory KeywordInfo.fromJson(Map<String, dynamic> json) {
-    return KeywordInfo(
-      id: json['id'] as int,
-      keyword: json['keyword'] as String,
-      storefront: json['storefront'] as String,
-      popularity: json['popularity'] as int?,
-    );
-  }
+  factory KeywordInfo.fromJson(Map<String, dynamic> json) =>
+      _$KeywordInfoFromJson(json);
 }
 
-class KeywordSearchResult {
-  final int position;
-  final String? appleId;
-  final String? googlePlayId;
-  final String name;
-  final String? iconUrl;
-  final String? developer;
-  final double? rating;
-  final int ratingCount;
+@freezed
+class KeywordSearchResult with _$KeywordSearchResult {
+  const KeywordSearchResult._();
 
-  KeywordSearchResult({
-    required this.position,
-    this.appleId,
-    this.googlePlayId,
-    required this.name,
-    this.iconUrl,
-    this.developer,
-    this.rating,
-    required this.ratingCount,
-  });
+  const factory KeywordSearchResult({
+    required int position,
+    @JsonKey(name: 'apple_id') String? appleId,
+    @JsonKey(name: 'google_play_id') String? googlePlayId,
+    required String name,
+    @JsonKey(name: 'icon_url') String? iconUrl,
+    String? developer,
+    @JsonKey(fromJson: _parseDouble) double? rating,
+    @JsonKey(name: 'rating_count', fromJson: _parseIntOrZero) required int ratingCount,
+  }) = _KeywordSearchResult;
+
+  factory KeywordSearchResult.fromJson(Map<String, dynamic> json) =>
+      _$KeywordSearchResultFromJson(json);
 
   String get appId => appleId ?? googlePlayId ?? '';
   bool get isIos => appleId != null;
   bool get isAndroid => googlePlayId != null;
-
-  factory KeywordSearchResult.fromJson(Map<String, dynamic> json) {
-    return KeywordSearchResult(
-      position: json['position'] as int,
-      appleId: json['apple_id'] as String?,
-      googlePlayId: json['google_play_id'] as String?,
-      name: json['name'] as String,
-      iconUrl: json['icon_url'] as String?,
-      developer: json['developer'] as String?,
-      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
-      ratingCount: json['rating_count'] as int? ?? 0,
-    );
-  }
 }
+
+@freezed
+class TopCompetitor with _$TopCompetitor {
+  const factory TopCompetitor({
+    required String name,
+    required int position,
+    @JsonKey(fromJson: _parseDouble) double? rating,
+    @JsonKey(name: 'icon_url') String? iconUrl,
+  }) = _TopCompetitor;
+
+  factory TopCompetitor.fromJson(Map<String, dynamic> json) =>
+      _$TopCompetitorFromJson(json);
+}
+
+// Non-freezed classes with complex parsing logic
 
 class KeywordSuggestion {
   final String keyword;
@@ -252,7 +148,6 @@ class KeywordSuggestion {
     );
   }
 
-  /// Get display name for category
   String get categoryDisplayName {
     switch (category) {
       case 'high_opportunity':
@@ -270,7 +165,6 @@ class KeywordSuggestion {
     }
   }
 
-  /// Get icon for category
   String get categoryIcon {
     switch (category) {
       case 'high_opportunity':
@@ -286,29 +180,6 @@ class KeywordSuggestion {
       default:
         return '💡';
     }
-  }
-}
-
-class TopCompetitor {
-  final String name;
-  final int position;
-  final double? rating;
-  final String? iconUrl;
-
-  TopCompetitor({
-    required this.name,
-    required this.position,
-    this.rating,
-    this.iconUrl,
-  });
-
-  factory TopCompetitor.fromJson(Map<String, dynamic> json) {
-    return TopCompetitor(
-      name: json['name'] as String,
-      position: json['position'] as int,
-      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
-      iconUrl: json['icon_url'] as String?,
-    );
   }
 }
 
@@ -337,7 +208,6 @@ class KeywordSuggestionsResponse {
     final meta = json['meta'] as Map<String, dynamic>;
     final categoriesJson = json['categories'] as Map<String, dynamic>? ?? {};
 
-    // Parse categories
     final categories = <String, List<KeywordSuggestion>>{};
     for (final entry in categoriesJson.entries) {
       categories[entry.key] = (entry.value as List)
@@ -345,7 +215,6 @@ class KeywordSuggestionsResponse {
           .toList();
     }
 
-    // Parse by_category counts
     final byCategoryJson = meta['by_category'] as Map<String, dynamic>? ?? {};
     final byCategory = byCategoryJson.map((k, v) => MapEntry(k, v as int));
 
@@ -365,12 +234,10 @@ class KeywordSuggestionsResponse {
     );
   }
 
-  /// Get suggestions for a specific category
   List<KeywordSuggestion> forCategory(String category) {
     return categories[category] ?? [];
   }
 
-  /// Category display order
   static const categoryOrder = [
     'high_opportunity',
     'competitor',
@@ -379,8 +246,23 @@ class KeywordSuggestionsResponse {
     'related',
   ];
 
-  /// Get non-empty categories in display order
   List<String> get nonEmptyCategories {
     return categoryOrder.where((cat) => (byCategory[cat] ?? 0) > 0).toList();
   }
+}
+
+// JSON parsing helpers
+double? _parseDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toDouble();
+  if (value is String) return double.tryParse(value);
+  return null;
+}
+
+int _parseIntOrZero(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value) ?? 0;
+  return 0;
 }
