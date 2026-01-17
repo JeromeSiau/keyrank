@@ -411,7 +411,7 @@ class KeywordController extends Controller
         $this->authorizeTeamAction('manage_keywords');
 
         $validated = $request->validate([
-            'tracked_keyword_ids' => 'required|array|min:1',
+            'tracked_keyword_ids' => 'required|array|min:1|max:500',
             'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
         ]);
 
@@ -437,9 +437,9 @@ class KeywordController extends Controller
         $this->authorizeTeamAction('manage_keywords');
 
         $validated = $request->validate([
-            'tracked_keyword_ids' => 'required|array|min:1',
+            'tracked_keyword_ids' => 'required|array|min:1|max:500',
             'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
-            'tag_ids' => 'required|array|min:1',
+            'tag_ids' => 'required|array|min:1|max:50',
             'tag_ids.*' => 'integer|exists:tags,id',
         ]);
 
@@ -479,7 +479,7 @@ class KeywordController extends Controller
         $this->authorizeTeamAction('manage_keywords');
 
         $validated = $request->validate([
-            'tracked_keyword_ids' => 'required|array|min:1',
+            'tracked_keyword_ids' => 'required|array|min:1|max:500',
             'tracked_keyword_ids.*' => 'integer|exists:tracked_keywords,id',
             'is_favorite' => 'required|boolean',
         ]);
