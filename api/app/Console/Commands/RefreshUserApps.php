@@ -38,9 +38,9 @@ class RefreshUserApps extends Command
             $this->warn('DRY RUN - No data will be saved');
         }
 
-        // Get apps that have at least one user tracking them
+        // Get apps that have at least one team tracking them
         $query = App::query()
-            ->whereHas('users');
+            ->whereHas('teams');
 
         if ($platform) {
             $query->where('platform', $platform);

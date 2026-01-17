@@ -38,7 +38,7 @@ class AsoMetadataCollector extends BaseCollector
 
         // Get tracked apps
         $apps = App::select('id', 'platform', 'store_id', 'name')
-            ->whereHas('users')
+            ->whereHas('teams')
             ->get();
 
         // For each app, create items for key countries

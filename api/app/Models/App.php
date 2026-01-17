@@ -63,10 +63,11 @@ class App extends Model
         'metadata_checked_at' => 'datetime',
     ];
 
-    public function users(): BelongsToMany
+    public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_apps')
-            ->withPivot('is_owner', 'is_favorite', 'favorited_at', 'created_at');
+        return $this->belongsToMany(Team::class, 'team_apps')
+            ->withPivot('added_by', 'is_owner', 'ownership_type', 'integration_id', 'tag', 'is_favorite', 'favorited_at', 'created_at')
+            ->withTimestamps();
     }
 
     public function keywords(): BelongsToMany
@@ -197,11 +198,11 @@ class App extends Model
         return $this->hasMany(AppCompetitor::class, 'competitor_app_id');
     }
 
-    public function scopeOwnedBy($query, int $userId)
+    public function scopeOwnedByTeam($query, int $teamId)
     {
-        return $query->whereHas('users', function ($q) use ($userId) {
-            $q->where('users.id', $userId)
-              ->where('user_apps.is_owner', true);
+        return $query->whereHas('teams', function ($q) use ($teamId) {
+            $q->where('teams.id', $teamId)
+              ->where('team_apps.is_owner', true);
         });
     }
 

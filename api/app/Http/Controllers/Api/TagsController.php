@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\Tag;
 use App\Models\TrackedKeyword;
 use Illuminate\Http\JsonResponse;
@@ -12,9 +13,13 @@ use Illuminate\Validation\Rule;
 
 class TagsController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function index(Request $request): JsonResponse
     {
-        $tags = Tag::where('user_id', $request->user()->id)
+        $team = $this->currentTeam();
+
+        $tags = Tag::where('team_id', $team->id)
             ->orderBy('name')
             ->get();
 
@@ -23,18 +28,22 @@ class TagsController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorizeTeamAction('manage_tags');
+
+        $team = $this->currentTeam();
+
         $validated = $request->validate([
             'name' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('tags')->where('user_id', $request->user()->id),
+                Rule::unique('tags')->where('team_id', $team->id),
             ],
             'color' => 'nullable|string|regex:/^#[0-9a-fA-F]{6}$/',
         ]);
 
         $tag = Tag::create([
-            'user_id' => $request->user()->id,
+            'team_id' => $team->id,
             'name' => $validated['name'],
             'color' => $validated['color'] ?? '#6366f1',
         ]);
@@ -44,7 +53,11 @@ class TagsController extends Controller
 
     public function destroy(Request $request, Tag $tag): Response
     {
-        if ($tag->user_id !== $request->user()->id) {
+        $this->authorizeTeamAction('manage_tags');
+
+        $team = $this->currentTeam();
+
+        if ($tag->team_id !== $team->id) {
             abort(403);
         }
 
@@ -55,17 +68,19 @@ class TagsController extends Controller
 
     public function addToKeyword(Request $request): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $validated = $request->validate([
             'tag_id' => 'required|exists:tags,id',
             'tracked_keyword_id' => 'required|exists:tracked_keywords,id',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $tag = Tag::findOrFail($validated['tag_id']);
         $tracked = TrackedKeyword::findOrFail($validated['tracked_keyword_id']);
 
         // Verify ownership
-        if ($tag->user_id !== $user->id || $tracked->user_id !== $user->id) {
+        if ($tag->team_id !== $team->id || $tracked->team_id !== $team->id) {
             abort(403);
         }
 
@@ -78,17 +93,19 @@ class TagsController extends Controller
 
     public function removeFromKeyword(Request $request): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $validated = $request->validate([
             'tag_id' => 'required|exists:tags,id',
             'tracked_keyword_id' => 'required|exists:tracked_keywords,id',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $tag = Tag::findOrFail($validated['tag_id']);
         $tracked = TrackedKeyword::findOrFail($validated['tracked_keyword_id']);
 
         // Verify ownership
-        if ($tag->user_id !== $user->id || $tracked->user_id !== $user->id) {
+        if ($tag->team_id !== $team->id || $tracked->team_id !== $team->id) {
             abort(403);
         }
 

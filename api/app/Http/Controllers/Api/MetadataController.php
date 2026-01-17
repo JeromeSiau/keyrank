@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\AppMetadataDraft;
 use App\Models\AppMetadataHistory;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 
 class MetadataController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function __construct(
         private AppStoreConnectService $ascService,
         private GooglePlayDeveloperService $gplayService,
@@ -29,15 +32,15 @@ class MetadataController extends Controller
      */
     public function index(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        // Check user has access to this app
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        // Check team has access to this app
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['message' => 'App not found'], 404);
         }
 
-        // Check if user owns this app (has store connection)
-        $isOwner = $user->apps()
+        // Check if team owns this app (has store connection)
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -47,15 +50,15 @@ class MetadataController extends Controller
             ->orderBy('locale')
             ->get();
 
-        // Get user's drafts for this app
+        // Get team's drafts for this app
         $drafts = AppMetadataDraft::forApp($app->id)
-            ->forUser($user->id)
+            ->forTeam($team->id)
             ->get()
             ->keyBy('locale');
 
-        // If no cached locales and user is owner, try to fetch from store
+        // If no cached locales and team is owner, try to fetch from store
         if ($locales->isEmpty() && $isOwner) {
-            $locales = $this->fetchAndCacheMetadata($user, $app);
+            $locales = $this->fetchAndCacheMetadata($team, $app);
         }
 
         $result = $locales->map(function ($locale) use ($drafts, $app) {
@@ -111,9 +114,9 @@ class MetadataController extends Controller
      */
     public function show(Request $request, App $app, string $locale): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['message' => 'App not found'], 404);
         }
 
@@ -122,12 +125,12 @@ class MetadataController extends Controller
             ->first();
 
         $draft = AppMetadataDraft::forApp($app->id)
-            ->forUser($user->id)
+            ->forTeam($team->id)
             ->forLocale($locale)
             ->first();
 
         // Get tracked keywords for analysis
-        $trackedKeywords = TrackedKeyword::where('user_id', $user->id)
+        $trackedKeywords = TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->with('keyword')
             ->get()
@@ -177,10 +180,12 @@ class MetadataController extends Controller
      */
     public function update(Request $request, App $app, string $locale): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
+
+        $team = $this->currentTeam();
 
         // Check ownership
-        $isOwner = $user->apps()
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -203,7 +208,7 @@ class MetadataController extends Controller
         $draft = AppMetadataDraft::updateOrCreate(
             [
                 'app_id' => $app->id,
-                'user_id' => $user->id,
+                'team_id' => $team->id,
                 'locale' => $locale,
             ],
             array_merge($validated, [
@@ -238,7 +243,9 @@ class MetadataController extends Controller
      */
     public function publish(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
+
+        $team = $this->currentTeam();
 
         $validated = $request->validate([
             'locales' => 'required|array|min:1',
@@ -246,7 +253,7 @@ class MetadataController extends Controller
         ]);
 
         // Check ownership
-        $isOwner = $user->apps()
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -260,7 +267,7 @@ class MetadataController extends Controller
         }
 
         // Get store connection
-        $connection = StoreConnection::where('user_id', $user->id)
+        $connection = StoreConnection::where('team_id', $team->id)
             ->where('platform', $app->platform)
             ->where('status', 'active')
             ->first();
@@ -272,16 +279,16 @@ class MetadataController extends Controller
 
         // Route to platform-specific publisher
         if ($app->platform === 'android') {
-            return $this->publishToGooglePlay($app, $user, $connection, $validated['locales']);
+            return $this->publishToGooglePlay($app, $team, $connection, $validated['locales']);
         }
 
-        return $this->publishToAppStore($app, $user, $connection, $validated['locales']);
+        return $this->publishToAppStore($app, $team, $connection, $validated['locales']);
     }
 
     /**
      * Publish metadata to App Store Connect (iOS)
      */
-    private function publishToAppStore(App $app, $user, StoreConnection $connection, array $locales): JsonResponse
+    private function publishToAppStore(App $app, $team, StoreConnection $connection, array $locales): JsonResponse
     {
         $results = [];
         $errors = [];
@@ -291,7 +298,7 @@ class MetadataController extends Controller
         try {
             foreach ($locales as $locale) {
                 $draft = AppMetadataDraft::forApp($app->id)
-                    ->forUser($user->id)
+                    ->forTeam($team->id)
                     ->forLocale($locale)
                     ->first();
 
@@ -355,7 +362,7 @@ class MetadataController extends Controller
     /**
      * Publish metadata to Google Play (Android)
      */
-    private function publishToGooglePlay(App $app, $user, StoreConnection $connection, array $locales): JsonResponse
+    private function publishToGooglePlay(App $app, $team, StoreConnection $connection, array $locales): JsonResponse
     {
         $results = [];
         $errors = [];
@@ -365,7 +372,7 @@ class MetadataController extends Controller
 
         foreach ($locales as $locale) {
             $draft = AppMetadataDraft::forApp($app->id)
-                ->forUser($user->id)
+                ->forTeam($team->id)
                 ->forLocale($locale)
                 ->first();
 
@@ -402,7 +409,7 @@ class MetadataController extends Controller
                 // Update all published locales
                 foreach ($publishResult['updated'] ?? array_keys($localeData) as $locale) {
                     $draft = AppMetadataDraft::forApp($app->id)
-                        ->forUser($user->id)
+                        ->forTeam($team->id)
                         ->forLocale($locale)
                         ->first();
 
@@ -481,9 +488,11 @@ class MetadataController extends Controller
      */
     public function refresh(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
 
-        $isOwner = $user->apps()
+        $team = $this->currentTeam();
+
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -492,7 +501,7 @@ class MetadataController extends Controller
             return response()->json(['message' => 'Cannot refresh metadata for this app'], 400);
         }
 
-        $locales = $this->fetchAndCacheMetadata($user, $app);
+        $locales = $this->fetchAndCacheMetadata($team, $app);
 
         return response()->json([
             'data' => [
@@ -508,9 +517,9 @@ class MetadataController extends Controller
      */
     public function history(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['message' => 'App not found'], 404);
         }
 
@@ -542,10 +551,12 @@ class MetadataController extends Controller
      */
     public function deleteDraft(Request $request, App $app, string $locale): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
+
+        $team = $this->currentTeam();
 
         $draft = AppMetadataDraft::forApp($app->id)
-            ->forUser($user->id)
+            ->forTeam($team->id)
             ->forLocale($locale)
             ->first();
 
@@ -563,9 +574,9 @@ class MetadataController extends Controller
     /**
      * Fetch metadata from store and cache in database
      */
-    private function fetchAndCacheMetadata($user, App $app): \Illuminate\Support\Collection
+    private function fetchAndCacheMetadata($team, App $app): \Illuminate\Support\Collection
     {
-        $connection = StoreConnection::where('user_id', $user->id)
+        $connection = StoreConnection::where('team_id', $team->id)
             ->where('platform', $app->platform)
             ->where('status', 'active')
             ->first();
@@ -663,7 +674,9 @@ class MetadataController extends Controller
      */
     public function copyLocale(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
+
+        $team = $this->currentTeam();
 
         $validated = $request->validate([
             'source_locale' => 'required|string|max:20',
@@ -674,7 +687,7 @@ class MetadataController extends Controller
         ]);
 
         // Check ownership
-        $isOwner = $user->apps()
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -689,7 +702,7 @@ class MetadataController extends Controller
             ->first();
 
         $sourceDraft = AppMetadataDraft::forApp($app->id)
-            ->forUser($user->id)
+            ->forTeam($team->id)
             ->forLocale($validated['source_locale'])
             ->first();
 
@@ -726,7 +739,7 @@ class MetadataController extends Controller
             $draft = AppMetadataDraft::updateOrCreate(
                 [
                     'app_id' => $app->id,
-                    'user_id' => $user->id,
+                    'team_id' => $team->id,
                     'locale' => $targetLocale,
                 ],
                 array_merge($contentToCopy, [
@@ -755,7 +768,9 @@ class MetadataController extends Controller
      */
     public function translateLocale(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
+
+        $team = $this->currentTeam();
 
         $validated = $request->validate([
             'source_locale' => 'required|string|max:20',
@@ -766,7 +781,7 @@ class MetadataController extends Controller
         ]);
 
         // Check ownership
-        $isOwner = $user->apps()
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -781,7 +796,7 @@ class MetadataController extends Controller
             ->first();
 
         $sourceDraft = AppMetadataDraft::forApp($app->id)
-            ->forUser($user->id)
+            ->forTeam($team->id)
             ->forLocale($validated['source_locale'])
             ->first();
 
@@ -862,7 +877,7 @@ PROMPT;
                         $draft = AppMetadataDraft::updateOrCreate(
                             [
                                 'app_id' => $app->id,
-                                'user_id' => $user->id,
+                                'team_id' => $team->id,
                                 'locale' => $targetLocale,
                             ],
                             array_merge($translatedContent, [
@@ -961,7 +976,9 @@ PROMPT;
      */
     public function optimize(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_metadata');
+
+        $team = $this->currentTeam();
 
         $validated = $request->validate([
             'locale' => 'required|string|max:20',
@@ -969,7 +986,7 @@ PROMPT;
         ]);
 
         // Check ownership
-        $isOwner = $user->apps()
+        $isOwner = $team->apps()
             ->where('apps.id', $app->id)
             ->wherePivot('is_owner', true)
             ->exists();
@@ -984,7 +1001,7 @@ PROMPT;
             ->first();
 
         $draft = AppMetadataDraft::forApp($app->id)
-            ->forUser($user->id)
+            ->forTeam($team->id)
             ->forLocale($validated['locale'])
             ->first();
 
@@ -996,7 +1013,7 @@ PROMPT;
         ];
 
         // Get tracked keywords with popularity
-        $trackedKeywords = TrackedKeyword::where('user_id', $user->id)
+        $trackedKeywords = TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->with(['keyword', 'latestRanking'])
             ->get()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,6 +29,17 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Create personal team for the user
+        $team = Team::create([
+            'name' => 'Personal',
+            'description' => 'Your personal workspace',
+            'owner_id' => $user->id,
+        ]);
+
+        // Add user as owner member and set as current team
+        $team->addMember($user, Team::ROLE_OWNER);
+        $user->update(['current_team_id' => $team->id]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

@@ -69,15 +69,15 @@
 
 | # | Feature | Status | Branch | Session Date | Notes |
 |---|---------|--------|--------|--------------|-------|
-| 7.1 | Team Management | ⬚ Todo | - | - | NEW module |
-| 7.2 | Slack Integration | ⬚ Todo | - | - | OAuth + webhooks |
+| 7.1 | Team Management | ✅ Done | main | 2026-01-17 | Multi-user, roles (owner/admin/editor/viewer), invitations |
+| 7.2 | Slack Integration | ❌ Cancelled | - | 2026-01-17 | Dropped - not needed for MVP |
 | 7.3 | Scheduled PDF Reports | ⬚ Todo | - | - | Backend jobs |
 | 7.4 | Public API | ⬚ Todo | - | - | Backend focus |
 | 7.5 | Webhooks | ⬚ Todo | - | - | Backend + settings UI |
 
 ### Suggested Order
 ```
-7.1 → 7.2 → 7.5 → 7.3 → 7.4
+7.1 → 7.5 → 7.3 → 7.4
 ```
 
 ---

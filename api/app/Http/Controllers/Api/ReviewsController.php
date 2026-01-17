@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\AppReview;
 use App\Services\AppStoreConnectService;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewsController extends Controller
 {
+    use AuthorizesTeamActions;
     public function __construct(
         private AppStoreConnectService $appStoreConnect,
         private GooglePlayDeveloperService $googlePlay,
@@ -21,14 +23,15 @@ class ReviewsController extends Controller
     ) {}
 
     /**
-     * Get reviews inbox for user's owned apps only
+     * Get reviews inbox for team's owned apps only
      */
     public function inbox(Request $request): JsonResponse
     {
         $user = Auth::user();
+        $team = $this->currentTeam();
 
         // Only show reviews from owned apps (apps synced from connected store accounts)
-        $ownedAppIds = $user->ownedApps()->pluck('apps.id');
+        $ownedAppIds = $team->apps()->wherePivot('is_owner', true)->pluck('apps.id');
 
         if ($ownedAppIds->isEmpty()) {
             return response()->json([
@@ -132,9 +135,10 @@ class ReviewsController extends Controller
     public function reply(Request $request, App $app, AppReview $review): JsonResponse
     {
         $user = Auth::user();
+        $team = $this->currentTeam();
 
-        // Check user owns the app
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        // Check team owns the app
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'You do not own this app.'], 403);
         }
 
@@ -211,9 +215,10 @@ class ReviewsController extends Controller
     public function suggestReply(Request $request, App $app, AppReview $review): JsonResponse
     {
         $user = Auth::user();
+        $team = $this->currentTeam();
 
-        // Check user owns the app
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        // Check team owns the app
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'You do not own this app.'], 403);
         }
 

@@ -35,10 +35,10 @@ class CategoryRankingCollector extends BaseCollector
      */
     public function getItems(): Collection
     {
-        // Get apps that users are tracking (have entries in user_apps)
+        // Get apps that teams are tracking (have entries in team_apps)
         return App::select('id', 'platform', 'store_id', 'name', 'category_id')
             ->whereNotNull('category_id')
-            ->whereHas('users')
+            ->whereHas('teams')
             ->get();
     }
 

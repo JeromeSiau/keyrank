@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\StoreConnection;
 use App\Services\AppStoreConnectService;
@@ -16,6 +17,7 @@ use Illuminate\Validation\Rule;
 
 class StoreConnectionController extends Controller
 {
+    use AuthorizesTeamActions;
     public function __construct(
         private AppStoreConnectService $appStoreService,
         private GooglePlayDeveloperService $googlePlayService,
@@ -207,9 +209,10 @@ class StoreConnectionController extends Controller
                     }
                 }
 
-                // Attach to user with is_owner=true (or update if already attached)
-                $user->apps()->syncWithoutDetaching([
-                    $app->id => ['is_owner' => true],
+                // Attach to team with is_owner=true (or update if already attached)
+                $team = $this->currentTeam();
+                $team->apps()->syncWithoutDetaching([
+                    $app->id => ['is_owner' => true, 'added_by' => $user->id],
                 ]);
 
                 $synced[] = [
@@ -222,14 +225,15 @@ class StoreConnectionController extends Controller
         } else {
             // For Android, we can't list all apps from Google Play API
             // Instead, mark existing followed Android apps as owned if we can access their reviews
-            $androidApps = $user->apps()->where('platform', 'android')->get();
+            $team = $this->currentTeam();
+            $androidApps = $team->apps()->where('platform', 'android')->get();
 
             foreach ($androidApps as $app) {
                 $reviews = $this->googlePlayService->getReviews($storeConnection, $app->store_id);
 
                 if ($reviews !== null) {
                     // Successfully accessed reviews, mark as owner
-                    $user->apps()->updateExistingPivot($app->id, ['is_owner' => true]);
+                    $team->apps()->updateExistingPivot($app->id, ['is_owner' => true]);
 
                     $synced[] = [
                         'id' => $app->id,

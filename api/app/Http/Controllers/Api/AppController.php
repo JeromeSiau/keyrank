@@ -410,7 +410,7 @@ class AppController extends Controller
 
         $isFavorite = $validated['is_favorite'];
 
-        $request->user()->apps()->updateExistingPivot($app->id, [
+        $this->currentTeam()->apps()->updateExistingPivot($app->id, [
             'is_favorite' => $isFavorite,
             'favorited_at' => $isFavorite ? now() : null,
         ]);

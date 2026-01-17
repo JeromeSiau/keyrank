@@ -123,12 +123,12 @@ class GenerateSuggestions extends Command
 
     private function processAllApps(?string $countryOption, int $limit, bool $sync, bool $force, bool $verbose): int
     {
-        $query = App::whereHas('users');
+        $query = App::whereHas('teams');
 
         $apps = $query->get();
 
         if ($apps->isEmpty()) {
-            $this->warn("No apps with tracked users found");
+            $this->warn("No apps with tracked teams found");
             return Command::SUCCESS;
         }
 

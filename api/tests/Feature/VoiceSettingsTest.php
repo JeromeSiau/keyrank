@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\App;
 use App\Models\AppVoiceSetting;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,9 +19,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_show_returns_null_when_no_voice_settings_exist(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         $response = $this->actingAs($user)->getJson("/api/apps/{$app->id}/voice-settings");
 
@@ -30,9 +31,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_show_returns_voice_settings_for_user(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppVoiceSetting::create([
             'app_id' => $app->id,
@@ -52,11 +53,11 @@ class VoiceSettingsTest extends TestCase
 
     public function test_show_returns_only_current_users_settings(): void
     {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
+        $user = $this->createUserWithTeam();
+        $otherUser = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
-        $otherUser->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
+        $otherUser->currentTeam->apps()->attach($app->id);
 
         AppVoiceSetting::create([
             'app_id' => $app->id,
@@ -83,7 +84,7 @@ class VoiceSettingsTest extends TestCase
 
     public function test_show_fails_when_user_does_not_own_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
 
         $response = $this->actingAs($user)->getJson("/api/apps/{$app->id}/voice-settings");
@@ -98,9 +99,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_creates_new_voice_settings(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         $response = $this->actingAs($user)->putJson("/api/apps/{$app->id}/voice-settings", [
             'tone_description' => 'Casual and friendly',
@@ -124,9 +125,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_modifies_existing_voice_settings(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppVoiceSetting::create([
             'app_id' => $app->id,
@@ -159,9 +160,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_allows_partial_update(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppVoiceSetting::create([
             'app_id' => $app->id,
@@ -187,9 +188,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_allows_empty_request(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         // Empty request should create record with defaults
         $response = $this->actingAs($user)->putJson("/api/apps/{$app->id}/voice-settings", []);
@@ -202,9 +203,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_allows_null_for_nullable_fields(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         // Create initial settings
         AppVoiceSetting::create([
@@ -230,9 +231,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_validates_tone_description_max_length(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         $response = $this->actingAs($user)->putJson("/api/apps/{$app->id}/voice-settings", [
             'tone_description' => str_repeat('a', 501),
@@ -244,9 +245,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_validates_default_language_max_length(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         $response = $this->actingAs($user)->putJson("/api/apps/{$app->id}/voice-settings", [
             'default_language' => str_repeat('a', 11),
@@ -258,9 +259,9 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_validates_signature_max_length(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         $response = $this->actingAs($user)->putJson("/api/apps/{$app->id}/voice-settings", [
             'signature' => str_repeat('a', 101),
@@ -283,7 +284,7 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_fails_when_user_does_not_own_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
 
         $response = $this->actingAs($user)->putJson("/api/apps/{$app->id}/voice-settings", [
@@ -296,11 +297,11 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_does_not_affect_other_users_settings(): void
     {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
+        $user = $this->createUserWithTeam();
+        $otherUser = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
-        $otherUser->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
+        $otherUser->currentTeam->apps()->attach($app->id);
 
         AppVoiceSetting::create([
             'app_id' => $app->id,
@@ -334,7 +335,7 @@ class VoiceSettingsTest extends TestCase
 
     public function test_show_returns_404_for_nonexistent_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
 
         $response = $this->actingAs($user)->getJson('/api/apps/99999/voice-settings');
 
@@ -343,7 +344,7 @@ class VoiceSettingsTest extends TestCase
 
     public function test_update_returns_404_for_nonexistent_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
 
         $response = $this->actingAs($user)->putJson('/api/apps/99999/voice-settings', [
             'tone_description' => 'Test',

@@ -61,8 +61,12 @@ class SyncFunnelAnalyticsJob implements ShouldQueue
         $connections = StoreConnection::where('status', 'active')->get();
 
         foreach ($connections as $connection) {
-            // Get all apps for this connection's user
-            $apps = App::where('user_id', $connection->user_id)
+            // Get all apps for this connection's user's team
+            $team = $connection->user->currentTeam;
+            if (!$team) {
+                continue;
+            }
+            $apps = $team->apps()
                 ->where('platform', $connection->platform)
                 ->get();
 

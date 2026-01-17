@@ -47,25 +47,31 @@ class CheckPlanLimit
 
     private function getCurrentCount($user, string $resource, Request $request): int
     {
+        $team = $user->currentTeam;
+
         return match ($resource) {
-            'apps' => $user->apps()->count(),
-            'keywords_per_app' => $this->getKeywordsCount($user, $request),
-            'competitors_per_app' => $this->getCompetitorsCount($user, $request),
+            'apps' => $team?->apps()->count() ?? 0,
+            'keywords_per_app' => $this->getKeywordsCount($team, $request),
+            'competitors_per_app' => $this->getCompetitorsCount($team, $request),
             default => 0,
         };
     }
 
-    private function getKeywordsCount($user, Request $request): int
+    private function getKeywordsCount($team, Request $request): int
     {
+        if (!$team) {
+            return 0;
+        }
+
         $appId = $request->route('app');
         if (! $appId) {
             return 0;
         }
 
-        return $user->trackedKeywords()->where('app_id', $appId)->count();
+        return $team->trackedKeywords()->where('app_id', $appId)->count();
     }
 
-    private function getCompetitorsCount($user, Request $request): int
+    private function getCompetitorsCount($team, Request $request): int
     {
         // Competitors count would be tracked per app
         // For now, return 0 as competitors feature may not be fully implemented

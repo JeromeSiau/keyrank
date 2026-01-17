@@ -31,8 +31,8 @@ class RefreshAllKeywordSuggestionsJob implements ShouldQueue
         Log::info("Starting weekly keyword suggestions refresh" .
             ($this->countryOverride ? " for country: {$this->countryOverride}" : " using each app's storefront"));
 
-        // Get all apps that have users tracking them (iOS + Android)
-        $apps = App::whereHas('users')
+        // Get all apps that have teams tracking them (iOS + Android)
+        $apps = App::whereHas('teams')
             ->select('id', 'name', 'storefront', 'platform')
             ->get();
 

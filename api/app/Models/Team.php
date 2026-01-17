@@ -136,8 +136,16 @@ class Team extends Model
     public function apps(): BelongsToMany
     {
         return $this->belongsToMany(App::class, 'team_apps')
-            ->withPivot('added_by', 'created_at')
+            ->withPivot('added_by', 'is_owner', 'ownership_type', 'integration_id', 'tag', 'is_favorite', 'favorited_at', 'created_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Get tracked keywords for this team
+     */
+    public function trackedKeywords(): HasMany
+    {
+        return $this->hasMany(TrackedKeyword::class);
     }
 
     /**

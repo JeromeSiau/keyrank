@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\AppRanking;
 use App\Models\AppRankingAggregate;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class RankingController extends Controller
 {
+    use AuthorizesTeamActions;
     /**
      * Get current rankings for an app
      * Data is collected by background collectors - no on-demand fetching
@@ -143,10 +145,10 @@ class RankingController extends Controller
      */
     public function movers(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        // Get all apps for user
-        $appIds = $user->apps()->pluck('id');
+        // Get all apps for team
+        $appIds = $team->apps()->pluck('apps.id');
 
         if ($appIds->isEmpty()) {
             return response()->json([

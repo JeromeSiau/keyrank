@@ -116,30 +116,7 @@ class User extends Authenticatable
         return array_merge($defaults, $decoded);
     }
 
-    /**
-     * Get user's followed apps
-     */
-    public function apps(): BelongsToMany
-    {
-        return $this->belongsToMany(App::class, 'user_apps')
-            ->withPivot('is_owner', 'ownership_type', 'integration_id', 'tag', 'is_favorite', 'favorited_at', 'created_at');
-    }
-
-    /**
-     * Get user's owned apps (via store connection)
-     */
-    public function ownedApps(): BelongsToMany
-    {
-        return $this->apps()->wherePivot('ownership_type', 'owned');
-    }
-
-    /**
-     * Get user's watched apps (competitors, inspiration, etc.)
-     */
-    public function watchedApps(): BelongsToMany
-    {
-        return $this->apps()->wherePivot('ownership_type', 'watched');
-    }
+    // Note: Apps are now team-based. Use $user->currentTeam->apps() instead.
 
     /**
      * Get user's integrations
@@ -168,29 +145,11 @@ class User extends Authenticatable
         return $this->getIntegration($type) !== null;
     }
 
-    /**
-     * Get user's tracked keywords
-     */
-    public function trackedKeywords(): HasMany
-    {
-        return $this->hasMany(TrackedKeyword::class);
-    }
+    // Note: TrackedKeywords are now team-based. Use $user->currentTeam->trackedKeywords() instead.
 
-    /**
-     * Get user's tags
-     */
-    public function tags(): HasMany
-    {
-        return $this->hasMany(Tag::class);
-    }
+    // Note: Tags are now team-based. Use $user->currentTeam->tags() instead.
 
-    /**
-     * Get user's alert rules
-     */
-    public function alertRules(): HasMany
-    {
-        return $this->hasMany(AlertRule::class);
-    }
+    // Note: AlertRules are now team-based. Access via team relationship instead.
 
     /**
      * Get user's notifications

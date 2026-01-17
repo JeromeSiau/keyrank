@@ -53,8 +53,8 @@ class InsightGeneratorJob implements ShouldQueue
         $this->startExecution();
 
         try {
-            // Get all users with apps
-            $users = User::has('apps')->get();
+            // Get all users with teams that have apps
+            $users = User::whereHas('currentTeam.apps')->get();
 
             Log::info('[InsightGeneratorJob] Starting insight generation', [
                 'users_count' => $users->count(),
@@ -81,8 +81,9 @@ class InsightGeneratorJob implements ShouldQueue
     {
         $insightsGenerated = 0;
 
-        // Get user's apps
-        $apps = $user->apps()->get();
+        // Get user's team apps
+        $team = $user->currentTeam;
+        $apps = $team?->apps()->get() ?? collect();
 
         foreach ($apps as $app) {
             if ($insightsGenerated >= self::MAX_INSIGHTS_PER_USER) {

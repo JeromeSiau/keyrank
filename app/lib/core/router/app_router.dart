@@ -68,26 +68,33 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == '/register';
       final isOnboardingRoute = state.matchedLocation.startsWith('/onboarding');
 
+      // Wait for auth to load
       if (authState.isLoading) {
         return null;
       }
 
+      // Not authenticated - redirect to login
       if (!isAuthenticated && !isAuthRoute) {
         return '/login';
       }
-      if (isAuthenticated && isAuthRoute) {
-        // Check if user needs onboarding
-        final status = onboardingStatus.valueOrNull;
-        if (status != null && !status.isCompleted) {
-          return '/onboarding';
-        }
-        return '/dashboard';
-      }
 
-      // Redirect to onboarding if needed (for authenticated users)
-      if (isAuthenticated && !isOnboardingRoute) {
+      // Authenticated - check onboarding
+      if (isAuthenticated) {
+        // Wait for onboarding status to load before deciding
+        if (onboardingStatus.isLoading) {
+          return null;
+        }
+
         final status = onboardingStatus.valueOrNull;
-        if (status != null && !status.isCompleted) {
+        final needsOnboarding = status != null && !status.isCompleted;
+
+        // Coming from auth route (just logged in/registered)
+        if (isAuthRoute) {
+          return needsOnboarding ? '/onboarding' : '/dashboard';
+        }
+
+        // Redirect to onboarding if needed (for authenticated users not on onboarding)
+        if (!isOnboardingRoute && needsOnboarding) {
           return '/onboarding';
         }
       }

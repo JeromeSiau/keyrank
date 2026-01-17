@@ -26,8 +26,9 @@ class EnsureUserOwnsApp
                 return response()->json(['message' => 'App not found'], 404);
             }
 
-            // Check if user follows this app via pivot table
-            if (!$app->users()->where('users.id', $request->user()->id)->exists()) {
+            // Check if user's team has access to this app via pivot table
+            $team = $request->user()->currentTeam;
+            if (!$team || !$app->teams()->where('teams.id', $team->id)->exists()) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 

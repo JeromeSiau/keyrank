@@ -127,6 +127,44 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 16),
 
+            // Team section
+            _SectionCard(
+              isDark: isDark,
+              title: 'TEAM',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.group,
+                      color: isDark ? AppColors.accent : AppColorsLight.accent,
+                    ),
+                    title: Text(
+                      'Team Management',
+                      style: TextStyle(
+                        color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Invite members, manage roles & permissions',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
+                    ),
+                    onTap: () => context.push('/settings/team'),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
             // Integrations section
             _SectionCard(
               isDark: isDark,

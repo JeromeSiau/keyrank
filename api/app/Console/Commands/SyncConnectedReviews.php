@@ -80,13 +80,14 @@ class SyncConnectedReviews extends Command
 
     private function syncConnectionReviews(StoreConnection $connection): int
     {
-        // Get user's apps for this platform
-        $apps = $connection->user->apps()
+        // Get team's apps for this platform
+        $team = $connection->user->currentTeam;
+        $apps = $team?->apps()
             ->where('platform', $connection->platform)
-            ->get();
+            ->get() ?? collect();
 
         if ($apps->isEmpty()) {
-            $this->line("  No {$connection->platform} apps found for this user");
+            $this->line("  No {$connection->platform} apps found for this team");
             return 0;
         }
 

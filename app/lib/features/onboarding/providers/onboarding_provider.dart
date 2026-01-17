@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../data/onboarding_repository.dart';
 import '../domain/onboarding_model.dart';
 
@@ -10,6 +11,20 @@ final onboardingStatusProvider =
 class OnboardingNotifier extends AsyncNotifier<OnboardingStatus> {
   @override
   Future<OnboardingStatus> build() async {
+    // Watch auth state - this will refetch when user logs in/out
+    final authState = ref.watch(authStateProvider);
+
+    // If not authenticated, return a default completed status
+    // (so we don't try to fetch from API without auth)
+    if (authState.valueOrNull == null) {
+      return const OnboardingStatus(
+        currentStep: 'completed',
+        isCompleted: true,
+        steps: ['completed'],
+        progress: 100,
+      );
+    }
+
     return _fetchStatus();
   }
 

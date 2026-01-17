@@ -38,8 +38,8 @@ class WeeklyDigestJob implements ShouldQueue
         $this->startExecution();
 
         try {
-            // Get users who have apps and have email notifications enabled
-            $users = User::has('apps')
+            // Get users who have teams with apps and have email notifications enabled
+            $users = User::whereHas('currentTeam.apps')
                 ->where('email_verified_at', '!=', null)
                 ->get();
 
@@ -85,7 +85,8 @@ class WeeklyDigestJob implements ShouldQueue
         $weekStart = now()->subDays(7)->startOfDay();
         $weekEnd = now()->endOfDay();
 
-        $apps = $user->apps()->get();
+        $team = $user->currentTeam;
+        $apps = $team?->apps()->get() ?? collect();
         $appIds = $apps->pluck('id')->toArray();
 
         // Top insights of the week

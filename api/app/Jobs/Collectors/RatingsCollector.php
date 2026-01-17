@@ -24,7 +24,7 @@ class RatingsCollector extends BaseCollector
     public function getItems(): Collection
     {
         return App::select(['id', 'platform', 'store_id'])
-            ->whereHas('users') // Only apps that are being tracked by at least one user
+            ->whereHas('teams') // Only apps that are being tracked by at least one team
             ->get();
     }
 

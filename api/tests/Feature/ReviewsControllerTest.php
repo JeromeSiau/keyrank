@@ -6,6 +6,7 @@ use App\Models\App;
 use App\Models\AppReview;
 use App\Models\AppVoiceSetting;
 use App\Models\StoreConnection;
+use App\Models\Team;
 use App\Models\User;
 use App\Services\AppStoreConnectService;
 use App\Services\GooglePlayDeveloperService;
@@ -30,7 +31,7 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_returns_empty_when_user_has_no_apps(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
 
         $response = $this->actingAs($user)->getJson('/api/reviews/inbox');
 
@@ -41,10 +42,10 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_returns_reviews_for_all_user_apps(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app1 = App::factory()->ios()->create();
         $app2 = App::factory()->android()->create();
-        $user->apps()->attach([$app1->id, $app2->id]);
+        $user->currentTeam->apps()->attach([$app1->id, $app2->id]);
 
         AppReview::factory()->create(['app_id' => $app1->id]);
         AppReview::factory()->create(['app_id' => $app2->id]);
@@ -62,9 +63,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_filters_by_status_unanswered(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->unanswered()->create(['app_id' => $app->id]);
         AppReview::factory()->answered()->create(['app_id' => $app->id]);
@@ -78,9 +79,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_filters_by_status_answered(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->unanswered()->create(['app_id' => $app->id]);
         AppReview::factory()->answered()->create(['app_id' => $app->id]);
@@ -94,9 +95,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_filters_by_rating(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->create(['app_id' => $app->id, 'rating' => 5]);
         AppReview::factory()->create(['app_id' => $app->id, 'rating' => 1]);
@@ -110,9 +111,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_filters_by_sentiment(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->positive()->create(['app_id' => $app->id]);
         AppReview::factory()->negative()->create(['app_id' => $app->id]);
@@ -126,10 +127,10 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_filters_by_app_id(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app1 = App::factory()->create();
         $app2 = App::factory()->create();
-        $user->apps()->attach([$app1->id, $app2->id]);
+        $user->currentTeam->apps()->attach([$app1->id, $app2->id]);
 
         AppReview::factory()->create(['app_id' => $app1->id]);
         AppReview::factory()->create(['app_id' => $app2->id]);
@@ -143,9 +144,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_filters_by_country(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->create(['app_id' => $app->id, 'country' => 'US']);
         AppReview::factory()->create(['app_id' => $app->id, 'country' => 'FR']);
@@ -159,9 +160,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_search_works(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->create(['app_id' => $app->id, 'content' => 'This app is amazing!']);
         AppReview::factory()->create(['app_id' => $app->id, 'content' => 'Terrible experience']);
@@ -175,9 +176,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_paginates_correctly(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         AppReview::factory()->count(25)->create(['app_id' => $app->id]);
 
@@ -192,9 +193,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_inbox_returns_correct_structure(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create(['name' => 'Test App', 'icon_url' => 'https://example.com/icon.png']);
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
 
         $review = AppReview::factory()->answered()->create([
             'app_id' => $app->id,
@@ -247,7 +248,7 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_fails_when_user_does_not_own_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
@@ -262,10 +263,10 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_fails_when_review_does_not_belong_to_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
         $otherApp = App::factory()->ios()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $otherApp->id]);
 
         $response = $this->actingAs($user)->postJson("/api/apps/{$app->id}/reviews/{$review->id}/reply", [
@@ -278,9 +279,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_validates_response_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         $response = $this->actingAs($user)->postJson("/api/apps/{$app->id}/reviews/{$review->id}/reply", []);
@@ -291,9 +292,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_validates_response_max_length(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         $response = $this->actingAs($user)->postJson("/api/apps/{$app->id}/reviews/{$review->id}/reply", [
@@ -306,9 +307,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_fails_without_store_connection(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         $response = $this->actingAs($user)->postJson("/api/apps/{$app->id}/reviews/{$review->id}/reply", [
@@ -321,9 +322,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_sends_to_app_store_connect_for_ios_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         StoreConnection::factory()->ios()->create(['user_id' => $user->id, 'status' => 'active']);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
@@ -350,9 +351,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_sends_to_google_play_for_android_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->android()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         StoreConnection::factory()->android()->create(['user_id' => $user->id, 'status' => 'active']);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
@@ -377,9 +378,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_reply_fails_when_store_api_returns_null(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->ios()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         StoreConnection::factory()->ios()->create(['user_id' => $user->id, 'status' => 'active']);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
@@ -413,7 +414,7 @@ class ReviewsControllerTest extends TestCase
 
     public function test_suggest_reply_fails_when_user_does_not_own_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
@@ -426,10 +427,10 @@ class ReviewsControllerTest extends TestCase
 
     public function test_suggest_reply_fails_when_review_does_not_belong_to_app(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
         $otherApp = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $otherApp->id]);
 
         $response = $this->actingAs($user)->postJson("/api/apps/{$app->id}/reviews/{$review->id}/suggest");
@@ -440,9 +441,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_suggest_reply_returns_ai_suggestion(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         $this->mock(OpenRouterService::class, function ($mock) {
@@ -459,9 +460,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_suggest_reply_uses_voice_settings(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         AppVoiceSetting::create([
@@ -488,9 +489,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_suggest_reply_fails_when_openrouter_returns_null(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         $this->mock(OpenRouterService::class, function ($mock) {
@@ -507,9 +508,9 @@ class ReviewsControllerTest extends TestCase
 
     public function test_suggest_reply_fails_when_ai_response_has_no_reply(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTeam();
         $app = App::factory()->create();
-        $user->apps()->attach($app->id);
+        $user->currentTeam->apps()->attach($app->id);
         $review = AppReview::factory()->create(['app_id' => $app->id]);
 
         $this->mock(OpenRouterService::class, function ($mock) {

@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\ReviewInsight;
 use App\Services\ReviewIntelligenceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ReviewIntelligenceController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function __construct(
         private ReviewIntelligenceService $service
     ) {}
@@ -22,9 +24,9 @@ class ReviewIntelligenceController extends Controller
      */
     public function index(App $app): JsonResponse
     {
-        $user = Auth::user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'App not found.'], 404);
         }
 
@@ -68,9 +70,9 @@ class ReviewIntelligenceController extends Controller
      */
     public function featureRequests(Request $request, App $app): JsonResponse
     {
-        $user = Auth::user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'App not found.'], 404);
         }
 
@@ -107,9 +109,9 @@ class ReviewIntelligenceController extends Controller
      */
     public function bugReports(Request $request, App $app): JsonResponse
     {
-        $user = Auth::user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'App not found.'], 404);
         }
 
@@ -154,9 +156,9 @@ class ReviewIntelligenceController extends Controller
      */
     public function insightReviews(App $app, ReviewInsight $insight): JsonResponse
     {
-        $user = Auth::user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'App not found.'], 404);
         }
 
@@ -193,9 +195,9 @@ class ReviewIntelligenceController extends Controller
      */
     public function updateInsight(Request $request, App $app, ReviewInsight $insight): JsonResponse
     {
-        $user = Auth::user();
+        $team = $this->currentTeam();
 
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'App not found.'], 404);
         }
 

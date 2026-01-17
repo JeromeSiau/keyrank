@@ -33,7 +33,7 @@ class ReviewsCollector extends BaseCollector
     public function getItems(): Collection
     {
         return App::select(['id', 'platform', 'store_id'])
-            ->whereHas('users')
+            ->whereHas('teams')
             ->get();
     }
 

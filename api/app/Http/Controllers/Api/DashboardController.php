@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Services\CacheService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,23 +11,24 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    use AuthorizesTeamActions;
     /**
      * Get dashboard overview stats
      */
     public function overview(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        $data = CacheService::getDashboardOverview($user->id, function () use ($user) {
-            $appsCount = $user->apps()->count();
-            // Count only keywords tracked by this user (not all users)
-            $keywordsCount = $user->trackedKeywords()->count();
+        $data = CacheService::getDashboardOverview($team->id, function () use ($team) {
+            $appsCount = $team->apps()->count();
+            // Count only keywords tracked by this team
+            $keywordsCount = $team->trackedKeywords()->count();
 
             // Get rankings with improvements today
             $today = today();
             $yesterday = today()->subDay();
 
-            $appIds = $user->apps()->pluck('id');
+            $appIds = $team->apps()->pluck('apps.id');
 
             $improvements = 0;
             $declines = 0;
@@ -66,12 +68,12 @@ class DashboardController extends Controller
      */
     public function metrics(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $appIds = $user->apps()->pluck('apps.id');
+        $team = $this->currentTeam();
+        $appIds = $team->apps()->pluck('apps.id');
 
         // Basic counts
         $totalApps = $appIds->count();
-        $totalKeywords = $user->trackedKeywords()->count();
+        $totalKeywords = $team->trackedKeywords()->count();
 
         // Calculate average rating across all apps
         $ratingStats = DB::table('apps')
@@ -116,7 +118,7 @@ class DashboardController extends Controller
         return response()->json([
             'data' => [
                 'total_apps' => $totalApps,
-                'new_apps_this_month' => $this->getNewAppsThisMonth($user),
+                'new_apps_this_month' => $this->getNewAppsThisMonth($team),
                 'avg_rating' => $avgRating,
                 'rating_change' => $ratingChange,
                 'rating_history' => $ratingHistory,
@@ -143,8 +145,8 @@ class DashboardController extends Controller
             default => 7,
         };
 
-        $user = $request->user();
-        $appIds = $user->apps()->pluck('apps.id');
+        $team = $this->currentTeam();
+        $appIds = $team->apps()->pluck('apps.id');
 
         if ($appIds->isEmpty()) {
             return response()->json([
@@ -271,9 +273,9 @@ class DashboardController extends Controller
     /**
      * Get count of apps added this month
      */
-    private function getNewAppsThisMonth($user): int
+    private function getNewAppsThisMonth($team): int
     {
-        return $user->apps()
+        return $team->apps()
             ->wherePivot('created_at', '>=', now()->startOfMonth())
             ->count();
     }

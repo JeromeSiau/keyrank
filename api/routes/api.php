@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\SyncController;
 use App\Http\Controllers\Api\TagsController;
 use App\Http\Controllers\Api\UserPreferencesController;
 use App\Http\Controllers\Api\VoiceSettingsController;
+use App\Http\Controllers\Api\TeamController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -337,6 +338,34 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('status', [ApiKeyController::class, 'status']);
         Route::post('generate', [ApiKeyController::class, 'generate']);
         Route::delete('revoke', [ApiKeyController::class, 'revoke']);
+    });
+
+    // Team Management
+    Route::prefix('teams')->group(function () {
+        Route::get('/', [TeamController::class, 'index']);
+        Route::post('/', [TeamController::class, 'store']);
+        Route::get('invitations', [TeamController::class, 'myInvitations']);
+        Route::post('invitations/{token}/accept', [TeamController::class, 'acceptInvitation']);
+        Route::post('invitations/{token}/decline', [TeamController::class, 'declineInvitation']);
+
+        Route::prefix('{team}')->group(function () {
+            Route::get('/', [TeamController::class, 'show']);
+            Route::put('/', [TeamController::class, 'update']);
+            Route::delete('/', [TeamController::class, 'destroy']);
+            Route::post('switch', [TeamController::class, 'switchTeam']);
+            Route::post('leave', [TeamController::class, 'leave']);
+            Route::post('transfer-ownership', [TeamController::class, 'transferOwnership']);
+
+            // Members
+            Route::get('members', [TeamController::class, 'members']);
+            Route::delete('members/{member}', [TeamController::class, 'removeMember']);
+            Route::patch('members/{member}/role', [TeamController::class, 'updateMemberRole']);
+
+            // Invitations
+            Route::get('invitations', [TeamController::class, 'invitations']);
+            Route::post('invitations', [TeamController::class, 'invite']);
+            Route::delete('invitations/{invitation}', [TeamController::class, 'cancelInvitation']);
+        });
     });
 });
 

@@ -15,13 +15,18 @@ use Illuminate\Http\Request;
 class PublicApiController extends Controller
 {
     /**
-     * Get all user's apps
+     * Get all team's apps
      */
     public function apps(Request $request): JsonResponse
     {
         $user = $request->attributes->get('api_user');
+        $team = $user->currentTeam;
 
-        $apps = $user->apps()
+        if (!$team) {
+            return response()->json(['error' => 'No team found'], 400);
+        }
+
+        $apps = $team->apps()
             ->select(['apps.id', 'apps.name', 'apps.platform', 'apps.store_id', 'apps.icon_url'])
             ->get();
 
@@ -39,8 +44,13 @@ class PublicApiController extends Controller
     public function app(Request $request, int $appId): JsonResponse
     {
         $user = $request->attributes->get('api_user');
+        $team = $user->currentTeam;
 
-        $app = $user->apps()->where('apps.id', $appId)->first();
+        if (!$team) {
+            return response()->json(['error' => 'No team found'], 400);
+        }
+
+        $app = $team->apps()->where('apps.id', $appId)->first();
 
         if (! $app) {
             return response()->json(['error' => 'App not found'], 404);
@@ -73,8 +83,13 @@ class PublicApiController extends Controller
         ]);
 
         $user = $request->attributes->get('api_user');
+        $team = $user->currentTeam;
 
-        $app = $user->apps()->where('apps.id', $appId)->first();
+        if (!$team) {
+            return response()->json(['error' => 'No team found'], 400);
+        }
+
+        $app = $team->apps()->where('apps.id', $appId)->first();
         if (! $app) {
             return response()->json(['error' => 'App not found'], 404);
         }
@@ -84,7 +99,7 @@ class PublicApiController extends Controller
         $keyword = $request->input('keyword');
 
         $trackedKeywordIds = TrackedKeyword::where('app_id', $appId)
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->pluck('keyword_id');
 
         $query = AppRanking::where('app_id', $appId)
@@ -130,8 +145,13 @@ class PublicApiController extends Controller
         ]);
 
         $user = $request->attributes->get('api_user');
+        $team = $user->currentTeam;
 
-        $app = $user->apps()->where('apps.id', $appId)->first();
+        if (!$team) {
+            return response()->json(['error' => 'No team found'], 400);
+        }
+
+        $app = $team->apps()->where('apps.id', $appId)->first();
         if (! $app) {
             return response()->json(['error' => 'App not found'], 404);
         }
@@ -177,8 +197,13 @@ class PublicApiController extends Controller
         ]);
 
         $user = $request->attributes->get('api_user');
+        $team = $user->currentTeam;
 
-        $app = $user->apps()->where('apps.id', $appId)->first();
+        if (!$team) {
+            return response()->json(['error' => 'No team found'], 400);
+        }
+
+        $app = $team->apps()->where('apps.id', $appId)->first();
         if (! $app) {
             return response()->json(['error' => 'App not found'], 404);
         }
@@ -231,14 +256,19 @@ class PublicApiController extends Controller
     public function keywords(Request $request, int $appId): JsonResponse
     {
         $user = $request->attributes->get('api_user');
+        $team = $user->currentTeam;
 
-        $app = $user->apps()->where('apps.id', $appId)->first();
+        if (!$team) {
+            return response()->json(['error' => 'No team found'], 400);
+        }
+
+        $app = $team->apps()->where('apps.id', $appId)->first();
         if (! $app) {
             return response()->json(['error' => 'App not found'], 404);
         }
 
         $keywords = TrackedKeyword::where('app_id', $appId)
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->with('keyword:id,keyword')
             ->get();
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\ChatAction;
 use App\Models\ChatConversation;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
+    use AuthorizesTeamActions;
     public function __construct(
         private ChatService $chatService,
         private ActionExecutorService $actionExecutor,
@@ -64,9 +66,10 @@ class ChatController extends Controller
             'app_id' => 'nullable|exists:apps,id',
         ]);
 
-        // If app_id is provided, verify user has access to this app
+        // If app_id is provided, verify team has access to this app
         if (isset($validated['app_id'])) {
-            if (!$user->apps()->where('apps.id', $validated['app_id'])->exists()) {
+            $team = $this->currentTeam();
+            if (!$team->apps()->where('apps.id', $validated['app_id'])->exists()) {
                 return response()->json(['error' => 'You do not have access to this app.'], 403);
             }
         }
@@ -185,8 +188,9 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
-        // Verify user has access to this app
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        // Verify team has access to this app
+        $team = $this->currentTeam();
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'You do not have access to this app.'], 403);
         }
 
@@ -225,8 +229,9 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
-        // Verify user has access to this app
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        // Verify team has access to this app
+        $team = $this->currentTeam();
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'You do not have access to this app.'], 403);
         }
 
@@ -270,8 +275,9 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
-        // Verify user has access to this app
-        if (!$user->apps()->where('apps.id', $app->id)->exists()) {
+        // Verify team has access to this app
+        $team = $this->currentTeam();
+        if (!$team->apps()->where('apps.id', $app->id)->exists()) {
             return response()->json(['error' => 'You do not have access to this app.'], 403);
         }
 

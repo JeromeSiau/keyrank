@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\AlertRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,9 +11,13 @@ use Illuminate\Http\Response;
 
 class AlertRulesController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function index(Request $request): JsonResponse
     {
-        $rules = AlertRule::forUser($request->user()->id)
+        $team = $this->currentTeam();
+
+        $rules = AlertRule::forTeam($team->id)
             ->orderByDesc('priority')
             ->get();
 
@@ -21,6 +26,10 @@ class AlertRulesController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorizeTeamAction('manage_alerts');
+
+        $team = $this->currentTeam();
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|in:position_change,rating_change,review_spike,review_keyword,new_competitor,competitor_passed,mass_movement,keyword_popularity,opportunity,competitor_metadata_changed',
@@ -31,7 +40,7 @@ class AlertRulesController extends Controller
         ]);
 
         $rule = AlertRule::create([
-            'user_id' => $request->user()->id,
+            'team_id' => $team->id,
             'name' => $validated['name'],
             'type' => $validated['type'],
             'scope_type' => $validated['scope_type'],
@@ -46,7 +55,11 @@ class AlertRulesController extends Controller
 
     public function update(Request $request, AlertRule $rule): JsonResponse
     {
-        if ($rule->user_id !== $request->user()->id) {
+        $this->authorizeTeamAction('manage_alerts');
+
+        $team = $this->currentTeam();
+
+        if ($rule->team_id !== $team->id) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
@@ -66,7 +79,11 @@ class AlertRulesController extends Controller
 
     public function destroy(Request $request, AlertRule $rule): Response
     {
-        if ($rule->user_id !== $request->user()->id) {
+        $this->authorizeTeamAction('manage_alerts');
+
+        $team = $this->currentTeam();
+
+        if ($rule->team_id !== $team->id) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
@@ -77,7 +94,11 @@ class AlertRulesController extends Controller
 
     public function toggle(Request $request, AlertRule $rule): JsonResponse
     {
-        if ($rule->user_id !== $request->user()->id) {
+        $this->authorizeTeamAction('manage_alerts');
+
+        $team = $this->currentTeam();
+
+        if ($rule->team_id !== $team->id) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 

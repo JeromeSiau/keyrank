@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\Integration;
 use App\Services\AppStoreConnectService;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class IntegrationsController extends Controller
 {
+    use AuthorizesTeamActions;
     public function __construct(
         private AppStoreConnectService $appStoreConnect,
         private GooglePlayDeveloperService $googlePlay,
@@ -72,10 +74,10 @@ class IntegrationsController extends Controller
             abort(403, 'You do not own this integration.');
         }
 
-        // Remove integration_id from user_apps pivot
-        DB::table('user_apps')
+        // Remove integration_id from team_apps pivot
+        DB::table('team_apps')
             ->where('integration_id', $integration->id)
-            ->update(['integration_id' => null, 'ownership_type' => 'watched']);
+            ->update(['integration_id' => null, 'ownership_type' => null]);
 
         $integration->delete();
 
@@ -149,8 +151,9 @@ class IntegrationsController extends Controller
                 ], 500);
             }
 
-            // Import apps
-            $importedCount = $this->importApps($user, $integration, $apps, 'ios');
+            // Import apps to user's current team
+            $team = $this->currentTeam();
+            $importedCount = $this->importApps($team, $integration, $apps, 'ios');
 
             // Mark as active
             $integration->update([
@@ -238,7 +241,8 @@ class IntegrationsController extends Controller
                 'platform' => 'android',
             ])->toArray();
 
-            $importedCount = $this->importApps($user, $integration, $apps, 'android');
+            $team = $this->currentTeam();
+            $importedCount = $this->importApps($team, $integration, $apps, 'android');
 
             // Mark as active
             $integration->update([
@@ -284,7 +288,7 @@ class IntegrationsController extends Controller
             ], 422);
         }
 
-        $user = $request->user();
+        $team = $this->currentTeam();
 
         try {
             if ($integration->type === Integration::TYPE_APP_STORE_CONNECT) {
@@ -292,7 +296,7 @@ class IntegrationsController extends Controller
                 if ($apps === null) {
                     return response()->json(['error' => 'Failed to fetch apps.'], 500);
                 }
-                $importedCount = $this->importApps($user, $integration, $apps, 'ios');
+                $importedCount = $this->importApps($team, $integration, $apps, 'ios');
             } else {
                 $packageNames = $integration->credentials['package_names'] ?? [];
                 $apps = collect($packageNames)->map(fn($packageName) => [
@@ -301,7 +305,7 @@ class IntegrationsController extends Controller
                     'name' => $packageName,
                     'platform' => 'android',
                 ])->toArray();
-                $importedCount = $this->importApps($user, $integration, $apps, 'android');
+                $importedCount = $this->importApps($team, $integration, $apps, 'android');
             }
 
             $integration->update([
@@ -334,10 +338,10 @@ class IntegrationsController extends Controller
             abort(403, 'You do not own this integration.');
         }
 
-        $user = $request->user();
+        $team = $this->currentTeam();
 
-        // Get apps that are linked to this integration via user_apps pivot
-        $apps = $user->apps()
+        // Get apps that are linked to this integration via team_apps pivot
+        $apps = $team->apps()
             ->wherePivot('integration_id', $integration->id)
             ->get(['apps.id', 'apps.store_id', 'apps.bundle_id', 'apps.name', 'apps.icon_url', 'apps.platform']);
 
@@ -394,11 +398,12 @@ class IntegrationsController extends Controller
     }
 
     /**
-     * Import apps for a user from an integration
+     * Import apps for a team from an integration
      */
-    private function importApps($user, Integration $integration, array $apps, string $platform): int
+    private function importApps($team, Integration $integration, array $apps, string $platform): int
     {
         $importedCount = 0;
+        $userId = request()->user()->id;
 
         foreach ($apps as $appData) {
             // Find or create the app
@@ -410,26 +415,29 @@ class IntegrationsController extends Controller
                 ]
             );
 
-            // Check if user already has this app
-            $existingPivot = DB::table('user_apps')
-                ->where('user_id', $user->id)
+            // Check if team already has this app
+            $existingPivot = DB::table('team_apps')
+                ->where('team_id', $team->id)
                 ->where('app_id', $app->id)
                 ->first();
 
             if ($existingPivot) {
                 // Update to owned
-                DB::table('user_apps')
-                    ->where('user_id', $user->id)
+                DB::table('team_apps')
+                    ->where('team_id', $team->id)
                     ->where('app_id', $app->id)
                     ->update([
+                        'is_owner' => true,
                         'ownership_type' => 'owned',
                         'integration_id' => $integration->id,
                     ]);
             } else {
                 // Create new pivot
-                DB::table('user_apps')->insert([
-                    'user_id' => $user->id,
+                DB::table('team_apps')->insert([
+                    'team_id' => $team->id,
                     'app_id' => $app->id,
+                    'added_by' => $userId,
+                    'is_owner' => true,
                     'ownership_type' => 'owned',
                     'integration_id' => $integration->id,
                     'created_at' => now(),
