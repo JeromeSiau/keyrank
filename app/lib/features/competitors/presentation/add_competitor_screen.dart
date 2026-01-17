@@ -12,6 +12,7 @@ import '../../apps/data/apps_repository.dart';
 import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../providers/competitors_provider.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 enum _Platform { ios, android }
 
@@ -77,7 +78,7 @@ class _AddCompetitorScreenState extends ConsumerState<AddCompetitorScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${app.name} added as competitor'),
+            content: Text(context.l10n.competitors_addedAsCompetitor(app.name)),
             backgroundColor: colors.green,
           ),
         );
@@ -87,7 +88,7 @@ class _AddCompetitorScreenState extends ConsumerState<AddCompetitorScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add competitor: $e'),
+            content: Text(context.l10n.competitors_addFailed(e.toString())),
             backgroundColor: colors.red,
           ),
         );
@@ -123,7 +124,7 @@ class _AddCompetitorScreenState extends ConsumerState<AddCompetitorScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${app.name} added as competitor'),
+            content: Text(context.l10n.competitors_addedAsCompetitor(app.name)),
             backgroundColor: colors.green,
           ),
         );
@@ -133,7 +134,7 @@ class _AddCompetitorScreenState extends ConsumerState<AddCompetitorScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add competitor: $e'),
+            content: Text(context.l10n.competitors_addFailed(e.toString())),
             backgroundColor: colors.red,
           ),
         );
@@ -197,7 +198,7 @@ class _AddCompetitorScreenState extends ConsumerState<AddCompetitorScreen> {
                 ),
                 const SizedBox(width: AppSpacing.sm + 4),
                 Text(
-                  'Add Competitor',
+                  context.l10n.competitors_addTitle,
                   style: AppTypography.headline.copyWith(color: colors.textPrimary),
                 ),
               ],
@@ -384,7 +385,7 @@ class _AddCompetitorScreenState extends ConsumerState<AddCompetitorScreen> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Search for a competitor',
+            context.l10n.competitors_searchForCompetitor,
             style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
           const SizedBox(height: 8),
@@ -492,14 +493,12 @@ class _CompetitorResultRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: iconUrl != null
-                ? ClipRRect(
+                ? SafeImage(
+                    imageUrl: iconUrl!,
+                    fit: BoxFit.cover,
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      iconUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Center(
-                        child: Icon(Icons.apps, size: 28, color: Colors.white),
-                      ),
+                    errorWidget: const Center(
+                      child: Icon(Icons.apps, size: 28, color: Colors.white),
                     ),
                   )
                 : const Center(

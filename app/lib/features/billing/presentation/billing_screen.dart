@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/billing_models.dart';
 import '../providers/billing_provider.dart';
 
@@ -25,9 +26,10 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
       final uri = GoRouterState.of(context).uri;
       if (uri.queryParameters['success'] == 'true') {
         ref.read(billingActionsProvider.notifier).refresh();
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Subscription activated successfully!'),
+          SnackBar(
+            content: Text(l10n.billing_subscriptionActivated),
             backgroundColor: AppColors.green,
           ),
         );
@@ -38,6 +40,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     final statusAsync = ref.watch(subscriptionStatusProvider);
     final plansAsync = ref.watch(availablePlansProvider);
     final actionsState = ref.watch(billingActionsProvider);
@@ -55,7 +58,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Billing & Plans',
+          l10n.billing_title,
           style: TextStyle(
             color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
           ),
@@ -86,13 +89,14 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
     bool isDark,
     bool isLoading,
   ) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Current plan card
-          _CurrentPlanCard(status: status, isDark: isDark),
+          _CurrentPlanCard(status: status, isDark: isDark, l10n: l10n),
 
           const SizedBox(height: 24),
 
@@ -105,6 +109,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
               onManage: () => _openPortal(context),
               onCancel: () => _cancelSubscription(context),
               onResume: () => _resumeSubscription(context),
+              l10n: l10n,
             ),
             const SizedBox(height: 24),
           ],
@@ -115,13 +120,14 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
               selectedPeriod: _selectedPeriod,
               isDark: isDark,
               onChanged: (period) => setState(() => _selectedPeriod = period),
+              l10n: l10n,
             ),
             const SizedBox(height: 24),
           ],
 
           // Plans
           Text(
-            status.isPaid ? 'Change Plan' : 'Choose a Plan',
+            status.isPaid ? l10n.billing_changePlan : l10n.billing_choosePlan,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -141,6 +147,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
               onSelect: plan.key == status.plan || plan.isFree
                   ? null
                   : () => _selectPlan(context, plan.key),
+              l10n: l10n,
             ),
           )),
         ],
@@ -174,23 +181,21 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
   }
 
   Future<void> _cancelSubscription(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Subscription'),
-        content: const Text(
-          'Your subscription will remain active until the end of the current billing period. '
-          'After that, you will lose access to premium features.',
-        ),
+        title: Text(l10n.billing_cancelSubscription),
+        content: Text(l10n.billing_cancelMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep Subscription'),
+            child: Text(l10n.billing_keepSubscription),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(foregroundColor: AppColors.red),
-            child: const Text('Cancel Subscription'),
+            child: Text(l10n.billing_cancelSubscription),
           ),
         ],
       ),
@@ -209,8 +214,9 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
 class _CurrentPlanCard extends StatelessWidget {
   final SubscriptionStatus status;
   final bool isDark;
+  final AppLocalizations l10n;
 
-  const _CurrentPlanCard({required this.status, required this.isDark});
+  const _CurrentPlanCard({required this.status, required this.isDark, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +248,7 @@ class _CurrentPlanCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                 ),
                 child: Text(
-                  'CURRENT PLAN',
+                  l10n.billing_currentPlan,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -262,7 +268,7 @@ class _CurrentPlanCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                   ),
                   child: Text(
-                    'TRIAL',
+                    l10n.billing_trial,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
@@ -278,7 +284,7 @@ class _CurrentPlanCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                   ),
                   child: Text(
-                    'CANCELING',
+                    l10n.billing_canceling,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
@@ -301,8 +307,8 @@ class _CurrentPlanCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               status.onGracePeriod
-                  ? 'Access until ${DateFormat.yMMMd().format(status.endsAt!)}'
-                  : 'Renews ${DateFormat.yMMMd().format(status.endsAt!)}',
+                  ? l10n.billing_accessUntil(DateFormat.yMMMd().format(status.endsAt!))
+                  : l10n.billing_renewsOn(DateFormat.yMMMd().format(status.endsAt!)),
               style: TextStyle(
                 fontSize: 14,
                 color: status.isPaid
@@ -324,6 +330,7 @@ class _SubscriptionActionsCard extends StatelessWidget {
   final VoidCallback onManage;
   final VoidCallback onCancel;
   final VoidCallback onResume;
+  final AppLocalizations l10n;
 
   const _SubscriptionActionsCard({
     required this.status,
@@ -332,6 +339,7 @@ class _SubscriptionActionsCard extends StatelessWidget {
     required this.onManage,
     required this.onCancel,
     required this.onResume,
+    required this.l10n,
   });
 
   @override
@@ -350,7 +358,7 @@ class _SubscriptionActionsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'MANAGE SUBSCRIPTION',
+            l10n.billing_manageSubscription,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -365,7 +373,7 @@ class _SubscriptionActionsCard extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: isLoading ? null : onManage,
                   icon: const Icon(Icons.open_in_new, size: 18),
-                  label: const Text('Billing Portal'),
+                  label: Text(l10n.billing_billingPortal),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
                     side: BorderSide(
@@ -381,7 +389,7 @@ class _SubscriptionActionsCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: isLoading ? null : onResume,
                     icon: const Icon(Icons.replay, size: 18),
-                    label: const Text('Resume'),
+                    label: Text(l10n.billing_resume),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.green,
                       foregroundColor: Colors.white,
@@ -394,7 +402,7 @@ class _SubscriptionActionsCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: isLoading ? null : onCancel,
                     icon: const Icon(Icons.cancel_outlined, size: 18),
-                    label: const Text('Cancel'),
+                    label: Text(l10n.billing_cancel),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.red,
                       side: BorderSide(color: AppColors.red.withAlpha(100)),
@@ -414,11 +422,13 @@ class _BillingPeriodToggle extends StatelessWidget {
   final String selectedPeriod;
   final bool isDark;
   final ValueChanged<String> onChanged;
+  final AppLocalizations l10n;
 
   const _BillingPeriodToggle({
     required this.selectedPeriod,
     required this.isDark,
     required this.onChanged,
+    required this.l10n,
   });
 
   @override
@@ -436,7 +446,7 @@ class _BillingPeriodToggle extends StatelessWidget {
         children: [
           Expanded(
             child: _PeriodOption(
-              label: 'Monthly',
+              label: l10n.billing_monthly,
               isSelected: selectedPeriod == 'monthly',
               isDark: isDark,
               onTap: () => onChanged('monthly'),
@@ -444,8 +454,8 @@ class _BillingPeriodToggle extends StatelessWidget {
           ),
           Expanded(
             child: _PeriodOption(
-              label: 'Yearly',
-              badge: 'Save 20%',
+              label: l10n.billing_yearly,
+              badge: l10n.billing_savePercent(20),
               isSelected: selectedPeriod == 'yearly',
               isDark: isDark,
               onTap: () => onChanged('yearly'),
@@ -530,6 +540,7 @@ class _PlanCard extends StatelessWidget {
   final bool isDark;
   final bool isLoading;
   final VoidCallback? onSelect;
+  final AppLocalizations l10n;
 
   const _PlanCard({
     required this.plan,
@@ -538,6 +549,7 @@ class _PlanCard extends StatelessWidget {
     required this.isDark,
     required this.isLoading,
     this.onSelect,
+    required this.l10n,
   });
 
   bool get isCurrentPlan => plan.key == currentPlan;
@@ -579,7 +591,7 @@ class _PlanCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                   ),
                   child: Text(
-                    'Current',
+                    l10n.billing_current,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -594,40 +606,40 @@ class _PlanCard extends StatelessWidget {
           // Features
           _FeatureRow(
             icon: Icons.apps,
-            label: 'Apps',
-            value: plan.limits.hasUnlimitedApps ? 'Unlimited' : '${plan.limits.apps}',
+            label: l10n.billing_apps,
+            value: plan.limits.hasUnlimitedApps ? l10n.billing_unlimited : '${plan.limits.apps}',
             isDark: isDark,
           ),
           _FeatureRow(
             icon: Icons.search,
-            label: 'Keywords per app',
-            value: plan.limits.hasUnlimitedKeywords ? 'Unlimited' : '${plan.limits.keywordsPerApp}',
+            label: l10n.billing_keywordsPerApp,
+            value: plan.limits.hasUnlimitedKeywords ? l10n.billing_unlimited : '${plan.limits.keywordsPerApp}',
             isDark: isDark,
           ),
           _FeatureRow(
             icon: Icons.history,
-            label: 'History',
-            value: plan.limits.hasUnlimitedHistory ? 'Unlimited' : '${plan.limits.historyDays} days',
+            label: l10n.billing_history,
+            value: plan.limits.hasUnlimitedHistory ? l10n.billing_unlimited : l10n.billing_days(plan.limits.historyDays),
             isDark: isDark,
           ),
           _FeatureRow(
             icon: Icons.download,
-            label: 'Exports',
-            value: plan.limits.exports ? 'Yes' : 'No',
+            label: l10n.billing_exports,
+            value: plan.limits.exports ? l10n.billing_yes : l10n.billing_no,
             isEnabled: plan.limits.exports,
             isDark: isDark,
           ),
           _FeatureRow(
             icon: Icons.auto_awesome,
-            label: 'AI Insights',
-            value: plan.limits.aiInsights ? 'Yes' : 'No',
+            label: l10n.billing_aiInsights,
+            value: plan.limits.aiInsights ? l10n.billing_yes : l10n.billing_no,
             isEnabled: plan.limits.aiInsights,
             isDark: isDark,
           ),
           _FeatureRow(
             icon: Icons.api,
-            label: 'API Access',
-            value: plan.limits.apiAccess ? 'Yes' : 'No',
+            label: l10n.billing_apiAccess,
+            value: plan.limits.apiAccess ? l10n.billing_yes : l10n.billing_no,
             isEnabled: plan.limits.apiAccess,
             isDark: isDark,
           ),
@@ -659,7 +671,7 @@ class _PlanCard extends StatelessWidget {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(
-                        isCurrentPlan ? 'Current Plan' : 'Upgrade to ${plan.name}',
+                        isCurrentPlan ? l10n.billing_currentPlanButton : l10n.billing_upgradeTo(plan.name),
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                         ),

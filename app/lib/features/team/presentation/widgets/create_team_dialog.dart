@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../providers/team_provider.dart';
 
 class CreateTeamDialog extends ConsumerStatefulWidget {
@@ -26,6 +27,7 @@ class _CreateTeamDialogState extends ConsumerState<CreateTeamDialog> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return AlertDialog(
       backgroundColor: isDark ? AppColors.bgSurface : AppColorsLight.bgSurface,
@@ -33,7 +35,7 @@ class _CreateTeamDialogState extends ConsumerState<CreateTeamDialog> {
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       title: Text(
-        'Create Team',
+        l10n.team_createTeam,
         style: TextStyle(
           color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
         ),
@@ -47,18 +49,18 @@ class _CreateTeamDialogState extends ConsumerState<CreateTeamDialog> {
               controller: _nameController,
               autofocus: true,
               decoration: InputDecoration(
-                labelText: 'Team Name',
-                hintText: 'Enter team name',
+                labelText: l10n.team_teamName,
+                hintText: l10n.team_teamNameHint,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                 ),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Team name is required';
+                  return l10n.team_teamNameRequired;
                 }
                 if (value.length < 2) {
-                  return 'Team name must be at least 2 characters';
+                  return l10n.team_teamNameMinLength;
                 }
                 return null;
               },
@@ -68,8 +70,8 @@ class _CreateTeamDialogState extends ConsumerState<CreateTeamDialog> {
               controller: _descriptionController,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: 'Description (optional)',
-                hintText: 'What is this team for?',
+                labelText: l10n.team_description,
+                hintText: l10n.team_descriptionHint,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
                 ),
@@ -82,7 +84,7 @@ class _CreateTeamDialogState extends ConsumerState<CreateTeamDialog> {
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(false),
           child: Text(
-            'Cancel',
+            l10n.common_cancel,
             style: TextStyle(
               color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
             ),
@@ -99,7 +101,7 @@ class _CreateTeamDialogState extends ConsumerState<CreateTeamDialog> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Create'),
+              : Text(l10n.team_createTeam),
         ),
       ],
     );

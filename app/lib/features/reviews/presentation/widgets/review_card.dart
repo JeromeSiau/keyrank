@@ -3,6 +3,7 @@ import '../../../../core/providers/country_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/l10n_extension.dart';
 import '../../domain/review_model.dart';
+import '../../../../shared/widgets/safe_image.dart';
 
 class ReviewCard extends StatelessWidget {
   final Review review;
@@ -129,18 +130,16 @@ class ReviewCard extends StatelessWidget {
     return Row(
       children: [
         // App icon
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: app.iconUrl != null
-              ? Image.network(
-                  app.iconUrl!,
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => _buildPlaceholderIcon(colors),
-                )
-              : _buildPlaceholderIcon(colors),
-        ),
+        app.iconUrl != null
+            ? SafeImage(
+                imageUrl: app.iconUrl!,
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover,
+                borderRadius: BorderRadius.circular(8),
+                errorWidget: _buildPlaceholderIcon(colors),
+              )
+            : _buildPlaceholderIcon(colors),
         const SizedBox(width: 10),
         // App name and platform
         Expanded(

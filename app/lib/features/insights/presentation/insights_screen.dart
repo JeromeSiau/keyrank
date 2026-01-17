@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/providers/app_context_provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../apps/presentation/tabs/app_insights_tab.dart';
 import '../providers/global_insights_provider.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 /// Insights screen that uses the global app context.
 /// - Global mode (no app selected): Shows insight cards for all apps
@@ -22,7 +24,7 @@ class InsightsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Insights - ${selectedApp.name}'),
+        title: Text(context.l10n.insights_titleWithApp(selectedApp.name)),
       ),
       body: AppInsightsTab(
         appId: selectedApp.id,
@@ -43,7 +45,7 @@ class _GlobalInsightsView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Insights (All Apps)'),
+        title: Text(context.l10n.insights_allApps),
       ),
       body: insightsAsync.when(
         data: (insights) {
@@ -55,12 +57,12 @@ class _GlobalInsightsView extends ConsumerWidget {
                   Icon(Icons.lightbulb_outlined, size: 64, color: colors.textMuted),
                   const SizedBox(height: 16),
                   Text(
-                    'No insights generated yet',
+                    context.l10n.insights_noInsightsYet,
                     style: TextStyle(fontSize: 18, color: colors.textSecondary),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Select an app to generate insights from reviews',
+                    context.l10n.insights_selectAppToGenerate,
                     style: TextStyle(fontSize: 14, color: colors.textMuted),
                   ),
                 ],
@@ -68,44 +70,52 @@ class _GlobalInsightsView extends ConsumerWidget {
             );
           }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${insights.length} apps with insights',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: colors.textMuted,
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final crossAxisCount = constraints.maxWidth > 900
+                  ? 3
+                  : constraints.maxWidth > 600
+                      ? 2
+                      : 1;
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.insights_appsWithInsights(insights.length),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final crossAxisCount = constraints.maxWidth > 900
-                        ? 3
-                        : constraints.maxWidth > 600
-                            ? 2
-                            : 1;
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverGrid(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
                         childAspectRatio: 1.3,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
                       ),
-                      itemCount: insights.length,
-                      itemBuilder: (context, index) {
-                        return _InsightCard(data: insights[index]);
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => _InsightCard(data: insights[index]),
+                        childCount: insights.length,
+                      ),
+                    ),
+                  ),
+                  const SliverPadding(padding: EdgeInsets.only(bottom: 16)),
+                ],
+              );
+            },
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -115,7 +125,7 @@ class _GlobalInsightsView extends ConsumerWidget {
             children: [
               Icon(Icons.error_outline, size: 48, color: colors.red),
               const SizedBox(height: 16),
-              Text('Error loading insights', style: TextStyle(color: colors.textSecondary)),
+              Text(context.l10n.insights_errorLoading, style: TextStyle(color: colors.textSecondary)),
               const SizedBox(height: 8),
               Text(error.toString(), style: TextStyle(color: colors.textMuted, fontSize: 12)),
             ],
@@ -164,15 +174,12 @@ class _InsightCard extends ConsumerWidget {
             Row(
               children: [
                 if (app.iconUrl != null)
-                  ClipRRect(
+                  SafeImage(
+                    imageUrl: app.iconUrl!,
+                    width: 40,
+                    height: 40,
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      app.iconUrl!,
-                      width: 40,
-                      height: 40,
-                      errorBuilder: (_, _, _) =>
-                          Icon(Icons.apps, size: 40, color: colors.textMuted),
-                    ),
+                    errorWidget: Icon(Icons.apps, size: 40, color: colors.textMuted),
                   )
                 else
                   Icon(Icons.apps, size: 40, color: colors.textMuted),
@@ -191,7 +198,7 @@ class _InsightCard extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        '${insight.reviewsCount} reviews analyzed',
+                        context.l10n.insights_reviewsAnalyzed(insight.reviewsCount),
                         style: TextStyle(
                           fontSize: 12,
                           color: colors.textMuted,
@@ -223,7 +230,7 @@ class _InsightCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'avg score',
+                  context.l10n.insights_avgScore,
                   style: TextStyle(fontSize: 12, color: colors.textMuted),
                 ),
               ],
@@ -257,7 +264,7 @@ class _InsightCard extends ConsumerWidget {
 
             // Analyzed date
             Text(
-              'Updated ${DateFormat.yMMMd().format(insight.analyzedAt)}',
+              context.l10n.insights_updatedOn(DateFormat.yMMMd().format(insight.analyzedAt)),
               style: TextStyle(fontSize: 11, color: colors.textMuted),
             ),
           ],

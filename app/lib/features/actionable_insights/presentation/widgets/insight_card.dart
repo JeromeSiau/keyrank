@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../domain/actionable_insight_model.dart';
 import '../../providers/actionable_insights_provider.dart';
+import '../../../../shared/widgets/safe_image.dart';
 
 class InsightCard extends ConsumerWidget {
   final ActionableInsight insight;
@@ -152,14 +153,12 @@ class InsightCard extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (insight.app!.iconUrl != null)
-            ClipRRect(
+            SafeImage(
+              imageUrl: insight.app!.iconUrl!,
+              width: 16,
+              height: 16,
               borderRadius: BorderRadius.circular(4),
-              child: Image.network(
-                insight.app!.iconUrl!,
-                width: 16,
-                height: 16,
-                errorBuilder: (_, _, _) => const Icon(Icons.apps, size: 16),
-              ),
+              errorWidget: const Icon(Icons.apps, size: 16),
             ),
           const SizedBox(width: 4),
           Text(

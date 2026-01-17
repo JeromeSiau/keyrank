@@ -1,77 +1,59 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// Alert type configuration with metadata for display
 class AlertTypeConfig {
   final String type;
-  final String label;
   final IconData icon;
-  final String description;
 
   const AlertTypeConfig({
     required this.type,
-    required this.label,
     required this.icon,
-    required this.description,
   });
+
+  String getLabel(AppLocalizations l10n) {
+    return switch (type) {
+      'position_change' => l10n.alertType_positionChange,
+      'rating_change' => l10n.alertType_ratingChange,
+      'review_spike' => l10n.alertType_reviewSpike,
+      'review_keyword' => l10n.alertType_reviewKeyword,
+      'new_competitor' => l10n.alertType_newCompetitor,
+      'competitor_passed' => l10n.alertType_competitorPassed,
+      'mass_movement' => l10n.alertType_massMovement,
+      'keyword_popularity' => l10n.alertType_keywordTrend,
+      'opportunity' => l10n.alertType_opportunity,
+      _ => type,
+    };
+  }
+
+  String getDescription(AppLocalizations l10n) {
+    return switch (type) {
+      'position_change' => l10n.alertType_positionChangeDesc,
+      'rating_change' => l10n.alertType_ratingChangeDesc,
+      'review_spike' => l10n.alertType_reviewSpikeDesc,
+      'review_keyword' => l10n.alertType_reviewKeywordDesc,
+      'new_competitor' => l10n.alertType_newCompetitorDesc,
+      'competitor_passed' => l10n.alertType_competitorPassedDesc,
+      'mass_movement' => l10n.alertType_massMovementDesc,
+      'keyword_popularity' => l10n.alertType_keywordTrendDesc,
+      'opportunity' => l10n.alertType_opportunityDesc,
+      _ => '',
+    };
+  }
 }
 
 /// Available alert types for the builder
 const alertTypes = [
-  AlertTypeConfig(
-    type: 'position_change',
-    label: 'Position Change',
-    icon: Icons.trending_up,
-    description: 'Alert when app rank changes significantly',
-  ),
-  AlertTypeConfig(
-    type: 'rating_change',
-    label: 'Rating Change',
-    icon: Icons.star,
-    description: 'Alert when app rating changes',
-  ),
-  AlertTypeConfig(
-    type: 'review_spike',
-    label: 'Review Spike',
-    icon: Icons.reviews,
-    description: 'Alert on unusual review activity',
-  ),
-  AlertTypeConfig(
-    type: 'review_keyword',
-    label: 'Review Keyword',
-    icon: Icons.search,
-    description: 'Alert when keywords appear in reviews',
-  ),
-  AlertTypeConfig(
-    type: 'new_competitor',
-    label: 'New Competitor',
-    icon: Icons.group_add,
-    description: 'Alert when new apps enter your space',
-  ),
-  AlertTypeConfig(
-    type: 'competitor_passed',
-    label: 'Competitor Passed',
-    icon: Icons.sports_martial_arts,
-    description: 'Alert when you overtake a competitor',
-  ),
-  AlertTypeConfig(
-    type: 'mass_movement',
-    label: 'Mass Movement',
-    icon: Icons.waves,
-    description: 'Alert on large ranking shifts',
-  ),
-  AlertTypeConfig(
-    type: 'keyword_popularity',
-    label: 'Keyword Trend',
-    icon: Icons.local_fire_department,
-    description: 'Alert when keyword popularity changes',
-  ),
-  AlertTypeConfig(
-    type: 'opportunity',
-    label: 'Opportunity',
-    icon: Icons.diamond,
-    description: 'Alert on new ranking opportunities',
-  ),
+  AlertTypeConfig(type: 'position_change', icon: Icons.trending_up),
+  AlertTypeConfig(type: 'rating_change', icon: Icons.star),
+  AlertTypeConfig(type: 'review_spike', icon: Icons.reviews),
+  AlertTypeConfig(type: 'review_keyword', icon: Icons.search),
+  AlertTypeConfig(type: 'new_competitor', icon: Icons.group_add),
+  AlertTypeConfig(type: 'competitor_passed', icon: Icons.sports_martial_arts),
+  AlertTypeConfig(type: 'mass_movement', icon: Icons.waves),
+  AlertTypeConfig(type: 'keyword_popularity', icon: Icons.local_fire_department),
+  AlertTypeConfig(type: 'opportunity', icon: Icons.diamond),
 ];
 
 /// Step 1: Choose alert type
@@ -88,6 +70,7 @@ class TypeStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -95,7 +78,7 @@ class TypeStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'SELECT ALERT TYPE',
+            l10n.alertBuilder_selectAlertType,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -105,7 +88,7 @@ class TypeStep extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Choose what kind of alert you want to create',
+            l10n.alertBuilder_selectAlertTypeDescription,
             style: TextStyle(
               fontSize: 13,
               color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -122,6 +105,7 @@ class TypeStep extends StatelessWidget {
                   config: type,
                   isSelected: isSelected,
                   onTap: () => onTypeSelected(type.type),
+                  l10n: l10n,
                 );
               },
             ),
@@ -136,11 +120,13 @@ class _TypeTile extends StatelessWidget {
   final AlertTypeConfig config;
   final bool isSelected;
   final VoidCallback onTap;
+  final AppLocalizations l10n;
 
   const _TypeTile({
     required this.config,
     required this.isSelected,
     required this.onTap,
+    required this.l10n,
   });
 
   @override
@@ -194,7 +180,7 @@ class _TypeTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        config.label,
+                        config.getLabel(l10n),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
@@ -202,7 +188,7 @@ class _TypeTile extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        config.description,
+                        config.getDescription(l10n),
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,

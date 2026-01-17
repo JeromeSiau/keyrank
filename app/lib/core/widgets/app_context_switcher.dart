@@ -6,6 +6,7 @@ import '../theme/app_colors.dart';
 import '../../features/apps/providers/apps_provider.dart';
 import '../../features/apps/providers/sidebar_apps_provider.dart';
 import '../../features/apps/domain/app_model.dart';
+import '../../shared/widgets/safe_image.dart';
 
 /// A dropdown widget for selecting the current app context.
 /// When an app is selected, all screens filter data for that app.
@@ -51,17 +52,15 @@ class AppContextSwitcher extends ConsumerWidget {
         child: Row(
           children: [
             if (selectedApp != null && selectedApp.iconUrl != null) ...[
-              ClipRRect(
+              SafeImage(
+                imageUrl: selectedApp.iconUrl!,
+                width: 24,
+                height: 24,
                 borderRadius: BorderRadius.circular(6),
-                child: Image.network(
-                  selectedApp.iconUrl!,
-                  width: 24,
-                  height: 24,
-                  errorBuilder: (context, error, stackTrace) => Icon(
-                    Icons.apps,
-                    size: 24,
-                    color: colors.textMuted,
-                  ),
+                errorWidget: Icon(
+                  Icons.apps,
+                  size: 24,
+                  color: colors.textMuted,
                 ),
               ),
               const SizedBox(width: 10),
@@ -349,15 +348,12 @@ class _AppTile extends StatelessWidget {
 
     return ListTile(
       leading: iconUrl != null
-          ? ClipRRect(
+          ? SafeImage(
+              imageUrl: iconUrl!,
+              width: 32,
+              height: 32,
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                iconUrl!,
-                width: 32,
-                height: 32,
-                errorBuilder: (context, error, stackTrace) =>
-                    Icon(Icons.apps, color: colors.textMuted),
-              ),
+              errorWidget: Icon(Icons.apps, color: colors.textMuted),
             )
           : Icon(icon, color: colors.textMuted),
       title: Text(
@@ -394,14 +390,12 @@ class _PopupAppTile extends StatelessWidget {
     return Row(
       children: [
         if (iconUrl != null)
-          ClipRRect(
+          SafeImage(
+            imageUrl: iconUrl!,
+            width: 24,
+            height: 24,
             borderRadius: BorderRadius.circular(6),
-            child: Image.network(
-              iconUrl!,
-              width: 24,
-              height: 24,
-              errorBuilder: (_, _, _) => Icon(Icons.apps, size: 24, color: colors.textMuted),
-            ),
+            errorWidget: Icon(Icons.apps, size: 24, color: colors.textMuted),
           )
         else
           Icon(icon, size: 24, color: colors.textMuted),

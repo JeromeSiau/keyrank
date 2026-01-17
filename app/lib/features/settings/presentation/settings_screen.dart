@@ -83,7 +83,7 @@ class SettingsScreen extends ConsumerWidget {
             // Notifications section
             _SectionCard(
               isDark: isDark,
-              title: 'NOTIFICATIONS',
+              title: context.l10n.settings_notifications,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -94,13 +94,13 @@ class SettingsScreen extends ConsumerWidget {
                       color: isDark ? AppColors.accent : AppColorsLight.accent,
                     ),
                     title: Text(
-                      'Manage Alert Rules',
+                      context.l10n.settings_manageAlerts,
                       style: TextStyle(
                         color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
                       ),
                     ),
                     subtitle: Text(
-                      'Configure what alerts you receive',
+                      context.l10n.settings_manageAlertsDesc,
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -121,7 +121,7 @@ class SettingsScreen extends ConsumerWidget {
             // Alert Delivery Settings section
             _SectionCard(
               isDark: isDark,
-              title: 'ALERT DELIVERY',
+              title: context.l10n.settings_alertDelivery,
               child: AlertDeliverySettings(isDark: isDark),
             ),
 
@@ -130,7 +130,7 @@ class SettingsScreen extends ConsumerWidget {
             // Team section
             _SectionCard(
               isDark: isDark,
-              title: 'TEAM',
+              title: context.l10n.settings_team,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -141,13 +141,13 @@ class SettingsScreen extends ConsumerWidget {
                       color: isDark ? AppColors.accent : AppColorsLight.accent,
                     ),
                     title: Text(
-                      'Team Management',
+                      context.l10n.settings_teamManagement,
                       style: TextStyle(
                         color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
                       ),
                     ),
                     subtitle: Text(
-                      'Invite members, manage roles & permissions',
+                      context.l10n.settings_teamManagementDesc,
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -168,7 +168,7 @@ class SettingsScreen extends ConsumerWidget {
             // Integrations section
             _SectionCard(
               isDark: isDark,
-              title: 'INTEGRATIONS',
+              title: context.l10n.settings_integrations,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -179,13 +179,13 @@ class SettingsScreen extends ConsumerWidget {
                       color: isDark ? AppColors.accent : AppColorsLight.accent,
                     ),
                     title: Text(
-                      'Manage Integrations',
+                      context.l10n.settings_manageIntegrations,
                       style: TextStyle(
                         color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
                       ),
                     ),
                     subtitle: Text(
-                      'Connect App Store Connect & Google Play Console',
+                      context.l10n.settings_manageIntegrationsDesc,
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -206,7 +206,7 @@ class SettingsScreen extends ConsumerWidget {
             // Billing section
             _SectionCard(
               isDark: isDark,
-              title: 'BILLING',
+              title: context.l10n.settings_billing,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -217,13 +217,13 @@ class SettingsScreen extends ConsumerWidget {
                       color: isDark ? AppColors.accent : AppColorsLight.accent,
                     ),
                     title: Text(
-                      'Plans & Billing',
+                      context.l10n.settings_plansBilling,
                       style: TextStyle(
                         color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
                       ),
                     ),
                     subtitle: Text(
-                      'Manage your subscription and payment',
+                      context.l10n.settings_plansBillingDesc,
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -583,7 +583,7 @@ class _RememberAppContextToggle extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Remember selected app',
+                context.l10n.settings_rememberApp,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -592,7 +592,7 @@ class _RememberAppContextToggle extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Restore app selection when you open the app',
+                context.l10n.settings_rememberAppDesc,
                 style: TextStyle(
                   fontSize: 12,
                   color: textSecondary,

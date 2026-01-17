@@ -16,6 +16,7 @@ import '../../../core/providers/country_provider.dart'
 import '../../apps/providers/apps_provider.dart';
 import '../../categories/data/categories_repository.dart';
 import '../../categories/domain/category_model.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 // Top Charts specific providers
 final _topChartsPlatformProvider = StateProvider<String>((ref) => 'ios');
@@ -722,14 +723,12 @@ class _TopChartRowState extends ConsumerState<_TopChartRow> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: widget.app.iconUrl != null
-                  ? ClipRRect(
+                  ? SafeImage(
+                      imageUrl: widget.app.iconUrl!,
+                      fit: BoxFit.cover,
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        widget.app.iconUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, e, s) => const Center(
-                          child: Icon(Icons.apps, size: 20, color: Colors.white),
-                        ),
+                      errorWidget: const Center(
+                        child: Icon(Icons.apps, size: 20, color: Colors.white),
                       ),
                     )
                   : const Center(

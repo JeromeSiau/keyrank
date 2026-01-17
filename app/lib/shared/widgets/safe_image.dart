@@ -1,5 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+/// Custom cache manager with configured limits
+class _AppCacheManager {
+  static const key = 'appImageCache';
+  static CacheManager? _instance;
+
+  static CacheManager get instance {
+    _instance ??= CacheManager(
+      Config(
+        key,
+        stalePeriod: const Duration(days: 7),
+        maxNrOfCacheObjects: 200,
+        repo: JsonCacheInfoRepository(databaseName: key),
+        fileService: HttpFileService(),
+      ),
+    );
+    return _instance!;
+  }
+}
 
 class SafeImage extends StatelessWidget {
   final String imageUrl;
@@ -26,6 +46,7 @@ class SafeImage extends StatelessWidget {
     // If we have a border radius, wrap in ClipRRect
     Widget image = CachedNetworkImage(
       imageUrl: imageUrl,
+      cacheManager: _AppCacheManager.instance,
       width: width,
       height: height,
       fit: fit,

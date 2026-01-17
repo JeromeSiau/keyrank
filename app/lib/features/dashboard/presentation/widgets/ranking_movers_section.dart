@@ -11,6 +11,7 @@ import '../../../../shared/widgets/change_indicator.dart';
 import '../../../../shared/widgets/states.dart';
 import '../../domain/ranking_mover.dart';
 import '../../providers/dashboard_providers.dart';
+import '../../../../shared/widgets/safe_image.dart';
 
 /// Section showing keywords with the biggest ranking changes
 class RankingMoversSection extends ConsumerWidget {
@@ -333,22 +334,20 @@ class _MoverRow extends ConsumerWidget {
           children: [
             // App icon
             if (mover.appIcon != null)
-              ClipRRect(
+              SafeImage(
+                imageUrl: mover.appIcon!,
+                width: 24,
+                height: 24,
+                fit: BoxFit.cover,
                 borderRadius: BorderRadius.circular(6),
-                child: Image.network(
-                  mover.appIcon!,
+                errorWidget: Container(
                   width: 24,
                   height: 24,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, e, s) => Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: colors.bgActive,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Icon(Icons.apps, size: 14, color: colors.textMuted),
+                  decoration: BoxDecoration(
+                    color: colors.bgActive,
+                    borderRadius: BorderRadius.circular(6),
                   ),
+                  child: Icon(Icons.apps, size: 14, color: colors.textMuted),
                 ),
               )
             else

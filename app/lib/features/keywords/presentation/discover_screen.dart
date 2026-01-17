@@ -11,54 +11,11 @@ import '../../../shared/widgets/country_picker.dart';
 import '../../../core/providers/country_provider.dart'
     show Country, availableCountries, countriesProvider, selectedCountryProvider;
 import '../../../shared/widgets/states.dart';
+import '../../../shared/widgets/safe_image.dart';
 import '../../apps/providers/apps_provider.dart';
-import '../data/keywords_repository.dart';
 import '../domain/keyword_model.dart';
-import '../../categories/data/categories_repository.dart';
 import '../../categories/domain/category_model.dart';
-
-// Shared providers
-final _selectedPlatformProvider = StateProvider<String>((ref) => 'ios');
-final _selectedTabProvider = StateProvider<int>((ref) => 0); // 0 = Keywords, 1 = Categories
-
-// Keyword search providers
-final _keywordSearchQueryProvider = StateProvider<String>((ref) => '');
-
-final _keywordSearchResultsProvider = FutureProvider<KeywordSearchResponse?>((ref) async {
-  final query = ref.watch(_keywordSearchQueryProvider);
-  final country = ref.watch(selectedCountryProvider);
-  final platform = ref.watch(_selectedPlatformProvider);
-  if (query.length < 2) return null;
-
-  final repository = ref.watch(keywordsRepositoryProvider);
-  return repository.searchKeyword(query: query, country: country.code, platform: platform);
-});
-
-// Category providers
-final _selectedCategoryProvider = StateProvider<AppCategory?>((ref) => null);
-final _selectedCollectionProvider = StateProvider<String>((ref) => 'top_free');
-
-final _categoriesProvider = FutureProvider<CategoriesResponse>((ref) async {
-  final repository = ref.watch(categoriesRepositoryProvider);
-  return repository.getCategories();
-});
-
-final _topAppsProvider = FutureProvider<List<TopApp>>((ref) async {
-  final category = ref.watch(_selectedCategoryProvider);
-  final platform = ref.watch(_selectedPlatformProvider);
-  final country = ref.watch(selectedCountryProvider);
-  final collection = ref.watch(_selectedCollectionProvider);
-
-  if (category == null) return [];
-
-  final repository = ref.watch(categoriesRepositoryProvider);
-  return repository.getTopApps(
-    categoryId: category.id,
-    platform: platform,
-    country: country.code,
-    collection: collection,
-  );
-});
+import '../providers/discover_providers.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
   const DiscoverScreen({super.key});
@@ -79,9 +36,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final selectedTab = ref.watch(_selectedTabProvider);
+    final selectedTab = ref.watch(discoverTabProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
-    final selectedPlatform = ref.watch(_selectedPlatformProvider);
+    final selectedPlatform = ref.watch(discoverPlatformProvider);
     final countries = ref.watch(countriesProvider).valueOrNull ?? availableCountries;
 
     return Container(
@@ -94,16 +51,16 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
           // Toolbar with tabs
           _Toolbar(
             selectedTab: selectedTab,
-            onTabChanged: (tab) => ref.read(_selectedTabProvider.notifier).state = tab,
+            onTabChanged: (tab) => ref.read(discoverTabProvider.notifier).state = tab,
             selectedCountry: selectedCountry,
             onCountrySelected: (country) {
               ref.read(selectedCountryProvider.notifier).state = country;
             },
             selectedPlatform: selectedPlatform,
             onPlatformSelected: (platform) {
-              ref.read(_selectedPlatformProvider.notifier).state = platform;
+              ref.read(discoverPlatformProvider.notifier).state = platform;
               // Reset category when platform changes (categories differ between platforms)
-              ref.read(_selectedCategoryProvider.notifier).state = null;
+              ref.read(discoverCategoryProvider.notifier).state = null;
             },
             countries: countries,
           ),
@@ -113,11 +70,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                 ? _KeywordsTabContent(
                     searchController: _searchController,
                     onSearchChanged: (value) {
-                      ref.read(_keywordSearchQueryProvider.notifier).state = value;
+                      ref.read(discoverSearchQueryProvider.notifier).state = value;
                     },
                     onClearSearch: () {
                       _searchController.clear();
-                      ref.read(_keywordSearchQueryProvider.notifier).state = '';
+                      ref.read(discoverSearchQueryProvider.notifier).state = '';
                     },
                   )
                 : const _CategoriesTabContent(),
@@ -280,7 +237,7 @@ class _KeywordsTabContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchResults = ref.watch(_keywordSearchResultsProvider);
+    final searchResults = ref.watch(discoverSearchResultsProvider);
 
     return Column(
       children: [
@@ -851,7 +808,7 @@ class _KeywordResultsTable extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final selectedPlatform = ref.watch(_selectedPlatformProvider);
+    final selectedPlatform = ref.watch(discoverPlatformProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
 
     return Container(
@@ -938,11 +895,11 @@ class _CategoriesTabContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoriesAsync = ref.watch(_categoriesProvider);
-    final selectedCategory = ref.watch(_selectedCategoryProvider);
-    final selectedCollection = ref.watch(_selectedCollectionProvider);
-    final platform = ref.watch(_selectedPlatformProvider);
-    final topAppsAsync = ref.watch(_topAppsProvider);
+    final categoriesAsync = ref.watch(discoverCategoriesProvider);
+    final selectedCategory = ref.watch(discoverCategoryProvider);
+    final selectedCollection = ref.watch(discoverCollectionProvider);
+    final platform = ref.watch(discoverPlatformProvider);
+    final topAppsAsync = ref.watch(discoverTopAppsProvider);
 
     return Column(
       children: [
@@ -953,10 +910,10 @@ class _CategoriesTabContent extends ConsumerWidget {
           selectedCollection: selectedCollection,
           platform: platform,
           onCategoryChanged: (category) {
-            ref.read(_selectedCategoryProvider.notifier).state = category;
+            ref.read(discoverCategoryProvider.notifier).state = category;
           },
           onCollectionChanged: (collection) {
-            ref.read(_selectedCollectionProvider.notifier).state = collection;
+            ref.read(discoverCollectionProvider.notifier).state = collection;
           },
         ),
         // Results
@@ -1141,7 +1098,7 @@ class _TopAppsResultsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final selectedPlatform = ref.watch(_selectedPlatformProvider);
+    final selectedPlatform = ref.watch(discoverPlatformProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
 
     return SingleChildScrollView(
@@ -1315,14 +1272,12 @@ class _TopAppRowState extends ConsumerState<_TopAppRow> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: widget.app.iconUrl != null
-                  ? ClipRRect(
+                  ? SafeImage(
+                      imageUrl: widget.app.iconUrl!,
+                      fit: BoxFit.cover,
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        widget.app.iconUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, e, s) => const Center(
-                          child: Icon(Icons.apps, size: 20, color: Colors.white),
-                        ),
+                      errorWidget: const Center(
+                        child: Icon(Icons.apps, size: 20, color: Colors.white),
                       ),
                     )
                   : const Center(
@@ -1521,14 +1476,12 @@ class _AppResultRowState extends ConsumerState<_AppResultRow> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: widget.app.iconUrl != null
-                  ? ClipRRect(
+                  ? SafeImage(
+                      imageUrl: widget.app.iconUrl!,
+                      fit: BoxFit.cover,
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        widget.app.iconUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, e, s) => const Center(
-                          child: Icon(Icons.apps, size: 20, color: Colors.white),
-                        ),
+                      errorWidget: const Center(
+                        child: Icon(Icons.apps, size: 20, color: Colors.white),
                       ),
                     )
                   : const Center(

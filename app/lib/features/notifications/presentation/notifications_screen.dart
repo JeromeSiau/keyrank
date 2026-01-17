@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../shared/widgets/states.dart';
 import '../../alerts/providers/alerts_provider.dart';
 import '../providers/notifications_provider.dart';
@@ -19,7 +20,7 @@ class NotificationsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(context.l10n.notifications_title),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -29,7 +30,7 @@ class NotificationsScreen extends ConsumerWidget {
               ref.invalidate(unreadCountProvider);
             },
             child: Text(
-              'Mark all read',
+              context.l10n.notifications_markAllRead,
               style: TextStyle(
                 color: isDark ? AppColors.accent : AppColorsLight.accent,
               ),
@@ -37,7 +38,7 @@ class NotificationsScreen extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.tune),
-            tooltip: 'Gérer les alertes',
+            tooltip: context.l10n.notifications_manageAlerts,
             onPressed: () => context.push('/alerts'),
           ),
         ],

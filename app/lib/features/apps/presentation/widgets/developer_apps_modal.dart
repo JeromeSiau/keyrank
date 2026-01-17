@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../data/apps_repository.dart';
+import '../../../../shared/widgets/safe_image.dart';
 
 /// Modal to display apps from the same developer
 class DeveloperAppsModal extends ConsumerStatefulWidget {
@@ -261,18 +262,16 @@ class _DeveloperAppTile extends StatelessWidget {
         child: Row(
           children: [
             // App icon
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: app.iconUrl != null
-                  ? Image.network(
-                      app.iconUrl!,
-                      width: 48,
-                      height: 48,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _buildPlaceholderIcon(),
-                    )
-                  : _buildPlaceholderIcon(),
-            ),
+            app.iconUrl != null
+                ? SafeImage(
+                    imageUrl: app.iconUrl!,
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                    borderRadius: BorderRadius.circular(12),
+                    errorWidget: _buildPlaceholderIcon(),
+                  )
+                : _buildPlaceholderIcon(),
             const SizedBox(width: AppSpacing.md),
             // App info
             Expanded(

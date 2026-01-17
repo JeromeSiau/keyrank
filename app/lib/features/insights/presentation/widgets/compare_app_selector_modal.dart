@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/l10n_extension.dart';
 import '../../../apps/domain/app_model.dart';
 import '../../../apps/providers/apps_provider.dart';
+import '../../../../shared/widgets/safe_image.dart';
 
 class CompareAppSelectorModal extends ConsumerStatefulWidget {
   final int currentAppId;
@@ -211,7 +212,15 @@ class _CompareAppSelectorModalState extends ConsumerState<CompareAppSelectorModa
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: app.iconUrl != null
-                        ? Image.network(app.iconUrl!, fit: BoxFit.cover)
+                        ? SafeImage(
+                            imageUrl: app.iconUrl!,
+                            fit: BoxFit.cover,
+                            errorWidget: Icon(
+                              app.isIos ? Icons.apple : Icons.android,
+                              size: 20,
+                              color: colors.textMuted,
+                            ),
+                          )
                         : Icon(
                             app.isIos ? Icons.apple : Icons.android,
                             size: 20,

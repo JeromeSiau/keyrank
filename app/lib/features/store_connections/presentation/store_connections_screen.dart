@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/store_connection_model.dart';
 import '../providers/store_connections_provider.dart';
 
@@ -17,18 +18,19 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
   bool _isSyncing = false;
 
   Future<void> _syncApps(StoreConnection connection) async {
+    final l10n = AppLocalizations.of(context);
     setState(() => _isSyncing = true);
     try {
       final result = await ref.read(storeConnectionsProvider.notifier).syncApps(connection.id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Synced ${result.syncedCount} apps as owned')),
+          SnackBar(content: Text(l10n.storeConnections_syncedApps(result.syncedCount))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sync failed: $e')),
+          SnackBar(content: Text(l10n.storeConnections_syncFailed(e.toString()))),
         );
       }
     } finally {
@@ -42,11 +44,12 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final connectionsAsync = ref.watch(storeConnectionsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
       appBar: AppBar(
-        title: const Text('Store Connections'),
+        title: Text(l10n.storeConnections_title),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -56,7 +59,7 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Connect your App Store and Google Play accounts to reply to reviews and access analytics.',
+              l10n.storeConnections_description,
               style: TextStyle(
                 fontSize: 14,
                 color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -69,13 +72,13 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
                 child: Column(
                   children: [
                     Text(
-                      'Error loading connections: $e',
+                      l10n.storeConnections_errorLoading(e.toString()),
                       style: TextStyle(color: isDark ? AppColors.red : AppColorsLight.red),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () => ref.invalidate(storeConnectionsProvider),
-                      child: const Text('Retry'),
+                      child: Text(l10n.common_retry),
                     ),
                   ],
                 ),
@@ -89,8 +92,8 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
                     _ConnectionCard(
                       isDark: isDark,
                       platform: 'ios',
-                      title: 'App Store Connect',
-                      subtitle: 'Connect your Apple Developer account',
+                      title: l10n.storeConnections_appStoreConnect,
+                      subtitle: l10n.storeConnections_appStoreConnectDesc,
                       icon: Icons.apple,
                       connection: iosConnection,
                       onConnect: () => context.push('/settings/connections/apple'),
@@ -106,8 +109,8 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
                     _ConnectionCard(
                       isDark: isDark,
                       platform: 'android',
-                      title: 'Google Play Console',
-                      subtitle: 'Connect your Google Play account',
+                      title: l10n.storeConnections_googlePlayConsole,
+                      subtitle: l10n.storeConnections_googlePlayConsoleDesc,
                       icon: Icons.android,
                       connection: androidConnection,
                       onConnect: () => context.push('/settings/connections/google'),
@@ -135,22 +138,24 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
     StoreConnection connection,
   ) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+    final platformName = connection.platform == 'ios'
+        ? l10n.storeConnections_appStoreConnect
+        : l10n.storeConnections_googlePlayConsole;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Disconnect?'),
-        content: Text(
-          'Are you sure you want to disconnect this ${connection.platform == 'ios' ? 'App Store Connect' : 'Google Play Console'} account?',
-        ),
+        title: Text(l10n.storeConnections_disconnectConfirm),
+        content: Text(l10n.storeConnections_disconnectMessage(platformName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              'Disconnect',
+              l10n.storeConnections_disconnect,
               style: TextStyle(color: isDark ? AppColors.red : AppColorsLight.red),
             ),
           ),
@@ -163,13 +168,13 @@ class _StoreConnectionsScreenState extends ConsumerState<StoreConnectionsScreen>
         await ref.read(storeConnectionsProvider.notifier).disconnect(connection.id);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Disconnected successfully')),
+            SnackBar(content: Text(l10n.storeConnections_disconnectSuccess)),
           );
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
+            SnackBar(content: Text(l10n.common_error(e.toString()))),
           );
         }
       }
@@ -204,6 +209,7 @@ class _ConnectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isConnected = connection != null && connection!.status == 'active';
     final accent = isDark ? AppColors.accent : AppColorsLight.accent;
     final green = isDark ? AppColors.green : AppColorsLight.green;
@@ -258,7 +264,7 @@ class _ConnectionCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              'Connected',
+                              l10n.storeConnections_connected,
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
@@ -272,7 +278,7 @@ class _ConnectionCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     if (isConnected && connection!.lastSyncAt != null)
                       Text(
-                        'Last synced: ${DateFormat.yMMMd().add_jm().format(connection!.lastSyncAt!)}',
+                        l10n.storeConnections_lastSynced(DateFormat.yMMMd().add_jm().format(connection!.lastSyncAt!)),
                         style: TextStyle(
                           fontSize: 13,
                           color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -280,7 +286,7 @@ class _ConnectionCard extends StatelessWidget {
                       )
                     else if (isConnected)
                       Text(
-                        'Connected on ${DateFormat.yMMMd().format(connection!.connectedAt)}',
+                        l10n.storeConnections_connectedOn(DateFormat.yMMMd().format(connection!.connectedAt)),
                         style: TextStyle(
                           fontSize: 13,
                           color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -307,7 +313,7 @@ class _ConnectionCard extends StatelessWidget {
                       color: (isDark ? AppColors.red : AppColorsLight.red).withAlpha(100),
                     ),
                   ),
-                  child: const Text('Disconnect'),
+                  child: Text(l10n.storeConnections_disconnect),
                 )
               else
                 FilledButton(
@@ -315,7 +321,7 @@ class _ConnectionCard extends StatelessWidget {
                   style: FilledButton.styleFrom(
                     backgroundColor: accent,
                   ),
-                  child: const Text('Connect'),
+                  child: Text(l10n.storeConnections_connect),
                 ),
             ],
           ),
@@ -332,7 +338,7 @@ class _ConnectionCard extends StatelessWidget {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.sync, size: 18),
-                label: Text(isSyncing ? 'Syncing...' : 'Sync Apps'),
+                label: Text(isSyncing ? l10n.storeConnections_syncing : l10n.storeConnections_syncApps),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: accent,
                   side: BorderSide(color: accent.withAlpha(100)),
@@ -342,7 +348,7 @@ class _ConnectionCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Sync will mark your apps from this account as owned, enabling review replies.',
+              l10n.storeConnections_syncDescription,
               style: TextStyle(
                 fontSize: 12,
                 color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,

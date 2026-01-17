@@ -12,41 +12,8 @@ import '../../../shared/widgets/change_indicator.dart';
 import '../../../shared/widgets/data_table_enhanced.dart';
 import '../../../shared/widgets/safe_image.dart';
 import '../providers/apps_provider.dart';
+import '../providers/apps_filter_providers.dart';
 import '../domain/app_model.dart';
-
-// Provider for selected category filter (null = all categories)
-final _selectedCategoryFilterProvider = StateProvider<String?>((ref) => null);
-
-// Provider to get unique categories from tracked apps
-final _availableCategoriesProvider = Provider<List<String>>((ref) {
-  final appsAsync = ref.watch(appsNotifierProvider);
-  return appsAsync.maybeWhen(
-    data: (apps) {
-      final categories = <String>{};
-      for (final app in apps) {
-        if (app.categoryId != null) {
-          categories.add(app.categoryId!);
-        }
-      }
-      return categories.toList()..sort();
-    },
-    orElse: () => [],
-  );
-});
-
-// Filtered apps based on selected category
-final _filteredAppsProvider = Provider<List<AppModel>>((ref) {
-  final appsAsync = ref.watch(appsNotifierProvider);
-  final selectedCategory = ref.watch(_selectedCategoryFilterProvider);
-
-  return appsAsync.maybeWhen(
-    data: (apps) {
-      if (selectedCategory == null) return apps;
-      return apps.where((app) => app.categoryId == selectedCategory).toList();
-    },
-    orElse: () => [],
-  );
-});
 
 class AppsListScreen extends ConsumerWidget {
   const AppsListScreen({super.key});
@@ -54,10 +21,12 @@ class AppsListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final appsAsync = ref.watch(appsNotifierProvider);
-    final filteredApps = ref.watch(_filteredAppsProvider);
-    final availableCategories = ref.watch(_availableCategoriesProvider);
-    final selectedCategory = ref.watch(_selectedCategoryFilterProvider);
+    // Use .select() to only rebuild when loading state changes, not on data changes
+    final isLoading = ref.watch(appsNotifierProvider.select((state) => state.isLoading));
+    final error = ref.watch(appsNotifierProvider.select((state) => state.error));
+    final filteredApps = ref.watch(filteredAppsProvider);
+    final availableCategories = ref.watch(availableCategoriesProvider);
+    final selectedCategory = ref.watch(selectedCategoryFilterProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -73,31 +42,31 @@ class AppsListScreen extends ConsumerWidget {
             availableCategories: availableCategories,
             selectedCategory: selectedCategory,
             onCategoryChanged: (category) {
-              ref.read(_selectedCategoryFilterProvider.notifier).state =
+              ref.read(selectedCategoryFilterProvider.notifier).state =
                   category;
             },
           ),
           // Content
           Expanded(
-            child: appsAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              error: (e, _) => ErrorView(
-                message: e.toString(),
-                onRetry: () => ref.read(appsNotifierProvider.notifier).load(),
-              ),
-              data: (_) => filteredApps.isEmpty
-                  ? EmptyStateView(
-                      icon: Icons.app_shortcut_outlined,
-                      title: context.l10n.apps_noAppsYet,
-                      subtitle: context.l10n.apps_addAppToStart,
-                      actionLabel: context.l10n.dashboard_addApp,
-                      actionIcon: Icons.add_rounded,
-                      onAction: () => context.go('/apps/add'),
-                    )
-                  : _AppsTable(apps: filteredApps),
-            ),
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : error != null
+                    ? ErrorView(
+                        message: error.toString(),
+                        onRetry: () => ref.read(appsNotifierProvider.notifier).load(),
+                      )
+                    : filteredApps.isEmpty
+                        ? EmptyStateView(
+                            icon: Icons.app_shortcut_outlined,
+                            title: context.l10n.apps_noAppsYet,
+                            subtitle: context.l10n.apps_addAppToStart,
+                            actionLabel: context.l10n.dashboard_addApp,
+                            actionIcon: Icons.add_rounded,
+                            onAction: () => context.go('/apps/add'),
+                          )
+                        : _AppsTable(apps: filteredApps),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../core/widgets/keyrank_logo.dart';
 import '../providers/onboarding_provider.dart';
 import '../../integrations/providers/integrations_provider.dart';
@@ -66,7 +67,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   TextButton(
                     onPressed: _skip,
                     child: Text(
-                      'Skip',
+                      context.l10n.onboarding_skip,
                       style: TextStyle(
                         color: isDark
                             ? AppColors.textMuted
@@ -149,7 +150,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text('Back'),
+              child: Text(context.l10n.onboarding_back),
             ),
           )
         else
@@ -164,7 +165,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               backgroundColor: accent,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            child: Text(_currentStep == 2 ? 'Get Started' : 'Continue'),
+            child: Text(_currentStep == 2 ? context.l10n.onboarding_getStarted : context.l10n.onboarding_continue),
           ),
         ),
       ],
@@ -194,7 +195,7 @@ class _WelcomeStep extends StatelessWidget {
         ),
         const SizedBox(height: 32),
         Text(
-          'Welcome to Keyrank',
+          context.l10n.onboarding_welcomeToKeyrank,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -204,7 +205,7 @@ class _WelcomeStep extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Track your app rankings, manage reviews, and optimize your ASO strategy.',
+          context.l10n.onboarding_welcomeSubtitle,
           style: TextStyle(
             fontSize: 15,
             color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -241,7 +242,7 @@ class _ConnectStep extends ConsumerWidget {
         ),
         const SizedBox(height: 32),
         Text(
-          'Connect Your Store',
+          context.l10n.onboarding_connectStore,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -251,7 +252,7 @@ class _ConnectStep extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Optional: Connect to import apps and reply to reviews.',
+          context.l10n.onboarding_connectStoreSubtitle,
           style: TextStyle(
             fontSize: 14,
             color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
@@ -262,7 +263,7 @@ class _ConnectStep extends ConsumerWidget {
         integrationsAsync.when(
           loading: () => const CircularProgressIndicator(),
           error: (_, _) => Text(
-            'Could not load integrations',
+            context.l10n.onboarding_couldNotLoadIntegrations,
             style: TextStyle(
               color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
             ),
@@ -278,8 +279,8 @@ class _ConnectStep extends ConsumerWidget {
                 _StoreCard(
                   isDark: isDark,
                   icon: Icons.apple,
-                  title: 'App Store Connect',
-                  subtitle: hasIos ? 'Connected' : 'Tap to connect',
+                  title: context.l10n.storeConnections_appStoreConnect,
+                  subtitle: hasIos ? context.l10n.storeConnections_connected : context.l10n.onboarding_tapToConnect,
                   isConnected: hasIos,
                   onTap: hasIos
                       ? null
@@ -289,8 +290,8 @@ class _ConnectStep extends ConsumerWidget {
                 _StoreCard(
                   isDark: isDark,
                   icon: Icons.android,
-                  title: 'Google Play Console',
-                  subtitle: hasAndroid ? 'Connected' : 'Tap to connect',
+                  title: context.l10n.storeConnections_googlePlayConsole,
+                  subtitle: hasAndroid ? context.l10n.storeConnections_connected : context.l10n.onboarding_tapToConnect,
                   isConnected: hasAndroid,
                   onTap: hasAndroid
                       ? null
@@ -424,7 +425,7 @@ class _DoneStep extends StatelessWidget {
         ),
         const SizedBox(height: 32),
         Text(
-          "You're All Set!",
+          context.l10n.onboarding_allSet,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -434,7 +435,7 @@ class _DoneStep extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Start by adding an app to track, or explore the keyword inspector.',
+          context.l10n.onboarding_allSetSubtitle,
           style: TextStyle(
             fontSize: 15,
             color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/l10n_extension.dart';
 import '../../domain/team_model.dart';
 
 class MemberListTile extends StatelessWidget {
@@ -75,7 +76,7 @@ class MemberListTile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          'You',
+                          context.l10n.team_you,
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -118,13 +119,13 @@ class MemberListTile extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'change_role',
                   child: Row(
                     children: [
-                      Icon(Icons.edit, size: 18),
-                      SizedBox(width: 8),
-                      Text('Change Role'),
+                      const Icon(Icons.edit, size: 18),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.team_changeRoleButton),
                     ],
                   ),
                 ),
@@ -132,9 +133,9 @@ class MemberListTile extends StatelessWidget {
                   value: 'remove',
                   child: Row(
                     children: [
-                      Icon(Icons.person_remove, size: 18, color: Colors.red),
+                      const Icon(Icons.person_remove, size: 18, color: Colors.red),
                       const SizedBox(width: 8),
-                      const Text('Remove', style: TextStyle(color: Colors.red)),
+                      Text(context.l10n.team_removeButton, style: const TextStyle(color: Colors.red)),
                     ],
                   ),
                 ),

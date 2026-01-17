@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/l10n_extension.dart';
 import '../../domain/alert_rule_model.dart';
 
 class AlertRuleTile extends StatelessWidget {
@@ -16,12 +17,12 @@ class AlertRuleTile extends StatelessWidget {
     required this.onDelete,
   });
 
-  String _scopeLabel(String scopeType) {
+  String _scopeLabel(BuildContext context, String scopeType) {
     return switch (scopeType) {
-      'global' => 'All apps',
-      'app' => 'Specific app',
-      'category' => 'Category',
-      'keyword' => 'Keyword',
+      'global' => context.l10n.alerts_scopeGlobal,
+      'app' => context.l10n.alerts_scopeApp,
+      'category' => context.l10n.alerts_scopeCategory,
+      'keyword' => context.l10n.alerts_scopeKeyword,
       _ => scopeType,
     };
   }
@@ -66,7 +67,7 @@ class AlertRuleTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                _scopeLabel(rule.scopeType),
+                _scopeLabel(context, rule.scopeType),
                 style: TextStyle(
                   fontSize: 10,
                   color: accentColor,
@@ -91,10 +92,10 @@ class AlertRuleTile extends StatelessWidget {
             }
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(value: 'edit', child: Text('Edit')),
+            PopupMenuItem(value: 'edit', child: Text(context.l10n.alerts_edit)),
             PopupMenuItem(
               value: 'delete',
-              child: Text('Delete', style: TextStyle(color: isDark ? AppColors.red : AppColorsLight.red)),
+              child: Text(context.l10n.common_delete, style: TextStyle(color: isDark ? AppColors.red : AppColorsLight.red)),
             ),
           ],
         ),

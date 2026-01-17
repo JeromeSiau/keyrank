@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../domain/team_model.dart';
 import '../../providers/team_provider.dart';
@@ -20,6 +21,7 @@ class TeamDetailScreen extends ConsumerWidget {
     final invitationsAsync = ref.watch(teamInvitationsProvider(teamId));
     final currentUser = ref.watch(authStateProvider).valueOrNull;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
@@ -34,8 +36,8 @@ class TeamDetailScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
         title: teamAsync.when(
-          loading: () => const Text('Loading...'),
-          error: (_, __) => const Text('Team'),
+          loading: () => Text(l10n.common_loading),
+          error: (_, __) => Text(l10n.team_title),
           data: (team) => Text(team.name),
         ),
         actions: teamAsync.when(
@@ -68,11 +70,11 @@ class TeamDetailScreen extends ConsumerWidget {
                   color: isDark ? AppColors.red : AppColorsLight.red,
                 ),
                 const SizedBox(height: 16),
-                Text('Failed to load team'),
+                Text(l10n.team_failedToLoadTeam),
                 const SizedBox(height: 16),
                 OutlinedButton(
                   onPressed: () => ref.invalidate(teamProvider(teamId)),
-                  child: const Text('Retry'),
+                  child: Text(l10n.common_retry),
                 ),
               ],
             ),
@@ -92,7 +94,7 @@ class TeamDetailScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'MEMBERS',
+                      l10n.team_members,
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -104,7 +106,7 @@ class TeamDetailScreen extends ConsumerWidget {
                       TextButton.icon(
                         onPressed: () => _showInviteDialog(context, ref),
                         icon: const Icon(Icons.person_add, size: 18),
-                        label: const Text('Invite'),
+                        label: Text(l10n.team_invite),
                       ),
                   ],
                 ),
@@ -117,7 +119,7 @@ class TeamDetailScreen extends ConsumerWidget {
                       child: CircularProgressIndicator(),
                     ),
                   ),
-                  error: (_, __) => const Text('Failed to load members'),
+                  error: (_, __) => Text(l10n.team_failedToLoadMembers),
                   data: (members) => Column(
                     children: members.map((member) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
@@ -137,7 +139,7 @@ class TeamDetailScreen extends ConsumerWidget {
                 if (team.role.canManageTeam) ...[
                   const SizedBox(height: 24),
                   Text(
-                    'PENDING INVITATIONS',
+                    l10n.team_pendingInvitations,
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -154,7 +156,7 @@ class TeamDetailScreen extends ConsumerWidget {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                    error: (_, __) => const Text('Failed to load invitations'),
+                    error: (_, __) => Text(l10n.team_failedToLoadInvitations),
                     data: (invitations) {
                       if (invitations.isEmpty) {
                         return Container(
@@ -176,7 +178,7 @@ class TeamDetailScreen extends ConsumerWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'No pending invitations',
+                                l10n.team_noPendingInvitations,
                                 style: TextStyle(
                                   color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
                                 ),
@@ -212,7 +214,7 @@ class TeamDetailScreen extends ConsumerWidget {
                         color: isDark ? AppColors.red : AppColorsLight.red,
                       ),
                       label: Text(
-                        'Leave Team',
+                        l10n.team_leaveTeam,
                         style: TextStyle(
                           color: isDark ? AppColors.red : AppColorsLight.red,
                         ),
@@ -235,7 +237,7 @@ class TeamDetailScreen extends ConsumerWidget {
                         color: isDark ? AppColors.red : AppColorsLight.red,
                       ),
                       label: Text(
-                        'Delete Team',
+                        l10n.team_deleteTeam,
                         style: TextStyle(
                           color: isDark ? AppColors.red : AppColorsLight.red,
                         ),
@@ -265,6 +267,7 @@ class TeamDetailScreen extends ConsumerWidget {
 
   Future<void> _showTeamSettings(BuildContext context, WidgetRef ref, TeamModel team) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     final nameController = TextEditingController(text: team.name);
     final descriptionController = TextEditingController(text: team.description ?? '');
 
@@ -276,7 +279,7 @@ class TeamDetailScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
         ),
         title: Text(
-          'Team Settings',
+          l10n.team_teamSettings,
           style: TextStyle(
             color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
           ),
@@ -289,7 +292,7 @@ class TeamDetailScreen extends ConsumerWidget {
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  labelText: 'Team Name',
+                  labelText: l10n.team_teamName,
                   labelStyle: TextStyle(
                     color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
                   ),
@@ -305,7 +308,7 @@ class TeamDetailScreen extends ConsumerWidget {
               TextField(
                 controller: descriptionController,
                 decoration: InputDecoration(
-                  labelText: 'Description (optional)',
+                  labelText: l10n.team_description,
                   labelStyle: TextStyle(
                     color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
                   ),
@@ -324,14 +327,14 @@ class TeamDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: isDark ? AppColors.accent : AppColorsLight.accent,
             ),
-            child: const Text('Save'),
+            child: Text(l10n.common_save),
           ),
         ],
       ),
@@ -362,13 +365,14 @@ class TeamDetailScreen extends ConsumerWidget {
     TeamMemberModel member,
   ) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     TeamRole? newRole = member.teamRole;
 
     final result = await showDialog<TeamRole>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: isDark ? AppColors.bgSurface : AppColorsLight.bgSurface,
-        title: Text('Change Role for ${member.name}'),
+        title: Text(l10n.team_changeRole(member.name)),
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -387,11 +391,11 @@ class TeamDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(newRole),
-            child: const Text('Save'),
+            child: Text(l10n.common_save),
           ),
         ],
       ),
@@ -411,20 +415,21 @@ class TeamDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     TeamMemberModel member,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Remove Member'),
-        content: Text('Are you sure you want to remove ${member.name} from this team?'),
+        title: Text(l10n.team_removeMember),
+        content: Text(l10n.team_removeMemberConfirm(member.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Remove'),
+            child: Text(l10n.team_remove),
           ),
         ],
       ),
@@ -444,20 +449,21 @@ class TeamDetailScreen extends ConsumerWidget {
   }
 
   Future<void> _confirmLeaveTeam(BuildContext context, WidgetRef ref, TeamModel team) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Leave Team'),
-        content: Text('Are you sure you want to leave "${team.name}"?'),
+        title: Text(l10n.team_leaveTeam),
+        content: Text(l10n.team_leaveTeamConfirm(team.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Leave'),
+            child: Text(l10n.team_leave),
           ),
         ],
       ),
@@ -472,22 +478,21 @@ class TeamDetailScreen extends ConsumerWidget {
   }
 
   Future<void> _confirmDeleteTeam(BuildContext context, WidgetRef ref, TeamModel team) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Team'),
-        content: Text(
-          'Are you sure you want to delete "${team.name}"? This action cannot be undone.',
-        ),
+        title: Text(l10n.team_deleteTeam),
+        content: Text(l10n.team_deleteTeamConfirm(team.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(l10n.common_delete),
           ),
         ],
       ),
@@ -510,6 +515,7 @@ class _TeamInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -558,7 +564,7 @@ class _TeamInfoCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${team.membersCount} member${team.membersCount != 1 ? 's' : ''}',
+                      l10n.team_memberCount(team.membersCount),
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -598,6 +604,7 @@ class _InvitationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -628,7 +635,7 @@ class _InvitationTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Invited as ${invitation.teamRole.displayName}',
+                  l10n.team_invitedAs(invitation.teamRole.displayName),
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -640,7 +647,7 @@ class _InvitationTile extends StatelessWidget {
           TextButton(
             onPressed: onCancel,
             child: Text(
-              'Cancel',
+              l10n.common_cancel,
               style: TextStyle(
                 color: isDark ? AppColors.red : AppColorsLight.red,
               ),

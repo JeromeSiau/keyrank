@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/utils/l10n_extension.dart';
 import '../../domain/actionable_insight_model.dart';
 import '../../providers/actionable_insights_provider.dart';
 import 'insight_card.dart';
@@ -28,7 +29,7 @@ class InsightsDashboardSection extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'AI Insights',
+                  context.l10n.insights_aiInsights,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -43,7 +44,7 @@ class InsightsDashboardSection extends ConsumerWidget {
             ),
             TextButton(
               onPressed: () => context.push('/insights'),
-              child: const Text('View all'),
+              child: Text(context.l10n.insights_viewAll),
             ),
           ],
         ),
@@ -79,7 +80,7 @@ class InsightsDashboardSection extends ConsumerWidget {
             child: OutlinedButton.icon(
               onPressed: () => context.push('/insights'),
               icon: const Icon(Icons.arrow_forward, size: 16),
-              label: Text('View ${summary.insights.length - 3} more insights'),
+              label: Text(context.l10n.insights_viewMore(summary.insights.length - 3)),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 44),
               ),
@@ -166,12 +167,12 @@ class _InsightsEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'No insights yet',
+            context.l10n.insights_noInsightsYet,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            'AI-powered insights will appear here as we analyze your apps',
+            context.l10n.insights_noInsightsDesc,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -207,7 +208,7 @@ class _InsightsErrorState extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Failed to load insights',
+              context.l10n.insights_loadFailed,
               style: TextStyle(color: theme.colorScheme.error),
             ),
           ),

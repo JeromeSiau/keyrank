@@ -13,6 +13,7 @@ import '../../apps/domain/app_model.dart';
 import '../../apps/providers/apps_provider.dart';
 import '../providers/ratings_provider.dart';
 import '../domain/rating_model.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 /// Selected period for trend chart
 final ratingsAnalysisPeriodProvider = StateProvider<int>((ref) => 30);
@@ -741,19 +742,17 @@ class _AppRatingRow extends StatelessWidget {
             child: Row(
               children: [
                 if (app.iconUrl != null)
-                  ClipRRect(
+                  SafeImage(
+                    imageUrl: app.iconUrl!,
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      app.iconUrl!,
+                    errorWidget: Container(
                       width: 32,
                       height: 32,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => Container(
-                        width: 32,
-                        height: 32,
-                        color: colors.bgActive,
-                        child: Icon(Icons.apps, size: 18, color: colors.textMuted),
-                      ),
+                      color: colors.bgActive,
+                      child: Icon(Icons.apps, size: 18, color: colors.textMuted),
                     ),
                   )
                 else
@@ -1147,7 +1146,7 @@ class _CountryRatingsSection extends ConsumerWidget {
                               },
                               icon: Icon(Icons.expand_more_rounded, size: 18, color: colors.accent),
                               label: Text(
-                                'Show more (${filteredRatings.length - pageSize} remaining)',
+                                context.l10n.ratings_showMore(filteredRatings.length - pageSize),
                                 style: TextStyle(fontSize: 12, color: colors.accent),
                               ),
                             ),
@@ -1159,7 +1158,7 @@ class _CountryRatingsSection extends ConsumerWidget {
                               },
                               icon: Icon(Icons.expand_less_rounded, size: 18, color: colors.textMuted),
                               label: Text(
-                                'Show less',
+                                context.l10n.ratings_showLess,
                                 style: TextStyle(fontSize: 12, color: colors.textMuted),
                               ),
                             ),

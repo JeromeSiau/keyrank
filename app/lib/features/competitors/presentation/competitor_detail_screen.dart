@@ -9,6 +9,7 @@ import '../../../core/providers/app_context_provider.dart';
 import '../providers/competitors_provider.dart';
 import 'widgets/competitor_keywords_tab.dart';
 import 'widgets/competitor_metadata_history_tab.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 class CompetitorDetailScreen extends ConsumerStatefulWidget {
   final int competitorId;
@@ -264,22 +265,20 @@ class _Toolbar extends ConsumerWidget {
           const SizedBox(width: AppSpacing.sm),
           // Competitor icon
           if (iconUrl != null)
-            ClipRRect(
+            SafeImage(
+              imageUrl: iconUrl!,
+              width: 32,
+              height: 32,
+              fit: BoxFit.cover,
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                iconUrl!,
+              errorWidget: Container(
                 width: 32,
                 height: 32,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: colors.bgActive,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(Icons.apps, size: 18, color: colors.textMuted),
+                decoration: BoxDecoration(
+                  color: colors.bgActive,
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Icon(Icons.apps, size: 18, color: colors.textMuted),
               ),
             )
           else

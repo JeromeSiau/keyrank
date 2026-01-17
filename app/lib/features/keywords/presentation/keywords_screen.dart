@@ -17,6 +17,7 @@ import '../domain/keyword_model.dart';
 import '../providers/global_keywords_provider.dart';
 import '../providers/keywords_provider.dart';
 import 'widgets/keyword_widgets.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 /// Keywords screen that uses the global app context.
 /// - Global mode (no app selected): Shows all keywords from all apps with App column
@@ -794,14 +795,12 @@ class _GlobalKeywordRow extends StatelessWidget {
               child: Row(
                 children: [
                   if (data.app.iconUrl != null)
-                    ClipRRect(
+                    SafeImage(
+                      imageUrl: data.app.iconUrl!,
+                      width: 20,
+                      height: 20,
                       borderRadius: BorderRadius.circular(4),
-                      child: Image.network(
-                        data.app.iconUrl!,
-                        width: 20,
-                        height: 20,
-                        errorBuilder: (_, _, _) => Icon(Icons.apps, size: 20, color: colors.textMuted),
-                      ),
+                      errorWidget: Icon(Icons.apps, size: 20, color: colors.textMuted),
                     )
                   else
                     Icon(Icons.apps, size: 20, color: colors.textMuted),

@@ -7,6 +7,7 @@ import '../../../core/utils/l10n_extension.dart';
 import '../data/chat_repository.dart';
 import '../domain/chat_models.dart';
 import '../providers/chat_provider.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -126,7 +127,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create conversation: $e')),
+          SnackBar(content: Text(context.l10n.chat_createFailed(e.toString()))),
         );
       }
     }
@@ -390,9 +391,14 @@ class _ConversationCard extends StatelessWidget {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: conversation.app!.iconUrl != null
-                        ? Image.network(
-                            conversation.app!.iconUrl!,
+                        ? SafeImage(
+                            imageUrl: conversation.app!.iconUrl!,
                             fit: BoxFit.cover,
+                            errorWidget: Icon(
+                              Icons.apps,
+                              color: colors.textMuted,
+                              size: 20,
+                            ),
                           )
                         : Icon(
                             Icons.apps,

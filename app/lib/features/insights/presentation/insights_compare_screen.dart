@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../data/insights_repository.dart';
 import '../domain/insight_model.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 class InsightsCompareScreen extends ConsumerStatefulWidget {
   final List<int> appIds;
@@ -205,7 +206,15 @@ class _InsightsCompareScreenState extends ConsumerState<InsightsCompareScreen> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: column.iconUrl != null
-                        ? Image.network(column.iconUrl!, fit: BoxFit.cover)
+                        ? SafeImage(
+                            imageUrl: column.iconUrl!,
+                            fit: BoxFit.cover,
+                            errorWidget: Icon(
+                              column.platform == 'ios' ? Icons.apple : Icons.android,
+                              size: 18,
+                              color: colors.textMuted,
+                            ),
+                          )
                         : Icon(
                             column.platform == 'ios' ? Icons.apple : Icons.android,
                             size: 18,

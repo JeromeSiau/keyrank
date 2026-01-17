@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/integration_model.dart';
 import '../providers/integrations_provider.dart';
 
@@ -17,6 +18,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
   bool _isRefreshing = false;
 
   Future<void> _refreshIntegration(Integration integration) async {
+    final l10n = AppLocalizations.of(context);
     setState(() => _isRefreshing = true);
     try {
       final result = await ref
@@ -26,7 +28,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Synced ${result.appsImported} apps (${result.appsDiscovered} discovered)',
+              l10n.integrations_syncedAppsDetails(result.appsImported, result.appsDiscovered),
             ),
           ),
         );
@@ -34,7 +36,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sync failed: $e')),
+          SnackBar(content: Text(l10n.integrations_syncFailed(e.toString()))),
         );
       }
     } finally {
@@ -48,11 +50,12 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final integrationsAsync = ref.watch(integrationsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
       appBar: AppBar(
-        title: const Text('Integrations'),
+        title: Text(l10n.integrations_title),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -65,7 +68,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Connect your store accounts to import apps, reply to reviews, and access analytics.',
+                  l10n.integrations_description,
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark
@@ -80,7 +83,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'Error loading integrations: $e',
+                      l10n.integrations_errorLoading(e.toString()),
                       style: TextStyle(
                         color: isDark ? AppColors.red : AppColorsLight.red,
                       ),
@@ -88,7 +91,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () => ref.invalidate(integrationsProvider),
-                      child: const Text('Retry'),
+                      child: Text(l10n.common_retry),
                     ),
                   ],
                 ),
@@ -106,8 +109,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                     _IntegrationCard(
                       isDark: isDark,
                       type: 'app_store_connect',
-                      title: 'App Store Connect',
-                      subtitle: 'Connect your Apple Developer account',
+                      title: l10n.integrations_appStoreConnect,
+                      subtitle: l10n.integrations_connectAppleAccount,
                       icon: Icons.apple,
                       integration: iosIntegration,
                       onConnect: () =>
@@ -126,8 +129,8 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                     _IntegrationCard(
                       isDark: isDark,
                       type: 'google_play_console',
-                      title: 'Google Play Console',
-                      subtitle: 'Connect your Google Play account',
+                      title: l10n.integrations_googlePlayConsole,
+                      subtitle: l10n.integrations_connectGoogleAccount,
                       icon: Icons.android,
                       integration: androidIntegration,
                       onConnect: () =>
@@ -160,23 +163,26 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
     Integration integration,
   ) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Disconnect?'),
+        title: Text(l10n.integrations_disconnectConfirm),
         content: Text(
-          'Are you sure you want to disconnect ${integration.typeLabel}? '
-          'This will remove ${integration.appsCount ?? 0} imported apps.',
+          l10n.integrations_disconnectConfirmMessage(
+            integration.typeLabel,
+            integration.appsCount ?? 0,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.common_cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              'Disconnect',
+              l10n.integrations_disconnect,
               style: TextStyle(
                 color: isDark ? AppColors.red : AppColorsLight.red,
               ),
@@ -193,13 +199,13 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             .deleteIntegration(integration.id);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Disconnected successfully')),
+            SnackBar(content: Text(l10n.integrations_disconnectedSuccess)),
           );
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
+            SnackBar(content: Text(l10n.common_error(e.toString()))),
           );
         }
       }
@@ -234,6 +240,7 @@ class _IntegrationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isConnected = integration != null && integration!.isActive;
     final hasError = integration != null && integration!.hasError;
     final accent = isDark ? AppColors.accent : AppColorsLight.accent;
@@ -292,13 +299,13 @@ class _IntegrationCard extends StatelessWidget {
                         if (isConnected) ...[
                           const SizedBox(width: 8),
                           _StatusBadge(
-                            text: 'Connected',
+                            text: l10n.integrations_connected,
                             color: green,
                           ),
                         ] else if (hasError) ...[
                           const SizedBox(width: 8),
                           _StatusBadge(
-                            text: 'Error',
+                            text: l10n.integrations_error,
                             color: red,
                           ),
                         ],
@@ -317,13 +324,13 @@ class _IntegrationCard extends StatelessWidget {
                     foregroundColor: red,
                     side: BorderSide(color: red.withAlpha(100)),
                   ),
-                  child: const Text('Disconnect'),
+                  child: Text(l10n.integrations_disconnect),
                 )
               else
                 FilledButton(
                   onPressed: onConnect,
                   style: FilledButton.styleFrom(backgroundColor: accent),
-                  child: const Text('Connect'),
+                  child: Text(l10n.integrations_connect),
                 ),
             ],
           ),
@@ -343,7 +350,7 @@ class _IntegrationCard extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.sync, size: 18),
-                  label: Text(isRefreshing ? 'Syncing...' : 'Refresh Apps'),
+                  label: Text(isRefreshing ? l10n.integrations_syncing : l10n.integrations_refreshApps),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: accent,
                     side: BorderSide(color: accent.withAlpha(100)),
@@ -375,6 +382,7 @@ class _IntegrationCard extends StatelessWidget {
   }
 
   Widget _buildSubtitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (integration == null) {
       return Text(
         subtitle,
@@ -387,7 +395,7 @@ class _IntegrationCard extends StatelessWidget {
 
     if (integration!.lastSyncAt != null) {
       return Text(
-        'Last synced: ${DateFormat.yMMMd().add_jm().format(integration!.lastSyncAt!)}',
+        l10n.integrations_lastSynced(DateFormat.yMMMd().add_jm().format(integration!.lastSyncAt!)),
         style: TextStyle(
           fontSize: 13,
           color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -396,7 +404,7 @@ class _IntegrationCard extends StatelessWidget {
     }
 
     return Text(
-      'Connected on ${DateFormat.yMMMd().format(integration!.createdAt)}',
+      l10n.integrations_connectedOn(DateFormat.yMMMd().format(integration!.createdAt)),
       style: TextStyle(
         fontSize: 13,
         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -405,13 +413,14 @@ class _IntegrationCard extends StatelessWidget {
   }
 
   Widget _buildAppsInfo(BuildContext context, Color accent) {
+    final l10n = AppLocalizations.of(context);
     final appsCount = integration?.appsCount ?? 0;
     return Row(
       children: [
         Icon(Icons.apps, size: 18, color: accent),
         const SizedBox(width: 8),
         Text(
-          '$appsCount app${appsCount == 1 ? '' : 's'} imported',
+          l10n.integrations_appsImported(appsCount),
           style: TextStyle(
             fontSize: 14,
             color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,

@@ -10,6 +10,7 @@ import '../../../shared/widgets/country_picker.dart';
 import '../data/apps_repository.dart';
 import '../domain/app_model.dart';
 import '../providers/apps_provider.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 enum AppPlatform { ios, android }
 
@@ -508,14 +509,12 @@ class _AppResultRowBase extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: iconUrl != null
-                ? ClipRRect(
+                ? SafeImage(
+                    imageUrl: iconUrl!,
+                    fit: BoxFit.cover,
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      iconUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Center(
-                        child: Icon(Icons.apps, size: 28, color: Colors.white),
-                      ),
+                    errorWidget: const Center(
+                      child: Icon(Icons.apps, size: 28, color: Colors.white),
                     ),
                   )
                 : const Center(

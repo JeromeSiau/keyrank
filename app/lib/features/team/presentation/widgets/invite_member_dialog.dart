@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/team_model.dart';
 import '../../providers/team_provider.dart';
 
@@ -28,6 +29,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return AlertDialog(
       backgroundColor: isDark ? AppColors.bgSurface : AppColorsLight.bgSurface,
@@ -35,7 +37,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       title: Text(
-        'Invite Team Member',
+        l10n.team_inviteMember,
         style: TextStyle(
           color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
         ),
@@ -51,8 +53,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
               autofocus: true,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: 'Email Address',
-                hintText: 'colleague@example.com',
+                labelText: l10n.team_emailAddress,
+                hintText: l10n.team_emailHint,
                 prefixIcon: const Icon(Icons.email_outlined),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppColors.radiusSmall),
@@ -60,18 +62,21 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Email is required';
+                  return l10n.team_emailRequired;
                 }
-                final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                // RFC 5322 compliant email regex - allows plus signs and long TLDs
+                final emailRegex = RegExp(
+                  r'^[a-zA-Z0-9.!#$%&*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$',
+                );
                 if (!emailRegex.hasMatch(value)) {
-                  return 'Enter a valid email address';
+                  return l10n.team_emailInvalid;
                 }
                 return null;
               },
             ),
             const SizedBox(height: 20),
             Text(
-              'Role',
+              'Role', // TODO: Add l10n key
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -94,7 +99,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(false),
           child: Text(
-            'Cancel',
+            l10n.common_cancel,
             style: TextStyle(
               color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
             ),
@@ -111,7 +116,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Send Invite'),
+              : Text(l10n.team_invite),
         ),
       ],
     );
@@ -131,9 +136,10 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
     setState(() => _isLoading = false);
 
     if (invitation != null && mounted) {
+      final l10n = AppLocalizations.of(context);
       Navigator.of(context).pop(true);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invitation sent to ${_emailController.text}')),
+        SnackBar(content: Text(l10n.team_invitationSent(_emailController.text))),
       );
     }
   }

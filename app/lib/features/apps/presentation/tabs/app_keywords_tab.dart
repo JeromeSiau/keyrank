@@ -10,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/l10n_extension.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/providers/country_provider.dart';
 import '../../../competitors/providers/competitors_provider.dart';
 import '../../../keywords/providers/keywords_provider.dart';
@@ -18,6 +19,7 @@ import '../../../keywords/domain/keyword_model.dart';
 import '../../../keywords/domain/ranking_history_point.dart';
 import '../../../keywords/data/keywords_repository.dart';
 import '../../../keywords/presentation/keyword_suggestions_modal.dart';
+import '../../../../shared/widgets/safe_image.dart';
 import '../../../tags/domain/tag_model.dart';
 import '../../../tags/providers/tags_provider.dart';
 import '../../../tags/data/tags_repository.dart';
@@ -160,11 +162,12 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
     final competitorsAsync = ref.read(competitorsProvider);
     final competitors = competitorsAsync.valueOrNull ?? [];
     final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
 
     if (competitors.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('No competitors found. Add competitors first.'),
+          content: Text(l10n.keywords_noCompetitorsFound),
           backgroundColor: colors.yellow,
           action: SnackBarAction(
             label: 'Add',
@@ -184,7 +187,7 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
         ),
         title: Text(
-          'Compare with Competitor',
+          l10n.keywords_compareWithCompetitor,
           style: AppTypography.headline.copyWith(color: colors.textPrimary),
         ),
         content: SizedBox(
@@ -194,29 +197,27 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Select a competitor to compare keywords:',
+                l10n.keywords_selectCompetitorToCompare,
                 style: AppTypography.bodyMedium.copyWith(color: colors.textSecondary),
               ),
               const SizedBox(height: 16),
               ...competitors.map((competitor) => ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: competitor.iconUrl != null
-                    ? ClipRRect(
+                    ? SafeImage(
+                        imageUrl: competitor.iconUrl!,
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          competitor.iconUrl!,
+                        errorWidget: Container(
                           width: 40,
                           height: 40,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: colors.bgActive,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(Icons.apps, color: colors.textMuted),
+                          decoration: BoxDecoration(
+                            color: colors.bgActive,
+                            borderRadius: BorderRadius.circular(8),
                           ),
+                          child: Icon(Icons.apps, color: colors.textMuted),
                         ),
                       )
                     : Container(
@@ -332,11 +333,12 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
     // Get competitors for this specific app
     final competitorsAsync = ref.read(competitorsForAppProvider(widget.appId));
     final competitors = competitorsAsync.valueOrNull ?? [];
+    final l10n = AppLocalizations.of(context);
 
     if (competitors.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('No competitors for this app. Add a competitor first.'),
+          content: Text(l10n.keywords_noCompetitorsForApp),
           backgroundColor: context.colors.yellow,
         ),
       );
@@ -390,7 +392,7 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add keywords: $e'),
+            content: Text(l10n.keywords_failedToAddKeywords(e.toString())),
             backgroundColor: context.colors.red,
           ),
         );
@@ -793,40 +795,41 @@ class _AppKeywordsTabState extends ConsumerState<AppKeywordsTab> {
 
   Widget _buildStatsRow(BuildContext context, int total, int ranked, int improved, int declined, double avgPos) {
     final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         KeywordStatCard(
           icon: Icons.key_rounded,
           iconColor: colors.accent,
-          label: 'Total',
+          label: l10n.keywords_total,
           value: total.toString(),
         ),
         const SizedBox(width: 12),
         KeywordStatCard(
           icon: Icons.visibility_rounded,
           iconColor: colors.green,
-          label: 'Ranked',
+          label: l10n.keywords_ranked,
           value: ranked.toString(),
         ),
         const SizedBox(width: 12),
         KeywordStatCard(
           icon: Icons.trending_up_rounded,
           iconColor: colors.green,
-          label: 'Improved',
+          label: l10n.keywords_improved,
           value: improved.toString(),
         ),
         const SizedBox(width: 12),
         KeywordStatCard(
           icon: Icons.trending_down_rounded,
           iconColor: colors.red,
-          label: 'Declined',
+          label: l10n.keywords_declined,
           value: declined.toString(),
         ),
         const SizedBox(width: 12),
         KeywordStatCard(
           icon: Icons.analytics_rounded,
           iconColor: colors.yellow,
-          label: 'Avg Position',
+          label: l10n.keywords_avgPosition,
           value: avgPos > 0 ? '#${avgPos.toStringAsFixed(0)}' : '-',
         ),
       ],
@@ -1991,6 +1994,7 @@ class _CompetitorSelectionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
 
     return AlertDialog(
       backgroundColor: colors.bgBase,
@@ -1998,7 +2002,7 @@ class _CompetitorSelectionDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppColors.radiusMedium),
       ),
       title: Text(
-        'Add to Competitor',
+        l10n.keywords_addToCompetitor,
         style: AppTypography.headline.copyWith(color: colors.textPrimary),
       ),
       content: SizedBox(
@@ -2008,7 +2012,7 @@ class _CompetitorSelectionDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add $keywordCount keyword${keywordCount > 1 ? 's' : ''} to:',
+              l10n.keywords_addKeywordsTo(keywordCount),
               style: AppTypography.bodyMedium.copyWith(color: colors.textSecondary),
             ),
             const SizedBox(height: 16),
@@ -2034,25 +2038,14 @@ class _CompetitorSelectionDialog extends StatelessWidget {
                         child: Row(
                           children: [
                             // Icon
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: competitor.iconUrl != null
-                                  ? Image.network(
-                                      competitor.iconUrl!,
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          color: colors.bgActive,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Icon(Icons.apps, color: colors.textMuted),
-                                      ),
-                                    )
-                                  : Container(
+                            competitor.iconUrl != null
+                                ? SafeImage(
+                                    imageUrl: competitor.iconUrl!,
+                                    width: 40,
+                                    height: 40,
+                                    fit: BoxFit.cover,
+                                    borderRadius: BorderRadius.circular(8),
+                                    errorWidget: Container(
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
@@ -2061,7 +2054,16 @@ class _CompetitorSelectionDialog extends StatelessWidget {
                                       ),
                                       child: Icon(Icons.apps, color: colors.textMuted),
                                     ),
-                            ),
+                                  )
+                                : Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: colors.bgActive,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(Icons.apps, color: colors.textMuted),
+                                  ),
                             const SizedBox(width: 12),
                             // Name and developer
                             Expanded(

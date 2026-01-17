@@ -8,6 +8,7 @@ import '../domain/chat_models.dart';
 import '../providers/chat_provider.dart';
 import 'widgets/message_bubble.dart';
 import 'widgets/suggested_questions.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 class ChatConversationScreen extends ConsumerStatefulWidget {
   final int conversationId;
@@ -143,9 +144,14 @@ class _ChatConversationScreenState
               ),
               clipBehavior: Clip.antiAlias,
               child: conversation!.app!.iconUrl != null
-                  ? Image.network(
-                      conversation.app!.iconUrl!,
+                  ? SafeImage(
+                      imageUrl: conversation.app!.iconUrl!,
                       fit: BoxFit.cover,
+                      errorWidget: Icon(
+                        Icons.apps,
+                        color: colors.textMuted,
+                        size: 16,
+                      ),
                     )
                   : Icon(
                       Icons.apps,

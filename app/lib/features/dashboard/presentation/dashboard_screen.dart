@@ -247,18 +247,18 @@ class _TopPerformingAppsPanel extends ConsumerWidget {
     }
 
     final columns = [
-      const EnhancedColumn(label: 'App'),
-      const EnhancedColumn(
-        label: 'Keywords',
+      EnhancedColumn(label: context.l10n.dashboard_tableApp),
+      EnhancedColumn(
+        label: context.l10n.dashboard_tableKeywords,
         width: 80,
         align: TextAlign.center,
       ),
-      const EnhancedColumn(
-        label: 'Avg Rank',
+      EnhancedColumn(
+        label: context.l10n.dashboard_tableAvgRank,
         width: 80,
         align: TextAlign.center,
       ),
-      const EnhancedColumn(label: 'Trend', width: 100, align: TextAlign.center),
+      EnhancedColumn(label: context.l10n.dashboard_tableTrend, width: 100, align: TextAlign.center),
     ];
 
     final rows = topApps.asMap().entries.map((entry) {
@@ -645,7 +645,7 @@ class _ConnectStoresBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Connect Your Stores',
+                  context.l10n.dashboard_connectYourStores,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -654,7 +654,7 @@ class _ConnectStoresBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Link App Store Connect or Google Play to import your apps and reply to reviews.',
+                  context.l10n.dashboard_connectStoresDescription,
                   style: TextStyle(
                     fontSize: 13,
                     color: colors.textSecondary,
@@ -668,7 +668,7 @@ class _ConnectStoresBanner extends StatelessWidget {
           FilledButton.icon(
             onPressed: () => context.go('/settings/integrations'),
             icon: const Icon(Icons.add, size: 18),
-            label: const Text('Connect'),
+            label: Text(context.l10n.dashboard_connect),
             style: FilledButton.styleFrom(
               backgroundColor: colors.accent,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../competitors/providers/competitors_provider.dart';
 import '../../competitors/domain/competitor_model.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 class CompetitorsScreen extends ConsumerWidget {
   const CompetitorsScreen({super.key});
@@ -90,25 +91,25 @@ class CompetitorsScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppColors.radiusMedium),
         ),
         title: Text(
-          'Remove Competitor',
+          context.l10n.competitors_removeTitle,
           style: AppTypography.headline.copyWith(color: colors.textPrimary),
         ),
         content: Text(
-          'Are you sure you want to remove "${competitor.name}" from your competitors?',
+          context.l10n.competitors_removeConfirm(competitor.name),
           style: AppTypography.body.copyWith(color: colors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
-              'Cancel',
+              context.l10n.common_cancel,
               style: AppTypography.body.copyWith(color: colors.textMuted),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
-              'Remove',
+              context.l10n.common_remove,
               style: AppTypography.body.copyWith(color: colors.red),
             ),
           ),
@@ -126,7 +127,7 @@ class CompetitorsScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${competitor.name} removed'),
+            content: Text(context.l10n.competitors_removed(competitor.name)),
             backgroundColor: colors.green,
           ),
         );
@@ -135,7 +136,7 @@ class CompetitorsScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to remove competitor: $e'),
+            content: Text(context.l10n.competitors_removeFailed(e.toString())),
             backgroundColor: colors.red,
           ),
         );
@@ -232,7 +233,7 @@ class _Toolbar extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
-                      'Add competitor',
+                      context.l10n.competitors_addCompetitor,
                       style: AppTypography.caption.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -272,19 +273,19 @@ class _FilterChips extends StatelessWidget {
       child: Row(
         children: [
           _FilterChip(
-            label: 'All',
+            label: context.l10n.competitors_filterAll,
             isSelected: currentFilter == CompetitorFilter.all,
             onTap: () => onFilterChanged(CompetitorFilter.all),
           ),
           const SizedBox(width: AppSpacing.sm),
           _FilterChip(
-            label: 'Global',
+            label: context.l10n.competitors_filterGlobal,
             isSelected: currentFilter == CompetitorFilter.global,
             onTap: () => onFilterChanged(CompetitorFilter.global),
           ),
           const SizedBox(width: AppSpacing.sm),
           _FilterChip(
-            label: 'Contextual',
+            label: context.l10n.competitors_filterContextual,
             isSelected: currentFilter == CompetitorFilter.contextual,
             onTap: () => onFilterChanged(CompetitorFilter.contextual),
           ),
@@ -349,25 +350,25 @@ class _EmptyState extends StatelessWidget {
     required this.onAddCompetitor,
   });
 
-  String get _message {
+  String _getMessage(BuildContext context) {
     switch (filter) {
       case CompetitorFilter.all:
-        return 'No competitors tracked yet';
+        return context.l10n.competitors_noCompetitorsYet;
       case CompetitorFilter.global:
-        return 'No global competitors';
+        return context.l10n.competitors_noGlobalCompetitors;
       case CompetitorFilter.contextual:
-        return 'No contextual competitors';
+        return context.l10n.competitors_noContextualCompetitors;
     }
   }
 
-  String get _subtitle {
+  String _getSubtitle(BuildContext context) {
     switch (filter) {
       case CompetitorFilter.all:
-        return 'Search for apps and add them as competitors to track their rankings';
+        return context.l10n.competitors_emptySubtitleAll;
       case CompetitorFilter.global:
-        return 'Global competitors appear across all your apps';
+        return context.l10n.competitors_emptySubtitleGlobal;
       case CompetitorFilter.contextual:
-        return 'Contextual competitors are linked to specific apps';
+        return context.l10n.competitors_emptySubtitleContextual;
     }
   }
 
@@ -391,12 +392,12 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            _message,
+            _getMessage(context),
             style: AppTypography.headline.copyWith(color: colors.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            _subtitle,
+            _getSubtitle(context),
             style: AppTypography.body.copyWith(color: colors.textMuted),
             textAlign: TextAlign.center,
           ),
@@ -426,7 +427,7 @@ class _EmptyState extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      'Search for competitors',
+                      context.l10n.competitors_searchForCompetitors,
                       style: AppTypography.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -484,10 +485,10 @@ class _CompetitorTile extends StatelessWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: competitor.iconUrl != null
-                      ? Image.network(
-                          competitor.iconUrl!,
+                      ? SafeImage(
+                          imageUrl: competitor.iconUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, e, s) => Icon(
+                          errorWidget: Icon(
                             competitor.isIos ? Icons.apple : Icons.android,
                             size: 24,
                             color: colors.textMuted,
@@ -592,14 +593,14 @@ class _CompetitorTile extends StatelessWidget {
                 // Actions
                 _ActionButton(
                   icon: Icons.visibility_rounded,
-                  tooltip: 'View Keywords',
+                  tooltip: context.l10n.competitors_viewKeywords,
                   onTap: onView,
                   colors: colors,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 _ActionButton(
                   icon: Icons.delete_outline_rounded,
-                  tooltip: 'Remove',
+                  tooltip: context.l10n.common_remove,
                   onTap: onRemove,
                   colors: colors,
                   isDestructive: true,
@@ -636,7 +637,7 @@ class _TypeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppColors.radiusSmall),
       ),
       child: Text(
-        isGlobal ? 'Global' : 'Contextual',
+        isGlobal ? context.l10n.competitors_filterGlobal : context.l10n.competitors_filterContextual,
         style: AppTypography.caption.copyWith(
           fontSize: 10,
           fontWeight: FontWeight.w600,

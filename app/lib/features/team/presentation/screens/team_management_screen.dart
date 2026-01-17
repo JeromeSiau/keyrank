@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/team_model.dart';
 import '../../providers/team_provider.dart';
 import '../widgets/create_team_dialog.dart';
@@ -15,6 +16,7 @@ class TeamManagementScreen extends ConsumerWidget {
     final teamsAsync = ref.watch(teamsProvider);
     final myInvitationsAsync = ref.watch(myInvitationsProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.bgBase : AppColorsLight.bgBase,
@@ -34,13 +36,13 @@ class TeamManagementScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Team Management',
+                    l10n.team_title,
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   FilledButton.icon(
                     onPressed: () => _showCreateTeamDialog(context, ref),
                     icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Create Team'),
+                    label: Text(l10n.team_createTeam),
                     style: FilledButton.styleFrom(
                       backgroundColor: isDark ? AppColors.accent : AppColorsLight.accent,
                     ),
@@ -79,7 +81,7 @@ class TeamManagementScreen extends ConsumerWidget {
                 ),
                 error: (error, _) => _ErrorCard(
                   isDark: isDark,
-                  message: 'Failed to load teams',
+                  message: l10n.team_failedToLoadTeam,
                   onRetry: () => ref.invalidate(teamsProvider),
                 ),
                 data: (teams) {
@@ -94,7 +96,7 @@ class TeamManagementScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'YOUR TEAMS',
+                        l10n.team_yourTeams,
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -134,19 +136,21 @@ class TeamManagementScreen extends ConsumerWidget {
   }
 
   Future<void> _acceptInvitation(BuildContext context, WidgetRef ref, String token) async {
+    final l10n = AppLocalizations.of(context);
     final team = await ref.read(memberNotifierProvider.notifier).acceptInvitation(token);
     if (team != null && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Joined ${team.name}')),
+        SnackBar(content: Text(l10n.team_joinedTeam(team.name))),
       );
     }
   }
 
   Future<void> _declineInvitation(BuildContext context, WidgetRef ref, String token) async {
+    final l10n = AppLocalizations.of(context);
     final success = await ref.read(memberNotifierProvider.notifier).declineInvitation(token);
     if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invitation declined')),
+        SnackBar(content: Text(l10n.team_invitationDeclined)),
       );
     }
   }
@@ -165,6 +169,7 @@ class _TeamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Material(
       color: isDark ? AppColors.glassPanelAlpha : AppColorsLight.glassPanelAlpha,
       borderRadius: BorderRadius.circular(AppColors.radiusMedium),
@@ -224,7 +229,7 @@ class _TeamCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${team.membersCount} member${team.membersCount != 1 ? 's' : ''}',
+                      l10n.team_memberCount(team.membersCount),
                       style: TextStyle(
                         fontSize: 13,
                         color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -296,6 +301,7 @@ class _EmptyTeamsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(32),
@@ -315,7 +321,7 @@ class _EmptyTeamsCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'No Teams Yet',
+            l10n.team_noTeamsYet,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -324,7 +330,7 @@ class _EmptyTeamsCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Create a team to collaborate with others on your apps',
+            l10n.team_noTeamsDescription,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
@@ -335,7 +341,7 @@ class _EmptyTeamsCard extends StatelessWidget {
           FilledButton.icon(
             onPressed: onCreateTeam,
             icon: const Icon(Icons.add, size: 18),
-            label: const Text('Create Your First Team'),
+            label: Text(l10n.team_createFirstTeam),
             style: FilledButton.styleFrom(
               backgroundColor: isDark ? AppColors.accent : AppColorsLight.accent,
             ),
@@ -359,6 +365,7 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -387,7 +394,7 @@ class _ErrorCard extends StatelessWidget {
           const SizedBox(height: 16),
           OutlinedButton(
             onPressed: onRetry,
-            child: const Text('Retry'),
+            child: Text(l10n.common_retry),
           ),
         ],
       ),

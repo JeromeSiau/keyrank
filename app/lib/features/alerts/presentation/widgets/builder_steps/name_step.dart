@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// Step 4: Name the rule and save
 class NameStep extends StatefulWidget {
@@ -53,21 +54,29 @@ class _NameStepState extends State<NameStep> {
     super.dispose();
   }
 
-  String _formatAlertType(String type) {
-    return type
-        .split('_')
-        .map((word) => word.isNotEmpty
+  String _formatAlertType(String type, AppLocalizations l10n) {
+    return switch (type) {
+      'position_change' => l10n.alertType_positionChange,
+      'rating_change' => l10n.alertType_ratingChange,
+      'review_spike' => l10n.alertType_reviewSpike,
+      'review_keyword' => l10n.alertType_reviewKeyword,
+      'new_competitor' => l10n.alertType_newCompetitor,
+      'competitor_passed' => l10n.alertType_competitorPassed,
+      'mass_movement' => l10n.alertType_massMovement,
+      'keyword_popularity' => l10n.alertType_keywordTrend,
+      'opportunity' => l10n.alertType_opportunity,
+      _ => type.split('_').map((word) => word.isNotEmpty
             ? '${word[0].toUpperCase()}${word.substring(1)}'
-            : '')
-        .join(' ');
+            : '').join(' '),
+    };
   }
 
-  String _formatScopeType(String scope) {
+  String _formatScopeType(String scope, AppLocalizations l10n) {
     return switch (scope) {
-      'global' => 'All Apps',
-      'app' => 'Specific App',
-      'category' => 'Category',
-      'keyword' => 'Keyword',
+      'global' => l10n.alertBuilder_scopeGlobal,
+      'app' => l10n.alertBuilder_scopeApp,
+      'category' => l10n.alertBuilder_scopeCategory,
+      'keyword' => l10n.alertBuilder_scopeKeyword,
       _ => scope,
     };
   }
@@ -76,6 +85,7 @@ class _NameStepState extends State<NameStep> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final accent = isDark ? AppColors.accent : AppColorsLight.accent;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -83,7 +93,7 @@ class _NameStepState extends State<NameStep> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'NAME YOUR RULE',
+            l10n.alertBuilder_nameYourRule,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -93,7 +103,7 @@ class _NameStepState extends State<NameStep> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Give your alert rule a descriptive name',
+            l10n.alertBuilder_nameDescription,
             style: TextStyle(
               fontSize: 13,
               color: isDark ? AppColors.textSecondary : AppColorsLight.textSecondary,
@@ -110,7 +120,7 @@ class _NameStepState extends State<NameStep> {
               color: isDark ? AppColors.textPrimary : AppColorsLight.textPrimary,
             ),
             decoration: InputDecoration(
-              hintText: 'e.g., Daily Position Alert',
+              hintText: l10n.alertBuilder_nameHint,
               hintStyle: TextStyle(
                 color: isDark ? AppColors.textMuted : AppColorsLight.textMuted,
               ),
@@ -162,7 +172,7 @@ class _NameStepState extends State<NameStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'SUMMARY',
+                  l10n.alertBuilder_summary,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -172,18 +182,18 @@ class _NameStepState extends State<NameStep> {
                 ),
                 const SizedBox(height: 16),
                 _SummaryRow(
-                  label: 'Type',
-                  value: _formatAlertType(widget.alertType),
+                  label: l10n.alertBuilder_type,
+                  value: _formatAlertType(widget.alertType, l10n),
                 ),
                 const SizedBox(height: 12),
                 _SummaryRow(
-                  label: 'Scope',
-                  value: _formatScopeType(widget.scopeType),
+                  label: l10n.alertBuilder_scope,
+                  value: _formatScopeType(widget.scopeType, l10n),
                 ),
                 if (widget.name.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   _SummaryRow(
-                    label: 'Name',
+                    label: l10n.alertBuilder_name,
                     value: widget.name,
                   ),
                 ],
@@ -219,9 +229,9 @@ class _NameStepState extends State<NameStep> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                  : const Text(
-                      'Save Alert Rule',
-                      style: TextStyle(
+                  : Text(
+                      l10n.alertBuilder_saveAlertRule,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

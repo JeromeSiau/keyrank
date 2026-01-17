@@ -28,16 +28,22 @@ final globalKeywordsProvider = FutureProvider<List<KeywordWithApp>>((ref) async 
   final repository = ref.read(keywordsRepositoryProvider);
   final allKeywords = <KeywordWithApp>[];
 
-  // Fetch keywords for each app
-  for (final app in apps) {
-    try {
-      final keywords = await repository.getKeywordsForApp(app.id);
-      for (final keyword in keywords) {
-        allKeywords.add(KeywordWithApp(keyword: keyword, app: app));
+  // Fetch keywords for all apps in parallel
+  final results = await Future.wait(
+    apps.map((app) async {
+      try {
+        final keywords = await repository.getKeywordsForApp(app.id);
+        return keywords.map((k) => KeywordWithApp(keyword: k, app: app)).toList();
+      } catch (e) {
+        // Skip apps that fail to load, continue with others
+        return <KeywordWithApp>[];
       }
-    } catch (e) {
-      // Skip apps that fail to load, continue with others
-    }
+    }),
+  );
+
+  // Flatten results
+  for (final result in results) {
+    allKeywords.addAll(result);
   }
 
   // Sort by app name, then by keyword

@@ -11,6 +11,7 @@ import '../../../shared/widgets/date_range_picker.dart';
 import '../providers/analytics_provider.dart';
 import '../providers/global_analytics_provider.dart';
 import 'app_analytics_screen.dart';
+import '../../../shared/widgets/safe_image.dart';
 
 /// Analytics screen that uses the global app context.
 /// - Global mode (no app selected): Shows analytics summary for all apps
@@ -382,14 +383,12 @@ class _AnalyticsTable extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (app.iconUrl != null)
-                            ClipRRect(
+                            SafeImage(
+                              imageUrl: app.iconUrl!,
+                              width: 24,
+                              height: 24,
                               borderRadius: BorderRadius.circular(4),
-                              child: Image.network(
-                                app.iconUrl!,
-                                width: 24,
-                                height: 24,
-                                errorBuilder: (_, _, _) => Icon(Icons.apps, size: 24, color: colors.textMuted),
-                              ),
+                              errorWidget: Icon(Icons.apps, size: 24, color: colors.textMuted),
                             )
                           else
                             Icon(Icons.apps, size: 24, color: colors.textMuted),
