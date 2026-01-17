@@ -17,18 +17,18 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000')),
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['Content-Type', 'Accept', 'Authorization', 'X-Requested-With', 'X-API-Key'],
 
-    'exposed_headers' => ['Authorization'],
+    'exposed_headers' => [],
 
-    'max_age' => 86400, // Cache preflight for 24h
+    'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => false, // Not needed for Bearer token auth
 
 ];
