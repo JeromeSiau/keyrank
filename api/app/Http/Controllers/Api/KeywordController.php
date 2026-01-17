@@ -48,17 +48,19 @@ class KeywordController extends Controller
             $apps = $this->iTunesService->searchApps($keyword, $country, $limit);
         }
 
-        // Find or create keyword in database
-        $keywordModel = Keyword::findOrCreateKeyword($keyword, $country);
+        // Check if keyword exists (for popularity info) but don't create it
+        $existingKeyword = Keyword::where('keyword', $keyword)
+            ->where('storefront', strtoupper($country))
+            ->first();
 
         return response()->json([
             'data' => [
-                'keyword' => [
-                    'id' => $keywordModel->id,
-                    'keyword' => $keywordModel->keyword,
-                    'storefront' => $keywordModel->storefront,
-                    'popularity' => $keywordModel->popularity,
-                ],
+                'keyword' => $existingKeyword ? [
+                    'id' => $existingKeyword->id,
+                    'keyword' => $existingKeyword->keyword,
+                    'storefront' => $existingKeyword->storefront,
+                    'popularity' => $existingKeyword->popularity,
+                ] : null,
                 'results' => $apps,
                 'total_results' => count($apps),
                 'platform' => $platform,

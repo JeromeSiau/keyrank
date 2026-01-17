@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\AppCompetitor;
 use App\Models\AppRanking;
+use App\Models\CompetitorMetadataSnapshot;
 use App\Models\Keyword;
 use App\Models\TrackedKeyword;
 use App\Services\GooglePlayService;
 use App\Services\iTunesService;
+use App\Services\OpenRouterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,7 +19,8 @@ class CompetitorController extends Controller
 {
     public function __construct(
         private iTunesService $iTunesService,
-        private GooglePlayService $googlePlayService
+        private GooglePlayService $googlePlayService,
+        private OpenRouterService $openRouterService,
     ) {}
 
     /**
@@ -425,6 +428,287 @@ class CompetitorController extends Controller
             'added' => $added,
             'skipped' => $skipped,
         ], 201);
+    }
+
+    /**
+     * Get metadata history for a competitor.
+     * Returns snapshots with changes, grouped by date.
+     */
+    public function metadataHistory(Request $request, int $competitorId): JsonResponse
+    {
+        $request->validate([
+            'locale' => 'sometimes|string|max:10',
+            'days' => 'sometimes|integer|min:1|max:365',
+            'changes_only' => 'sometimes|in:true,false,1,0',
+        ]);
+
+        $locale = $request->query('locale', 'en-US');
+        $days = (int) $request->query('days', 90);
+        $changesOnly = filter_var($request->query('changes_only', true), FILTER_VALIDATE_BOOLEAN);
+
+        // Verify competitor exists
+        $competitorApp = App::find($competitorId);
+        if (!$competitorApp) {
+            return response()->json(['error' => 'Competitor not found'], 404);
+        }
+
+        // Get snapshots
+        $query = CompetitorMetadataSnapshot::forApp($competitorId)
+            ->forLocale($locale)
+            ->inPeriod(now()->subDays($days))
+            ->orderByDesc('scraped_at');
+
+        if ($changesOnly) {
+            $query->withChanges();
+        }
+
+        $snapshots = $query->get();
+
+        // Format timeline entries
+        $timeline = $snapshots->map(function ($snapshot, $index) use ($snapshots) {
+            $entry = [
+                'id' => $snapshot->id,
+                'date' => $snapshot->scraped_at->toIso8601String(),
+                'version' => $snapshot->version,
+                'has_changes' => $snapshot->has_changes,
+                'changed_fields' => $snapshot->changed_fields ?? [],
+            ];
+
+            // Get previous snapshot for comparison
+            $previousSnapshot = $snapshots->get($index + 1);
+
+            if ($snapshot->has_changes && $previousSnapshot) {
+                $entry['changes'] = [];
+
+                foreach ($snapshot->changed_fields ?? [] as $field) {
+                    $oldValue = $previousSnapshot->$field;
+                    $newValue = $snapshot->$field;
+
+                    $change = [
+                        'field' => $field,
+                        'old_value' => $oldValue,
+                        'new_value' => $newValue,
+                    ];
+
+                    // Add analysis for description changes
+                    if ($field === 'description' && $oldValue && $newValue) {
+                        $change['char_diff'] = strlen($newValue) - strlen($oldValue);
+                    }
+
+                    // Add analysis for keywords changes
+                    if ($field === 'keywords' && $previousSnapshot) {
+                        $change['keyword_analysis'] = $snapshot->analyzeKeywordChanges($previousSnapshot);
+                    }
+
+                    $entry['changes'][] = $change;
+                }
+            }
+
+            return $entry;
+        });
+
+        // Get current metadata (most recent snapshot)
+        $currentSnapshot = CompetitorMetadataSnapshot::getLatest($competitorId, $locale);
+        $currentMetadata = null;
+        if ($currentSnapshot) {
+            $currentMetadata = [
+                'title' => $currentSnapshot->title,
+                'subtitle' => $currentSnapshot->subtitle,
+                'short_description' => $currentSnapshot->short_description,
+                'description' => $currentSnapshot->description,
+                'keywords' => $currentSnapshot->keywords,
+                'whats_new' => $currentSnapshot->whats_new,
+                'version' => $currentSnapshot->version,
+                'last_updated' => $currentSnapshot->scraped_at->toIso8601String(),
+            ];
+        }
+
+        // Calculate summary stats
+        $totalChanges = $snapshots->where('has_changes', true)->count();
+        $changesByField = [];
+        foreach ($snapshots->where('has_changes', true) as $snapshot) {
+            foreach ($snapshot->changed_fields ?? [] as $field) {
+                $changesByField[$field] = ($changesByField[$field] ?? 0) + 1;
+            }
+        }
+
+        return response()->json([
+            'competitor' => [
+                'id' => $competitorApp->id,
+                'name' => $competitorApp->name,
+                'icon_url' => $competitorApp->icon_url,
+                'platform' => $competitorApp->platform,
+            ],
+            'locale' => $locale,
+            'current_metadata' => $currentMetadata,
+            'summary' => [
+                'total_snapshots' => $snapshots->count(),
+                'total_changes' => $totalChanges,
+                'changes_by_field' => (object) $changesByField, // Cast to object for empty {} instead of []
+                'period_days' => $days,
+            ],
+            'timeline' => $timeline->values(),
+        ]);
+    }
+
+    /**
+     * Export metadata history as CSV.
+     */
+    public function exportMetadataHistory(Request $request, int $competitorId)
+    {
+        $request->validate([
+            'locale' => 'sometimes|string|max:10',
+            'days' => 'sometimes|integer|min:1|max:365',
+        ]);
+
+        $locale = $request->query('locale', 'en-US');
+        $days = (int) $request->query('days', 90);
+
+        // Verify competitor exists
+        $competitorApp = App::find($competitorId);
+        if (!$competitorApp) {
+            return response()->json(['error' => 'Competitor not found'], 404);
+        }
+
+        // Get all snapshots (not just changes) for the export
+        $snapshots = CompetitorMetadataSnapshot::forApp($competitorId)
+            ->forLocale($locale)
+            ->inPeriod(now()->subDays($days))
+            ->orderByDesc('scraped_at')
+            ->get();
+
+        // Build CSV content
+        $csv = "Date,Version,Has Changes,Changed Fields,Title,Subtitle,Short Description,Description,Keywords,What's New\n";
+
+        foreach ($snapshots as $snapshot) {
+            $changedFields = implode(';', $snapshot->changed_fields ?? []);
+            $csv .= sprintf(
+                "%s,%s,%s,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+                $snapshot->scraped_at->format('Y-m-d H:i:s'),
+                $snapshot->version ?? '',
+                $snapshot->has_changes ? 'Yes' : 'No',
+                $changedFields,
+                $this->escapeCsvField($snapshot->title),
+                $this->escapeCsvField($snapshot->subtitle),
+                $this->escapeCsvField($snapshot->short_description),
+                $this->escapeCsvField($snapshot->description),
+                $this->escapeCsvField($snapshot->keywords),
+                $this->escapeCsvField($snapshot->whats_new),
+            );
+        }
+
+        $filename = sprintf(
+            '%s_metadata_history_%s.csv',
+            preg_replace('/[^a-z0-9]+/i', '_', $competitorApp->name),
+            now()->format('Y-m-d')
+        );
+
+        return response($csv)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
+    }
+
+    /**
+     * Escape a field value for CSV.
+     */
+    private function escapeCsvField(?string $value): string
+    {
+        if ($value === null) {
+            return '';
+        }
+        // Escape double quotes and newlines
+        return str_replace(['"', "\n", "\r"], ['""', ' ', ' '], $value);
+    }
+
+    /**
+     * Generate AI insights from competitor metadata changes.
+     */
+    public function metadataInsights(Request $request, int $competitorId): JsonResponse
+    {
+        $request->validate([
+            'locale' => 'sometimes|string|max:10',
+            'days' => 'sometimes|integer|min:1|max:365',
+        ]);
+
+        $locale = $request->query('locale', 'en-US');
+        $days = (int) $request->query('days', 90);
+
+        // Verify competitor exists
+        $competitorApp = App::find($competitorId);
+        if (!$competitorApp) {
+            return response()->json(['error' => 'Competitor not found'], 404);
+        }
+
+        // Get snapshots with changes
+        $snapshots = CompetitorMetadataSnapshot::forApp($competitorId)
+            ->forLocale($locale)
+            ->inPeriod(now()->subDays($days))
+            ->withChanges()
+            ->orderByDesc('scraped_at')
+            ->limit(10)
+            ->get();
+
+        if ($snapshots->isEmpty()) {
+            return response()->json([
+                'insights' => null,
+                'message' => 'No metadata changes found to analyze',
+            ]);
+        }
+
+        // Build context for AI analysis
+        $changesContext = $snapshots->map(function ($snapshot) {
+            return [
+                'date' => $snapshot->scraped_at->format('Y-m-d'),
+                'changed_fields' => $snapshot->changed_fields,
+                'title' => $snapshot->title,
+                'subtitle' => $snapshot->subtitle,
+                'keywords' => $snapshot->keywords,
+                'description_preview' => substr($snapshot->description ?? '', 0, 500),
+            ];
+        })->toArray();
+
+        $systemPrompt = <<<PROMPT
+You are an App Store Optimization (ASO) expert analyzing competitor metadata changes.
+Analyze the provided metadata change history and provide strategic insights.
+
+Respond with a JSON object containing:
+{
+    "strategy_summary": "2-3 sentence summary of their apparent ASO strategy",
+    "key_findings": ["array of 3-5 key observations about their optimization patterns"],
+    "keyword_focus": ["array of keywords/themes they seem to be targeting"],
+    "recommendations": ["array of 2-3 actionable recommendations for how to compete"],
+    "trend": "increasing|stable|decreasing" // their optimization activity level
+}
+PROMPT;
+
+        $userPrompt = sprintf(
+            "Analyze this competitor's metadata change history for %s:\n\nApp: %s (%s)\nPlatform: %s\n\nRecent changes:\n%s",
+            $competitorApp->name,
+            $competitorApp->name,
+            $competitorApp->store_id,
+            $competitorApp->platform,
+            json_encode($changesContext, JSON_PRETTY_PRINT)
+        );
+
+        $result = $this->openRouterService->chat($systemPrompt, $userPrompt, true, true);
+
+        if (!$result) {
+            return response()->json([
+                'insights' => null,
+                'error' => 'Failed to generate insights',
+            ], 500);
+        }
+
+        return response()->json([
+            'competitor' => [
+                'id' => $competitorApp->id,
+                'name' => $competitorApp->name,
+            ],
+            'insights' => $result,
+            'analyzed_changes' => $snapshots->count(),
+            'period_days' => $days,
+            'generated_at' => now()->toIso8601String(),
+        ]);
     }
 
     private function formatCompetitor(App $app, string $type, ?AppCompetitor $link = null): array

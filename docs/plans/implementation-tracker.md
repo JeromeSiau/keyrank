@@ -10,9 +10,9 @@
 |-------|-------|------|-------------|-----------|
 | Phase 1: Quick Wins | 6 | 6 | 0 | 0 |
 | Phase 2: Core Parity | 6 | 6 | 0 | 0 |
-| Phase 3: Différenciation | 4 | 2 | 0 | 2 |
+| Phase 3: Différenciation | 4 | 3 | 0 | 1 |
 | Phase 4: Enterprise | 5 | 0 | 0 | 5 |
-| **TOTAL** | **21** | **14** | **0** | **7** |
+| **TOTAL** | **21** | **15** | **0** | **6** |
 
 ---
 
@@ -57,7 +57,7 @@
 | # | Feature | Status | Branch | Session Date | Notes |
 |---|---------|--------|--------|--------------|-------|
 | 6.1 | AI Optimization Wizard | ⬚ Todo | - | - | Depends on 5.1 (Metadata) |
-| 6.2 | Competitor Metadata History | ⬚ Todo | - | - | Backend scraping needed |
+| 6.2 | Competitor Metadata History | ✅ Done | main | 2026-01-17 | Timeline view, before/after diff, daily scraping |
 | 6.3 | Chat with Executable Actions | ✅ Done | main | 2026-01-17 | Tool calling + action cards |
 | 6.4 | Review Intelligence Dashboard | ✅ Done | main | 2026-01-17 | Feature requests, bug reports, version sentiment |
 
@@ -262,6 +262,39 @@
   - `app/lib/features/chat/presentation/chat_screen.dart` - Fixed app context provider
   - `app/lib/features/chat/presentation/widgets/message_bubble.dart` - Render action cards
 
+### Session 2026-01-17 - 6.2 Competitor Metadata History
+- **Branch**: main
+- **Status**: ✅ Done
+- **Notes**:
+  - **Backend**: Full implementation with daily metadata scraping for competitors
+  - Migration: `competitor_metadata_snapshots` table with title, subtitle, short_description, description, keywords, whats_new, version, change tracking
+  - CompetitorMetadataSnapshot model with comparison methods, change detection, diff utilities
+  - Extended iTunesService and GooglePlayService with `getAppMetadata()` methods (no caching for accurate snapshots)
+  - ScrapeCompetitorMetadataJob: Daily at 5:30 AM, scrapes all tracked competitors
+  - CompetitorController: Added `GET /competitors/{id}/metadata-history` endpoint with locale, days, changes_only params
+  - Returns timeline with before/after comparisons, current metadata, and summary stats
+  - **Flutter**: CompetitorMetadataHistoryResponse models (Freezed) with timeline entries, metadata snapshots, keyword analysis
+  - CompetitorMetadataHistoryTab widget with summary card, filter bar, timeline view
+  - Timeline entries are expandable to show before/after diffs with character count changes
+  - Keyword changes show added/removed keywords with color coding
+  - Added "Metadata History" tab to CompetitorDetailScreen (alongside Keywords tab)
+  - Providers: competitorMetadataHistoryProvider with locale/days/changesOnly filters
+- **Files created**:
+  - `api/database/migrations/2026_01_17_100000_create_competitor_metadata_snapshots_table.php`
+  - `api/app/Models/CompetitorMetadataSnapshot.php`
+  - `api/app/Jobs/ScrapeCompetitorMetadataJob.php`
+  - `app/lib/features/competitors/domain/competitor_metadata_history_model.dart`
+  - `app/lib/features/competitors/presentation/widgets/competitor_metadata_history_tab.dart`
+- **Files modified**:
+  - `api/app/Http/Controllers/Api/CompetitorController.php` - Added metadataHistory method
+  - `api/app/Services/iTunesService.php` - Added getAppMetadata, countryToLocale
+  - `api/app/Services/GooglePlayService.php` - Added getAppMetadata, countryToLocale
+  - `api/routes/api.php` - Added metadata-history route
+  - `api/routes/console.php` - Added ScrapeCompetitorMetadataJob schedule
+  - `app/lib/features/competitors/data/competitors_repository.dart` - Added getMetadataHistory
+  - `app/lib/features/competitors/providers/competitors_provider.dart` - Added metadata history providers
+  - `app/lib/features/competitors/presentation/competitor_detail_screen.dart` - Added tabs (Keywords + Metadata History)
+
 ---
 
 ## Blockers & Questions
@@ -286,7 +319,7 @@ Features requiring backend changes:
 | 5.3 Keyword Suggestions | AI + competitor data | `GET /apps/{id}/keywords/suggestions` | ✅ Done |
 | 5.4 Competitor Keywords | Keyword comparison | `GET /competitors/{id}/keywords` | ✅ Done |
 | 5.6 Conversion Funnel | ASC Analytics API | `GET /apps/{id}/funnel` | ✅ Done |
-| 6.2 Competitor History | Scraping service | `GET /competitors/{id}/metadata-history` | ⬚ Todo |
+| 6.2 Competitor History | Scraping service | `GET /competitors/{id}/metadata-history` | ✅ Done |
 | 6.3 Chat Actions | Action execution | `POST /chat/actions/{id}/execute` | ✅ Done |
 | 7.1 Team | User management | `GET/POST /team/*` | ⬚ Todo |
 | 7.2 Slack | OAuth | `POST /integrations/slack` | ⬚ Todo |
@@ -341,4 +374,4 @@ Track which files each feature touches:
 
 ---
 
-*Last updated: 2026-01-17 (6.3 Chat with Executable Actions)*
+*Last updated: 2026-01-17 (6.2 Competitor Metadata History)*

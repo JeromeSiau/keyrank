@@ -137,6 +137,12 @@ class AlertPreferencesController extends Controller
                 'description' => 'New ranking opportunities detected',
                 'icon' => 'diamond',
             ],
+            [
+                'type' => 'competitor_metadata_changed',
+                'label' => 'Competitor metadata changes',
+                'description' => 'When a competitor updates their app metadata',
+                'icon' => 'history',
+            ],
         ];
 
         return response()->json(['data' => $types]);

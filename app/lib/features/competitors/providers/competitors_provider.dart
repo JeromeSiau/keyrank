@@ -4,6 +4,7 @@ import '../../../core/providers/app_context_provider.dart';
 import '../data/competitors_repository.dart';
 import '../domain/competitor_model.dart';
 import '../domain/competitor_keywords_model.dart';
+import '../domain/competitor_metadata_history_model.dart';
 
 /// Repository provider
 final competitorsRepositoryProvider = Provider<CompetitorsRepository>((ref) {
@@ -88,5 +89,64 @@ final filteredCompetitorKeywordsProvider = Provider.family<List<KeywordCompariso
       case CompetitorKeywordFilter.theyWin:
         return keywords.where((k) => k.theyWin).toList();
     }
+  },
+);
+
+// =============================================================================
+// Metadata History Providers
+// =============================================================================
+
+/// Parameters for competitor metadata history provider
+typedef CompetitorMetadataHistoryParams = ({
+  int competitorId,
+  String locale,
+  int days,
+  bool changesOnly,
+});
+
+/// Provider for competitor metadata history
+final competitorMetadataHistoryProvider = FutureProvider.family<
+    CompetitorMetadataHistoryResponse, CompetitorMetadataHistoryParams>(
+  (ref, params) async {
+    final repository = ref.watch(competitorsRepositoryProvider);
+    return repository.getMetadataHistory(
+      competitorId: params.competitorId,
+      locale: params.locale,
+      days: params.days,
+      changesOnly: params.changesOnly,
+    );
+  },
+);
+
+/// State provider for metadata history locale filter
+final metadataHistoryLocaleProvider = StateProvider<String>((ref) => 'en-US');
+
+/// State provider for metadata history days filter
+final metadataHistoryDaysProvider = StateProvider<int>((ref) => 90);
+
+/// State provider for showing only changes
+final metadataHistoryChangesOnlyProvider = StateProvider<bool>((ref) => true);
+
+// =============================================================================
+// Metadata Insights Providers
+// =============================================================================
+
+/// Parameters for competitor metadata insights provider
+typedef CompetitorMetadataInsightsParams = ({
+  int competitorId,
+  String locale,
+  int days,
+});
+
+/// Provider for AI-generated metadata insights
+final competitorMetadataInsightsProvider = FutureProvider.family<
+    MetadataInsightsResponse, CompetitorMetadataInsightsParams>(
+  (ref, params) async {
+    final repository = ref.watch(competitorsRepositoryProvider);
+    return repository.getMetadataInsights(
+      competitorId: params.competitorId,
+      locale: params.locale,
+      days: params.days,
+    );
   },
 );

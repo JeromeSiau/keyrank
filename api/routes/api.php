@@ -208,6 +208,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{competitorId}/keywords', [CompetitorController::class, 'keywords']);
         Route::post('{competitorId}/keywords', [CompetitorController::class, 'addKeyword']);
         Route::post('{competitorId}/keywords/bulk', [CompetitorController::class, 'addKeywords']);
+        Route::get('{competitorId}/metadata-history', [CompetitorController::class, 'metadataHistory']);
+        Route::get('{competitorId}/metadata-history/export', [CompetitorController::class, 'exportMetadataHistory']);
+        Route::get('{competitorId}/metadata-insights', [CompetitorController::class, 'metadataInsights']);
     });
 
     // Categories

@@ -227,6 +227,70 @@ class GooglePlayService
     }
 
     /**
+     * Get metadata for an app suitable for competitor tracking.
+     * Fetches fresh data without caching for accurate snapshots.
+     *
+     * @param string $appId
+     * @param string $country
+     * @return array|null
+     */
+    public function getAppMetadata(string $appId, string $country = 'us'): ?array
+    {
+        // Fetch without cache for accurate snapshots
+        $response = Http::timeout(30)->get("{$this->scraperUrl}/app/{$appId}", [
+            'country' => $country,
+        ]);
+
+        if (!$response->successful()) {
+            return null;
+        }
+
+        $app = $response->json();
+
+        if (empty($app)) {
+            return null;
+        }
+
+        return [
+            'title' => $app['title'] ?? null,
+            'subtitle' => null, // Android doesn't have subtitle
+            'short_description' => $app['summary'] ?? $app['short_description'] ?? null,
+            'description' => $app['description'] ?? null,
+            'keywords' => null, // Android doesn't expose keywords
+            'whats_new' => $app['recentChanges'] ?? $app['whats_new'] ?? null,
+            'version' => $app['version'] ?? null,
+            'locale' => $this->countryToLocale($country),
+        ];
+    }
+
+    /**
+     * Convert country code to locale format.
+     */
+    private function countryToLocale(string $country): string
+    {
+        $mapping = [
+            'us' => 'en-US',
+            'gb' => 'en-GB',
+            'au' => 'en-AU',
+            'ca' => 'en-CA',
+            'fr' => 'fr-FR',
+            'de' => 'de-DE',
+            'jp' => 'ja',
+            'cn' => 'zh-Hans',
+            'kr' => 'ko',
+            'it' => 'it',
+            'es' => 'es-ES',
+            'nl' => 'nl-NL',
+            'br' => 'pt-BR',
+            'mx' => 'es-MX',
+            'ru' => 'ru',
+            'in' => 'en-IN',
+        ];
+
+        return $mapping[strtolower($country)] ?? 'en-US';
+    }
+
+    /**
      * Get available Android app categories
      *
      * @return array

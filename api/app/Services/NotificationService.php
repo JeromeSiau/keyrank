@@ -175,6 +175,7 @@ class NotificationService
             'mass_movement' => "{$count} mass movements",
             'keyword_popularity' => "{$count} keyword changes",
             'opportunity' => "{$count} opportunities detected",
+            'competitor_metadata_changed' => "{$count} competitor metadata changes",
             default => "{$count} alerts",
         };
     }

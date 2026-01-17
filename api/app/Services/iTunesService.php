@@ -440,6 +440,72 @@ class iTunesService
     }
 
     /**
+     * Get metadata for an app suitable for competitor tracking.
+     * Fetches fresh data without caching for accurate snapshots.
+     *
+     * @param string $appleId
+     * @param string $country
+     * @return array|null
+     */
+    public function getAppMetadata(string $appleId, string $country = 'us'): ?array
+    {
+        // Fetch without cache for accurate snapshots
+        $response = Http::timeout(30)->get(self::LOOKUP_URL, [
+            'id' => $appleId,
+            'country' => $country,
+        ]);
+
+        if (!$response->successful()) {
+            return null;
+        }
+
+        $results = $response->json('results', []);
+
+        if (empty($results)) {
+            return null;
+        }
+
+        $app = $results[0];
+
+        return [
+            'title' => $app['trackName'] ?? null,
+            'subtitle' => null, // Not available in public API
+            'description' => $app['description'] ?? null,
+            'keywords' => null, // Not available in public API
+            'whats_new' => $app['releaseNotes'] ?? null,
+            'version' => $app['version'] ?? null,
+            'locale' => $this->countryToLocale($country),
+        ];
+    }
+
+    /**
+     * Convert country code to locale format.
+     */
+    private function countryToLocale(string $country): string
+    {
+        $mapping = [
+            'us' => 'en-US',
+            'gb' => 'en-GB',
+            'au' => 'en-AU',
+            'ca' => 'en-CA',
+            'fr' => 'fr-FR',
+            'de' => 'de-DE',
+            'jp' => 'ja',
+            'cn' => 'zh-Hans',
+            'kr' => 'ko',
+            'it' => 'it',
+            'es' => 'es-ES',
+            'nl' => 'nl-NL',
+            'br' => 'pt-BR',
+            'mx' => 'es-MX',
+            'ru' => 'ru',
+            'in' => 'en-IN',
+        ];
+
+        return $mapping[strtolower($country)] ?? 'en-US';
+    }
+
+    /**
      * Get available iOS app categories
      *
      * @return array

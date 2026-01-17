@@ -14,6 +14,7 @@ use App\Jobs\EnrichmentJob;
 use App\Jobs\InsightGeneratorJob;
 use App\Jobs\ExtractReviewInsightsJob;
 use App\Jobs\RefreshAllKeywordSuggestionsJob;
+use App\Jobs\ScrapeCompetitorMetadataJob;
 use App\Jobs\SyncFunnelAnalyticsJob;
 use App\Jobs\WeeklyDigestJob;
 use Illuminate\Support\Facades\Schedule;
@@ -52,6 +53,12 @@ Schedule::job(new TopChartsCollector())
 // App Discovery collector - daily at 5 AM (discovers related apps, same developer)
 Schedule::job(new AppDiscoveryCollector())
     ->dailyAt('05:00')
+    ->withoutOverlapping();
+
+// Competitor Metadata scraper - daily at 5:30 AM (tracks competitor metadata changes)
+// Creates metadata snapshots for all tracked competitors, detects changes
+Schedule::job(new ScrapeCompetitorMetadataJob())
+    ->dailyAt('05:30')
     ->withoutOverlapping();
 
 // Search Suggest collector - Monday and Thursday at 2 AM (collects autocomplete suggestions)

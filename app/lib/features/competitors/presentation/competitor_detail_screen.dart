@@ -5,18 +5,38 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/providers/country_provider.dart';
-import '../../../core/utils/l10n_extension.dart';
 import '../../../core/providers/app_context_provider.dart';
 import '../providers/competitors_provider.dart';
 import 'widgets/competitor_keywords_tab.dart';
+import 'widgets/competitor_metadata_history_tab.dart';
 
-class CompetitorDetailScreen extends ConsumerWidget {
+class CompetitorDetailScreen extends ConsumerStatefulWidget {
   final int competitorId;
 
   const CompetitorDetailScreen({super.key, required this.competitorId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CompetitorDetailScreen> createState() => _CompetitorDetailScreenState();
+}
+
+class _CompetitorDetailScreenState extends ConsumerState<CompetitorDetailScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     final selectedApp = ref.watch(appContextProvider);
     final country = ref.watch(selectedCountryProvider);
@@ -27,7 +47,7 @@ class CompetitorDetailScreen extends ConsumerWidget {
 
     final keywordsAsync = ref.watch(
       competitorKeywordsProvider((
-        competitorId: competitorId,
+        competitorId: widget.competitorId,
         appId: selectedApp.id,
         country: country.code,
       )),
@@ -42,47 +62,54 @@ class CompetitorDetailScreen extends ConsumerWidget {
         children: [
           // Toolbar
           _Toolbar(
-            competitorId: competitorId,
+            competitorId: widget.competitorId,
             onBack: () => context.go('/competitors'),
-            onRefresh: () => ref.invalidate(
-              competitorKeywordsProvider((
-                competitorId: competitorId,
-                appId: selectedApp.id,
-                country: country.code,
-              )),
-            ),
+            onRefresh: () {
+              ref.invalidate(
+                competitorKeywordsProvider((
+                  competitorId: widget.competitorId,
+                  appId: selectedApp.id,
+                  country: country.code,
+                )),
+              );
+              ref.invalidate(
+                competitorMetadataHistoryProvider((
+                  competitorId: widget.competitorId,
+                  locale: ref.read(metadataHistoryLocaleProvider),
+                  days: ref.read(metadataHistoryDaysProvider),
+                  changesOnly: ref.read(metadataHistoryChangesOnlyProvider),
+                )),
+              );
+            },
           ),
-          // Content
+          // Tab Bar
+          _TabBar(
+            tabController: _tabController,
+            colors: colors,
+          ),
+          // Tab Content
           Expanded(
-            child: keywordsAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              error: (e, _) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.error_outline, size: 48, color: colors.red),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Error loading keywords',
-                      style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      e.toString(),
-                      style: AppTypography.caption.copyWith(color: colors.textMuted),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Keywords Tab
+                keywordsAsync.when(
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  error: (e, _) => _buildErrorState(colors, 'Error loading keywords', e.toString()),
+                  data: (data) => CompetitorKeywordsTab(
+                    response: data,
+                    competitorId: widget.competitorId,
+                    userAppId: selectedApp.id,
+                    country: country.code,
+                  ),
                 ),
-              ),
-              data: (data) => CompetitorKeywordsTab(
-                response: data,
-                competitorId: competitorId,
-                userAppId: selectedApp.id,
-                country: country.code,
-              ),
+                // Metadata History Tab
+                CompetitorMetadataHistoryTab(
+                  competitorId: widget.competitorId,
+                ),
+              ],
             ),
           ),
         ],
@@ -116,6 +143,66 @@ class CompetitorDetailScreen extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildErrorState(AppColorsExtension colors, String title, String error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 48, color: colors.red),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: AppTypography.bodyMedium.copyWith(color: colors.textPrimary),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            error,
+            style: AppTypography.caption.copyWith(color: colors.textMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TabBar extends StatelessWidget {
+  final TabController tabController;
+  final AppColorsExtension colors;
+
+  const _TabBar({
+    required this.tabController,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.glassBorder)),
+      ),
+      child: TabBar(
+        controller: tabController,
+        labelColor: colors.accent,
+        unselectedLabelColor: colors.textMuted,
+        labelStyle: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: AppTypography.bodyMedium,
+        indicatorColor: colors.accent,
+        indicatorWeight: 2,
+        tabs: const [
+          Tab(
+            icon: Icon(Icons.compare_arrows, size: 18),
+            text: 'Keywords',
+          ),
+          Tab(
+            icon: Icon(Icons.history, size: 18),
+            text: 'Metadata History',
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Toolbar extends ConsumerWidget {
@@ -135,7 +222,7 @@ class _Toolbar extends ConsumerWidget {
     final selectedApp = ref.watch(appContextProvider);
     final country = ref.watch(selectedCountryProvider);
 
-    String title = 'Competitor Keywords';
+    String title = 'Competitor';
     String? iconUrl;
 
     if (selectedApp != null) {

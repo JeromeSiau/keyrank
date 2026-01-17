@@ -23,7 +23,7 @@ class AlertRulesController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:position_change,rating_change,review_spike,review_keyword,new_competitor,competitor_passed,mass_movement,keyword_popularity,opportunity',
+            'type' => 'required|string|in:position_change,rating_change,review_spike,review_keyword,new_competitor,competitor_passed,mass_movement,keyword_popularity,opportunity,competitor_metadata_changed',
             'scope_type' => 'required|string|in:global,app,category,keyword',
             'scope_id' => 'nullable|integer',
             'conditions' => 'required|array',
@@ -165,6 +165,13 @@ class AlertRulesController extends Controller
                 'icon' => 'diamond',
                 'description' => 'Alerte sur opportunités de mots-clés',
                 'default_conditions' => ['max_position' => 3, 'min_popularity' => 50],
+            ],
+            [
+                'name' => 'Changement métadonnées concurrent',
+                'type' => 'competitor_metadata_changed',
+                'icon' => 'history',
+                'description' => 'Alerte quand un concurrent modifie ses métadonnées',
+                'default_conditions' => ['fields' => ['title', 'subtitle', 'description', 'keywords']],
             ],
         ];
 

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../domain/competitor_model.dart';
 import '../domain/competitor_keywords_model.dart';
+import '../domain/competitor_metadata_history_model.dart';
 
 class CompetitorsRepository {
   final Dio _dio;
@@ -108,6 +109,61 @@ class CompetitorsRepository {
     return (
       added: response.data['added'] as int,
       skipped: response.data['skipped'] as int,
+    );
+  }
+
+  /// Get metadata history for a competitor.
+  Future<CompetitorMetadataHistoryResponse> getMetadataHistory({
+    required int competitorId,
+    String locale = 'en-US',
+    int days = 90,
+    bool changesOnly = true,
+  }) async {
+    final response = await _dio.get(
+      '/competitors/$competitorId/metadata-history',
+      queryParameters: {
+        'locale': locale,
+        'days': days,
+        'changes_only': changesOnly,
+      },
+    );
+    return CompetitorMetadataHistoryResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  /// Export metadata history as CSV.
+  Future<List<int>> exportMetadataHistory({
+    required int competitorId,
+    String locale = 'en-US',
+    int days = 90,
+  }) async {
+    final response = await _dio.get<List<int>>(
+      '/competitors/$competitorId/metadata-history/export',
+      queryParameters: {
+        'locale': locale,
+        'days': days,
+      },
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return response.data ?? [];
+  }
+
+  /// Get AI-generated insights from metadata changes.
+  Future<MetadataInsightsResponse> getMetadataInsights({
+    required int competitorId,
+    String locale = 'en-US',
+    int days = 90,
+  }) async {
+    final response = await _dio.get(
+      '/competitors/$competitorId/metadata-insights',
+      queryParameters: {
+        'locale': locale,
+        'days': days,
+      },
+    );
+    return MetadataInsightsResponse.fromJson(
+      response.data as Map<String, dynamic>,
     );
   }
 }
