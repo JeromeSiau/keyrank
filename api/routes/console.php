@@ -13,6 +13,7 @@ use App\Jobs\Collectors\FeaturedAppsCollector;
 // use App\Jobs\EnrichmentJob;  // Disabled - uses OpenRouter API
 // use App\Jobs\InsightGeneratorJob;  // Disabled - uses OpenRouter API
 use App\Jobs\RefreshAllKeywordSuggestionsJob;
+use App\Jobs\SyncFunnelAnalyticsJob;
 use App\Jobs\WeeklyDigestJob;
 use Illuminate\Support\Facades\Schedule;
 
@@ -121,8 +122,8 @@ Schedule::command('alerts:send-digests --period=weekly')
     ->runInBackground();
 
 // Keyword suggestions refresh - weekly on Sunday at 2 AM
-// Refreshes keyword suggestions for all apps with staggered execution
-Schedule::job(new RefreshAllKeywordSuggestionsJob('US'))
+// Refreshes keyword suggestions for all apps using each app's storefront
+Schedule::job(new RefreshAllKeywordSuggestionsJob())
     ->weeklyOn(0, '02:00')
     ->withoutOverlapping();
 
@@ -164,4 +165,10 @@ Schedule::command('analytics:sync-daily')
 // Compute analytics summaries after sync completes (6:30 AM)
 Schedule::command('analytics:compute-summaries')
     ->dailyAt('06:30')
+    ->withoutOverlapping();
+
+// Sync conversion funnel data from store APIs (7 AM, after analytics sync)
+// Fetches impressions, page views, and download data with source attribution
+Schedule::job(new SyncFunnelAnalyticsJob(daysBack: 30))
+    ->dailyAt('07:00')
     ->withoutOverlapping();

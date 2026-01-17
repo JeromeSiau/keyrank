@@ -297,20 +297,29 @@ class KeywordController extends Controller
 
     /**
      * Get keyword suggestions for an app (from pre-generated cache)
+     * Returns suggestions grouped by category
      */
     public function suggestions(Request $request, App $app): JsonResponse
     {
         $validated = $request->validate([
             'country' => 'nullable|string|size:2',
-            'limit' => 'nullable|integer|min:1|max:50',
+            'limit' => 'nullable|integer|min:1|max:100',
+            'category' => 'nullable|string|in:high_opportunity,competitor,long_tail,trending,related',
         ]);
 
         $country = strtoupper($validated['country'] ?? 'US');
-        $limit = $validated['limit'] ?? 30;
+        $limit = $validated['limit'] ?? 60;
+        $categoryFilter = $validated['category'] ?? null;
 
         // Get cached suggestions from database
-        $suggestions = KeywordSuggestion::where('app_id', $app->id)
-            ->where('country', $country)
+        $query = KeywordSuggestion::where('app_id', $app->id)
+            ->where('country', $country);
+
+        if ($categoryFilter) {
+            $query->forCategory($categoryFilter);
+        }
+
+        $suggestions = $query->orderByCategory()
             ->orderByOpportunity()
             ->limit($limit)
             ->get();
@@ -320,28 +329,63 @@ class KeywordController extends Controller
 
         // If no suggestions or stale, dispatch job to generate them
         if ($needsRefresh) {
-            GenerateKeywordSuggestionsJob::dispatch($app->id, $country, 50);
+            GenerateKeywordSuggestionsJob::dispatch($app->id, $country, 15);
         }
 
-        // Format response
-        $formattedSuggestions = $suggestions->map(fn($s) => [
+        // Group suggestions by category
+        $grouped = $suggestions->groupBy('category')->map(function ($items, $category) {
+            return $items->map(fn($s) => [
+                'keyword' => $s->keyword,
+                'source' => $s->source,
+                'category' => $s->category,
+                'metrics' => [
+                    'position' => $s->position,
+                    'popularity' => $s->popularity,
+                    'competition' => $s->competition,
+                    'difficulty' => $s->difficulty,
+                    'difficulty_label' => $s->difficulty_label,
+                ],
+                'reason' => $s->reason,
+                'based_on' => $s->based_on,
+                'competitor_name' => $s->competitor_name,
+                'top_competitors' => $s->top_competitors ?? [],
+            ])->values();
+        });
+
+        // Ensure all categories exist (even if empty)
+        $allCategories = ['high_opportunity', 'competitor', 'long_tail', 'trending', 'related'];
+        foreach ($allCategories as $cat) {
+            if (!isset($grouped[$cat])) {
+                $grouped[$cat] = collect([]);
+            }
+        }
+
+        // Also provide flat list for backwards compatibility
+        $flatList = $suggestions->map(fn($s) => [
             'keyword' => $s->keyword,
             'source' => $s->source,
+            'category' => $s->category,
             'metrics' => [
                 'position' => $s->position,
+                'popularity' => $s->popularity,
                 'competition' => $s->competition,
                 'difficulty' => $s->difficulty,
                 'difficulty_label' => $s->difficulty_label,
             ],
+            'reason' => $s->reason,
+            'based_on' => $s->based_on,
+            'competitor_name' => $s->competitor_name,
             'top_competitors' => $s->top_competitors ?? [],
         ]);
 
         return response()->json([
-            'data' => $formattedSuggestions,
+            'data' => $flatList,
+            'categories' => $grouped,
             'meta' => [
                 'app_id' => $app->store_id,
                 'country' => $country,
                 'total' => $suggestions->count(),
+                'by_category' => $grouped->map->count(),
                 'generated_at' => $generatedAt?->toIso8601String(),
                 'is_generating' => $needsRefresh,
             ],

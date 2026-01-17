@@ -12,10 +12,12 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CompetitorController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ExportController;
+use App\Http\Controllers\Api\FunnelController;
 use App\Http\Controllers\Api\InsightsController;
 use App\Http\Controllers\Api\ActionableInsightsController;
 use App\Http\Controllers\Api\IntegrationsController;
 use App\Http\Controllers\Api\KeywordController;
+use App\Http\Controllers\Api\MetadataController;
 use App\Http\Controllers\Api\NotificationsController;
 use App\Http\Controllers\Api\OnboardingController;
 use App\Http\Controllers\Api\PublicApiController;
@@ -152,6 +154,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{app}/analytics/countries', [AnalyticsController::class, 'countries']);
         Route::get('{app}/analytics/export', [AnalyticsController::class, 'export'])
             ->middleware('plan.feature:exports');
+
+        // Conversion Funnel
+        Route::get('{app}/funnel', [FunnelController::class, 'index']);
+        Route::post('{app}/funnel/sync', [FunnelController::class, 'sync']);
+
+        // Metadata Editor
+        Route::get('{app}/metadata', [MetadataController::class, 'index']);
+        Route::get('{app}/metadata/history', [MetadataController::class, 'history']);
+        Route::post('{app}/metadata/refresh', [MetadataController::class, 'refresh']);
+        Route::post('{app}/metadata/publish', [MetadataController::class, 'publish']);
+        Route::post('{app}/metadata/copy', [MetadataController::class, 'copyLocale']);
+        Route::post('{app}/metadata/translate', [MetadataController::class, 'translateLocale']);
+        Route::get('{app}/metadata/{locale}', [MetadataController::class, 'show']);
+        Route::put('{app}/metadata/{locale}', [MetadataController::class, 'update']);
+        Route::delete('{app}/metadata/{locale}/draft', [MetadataController::class, 'deleteDraft']);
     });
 
     // Keywords (global search)
@@ -240,9 +257,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('conversations', [ChatController::class, 'store']);
         Route::get('conversations/{conversation}', [ChatController::class, 'show']);
         Route::post('conversations/{conversation}/messages', [ChatController::class, 'sendMessage'])
-            ->middleware('throttle:12,1'); // Max 1 question per 5 seconds
+            ->middleware('throttle:12,1');
         Route::delete('conversations/{conversation}', [ChatController::class, 'destroy']);
         Route::get('quota', [ChatController::class, 'quota']);
+
+        // Chat Actions (executable actions from AI)
+        Route::post('actions/{action}/execute', [ChatController::class, 'executeAction']);
+        Route::post('actions/{action}/cancel', [ChatController::class, 'cancelAction']);
     });
 
     // App-specific chat (within apps prefix)

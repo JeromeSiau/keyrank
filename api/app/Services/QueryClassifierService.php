@@ -2,44 +2,89 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
+
 class QueryClassifierService
 {
+    private const VALID_SOURCES = ['reviews', 'rankings', 'analytics', 'competitors', 'app_info', 'none'];
+
+    public function __construct(
+        private OpenRouterService $openRouter,
+    ) {}
+
     /**
      * Classify a user question to determine which data sources are needed.
+     * Uses LLM for robust multilingual classification.
      *
-     * @return array<string> List of data sources: 'reviews', 'rankings', 'analytics', 'competitors'
+     * @return array<string> List of data sources: 'reviews', 'rankings', 'analytics', 'competitors', 'app_info'
      */
     public function classify(string $question): array
     {
-        $sources = [];
-        $lower = strtolower($question);
+        // Cache classification for identical questions (5 min TTL)
+        $cacheKey = 'query_class:' . md5($question);
 
-        // Reviews indicators
-        if (preg_match('/review|complaint|feedback|user|say|mention|bug|crash|feature request|opinion|comment|rate|rating|star/i', $lower)) {
-            $sources[] = 'reviews';
+        return Cache::remember($cacheKey, 300, function () use ($question) {
+            return $this->classifyWithLLM($question);
+        });
+    }
+
+    private function classifyWithLLM(string $question): array
+    {
+        $prompt = <<<'PROMPT'
+Classify this user message to determine which data sources are needed to answer it.
+
+Available categories (return one or more, comma-separated):
+- reviews: user reviews, feedback, ratings, complaints, bugs, feature requests
+- rankings: keyword positions, ASO, search visibility, app store rankings
+- analytics: downloads, revenue, sales, subscribers, conversion, retention
+- competitors: competitor apps, market comparison
+- app_info: app metadata, version, description, screenshots
+- none: action requests (add keyword, create alert, etc.) that don't need data
+
+Return ONLY the category names, comma-separated. Example: "reviews,rankings" or "none"
+
+User message: "{question}"
+PROMPT;
+
+        $prompt = str_replace('{question}', $question, $prompt);
+
+        $response = $this->openRouter->chat(
+            'You are a classification assistant. Return only category names.',
+            $prompt,
+            false // not streaming
+        );
+
+        if (!$response || empty($response['content'])) {
+            // Fallback to reviews if LLM fails
+            return ['reviews'];
         }
 
-        // Rankings indicators
-        if (preg_match('/rank|position|keyword|aso|visibility|search|discover|organic|install/i', $lower)) {
+        return $this->parseCategories($response['content']);
+    }
+
+    /**
+     * Parse LLM response into valid category array.
+     */
+    private function parseCategories(string $response): array
+    {
+        $lower = strtolower(trim($response));
+
+        // Extract valid categories from response
+        $sources = [];
+        foreach (self::VALID_SOURCES as $source) {
+            if (str_contains($lower, $source)) {
+                if ($source !== 'none') {
+                    $sources[] = $source;
+                }
+            }
+        }
+
+        // If "none" was returned (action request), default to rankings for context
+        if (empty($sources) && str_contains($lower, 'none')) {
             $sources[] = 'rankings';
         }
 
-        // Analytics indicators
-        if (preg_match('/download|revenue|money|earn|subscriber|country|growth|sale|purchase|iap|in-app|conversion|retention|arpu|ltv/i', $lower)) {
-            $sources[] = 'analytics';
-        }
-
-        // Competitor indicators
-        if (preg_match('/competitor|compare|versus|vs|better|worse|market|rival|alternative/i', $lower)) {
-            $sources[] = 'competitors';
-        }
-
-        // General app info indicators
-        if (preg_match('/version|update|release|category|description|title|icon|screenshot/i', $lower)) {
-            $sources[] = 'app_info';
-        }
-
-        // Default to reviews if nothing matched (most common use case)
+        // Fallback if nothing parsed
         if (empty($sources)) {
             $sources[] = 'reviews';
         }

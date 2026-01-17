@@ -157,6 +157,21 @@ class App extends Model
         return $this->hasMany(AppMetadataHistory::class);
     }
 
+    public function metadataLocales(): HasMany
+    {
+        return $this->hasMany(AppMetadataLocale::class);
+    }
+
+    public function metadataDrafts(): HasMany
+    {
+        return $this->hasMany(AppMetadataDraft::class);
+    }
+
+    public function getMetadataForLocale(string $locale): ?AppMetadataLocale
+    {
+        return $this->metadataLocales()->where('locale', $locale)->first();
+    }
+
     public function topChartEntries(): HasMany
     {
         return $this->hasMany(TopAppEntry::class);
