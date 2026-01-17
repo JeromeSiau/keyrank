@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\AppCompetitor;
 use App\Models\AppRanking;
@@ -17,6 +18,8 @@ use Illuminate\Http\Request;
 
 class CompetitorController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function __construct(
         private iTunesService $iTunesService,
         private GooglePlayService $googlePlayService,
@@ -24,14 +27,14 @@ class CompetitorController extends Controller
     ) {}
 
     /**
-     * List all competitors (global + contextual) for the authenticated user.
+     * List all competitors (global + contextual) for the current team.
      */
     public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
         $ownerAppId = $request->query('app_id');
 
-        $query = AppCompetitor::where('user_id', $user->id)
+        $query = AppCompetitor::where('team_id', $team->id)
             ->with(['competitorApp.latestRankings', 'competitorApp.latestRatings']);
 
         if ($ownerAppId) {
@@ -64,15 +67,17 @@ class CompetitorController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $this->authorizeTeamAction('manage_competitors');
+
         $request->validate([
             'app_id' => 'required|exists:apps,id',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $appId = $request->input('app_id');
 
         // Check if already exists as global competitor
-        $existing = AppCompetitor::where('user_id', $user->id)
+        $existing = AppCompetitor::where('team_id', $team->id)
             ->whereNull('owner_app_id')
             ->where('competitor_app_id', $appId)
             ->first();
@@ -86,7 +91,7 @@ class CompetitorController extends Controller
 
         // Create global competitor
         $link = AppCompetitor::create([
-            'user_id' => $user->id,
+            'team_id' => $team->id,
             'owner_app_id' => null,
             'competitor_app_id' => $appId,
             'source' => 'manual',
@@ -104,16 +109,18 @@ class CompetitorController extends Controller
      */
     public function destroy(Request $request, int $appId): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_competitors');
+
+        $team = $this->currentTeam();
 
         // Remove global competitor entry
-        AppCompetitor::where('user_id', $user->id)
+        AppCompetitor::where('team_id', $team->id)
             ->whereNull('owner_app_id')
             ->where('competitor_app_id', $appId)
             ->delete();
 
         // Also remove any contextual links
-        AppCompetitor::where('user_id', $user->id)
+        AppCompetitor::where('team_id', $team->id)
             ->where('competitor_app_id', $appId)
             ->delete();
 
@@ -125,24 +132,25 @@ class CompetitorController extends Controller
      */
     public function linkToApp(Request $request, int $ownerAppId): JsonResponse
     {
+        $this->authorizeTeamAction('manage_competitors');
+
         $request->validate([
             'competitor_app_id' => 'required|exists:apps,id',
             'source' => 'sometimes|in:manual,auto_discovered,keyword_overlap',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $competitorAppId = $request->input('competitor_app_id');
 
-        // Verify user owns the owner app
-        $ownerApp = App::ownedBy($user->id)->find($ownerAppId);
-        if (!$ownerApp) {
-            return response()->json(['error' => 'App not found or not owned'], 404);
+        // Verify team has this app
+        if (!$team->apps()->where('app_id', $ownerAppId)->exists()) {
+            return response()->json(['error' => 'App not found in team'], 404);
         }
 
         // Create or update link
         $link = AppCompetitor::updateOrCreate(
             [
-                'user_id' => $user->id,
+                'team_id' => $team->id,
                 'owner_app_id' => $ownerAppId,
                 'competitor_app_id' => $competitorAppId,
             ],
@@ -163,9 +171,11 @@ class CompetitorController extends Controller
      */
     public function unlinkFromApp(Request $request, int $ownerAppId, int $competitorAppId): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_competitors');
 
-        AppCompetitor::where('user_id', $user->id)
+        $team = $this->currentTeam();
+
+        AppCompetitor::where('team_id', $team->id)
             ->where('owner_app_id', $ownerAppId)
             ->where('competitor_app_id', $competitorAppId)
             ->delete();
@@ -178,10 +188,10 @@ class CompetitorController extends Controller
      */
     public function forApp(Request $request, int $appId): JsonResponse
     {
-        $user = $request->user();
+        $team = $this->currentTeam();
 
         // Get both global and contextual competitors
-        $competitors = AppCompetitor::where('user_id', $user->id)
+        $competitors = AppCompetitor::where('team_id', $team->id)
             ->where(function ($q) use ($appId) {
                 $q->whereNull('owner_app_id')
                   ->orWhere('owner_app_id', $appId);
@@ -205,7 +215,7 @@ class CompetitorController extends Controller
     }
 
     /**
-     * Get keywords for a competitor with comparison to user's app.
+     * Get keywords for a competitor with comparison to team's app.
      */
     public function keywords(Request $request, int $competitorId): JsonResponse
     {
@@ -214,14 +224,13 @@ class CompetitorController extends Controller
             'country' => 'sometimes|string|max:5',
         ]);
 
-        $user = $request->user();
-        $userAppId = $request->query('app_id');
+        $team = $this->currentTeam();
+        $teamAppId = $request->query('app_id');
         $country = strtoupper($request->query('country', 'US'));
 
-        // Verify user owns the app
-        $userApp = App::ownedBy($user->id)->find($userAppId);
-        if (!$userApp) {
-            return response()->json(['error' => 'App not found'], 404);
+        // Verify team has this app
+        if (!$team->apps()->where('app_id', $teamAppId)->exists()) {
+            return response()->json(['error' => 'App not found in team'], 404);
         }
 
         // Get competitor app
@@ -230,7 +239,7 @@ class CompetitorController extends Controller
             return response()->json(['error' => 'Competitor not found'], 404);
         }
 
-        // Get competitor's keywords from tracked_keywords (user-added)
+        // Get competitor's keywords from tracked_keywords (team-added)
         // Left join with app_rankings to get positions
         $competitorKeywords = \DB::table('tracked_keywords')
             ->join('keywords', 'tracked_keywords.keyword_id', '=', 'keywords.id')
@@ -240,7 +249,7 @@ class CompetitorController extends Controller
                     ->whereRaw('app_rankings.recorded_at = (SELECT MAX(recorded_at) FROM app_rankings ar2 WHERE ar2.app_id = app_rankings.app_id AND ar2.keyword_id = app_rankings.keyword_id)');
             })
             ->where('tracked_keywords.app_id', $competitorId)
-            ->where('tracked_keywords.user_id', $user->id)
+            ->where('tracked_keywords.team_id', $team->id)
             ->where('keywords.storefront', $country)
             ->select([
                 'keywords.id as keyword_id',
@@ -251,23 +260,23 @@ class CompetitorController extends Controller
             ->orderByRaw('COALESCE(app_rankings.position, 999)')
             ->get();
 
-        // Get user's rankings for same keywords
-        $userKeywordIds = $competitorKeywords->pluck('keyword_id')->toArray();
-        $userRankings = \DB::table('app_rankings')
-            ->where('app_id', $userAppId)
-            ->whereIn('keyword_id', $userKeywordIds)
+        // Get team's rankings for same keywords
+        $teamKeywordIds = $competitorKeywords->pluck('keyword_id')->toArray();
+        $teamRankings = \DB::table('app_rankings')
+            ->where('app_id', $teamAppId)
+            ->whereIn('keyword_id', $teamKeywordIds)
             ->pluck('position', 'keyword_id');
 
-        // Check which keywords user is tracking
+        // Check which keywords team is tracking
         $trackedKeywords = \DB::table('tracked_keywords')
-            ->where('app_id', $userAppId)
-            ->whereIn('keyword_id', $userKeywordIds)
+            ->where('app_id', $teamAppId)
+            ->whereIn('keyword_id', $teamKeywordIds)
             ->pluck('keyword_id')
             ->toArray();
 
         // Build comparison data
-        $keywords = $competitorKeywords->map(function ($kw) use ($userRankings, $trackedKeywords) {
-            $yourPosition = $userRankings[$kw->keyword_id] ?? null;
+        $keywords = $competitorKeywords->map(function ($kw) use ($teamRankings, $trackedKeywords) {
+            $yourPosition = $teamRankings[$kw->keyword_id] ?? null;
             $competitorPosition = $kw->competitor_position;
 
             $gap = null;
@@ -315,12 +324,14 @@ class CompetitorController extends Controller
      */
     public function addKeyword(Request $request, int $competitorId): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $request->validate([
             'keyword' => 'required|string|max:255',
             'storefront' => 'sometimes|string|max:5',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $keywordText = strtolower(trim($request->input('keyword')));
         $storefront = strtoupper($request->input('storefront', 'US'));
 
@@ -337,7 +348,7 @@ class CompetitorController extends Controller
         );
 
         // Check if already tracked
-        $existing = TrackedKeyword::where('user_id', $user->id)
+        $existing = TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $competitorId)
             ->where('keyword_id', $keyword->id)
             ->first();
@@ -348,7 +359,7 @@ class CompetitorController extends Controller
 
         // Create tracked keyword
         $tracked = TrackedKeyword::create([
-            'user_id' => $user->id,
+            'team_id' => $team->id,
             'app_id' => $competitorId,
             'keyword_id' => $keyword->id,
         ]);
@@ -372,13 +383,15 @@ class CompetitorController extends Controller
      */
     public function addKeywords(Request $request, int $competitorId): JsonResponse
     {
+        $this->authorizeTeamAction('manage_keywords');
+
         $request->validate([
             'keywords' => 'required|array|min:1',
             'keywords.*' => 'string|max:255',
             'storefront' => 'sometimes|string|max:5',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $storefront = strtoupper($request->input('storefront', 'US'));
 
         // Verify competitor exists
@@ -401,7 +414,7 @@ class CompetitorController extends Controller
             );
 
             // Check if already tracked
-            $existing = TrackedKeyword::where('user_id', $user->id)
+            $existing = TrackedKeyword::where('team_id', $team->id)
                 ->where('app_id', $competitorId)
                 ->where('keyword_id', $keyword->id)
                 ->exists();
@@ -413,7 +426,7 @@ class CompetitorController extends Controller
 
             // Create tracked keyword
             TrackedKeyword::create([
-                'user_id' => $user->id,
+                'team_id' => $team->id,
                 'app_id' => $competitorId,
                 'keyword_id' => $keyword->id,
             ]);
