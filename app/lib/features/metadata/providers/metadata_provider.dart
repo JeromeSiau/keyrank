@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/metadata_repository.dart';
 import '../domain/metadata_model.dart';
+import '../domain/optimization_model.dart';
 
 /// Provider for app metadata (all locales)
 final appMetadataProvider =
@@ -288,3 +289,214 @@ final selectedLocalesProvider =
     StateNotifierProvider<SelectedLocalesNotifier, Set<String>>((ref) {
   return SelectedLocalesNotifier();
 });
+
+// ============================================================================
+// AI Optimization Wizard Providers
+// ============================================================================
+
+/// Parameters for optimization suggestions request
+class OptimizationParams {
+  final int appId;
+  final String locale;
+  final String field;
+
+  OptimizationParams({
+    required this.appId,
+    required this.locale,
+    required this.field,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OptimizationParams &&
+          runtimeType == other.runtimeType &&
+          appId == other.appId &&
+          locale == other.locale &&
+          field == other.field;
+
+  @override
+  int get hashCode => appId.hashCode ^ locale.hashCode ^ field.hashCode;
+}
+
+/// Provider for fetching optimization suggestions
+final optimizationSuggestionsProvider =
+    FutureProvider.family<OptimizationResponse, OptimizationParams>(
+        (ref, params) async {
+  final repository = ref.watch(metadataRepositoryProvider);
+  return repository.getOptimizationSuggestions(
+    appId: params.appId,
+    locale: params.locale,
+    field: params.field,
+  );
+});
+
+/// State notifier for the optimization wizard
+class OptimizationWizardNotifier extends StateNotifier<WizardState> {
+  final MetadataRepository _repository;
+  final int appId;
+
+  OptimizationWizardNotifier({
+    required MetadataRepository repository,
+    required this.appId,
+    required String locale,
+    required String platform,
+  })  : _repository = repository,
+        super(WizardState(
+          currentStep: WizardStep.forPlatform(platform).first,
+          locale: locale,
+          platform: platform,
+        ));
+
+  /// Go to next step
+  void nextStep() {
+    final next = state.nextStep;
+    if (next != null) {
+      state = state.copyWith(currentStep: next);
+    }
+  }
+
+  /// Go to previous step
+  void previousStep() {
+    final prev = state.previousStep;
+    if (prev != null) {
+      state = state.copyWith(currentStep: prev);
+    }
+  }
+
+  /// Go to a specific step
+  void goToStep(WizardStep step) {
+    state = state.copyWith(currentStep: step);
+  }
+
+  /// Select a value for the current field
+  void selectValue(String field, String value) {
+    state = state.copyWith(
+      selectedValues: {...state.selectedValues, field: value},
+    );
+  }
+
+  /// Store suggestions for a field
+  void setSuggestions(String field, OptimizationResponse suggestions) {
+    state = state.copyWith(
+      suggestions: {...state.suggestions, field: suggestions},
+    );
+  }
+
+  /// Set loading state
+  void setLoading(bool loading) {
+    state = state.copyWith(isLoading: loading);
+  }
+
+  /// Set error
+  void setError(String? error) {
+    state = state.copyWith(error: error);
+  }
+
+  /// Load suggestions for the current step
+  Future<void> loadSuggestionsForCurrentStep() async {
+    if (!state.currentStep.isMetadataField) return;
+
+    final field = state.currentStep.field;
+
+    // Check if we already have suggestions for this field
+    if (state.suggestions.containsKey(field)) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      final suggestions = await _repository.getOptimizationSuggestions(
+        appId: appId,
+        locale: state.locale,
+        field: field,
+      );
+      setSuggestions(field, suggestions);
+    } catch (e) {
+      setError(e.toString());
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /// Get the value for a field (selected or current)
+  String? getValueForField(String field) {
+    return state.selectedValues[field];
+  }
+
+  /// Save all selected values as drafts
+  Future<bool> saveAllDrafts() async {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Only save fields that have been modified
+      final values = state.selectedValues;
+      if (values.isEmpty) return true;
+
+      await _repository.saveDraft(
+        appId: appId,
+        locale: state.locale,
+        title: values['title'],
+        subtitle: values['subtitle'],
+        keywords: values['keywords'],
+        description: values['description'],
+      );
+
+      return true;
+    } catch (e) {
+      setError(e.toString());
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /// Reset the wizard to initial state
+  void reset() {
+    state = WizardState(
+      currentStep: WizardStep.forPlatform(state.platform).first,
+      locale: state.locale,
+      platform: state.platform,
+    );
+  }
+}
+
+/// Parameters for creating the wizard
+class WizardParams {
+  final int appId;
+  final String locale;
+  final String platform;
+
+  WizardParams({
+    required this.appId,
+    required this.locale,
+    required this.platform,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WizardParams &&
+          runtimeType == other.runtimeType &&
+          appId == other.appId &&
+          locale == other.locale &&
+          platform == other.platform;
+
+  @override
+  int get hashCode => appId.hashCode ^ locale.hashCode ^ platform.hashCode;
+}
+
+/// Provider for the optimization wizard
+final optimizationWizardProvider =
+    StateNotifierProvider.family<OptimizationWizardNotifier, WizardState, WizardParams>(
+  (ref, params) {
+    final repository = ref.watch(metadataRepositoryProvider);
+    return OptimizationWizardNotifier(
+      repository: repository,
+      appId: params.appId,
+      locale: params.locale,
+      platform: params.platform,
+    );
+  },
+);

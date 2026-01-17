@@ -1062,5 +1062,59 @@
   "metadataTableView": "Table view",
   "metadataListView": "List view",
   "metadataStatus": "Status",
-  "metadataCompletion": "Completion"
+  "metadataCompletion": "Completion",
+
+  "common_back": "Back",
+  "common_next": "Next",
+  "common_edit": "Edit",
+
+  "metadata_aiOptimize": "AI Optimize",
+
+  "wizard_title": "AI Optimization Wizard",
+  "wizard_step": "Step",
+  "wizard_of": "of",
+  "wizard_stepTitle": "Title",
+  "wizard_stepSubtitle": "Subtitle",
+  "wizard_stepKeywords": "Keywords",
+  "wizard_stepDescription": "Description",
+  "wizard_stepReview": "Review & Save",
+  "wizard_skip": "Skip",
+  "wizard_saveDrafts": "Save Drafts",
+  "wizard_draftsSaved": "Drafts saved successfully",
+  "wizard_exitTitle": "Exit Wizard?",
+  "wizard_exitMessage": "You have unsaved changes. Are you sure you want to exit?",
+  "wizard_exitConfirm": "Exit",
+  "wizard_aiSuggestions": "AI Suggestions",
+  "wizard_chooseSuggestion": "Choose one of the AI-generated suggestions or write your own",
+  "wizard_currentValue": "Current Value",
+  "wizard_noCurrentValue": "No current value set",
+  "wizard_contextInfo": "Based on {keywordsCount} tracked keywords and {competitorsCount} competitors",
+  "@wizard_contextInfo": {
+    "placeholders": {
+      "keywordsCount": { "type": "int" },
+      "competitorsCount": { "type": "int" }
+    }
+  },
+  "wizard_writeOwn": "Write my own",
+  "wizard_customPlaceholder": "Enter your custom value...",
+  "wizard_useCustom": "Use Custom",
+  "wizard_keepCurrent": "Keep Current",
+  "wizard_recommended": "Recommended",
+  "wizard_characters": "characters",
+  "wizard_reviewTitle": "Review Changes",
+  "wizard_reviewDescription": "Review your optimizations before saving them as drafts",
+  "wizard_noChanges": "No changes selected",
+  "wizard_noChangesHint": "Go back and select suggestions for the fields you want to optimize",
+  "wizard_changesCount": "{count} fields updated",
+  "@wizard_changesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wizard_changesSummary": "These changes will be saved as drafts",
+  "wizard_before": "Before",
+  "wizard_after": "After",
+  "wizard_nextStepsTitle": "What happens next?",
+  "wizard_nextStepsWithChanges": "Your changes will be saved as drafts. You can review and publish them from the Metadata Editor.",
+  "wizard_nextStepsNoChanges": "No changes to save. Go back and select suggestions to optimize your metadata."
 }

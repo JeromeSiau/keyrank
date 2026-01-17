@@ -10,9 +10,9 @@
 |-------|-------|------|-------------|-----------|
 | Phase 1: Quick Wins | 6 | 6 | 0 | 0 |
 | Phase 2: Core Parity | 6 | 6 | 0 | 0 |
-| Phase 3: Différenciation | 4 | 3 | 0 | 1 |
+| Phase 3: Différenciation | 4 | 4 | 0 | 0 |
 | Phase 4: Enterprise | 5 | 0 | 0 | 5 |
-| **TOTAL** | **21** | **15** | **0** | **6** |
+| **TOTAL** | **21** | **16** | **0** | **5** |
 
 ---
 
@@ -56,16 +56,12 @@
 
 | # | Feature | Status | Branch | Session Date | Notes |
 |---|---------|--------|--------|--------------|-------|
-| 6.1 | AI Optimization Wizard | ⬚ Todo | - | - | Depends on 5.1 (Metadata) |
+| 6.1 | AI Optimization Wizard | ✅ Done | main | 2026-01-17 | 5-step wizard with AI suggestions |
 | 6.2 | Competitor Metadata History | ✅ Done | main | 2026-01-17 | Timeline view, before/after diff, daily scraping |
 | 6.3 | Chat with Executable Actions | ✅ Done | main | 2026-01-17 | Tool calling + action cards |
 | 6.4 | Review Intelligence Dashboard | ✅ Done | main | 2026-01-17 | Feature requests, bug reports, version sentiment |
 
-### Suggested Order
-```
-6.3 → 6.4 → 6.2 → 6.1
-(6.1 needs metadata editor first)
-```
+**Phase 3 Complete!** All 4 AI Différenciation features implemented.
 
 ---
 
@@ -295,6 +291,40 @@
   - `app/lib/features/competitors/providers/competitors_provider.dart` - Added metadata history providers
   - `app/lib/features/competitors/presentation/competitor_detail_screen.dart` - Added tabs (Keywords + Metadata History)
 
+### Session 2026-01-17 - 6.1 AI Optimization Wizard
+- **Branch**: main
+- **Status**: ✅ Done
+- **Notes**:
+  - **Backend**: `POST /apps/{id}/metadata/optimize` endpoint with AI-powered suggestions
+  - Uses OpenRouterService to generate 3 optimized suggestions per metadata field
+  - Considers tracked keywords (with popularity scores), competitors, and platform limits
+  - Returns suggestions with: option letter (A/B/C), value, reasoning, keywords added/removed, estimated impact %
+  - **Flutter**: Full 5-step wizard flow (Title → Subtitle → Keywords → Description → Review)
+  - Freezed models: OptimizationResponse, OptimizationSuggestion, OptimizationContext, WizardState, WizardStep
+  - OptimizationWizardNotifier for managing wizard state with step navigation
+  - Step progress indicator with clickable completed steps
+  - SuggestionOptionCard with impact badges, keyword changes, reasoning display
+  - Custom input option ("Write my own") and "Keep current" button
+  - WizardReviewStep with before/after diff, field editing shortcuts
+  - Entry point: AI icon button in metadata editor appbar (when locale selected)
+  - 25+ localization strings for wizard UI
+- **Files created**:
+  - `app/lib/features/metadata/domain/optimization_model.dart`
+  - `app/lib/features/metadata/presentation/screens/ai_optimization_wizard_screen.dart`
+  - `app/lib/features/metadata/presentation/widgets/optimization_step_content.dart`
+  - `app/lib/features/metadata/presentation/widgets/suggestion_option_card.dart`
+  - `app/lib/features/metadata/presentation/widgets/wizard_review_step.dart`
+- **Files modified**:
+  - `api/app/Http/Controllers/Api/MetadataController.php` - Added optimize method
+  - `api/routes/api.php` - Added optimize route
+  - `app/lib/features/metadata/data/metadata_repository.dart` - Added getOptimizationSuggestions
+  - `app/lib/features/metadata/providers/metadata_provider.dart` - Added wizard providers
+  - `app/lib/features/metadata/presentation/screens/metadata_editor_screen.dart` - Added AI wizard button
+  - `app/lib/core/router/app_router.dart` - Added wizard route
+  - `app/lib/l10n/app_en.arb` - Added wizard localization strings
+
+**Phase 3 Complete!** All AI Différenciation features implemented.
+
 ---
 
 ## Blockers & Questions
@@ -374,4 +404,4 @@ Track which files each feature touches:
 
 ---
 
-*Last updated: 2026-01-17 (6.2 Competitor Metadata History)*
+*Last updated: 2026-01-17 (6.1 AI Optimization Wizard - Phase 3 Complete!)*

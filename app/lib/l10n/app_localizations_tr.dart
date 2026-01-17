@@ -2138,4 +2138,134 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get metadataCompletion => 'Completion';
+
+  @override
+  String get common_back => 'Back';
+
+  @override
+  String get common_next => 'Next';
+
+  @override
+  String get common_edit => 'Edit';
+
+  @override
+  String get metadata_aiOptimize => 'AI Optimize';
+
+  @override
+  String get wizard_title => 'AI Optimization Wizard';
+
+  @override
+  String get wizard_step => 'Step';
+
+  @override
+  String get wizard_of => 'of';
+
+  @override
+  String get wizard_stepTitle => 'Title';
+
+  @override
+  String get wizard_stepSubtitle => 'Subtitle';
+
+  @override
+  String get wizard_stepKeywords => 'Keywords';
+
+  @override
+  String get wizard_stepDescription => 'Description';
+
+  @override
+  String get wizard_stepReview => 'Review & Save';
+
+  @override
+  String get wizard_skip => 'Skip';
+
+  @override
+  String get wizard_saveDrafts => 'Save Drafts';
+
+  @override
+  String get wizard_draftsSaved => 'Drafts saved successfully';
+
+  @override
+  String get wizard_exitTitle => 'Exit Wizard?';
+
+  @override
+  String get wizard_exitMessage =>
+      'You have unsaved changes. Are you sure you want to exit?';
+
+  @override
+  String get wizard_exitConfirm => 'Exit';
+
+  @override
+  String get wizard_aiSuggestions => 'AI Suggestions';
+
+  @override
+  String get wizard_chooseSuggestion =>
+      'Choose one of the AI-generated suggestions or write your own';
+
+  @override
+  String get wizard_currentValue => 'Current Value';
+
+  @override
+  String get wizard_noCurrentValue => 'No current value set';
+
+  @override
+  String wizard_contextInfo(int keywordsCount, int competitorsCount) {
+    return 'Based on $keywordsCount tracked keywords and $competitorsCount competitors';
+  }
+
+  @override
+  String get wizard_writeOwn => 'Write my own';
+
+  @override
+  String get wizard_customPlaceholder => 'Enter your custom value...';
+
+  @override
+  String get wizard_useCustom => 'Use Custom';
+
+  @override
+  String get wizard_keepCurrent => 'Keep Current';
+
+  @override
+  String get wizard_recommended => 'Recommended';
+
+  @override
+  String get wizard_characters => 'characters';
+
+  @override
+  String get wizard_reviewTitle => 'Review Changes';
+
+  @override
+  String get wizard_reviewDescription =>
+      'Review your optimizations before saving them as drafts';
+
+  @override
+  String get wizard_noChanges => 'No changes selected';
+
+  @override
+  String get wizard_noChangesHint =>
+      'Go back and select suggestions for the fields you want to optimize';
+
+  @override
+  String wizard_changesCount(int count) {
+    return '$count fields updated';
+  }
+
+  @override
+  String get wizard_changesSummary => 'These changes will be saved as drafts';
+
+  @override
+  String get wizard_before => 'Before';
+
+  @override
+  String get wizard_after => 'After';
+
+  @override
+  String get wizard_nextStepsTitle => 'What happens next?';
+
+  @override
+  String get wizard_nextStepsWithChanges =>
+      'Your changes will be saved as drafts. You can review and publish them from the Metadata Editor.';
+
+  @override
+  String get wizard_nextStepsNoChanges =>
+      'No changes to save. Go back and select suggestions to optimize your metadata.';
 }

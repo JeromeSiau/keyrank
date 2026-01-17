@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/constants/api_constants.dart';
 import '../domain/metadata_model.dart';
+import '../domain/optimization_model.dart';
 
 final metadataRepositoryProvider = Provider<MetadataRepository>((ref) {
   return MetadataRepository(dio: ref.watch(dioProvider));
@@ -360,5 +361,28 @@ class LocaleTranslateResult {
           [],
       error: json['error'] as String?,
     );
+  }
+}
+
+extension MetadataRepositoryOptimization on MetadataRepository {
+  /// Get AI-generated optimization suggestions for a metadata field
+  Future<OptimizationResponse> getOptimizationSuggestions({
+    required int appId,
+    required String locale,
+    required String field,
+  }) async {
+    try {
+      final response = await dio.post(
+        '${ApiConstants.apps}/$appId/metadata/optimize',
+        data: {
+          'locale': locale,
+          'field': field,
+        },
+      );
+      return OptimizationResponse.fromJson(
+          response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioError(e);
+    }
   }
 }

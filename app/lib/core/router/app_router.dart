@@ -38,6 +38,7 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/analytics/presentation/app_analytics_screen.dart';
 import '../../features/analytics/presentation/analytics_screen.dart';
+import '../../features/metadata/presentation/screens/ai_optimization_wizard_screen.dart';
 import '../../features/metadata/presentation/screens/metadata_editor_screen.dart';
 import '../../features/metadata/presentation/screens/metadata_screen.dart';
 import '../../features/keywords/presentation/keywords_screen.dart';
@@ -50,6 +51,8 @@ import '../../features/keywords/presentation/competitors_screen.dart';
 import '../../features/competitors/presentation/add_competitor_screen.dart';
 import '../../features/competitors/presentation/competitor_detail_screen.dart';
 import '../../features/billing/presentation/billing_screen.dart';
+import '../../features/team/presentation/screens/team_management_screen.dart';
+import '../../features/team/presentation/screens/team_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -190,6 +193,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                   final appName = state.uri.queryParameters['name'] ?? 'App';
                   return MetadataEditorScreen(appId: id, appName: appName);
                 },
+                routes: [
+                  GoRoute(
+                    path: 'optimize',
+                    builder: (context, state) {
+                      final id = int.parse(state.pathParameters['id']!);
+                      final appName = state.uri.queryParameters['name'] ?? 'App';
+                      final locale = state.uri.queryParameters['locale'] ?? 'en-US';
+                      final platform = state.uri.queryParameters['platform'] ?? 'ios';
+                      return AiOptimizationWizardScreen(
+                        appId: id,
+                        appName: appName,
+                        locale: locale,
+                        platform: platform,
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -235,6 +255,20 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'billing',
                 builder: (context, state) => const BillingScreen(),
+              ),
+              // Team Management
+              GoRoute(
+                path: 'team',
+                builder: (context, state) => const TeamManagementScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':teamId',
+                    builder: (context, state) {
+                      final teamId = int.parse(state.pathParameters['teamId']!);
+                      return TeamDetailScreen(teamId: teamId);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

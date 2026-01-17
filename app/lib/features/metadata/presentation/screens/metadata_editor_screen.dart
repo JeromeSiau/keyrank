@@ -43,6 +43,13 @@ class _MetadataEditorScreenState extends ConsumerState<MetadataEditorScreen> {
       appBar: AppBar(
         title: Text(context.l10n.metadata_editor),
         actions: [
+          // AI Optimize button
+          if (_selectedLocale != null)
+            IconButton(
+              icon: const Icon(Icons.auto_awesome),
+              onPressed: () => _openAiWizard(metadataAsync.valueOrNull),
+              tooltip: context.l10n.metadata_aiOptimize,
+            ),
           // View toggle button
           IconButton(
             icon: Icon(_useTableView ? Icons.view_list : Icons.table_chart),
@@ -354,6 +361,17 @@ class _MetadataEditorScreenState extends ConsumerState<MetadataEditorScreen> {
 
   void _onDraftSaved() {
     ref.invalidate(appMetadataProvider(widget.appId));
+  }
+
+  void _openAiWizard(AppMetadataResponse? metadata) {
+    if (_selectedLocale == null || metadata == null) return;
+
+    context.push(
+      '/apps/${widget.appId}/metadata/optimize'
+      '?name=${Uri.encodeComponent(widget.appName)}'
+      '&locale=$_selectedLocale'
+      '&platform=${metadata.platform}',
+    );
   }
 
   Future<void> _publishLocale(String locale) async {

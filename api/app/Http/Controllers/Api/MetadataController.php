@@ -955,4 +955,219 @@ PROMPT;
     {
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $input));
     }
+
+    /**
+     * Generate AI-powered optimization suggestions for metadata
+     */
+    public function optimize(Request $request, App $app): JsonResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'locale' => 'required|string|max:20',
+            'field' => 'required|string|in:title,subtitle,keywords,description',
+        ]);
+
+        // Check ownership
+        $isOwner = $user->apps()
+            ->where('apps.id', $app->id)
+            ->wherePivot('is_owner', true)
+            ->exists();
+
+        if (!$isOwner) {
+            return response()->json(['message' => 'You must own this app to optimize metadata'], 403);
+        }
+
+        // Get current metadata
+        $metadataLocale = AppMetadataLocale::forApp($app->id)
+            ->forLocale($validated['locale'])
+            ->first();
+
+        $draft = AppMetadataDraft::forApp($app->id)
+            ->forUser($user->id)
+            ->forLocale($validated['locale'])
+            ->first();
+
+        $currentContent = [
+            'title' => $draft?->title ?? $metadataLocale?->title ?? '',
+            'subtitle' => $draft?->subtitle ?? $metadataLocale?->subtitle ?? '',
+            'keywords' => $draft?->keywords ?? $metadataLocale?->keywords ?? '',
+            'description' => $draft?->description ?? $metadataLocale?->description ?? '',
+        ];
+
+        // Get tracked keywords with popularity
+        $trackedKeywords = TrackedKeyword::where('user_id', $user->id)
+            ->where('app_id', $app->id)
+            ->with(['keyword', 'latestRanking'])
+            ->get()
+            ->map(fn($tk) => [
+                'keyword' => $tk->keyword->keyword,
+                'popularity' => $tk->keyword->popularity ?? 0,
+                'position' => $tk->latestRanking?->position,
+            ])
+            ->sortByDesc('popularity')
+            ->values()
+            ->take(30)
+            ->toArray();
+
+        // Get competitor info
+        $competitors = $app->competitors()
+            ->take(5)
+            ->get()
+            ->map(fn($c) => [
+                'name' => $c->name,
+                'title' => $c->title ?? $c->name,
+                'subtitle' => $c->subtitle ?? '',
+            ])
+            ->toArray();
+
+        $limits = AppMetadataDraft::LIMITS[$app->platform] ?? AppMetadataDraft::LIMITS['ios'];
+        $field = $validated['field'];
+        $fieldLimit = $limits[$field] ?? 100;
+
+        // Build AI prompt
+        $suggestions = $this->generateOptimizationSuggestions(
+            $app,
+            $field,
+            $currentContent,
+            $trackedKeywords,
+            $competitors,
+            $fieldLimit,
+            $validated['locale']
+        );
+
+        return response()->json([
+            'data' => [
+                'field' => $field,
+                'locale' => $validated['locale'],
+                'current_value' => $currentContent[$field],
+                'character_limit' => $fieldLimit,
+                'suggestions' => $suggestions,
+                'context' => [
+                    'tracked_keywords_count' => count($trackedKeywords),
+                    'competitors_count' => count($competitors),
+                    'top_keywords' => array_slice(array_column($trackedKeywords, 'keyword'), 0, 5),
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Generate AI optimization suggestions for a specific field
+     */
+    private function generateOptimizationSuggestions(
+        App $app,
+        string $field,
+        array $currentContent,
+        array $trackedKeywords,
+        array $competitors,
+        int $fieldLimit,
+        string $locale
+    ): array {
+        $language = $this->getLanguageName($locale);
+        $platform = $app->platform === 'ios' ? 'App Store' : 'Google Play';
+
+        $fieldInstructions = match ($field) {
+            'title' => "Optimize the app title. Include high-popularity keywords naturally. Max {$fieldLimit} characters.",
+            'subtitle' => "Optimize the subtitle. Complement the title with different keywords. Max {$fieldLimit} characters.",
+            'keywords' => "Optimize the keywords field (iOS only). Comma-separated, no spaces after commas, no duplicates from title/subtitle. Max {$fieldLimit} characters.",
+            'description' => "Optimize the first 3 paragraphs of the description for ASO. Focus on natural keyword density. Keep the rest similar to current. Max {$fieldLimit} characters total.",
+            default => "Optimize this metadata field. Max {$fieldLimit} characters.",
+        };
+
+        $keywordsInfo = empty($trackedKeywords) ? 'No tracked keywords available.' :
+            "Tracked keywords (sorted by popularity):\n" . collect($trackedKeywords)
+                ->map(fn($k) => "- \"{$k['keyword']}\" (pop: {$k['popularity']}" . ($k['position'] ? ", rank: #{$k['position']}" : ", not ranking") . ")")
+                ->join("\n");
+
+        $competitorInfo = empty($competitors) ? 'No competitors tracked.' :
+            "Competitor titles for reference:\n" . collect($competitors)
+                ->map(fn($c) => "- {$c['name']}: \"{$c['title']}\" | \"{$c['subtitle']}\"")
+                ->join("\n");
+
+        $systemPrompt = <<<PROMPT
+You are an expert App Store Optimization (ASO) consultant. Generate exactly 3 optimized suggestions for the {$field} field.
+
+RULES:
+1. Language: {$language}
+2. Platform: {$platform}
+3. Character limit: {$fieldLimit} characters (STRICT - never exceed)
+4. {$fieldInstructions}
+5. Do NOT use generic words like "app", "free", "best" unless they have high search volume
+6. Keep brand name "{$app->name}" if it appears in the current content
+7. Each suggestion should be meaningfully different in approach
+
+RESPONSE FORMAT (JSON):
+{
+  "suggestions": [
+    {
+      "value": "The optimized text",
+      "reasoning": "Brief explanation of why this option is good",
+      "keywords_added": ["keyword1", "keyword2"],
+      "keywords_removed": ["old_keyword"],
+      "estimated_impact": 15
+    }
+  ]
+}
+
+estimated_impact is a percentage (0-30) based on:
+- Number and popularity of keywords added
+- Character usage optimization (closer to limit = better)
+- Keywords that competitors rank for
+
+Option A should be the RECOMMENDED option (highest impact).
+PROMPT;
+
+        $userPrompt = <<<PROMPT
+Current {$field}: "{$currentContent[$field]}"
+Current character count: {strlen($currentContent[$field])}/{$fieldLimit}
+
+Context:
+- App name: {$app->name}
+- Category: {$app->category}
+
+{$keywordsInfo}
+
+{$competitorInfo}
+
+Generate 3 optimized suggestions for the {$field} field in {$language}.
+PROMPT;
+
+        try {
+            $response = $this->openRouterService->chat($systemPrompt, $userPrompt, true);
+
+            if ($response && isset($response['suggestions'])) {
+                return array_map(function ($suggestion, $index) use ($fieldLimit) {
+                    return [
+                        'option' => chr(65 + $index), // A, B, C
+                        'value' => $suggestion['value'] ?? '',
+                        'character_count' => strlen($suggestion['value'] ?? ''),
+                        'character_limit' => $fieldLimit,
+                        'reasoning' => $suggestion['reasoning'] ?? '',
+                        'keywords_added' => $suggestion['keywords_added'] ?? [],
+                        'keywords_removed' => $suggestion['keywords_removed'] ?? [],
+                        'estimated_impact' => min(30, max(0, $suggestion['estimated_impact'] ?? 5)),
+                        'is_recommended' => $index === 0,
+                    ];
+                }, $response['suggestions'], array_keys($response['suggestions']));
+            }
+        } catch (\Exception $e) {
+            \Log::error('AI optimization error', ['error' => $e->getMessage()]);
+        }
+
+        // Fallback if AI fails
+        return [
+            [
+                'option' => 'A',
+                'value' => $currentContent[$field],
+                'character_count' => strlen($currentContent[$field]),
+                'character_limit' => $fieldLimit,
+                'reasoning' => 'Keep current content (AI suggestions unavailable)',
+                'keywords_added' => [],
+                'keywords_removed' => [],
+                'estimated_impact' => 0,
+                'is_recommended' => true,
+            ],
+        ];
+    }
 }

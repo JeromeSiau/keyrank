@@ -174,6 +174,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{app}/metadata/publish', [MetadataController::class, 'publish']);
         Route::post('{app}/metadata/copy', [MetadataController::class, 'copyLocale']);
         Route::post('{app}/metadata/translate', [MetadataController::class, 'translateLocale']);
+        Route::post('{app}/metadata/optimize', [MetadataController::class, 'optimize']);
         Route::get('{app}/metadata/{locale}', [MetadataController::class, 'show']);
         Route::put('{app}/metadata/{locale}', [MetadataController::class, 'update']);
         Route::delete('{app}/metadata/{locale}/draft', [MetadataController::class, 'deleteDraft']);

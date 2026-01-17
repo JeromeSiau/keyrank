@@ -4000,6 +4000,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completion'**
   String get metadataCompletion;
+
+  /// No description provided for @common_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get common_back;
+
+  /// No description provided for @common_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get common_next;
+
+  /// No description provided for @common_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get common_edit;
+
+  /// No description provided for @metadata_aiOptimize.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Optimize'**
+  String get metadata_aiOptimize;
+
+  /// No description provided for @wizard_title.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Optimization Wizard'**
+  String get wizard_title;
+
+  /// No description provided for @wizard_step.
+  ///
+  /// In en, this message translates to:
+  /// **'Step'**
+  String get wizard_step;
+
+  /// No description provided for @wizard_of.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get wizard_of;
+
+  /// No description provided for @wizard_stepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get wizard_stepTitle;
+
+  /// No description provided for @wizard_stepSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle'**
+  String get wizard_stepSubtitle;
+
+  /// No description provided for @wizard_stepKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get wizard_stepKeywords;
+
+  /// No description provided for @wizard_stepDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get wizard_stepDescription;
+
+  /// No description provided for @wizard_stepReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review & Save'**
+  String get wizard_stepReview;
+
+  /// No description provided for @wizard_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get wizard_skip;
+
+  /// No description provided for @wizard_saveDrafts.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Drafts'**
+  String get wizard_saveDrafts;
+
+  /// No description provided for @wizard_draftsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Drafts saved successfully'**
+  String get wizard_draftsSaved;
+
+  /// No description provided for @wizard_exitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Wizard?'**
+  String get wizard_exitTitle;
+
+  /// No description provided for @wizard_exitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. Are you sure you want to exit?'**
+  String get wizard_exitMessage;
+
+  /// No description provided for @wizard_exitConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get wizard_exitConfirm;
+
+  /// No description provided for @wizard_aiSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Suggestions'**
+  String get wizard_aiSuggestions;
+
+  /// No description provided for @wizard_chooseSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one of the AI-generated suggestions or write your own'**
+  String get wizard_chooseSuggestion;
+
+  /// No description provided for @wizard_currentValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Value'**
+  String get wizard_currentValue;
+
+  /// No description provided for @wizard_noCurrentValue.
+  ///
+  /// In en, this message translates to:
+  /// **'No current value set'**
+  String get wizard_noCurrentValue;
+
+  /// No description provided for @wizard_contextInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on {keywordsCount} tracked keywords and {competitorsCount} competitors'**
+  String wizard_contextInfo(int keywordsCount, int competitorsCount);
+
+  /// No description provided for @wizard_writeOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Write my own'**
+  String get wizard_writeOwn;
+
+  /// No description provided for @wizard_customPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your custom value...'**
+  String get wizard_customPlaceholder;
+
+  /// No description provided for @wizard_useCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Custom'**
+  String get wizard_useCustom;
+
+  /// No description provided for @wizard_keepCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Current'**
+  String get wizard_keepCurrent;
+
+  /// No description provided for @wizard_recommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get wizard_recommended;
+
+  /// No description provided for @wizard_characters.
+  ///
+  /// In en, this message translates to:
+  /// **'characters'**
+  String get wizard_characters;
+
+  /// No description provided for @wizard_reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Changes'**
+  String get wizard_reviewTitle;
+
+  /// No description provided for @wizard_reviewDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your optimizations before saving them as drafts'**
+  String get wizard_reviewDescription;
+
+  /// No description provided for @wizard_noChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes selected'**
+  String get wizard_noChanges;
+
+  /// No description provided for @wizard_noChangesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back and select suggestions for the fields you want to optimize'**
+  String get wizard_noChangesHint;
+
+  /// No description provided for @wizard_changesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} fields updated'**
+  String wizard_changesCount(int count);
+
+  /// No description provided for @wizard_changesSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'These changes will be saved as drafts'**
+  String get wizard_changesSummary;
+
+  /// No description provided for @wizard_before.
+  ///
+  /// In en, this message translates to:
+  /// **'Before'**
+  String get wizard_before;
+
+  /// No description provided for @wizard_after.
+  ///
+  /// In en, this message translates to:
+  /// **'After'**
+  String get wizard_after;
+
+  /// No description provided for @wizard_nextStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens next?'**
+  String get wizard_nextStepsTitle;
+
+  /// No description provided for @wizard_nextStepsWithChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Your changes will be saved as drafts. You can review and publish them from the Metadata Editor.'**
+  String get wizard_nextStepsWithChanges;
+
+  /// No description provided for @wizard_nextStepsNoChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes to save. Go back and select suggestions to optimize your metadata.'**
+  String get wizard_nextStepsNoChanges;
 }
 
 class _AppLocalizationsDelegate
