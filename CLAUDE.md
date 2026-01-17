@@ -4,7 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Keyrank is an App Store Optimization (ASO) tool (clone of Astro) for tracking app rankings across app stores. Multi-platform Flutter frontend with Laravel backend.
+Keyrank is a comprehensive App Store Optimization (ASO) platform for mobile app developers and marketers. Multi-platform Flutter frontend with Laravel backend.
+
+### Key Features
+
+- **Keyword Tracking**: Monitor keyword rankings, popularity scores, and historical trends
+- **Competitor Analysis**: Track competitor apps and compare performance
+- **Review Intelligence**: AI-powered analysis of app reviews with sentiment detection
+- **Actionable Insights**: Automated recommendations for ASO improvements
+- **Analytics Dashboard**: Comprehensive metrics and visualizations
+- **Team Collaboration**: Multi-user teams with role-based access
+- **Alerts & Notifications**: Customizable alerts for ranking changes
+- **Metadata Management**: A/B testing and optimization of app store listings
+- **Multi-Store Support**: Apple App Store and Google Play Store connections
+- **Billing & Subscriptions**: Stripe integration with tiered plans
+- **Public API**: REST API for third-party integrations
+- **AI Chat**: Built-in AI assistant for ASO guidance
 
 ## Common Commands
 
@@ -62,22 +77,39 @@ docker-compose up -d  # MySQL, Redis, scraper services
 
 ```
 app/lib/
-├── core/           # Shared infrastructure
-│   ├── api/        # Dio client with auth interceptor, ApiException
-│   ├── providers/  # Global providers (theme, locale, country)
-│   ├── router/     # GoRouter with auth guards and ShellRoute
-│   └── theme/      # Material 3 design tokens
+├── core/               # Shared infrastructure
+│   ├── api/            # Dio client with auth interceptor, ApiException
+│   ├── providers/      # Global providers (theme, locale, country)
+│   ├── router/         # GoRouter with auth guards and ShellRoute
+│   └── theme/          # Material 3 design tokens
 │
-├── features/       # Feature modules (domain-driven)
-│   ├── alerts/     # Alert rules and templates
-│   ├── apps/       # App management
-│   ├── auth/       # Authentication
-│   ├── keywords/   # Keyword tracking
-│   ├── rankings/   # Position history and charts
-│   └── ...
+├── features/           # Feature modules (domain-driven)
+│   ├── actionable_insights/  # AI-powered ASO recommendations
+│   ├── alerts/         # Alert rules and notification templates
+│   ├── analytics/      # Performance metrics and reports
+│   ├── apps/           # App management
+│   ├── auth/           # Authentication
+│   ├── billing/        # Stripe subscriptions and payments
+│   ├── categories/     # App Store categories
+│   ├── chat/           # AI chat assistant
+│   ├── competitors/    # Competitor tracking and analysis
+│   ├── dashboard/      # Main dashboard views
+│   ├── insights/       # Data insights
+│   ├── integrations/   # Third-party integrations
+│   ├── keywords/       # Keyword tracking and research
+│   ├── metadata/       # App store listing optimization
+│   ├── notifications/  # Push notifications
+│   ├── onboarding/     # User onboarding flow
+│   ├── rankings/       # Position history and charts
+│   ├── ratings/        # App ratings tracking
+│   ├── reviews/        # Review monitoring and intelligence
+│   ├── settings/       # User and app settings
+│   ├── store_connections/  # App Store & Play Store API connections
+│   ├── tags/           # Keyword and app tagging
+│   └── team/           # Team management and collaboration
 │
-├── l10n/           # Generated localizations (11 languages)
-└── shared/         # Shared models and widgets
+├── l10n/               # Generated localizations (11 languages)
+└── shared/             # Shared models and widgets
 ```
 
 ### Feature Module Pattern

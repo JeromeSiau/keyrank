@@ -1,6 +1,6 @@
-# ASO Tool - Architecture Technique
+# Keyrank - Architecture Technique
 
-> Clone de [Astro](https://tryastro.app) - Outil d'App Store Optimization
+> Plateforme complète d'App Store Optimization (ASO) pour développeurs et marketeurs d'applications mobiles
 > Stack: Laravel (Backend) + Flutter (Frontend multi-plateforme)
 
 ---
@@ -1112,6 +1112,5 @@ class ScrapeAppStoreRankings extends Command
 
 - [Apple Search Ads API Documentation](https://developer.apple.com/documentation/apple_search_ads)
 - [iTunes Search API](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/)
-- [Astro (référence)](https://tryastro.app)
 - [Laravel Documentation](https://laravel.com/docs)
 - [Flutter Documentation](https://docs.flutter.dev)
