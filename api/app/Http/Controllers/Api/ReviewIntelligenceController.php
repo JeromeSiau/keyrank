@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\ApiResponse;
 use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Models\App;
 use App\Models\ReviewInsight;
 use App\Services\ReviewIntelligenceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReviewIntelligenceController extends Controller
 {
+    use ApiResponse;
     use AuthorizesTeamActions;
 
     public function __construct(
@@ -54,13 +57,7 @@ class ReviewIntelligenceController extends Controller
                 'bug_reports' => $bugReports->map(fn($i) => $this->formatInsight($i)),
                 'version_sentiment' => $versionSentiment,
                 'version_insight' => $versionInsight,
-                'summary' => [
-                    'total_feature_requests' => ReviewInsight::where('app_id', $app->id)->featureRequests()->count(),
-                    'total_bug_reports' => ReviewInsight::where('app_id', $app->id)->bugReports()->count(),
-                    'open_feature_requests' => ReviewInsight::where('app_id', $app->id)->featureRequests()->open()->count(),
-                    'open_bug_reports' => ReviewInsight::where('app_id', $app->id)->bugReports()->open()->count(),
-                    'high_priority_bugs' => ReviewInsight::where('app_id', $app->id)->bugReports()->highPriority()->open()->count(),
-                ],
+                'summary' => $this->getSummary($app->id),
             ],
         ]);
     }
@@ -215,6 +212,31 @@ class ReviewIntelligenceController extends Controller
         return response()->json([
             'data' => $this->formatInsight($insight->fresh()),
         ]);
+    }
+
+    /**
+     * Get summary counts in a single optimized query
+     */
+    private function getSummary(int $appId): array
+    {
+        $summary = DB::table('review_insights')
+            ->where('app_id', $appId)
+            ->selectRaw("
+                SUM(CASE WHEN type = 'feature_request' THEN 1 ELSE 0 END) as total_feature_requests,
+                SUM(CASE WHEN type = 'bug_report' THEN 1 ELSE 0 END) as total_bug_reports,
+                SUM(CASE WHEN type = 'feature_request' AND status = 'open' THEN 1 ELSE 0 END) as open_feature_requests,
+                SUM(CASE WHEN type = 'bug_report' AND status = 'open' THEN 1 ELSE 0 END) as open_bug_reports,
+                SUM(CASE WHEN type = 'bug_report' AND status = 'open' AND priority IN ('high', 'critical') THEN 1 ELSE 0 END) as high_priority_bugs
+            ")
+            ->first();
+
+        return [
+            'total_feature_requests' => (int) ($summary->total_feature_requests ?? 0),
+            'total_bug_reports' => (int) ($summary->total_bug_reports ?? 0),
+            'open_feature_requests' => (int) ($summary->open_feature_requests ?? 0),
+            'open_bug_reports' => (int) ($summary->open_bug_reports ?? 0),
+            'high_priority_bugs' => (int) ($summary->high_priority_bugs ?? 0),
+        ];
     }
 
     /**

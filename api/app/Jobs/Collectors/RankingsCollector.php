@@ -13,9 +13,13 @@ class RankingsCollector extends BaseCollector
 {
     protected int $rateLimitMs = 300;
     public int $timeout = 21600; // 6 hours
+    protected int $batchSize = 100;
 
     private iTunesService $iTunesService;
     private GooglePlayService $googlePlayService;
+
+    /** @var array Buffer for batch ranking upserts */
+    private array $rankingBuffer = [];
 
     public function __construct()
     {
@@ -68,22 +72,54 @@ class RankingsCollector extends BaseCollector
             $position = $this->googlePlayService->getAppRankForKeyword($storeId, $keyword, $country);
         }
 
-        // Store the ranking
-        AppRanking::updateOrCreate(
-            [
-                'app_id' => $appId,
-                'keyword_id' => $keywordId,
-                'recorded_at' => today(),
-            ],
-            [
-                'position' => $position,
-            ]
-        );
+        // Buffer the ranking for batch upsert
+        $this->rankingBuffer[] = [
+            'app_id' => $appId,
+            'keyword_id' => $keywordId,
+            'recorded_at' => today(),
+            'position' => $position,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        // Flush buffer when it reaches batch size
+        if (count($this->rankingBuffer) >= $this->batchSize) {
+            $this->flushRankingBuffer();
+        }
 
         // Update tracked_keyword metrics if we have a position
         if ($position !== null) {
             $this->updateKeywordMetrics($item, $position);
         }
+    }
+
+    /**
+     * Flush the ranking buffer using batch upsert
+     */
+    private function flushRankingBuffer(): void
+    {
+        if (empty($this->rankingBuffer)) {
+            return;
+        }
+
+        AppRanking::upsert(
+            $this->rankingBuffer,
+            ['app_id', 'keyword_id', 'recorded_at'], // Unique keys
+            ['position', 'updated_at'] // Columns to update on conflict
+        );
+
+        $this->rankingBuffer = [];
+    }
+
+    /**
+     * Override handle to flush remaining buffer at the end
+     */
+    public function handle(): void
+    {
+        parent::handle();
+
+        // Flush any remaining items in the buffer
+        $this->flushRankingBuffer();
     }
 
     /**

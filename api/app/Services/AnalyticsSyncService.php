@@ -71,43 +71,54 @@ class AnalyticsSyncService
             throw new \RuntimeException('Failed to fetch App Store Connect reports');
         }
 
-        $count = 0;
-
         // Merge sales and subscription data by store_id and country
         $mergedData = $this->mergeAppleData($salesData ?? [], $subscriptionData ?? []);
 
-        foreach ($mergedData as $data) {
-            // Find the app by store_id
-            $app = App::where('store_id', $data['store_id'])
-                ->where('platform', 'ios')
-                ->first();
+        if (empty($mergedData)) {
+            return 0;
+        }
 
-            if (!$app) {
+        // Batch lookup: Get all iOS apps by store_id in a single query
+        $storeIds = array_unique(array_column($mergedData, 'store_id'));
+        $appsLookup = App::whereIn('store_id', $storeIds)
+            ->where('platform', 'ios')
+            ->pluck('id', 'store_id')
+            ->toArray();
+
+        // Build batch upsert data
+        $upsertData = [];
+        foreach ($mergedData as $data) {
+            $appId = $appsLookup[$data['store_id']] ?? null;
+            if (!$appId) {
                 continue;
             }
 
-            AppAnalytics::updateOrCreate(
-                [
-                    'app_id' => $app->id,
-                    'date' => $date,
-                    'country_code' => $data['country_code'],
-                ],
-                [
-                    'downloads' => $data['downloads'] ?? 0,
-                    'updates' => $data['updates'] ?? 0,
-                    'revenue' => $data['revenue'] ?? 0,
-                    'proceeds' => $data['proceeds'] ?? 0,
-                    'refunds' => $data['refunds'] ?? 0,
-                    'subscribers_new' => $data['subscribers_new'] ?? 0,
-                    'subscribers_cancelled' => $data['subscribers_cancelled'] ?? 0,
-                    'subscribers_active' => $data['subscribers_active'] ?? 0,
-                ]
-            );
-
-            $count++;
+            $upsertData[] = [
+                'app_id' => $appId,
+                'date' => $date,
+                'country_code' => $data['country_code'],
+                'downloads' => $data['downloads'] ?? 0,
+                'updates' => $data['updates'] ?? 0,
+                'revenue' => $data['revenue'] ?? 0,
+                'proceeds' => $data['proceeds'] ?? 0,
+                'refunds' => $data['refunds'] ?? 0,
+                'subscribers_new' => $data['subscribers_new'] ?? 0,
+                'subscribers_cancelled' => $data['subscribers_cancelled'] ?? 0,
+                'subscribers_active' => $data['subscribers_active'] ?? 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
 
-        return $count;
+        if (!empty($upsertData)) {
+            AppAnalytics::upsert(
+                $upsertData,
+                ['app_id', 'date', 'country_code'],
+                ['downloads', 'updates', 'revenue', 'proceeds', 'refunds', 'subscribers_new', 'subscribers_cancelled', 'subscribers_active', 'updated_at']
+            );
+        }
+
+        return count($upsertData);
     }
 
     /**
@@ -127,8 +138,6 @@ class AnalyticsSyncService
             throw new \RuntimeException('Failed to fetch Google Play reports');
         }
 
-        $count = 0;
-
         // Merge all data by package_name and country
         $mergedData = $this->mergeGoogleData(
             $installsData ?? [],
@@ -137,38 +146,51 @@ class AnalyticsSyncService
             $date
         );
 
-        foreach ($mergedData as $data) {
-            // Find the app by package name (bundle_id for Android)
-            $app = App::where('bundle_id', $data['package_name'])
-                ->where('platform', 'android')
-                ->first();
+        if (empty($mergedData)) {
+            return 0;
+        }
 
-            if (!$app) {
+        // Batch lookup: Get all Android apps by bundle_id in a single query
+        $packageNames = array_unique(array_column($mergedData, 'package_name'));
+        $appsLookup = App::whereIn('bundle_id', $packageNames)
+            ->where('platform', 'android')
+            ->pluck('id', 'bundle_id')
+            ->toArray();
+
+        // Build batch upsert data
+        $upsertData = [];
+        foreach ($mergedData as $data) {
+            $appId = $appsLookup[$data['package_name']] ?? null;
+            if (!$appId) {
                 continue;
             }
 
-            AppAnalytics::updateOrCreate(
-                [
-                    'app_id' => $app->id,
-                    'date' => $data['date'],
-                    'country_code' => $data['country_code'],
-                ],
-                [
-                    'downloads' => $data['downloads'] ?? 0,
-                    'updates' => $data['updates'] ?? 0,
-                    'revenue' => $data['revenue'] ?? 0,
-                    'proceeds' => $data['proceeds'] ?? 0,
-                    'refunds' => $data['refunds'] ?? 0,
-                    'subscribers_new' => $data['subscribers_new'] ?? 0,
-                    'subscribers_cancelled' => $data['subscribers_cancelled'] ?? 0,
-                    'subscribers_active' => $data['subscribers_active'] ?? 0,
-                ]
-            );
-
-            $count++;
+            $upsertData[] = [
+                'app_id' => $appId,
+                'date' => $data['date'],
+                'country_code' => $data['country_code'],
+                'downloads' => $data['downloads'] ?? 0,
+                'updates' => $data['updates'] ?? 0,
+                'revenue' => $data['revenue'] ?? 0,
+                'proceeds' => $data['proceeds'] ?? 0,
+                'refunds' => $data['refunds'] ?? 0,
+                'subscribers_new' => $data['subscribers_new'] ?? 0,
+                'subscribers_cancelled' => $data['subscribers_cancelled'] ?? 0,
+                'subscribers_active' => $data['subscribers_active'] ?? 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
 
-        return $count;
+        if (!empty($upsertData)) {
+            AppAnalytics::upsert(
+                $upsertData,
+                ['app_id', 'date', 'country_code'],
+                ['downloads', 'updates', 'revenue', 'proceeds', 'refunds', 'subscribers_new', 'subscribers_cancelled', 'subscribers_active', 'updated_at']
+            );
+        }
+
+        return count($upsertData);
     }
 
     /**

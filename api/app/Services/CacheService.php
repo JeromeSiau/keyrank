@@ -33,6 +33,24 @@ class CacheService
     }
 
     /**
+     * Get cached dashboard metrics
+     */
+    public static function getDashboardMetrics(int $teamId, callable $callback)
+    {
+        $key = self::PREFIX_DASHBOARD . "metrics:{$teamId}";
+        return Cache::remember($key, self::TTL_SHORT, $callback);
+    }
+
+    /**
+     * Get cached dashboard movers
+     */
+    public static function getDashboardMovers(int $teamId, string $period, callable $callback)
+    {
+        $key = self::PREFIX_DASHBOARD . "movers:{$teamId}:{$period}";
+        return Cache::remember($key, self::TTL_SHORT, $callback);
+    }
+
+    /**
      * Get cached app details
      */
     public static function getApp(int $appId, callable $callback)
