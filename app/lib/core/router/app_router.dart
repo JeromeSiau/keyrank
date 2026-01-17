@@ -38,6 +38,8 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/analytics/presentation/app_analytics_screen.dart';
 import '../../features/analytics/presentation/analytics_screen.dart';
+import '../../features/metadata/presentation/screens/metadata_editor_screen.dart';
+import '../../features/metadata/presentation/screens/metadata_screen.dart';
 import '../../features/keywords/presentation/keywords_screen.dart';
 import '../../features/insights/presentation/insights_screen.dart';
 import '../../features/chat/presentation/chat_screen.dart';
@@ -181,6 +183,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                   return AppAnalyticsScreen(appId: id, appName: appName);
                 },
               ),
+              GoRoute(
+                path: ':id/metadata',
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  final appName = state.uri.queryParameters['name'] ?? 'App';
+                  return MetadataEditorScreen(appId: id, appName: appName);
+                },
+              ),
             ],
           ),
           GoRoute(
@@ -274,6 +284,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AnalyticsScreen(),
           ),
           GoRoute(
+            path: '/metadata',
+            builder: (context, state) => const MetadataScreen(),
+          ),
+          GoRoute(
             path: '/alerts',
             builder: (context, state) => const AlertsScreen(),
           ),
@@ -315,7 +329,7 @@ class MainShell extends ConsumerWidget {
     return ResponsiveShell(
       sidebar: _AppSidebar(
         selectedIndex: _getSelectedIndex(context),
-        onDestinationSelected: (index) => _onDestinationSelected(context, index),
+        onDestinationSelected: (index) => _onDestinationSelected(context, index, ref),
         userName: user?.name ?? 'User',
         userEmail: user?.email ?? '',
         onLogout: () => ref.read(authStateProvider.notifier).logout(),
@@ -334,10 +348,11 @@ class MainShell extends ConsumerWidget {
     if (location.startsWith('/competitors')) return 7;
     if (location.startsWith('/insights')) return 8;
     if (location.startsWith('/analytics')) return 9;
+    if (location.contains('/metadata')) return 10;
     return 0;
   }
 
-  void _onDestinationSelected(BuildContext context, int index) {
+  void _onDestinationSelected(BuildContext context, int index, WidgetRef ref) {
     switch (index) {
       case 0:
         context.go('/dashboard');
@@ -368,6 +383,9 @@ class MainShell extends ConsumerWidget {
         break;
       case 9:
         context.go('/analytics');
+        break;
+      case 10:
+        context.go('/metadata');
         break;
     }
   }
@@ -460,6 +478,12 @@ class _AppSidebar extends ConsumerWidget {
                             selectedIcon: Icons.analytics,
                             label: 'Analytics',
                             index: 9,
+                          ),
+                          _NavItemData(
+                            icon: Icons.edit_note_outlined,
+                            selectedIcon: Icons.edit_note,
+                            label: 'Metadata',
+                            index: 10,
                           ),
                         ],
                       ),

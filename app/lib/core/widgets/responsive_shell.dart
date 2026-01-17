@@ -25,6 +25,9 @@ class ResponsiveShell extends ConsumerWidget {
     final user = ref.watch(authStateProvider).valueOrNull;
     final selectedApp = ref.watch(appContextProvider);
     final screenWidth = MediaQuery.sizeOf(context).width;
+
+    // Restore app context from persistence if enabled
+    ref.watch(appContextRestorationProvider);
     final screenSize = screenWidth.screenSize;
 
     return Scaffold(
@@ -36,8 +39,8 @@ class ResponsiveShell extends ConsumerWidget {
             ScreenSize.tablet => _buildTabletLayout(context, ref, user, colors),
             ScreenSize.desktop => _buildDesktopLayout(colors),
           },
-          // Floating chat button - only visible when an app is selected
-          if (selectedApp != null)
+          // Floating chat button - only visible when an app is selected and NOT on chat screen
+          if (selectedApp != null && !GoRouterState.of(context).uri.path.startsWith('/chat'))
             Positioned(
               right: 24,
               bottom: screenSize == ScreenSize.mobile ? 80 : 24,

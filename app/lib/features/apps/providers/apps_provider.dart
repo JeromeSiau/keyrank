@@ -13,8 +13,6 @@ final appSearchProvider = FutureProvider.family<List<AppSearchResult>, String>((
   return repository.searchApps(query: query);
 });
 
-final selectedAppProvider = StateProvider<AppModel?>((ref) => null);
-
 class AppsNotifier extends StateNotifier<AsyncValue<List<AppModel>>> {
   final AppsRepository _repository;
 

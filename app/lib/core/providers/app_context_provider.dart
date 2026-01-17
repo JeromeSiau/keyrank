@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/apps/domain/app_model.dart';
+import '../../features/apps/providers/apps_provider.dart';
 import 'theme_provider.dart';
 
 const _kRememberAppContextKey = 'remember_app_context';
@@ -44,6 +45,7 @@ final appContextProvider = StateNotifierProvider<AppContextNotifier, AppModel?>(
 class AppContextNotifier extends StateNotifier<AppModel?> {
   final SharedPreferences? _prefs;
   final bool _rememberContext;
+  bool _hasRestored = false;
 
   AppContextNotifier(this._prefs, this._rememberContext) : super(null);
 
@@ -53,6 +55,9 @@ class AppContextNotifier extends StateNotifier<AppModel?> {
     return _prefs!.getInt(_kSelectedAppIdKey);
   }
 
+  /// Whether the context has already been restored from persistence.
+  bool get hasRestored => _hasRestored;
+
   void select(AppModel? app) {
     state = app;
     _persistIfEnabled(app);
@@ -61,6 +66,21 @@ class AppContextNotifier extends StateNotifier<AppModel?> {
   void clear() {
     state = null;
     _persistIfEnabled(null);
+  }
+
+  /// Restore the app context from a list of loaded apps.
+  /// Should be called once when apps are first loaded.
+  void restoreFromApps(List<AppModel> apps) {
+    if (_hasRestored || !_rememberContext) return;
+    _hasRestored = true;
+
+    final persistedId = persistedAppId;
+    if (persistedId == null) return;
+
+    final app = apps.where((a) => a.id == persistedId).firstOrNull;
+    if (app != null) {
+      state = app;
+    }
   }
 
   Future<void> _persistIfEnabled(AppModel? app) async {
@@ -73,3 +93,16 @@ class AppContextNotifier extends StateNotifier<AppModel?> {
     }
   }
 }
+
+/// Provider that restores the app context when apps are loaded.
+/// Should be watched early in the app lifecycle (e.g., in ResponsiveShell).
+final appContextRestorationProvider = Provider<void>((ref) {
+  final appsAsync = ref.watch(appsNotifierProvider);
+  final contextNotifier = ref.read(appContextProvider.notifier);
+
+  appsAsync.whenData((apps) {
+    if (!contextNotifier.hasRestored) {
+      contextNotifier.restoreFromApps(apps);
+    }
+  });
+});
