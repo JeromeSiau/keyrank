@@ -663,6 +663,34 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get keywordSuggestions_categoryAll => 'Tout';
+
+  @override
+  String get keywordSuggestions_categoryHighOpportunity => 'Opportunités';
+
+  @override
+  String get keywordSuggestions_categoryCompetitor => 'Mots-clés concurrents';
+
+  @override
+  String get keywordSuggestions_categoryLongTail => 'Long-tail';
+
+  @override
+  String get keywordSuggestions_categoryTrending => 'Tendances';
+
+  @override
+  String get keywordSuggestions_categoryRelated => 'Associés';
+
+  @override
+  String get keywordSuggestions_generating => 'Génération des suggestions...';
+
+  @override
+  String get keywordSuggestions_generatingSubtitle =>
+      'Cela peut prendre quelques minutes. Revenez plus tard.';
+
+  @override
+  String get keywordSuggestions_checkAgain => 'Vérifier à nouveau';
+
+  @override
   String get sidebar_favorites => 'FAVORIS';
 
   @override
@@ -1482,6 +1510,80 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analytics_export => 'Exporter CSV';
 
   @override
+  String get funnel_title => 'Entonnoir de conversion';
+
+  @override
+  String get funnel_impressions => 'Impressions';
+
+  @override
+  String get funnel_pageViews => 'Pages vues';
+
+  @override
+  String get funnel_downloads => 'Téléchargements';
+
+  @override
+  String get funnel_overallCvr => 'CVR global';
+
+  @override
+  String get funnel_categoryAvg => 'Moy. catégorie';
+
+  @override
+  String get funnel_vsCategory => 'vs catégorie';
+
+  @override
+  String get funnel_bySource => 'Par source';
+
+  @override
+  String get funnel_noData => 'Aucune donnée d\'entonnoir disponible';
+
+  @override
+  String get funnel_noDataHint =>
+      'Les données d\'entonnoir seront synchronisées automatiquement depuis App Store Connect ou Google Play Console.';
+
+  @override
+  String get funnel_insight => 'INSIGHT';
+
+  @override
+  String funnel_insightText(
+    String bestSource,
+    String ratio,
+    String worstSource,
+    String recommendation,
+  ) {
+    return 'Le trafic $bestSource convertit ${ratio}x mieux que $worstSource. $recommendation';
+  }
+
+  @override
+  String get funnel_insightRecommendSearch =>
+      'Concentrez-vous sur l\'optimisation des mots-clés pour augmenter les impressions de recherche.';
+
+  @override
+  String get funnel_insightRecommendBrowse =>
+      'Améliorez la visibilité de votre app dans la navigation en optimisant les catégories et le placement en vedette.';
+
+  @override
+  String get funnel_insightRecommendReferral =>
+      'Exploitez les programmes de parrainage et les partenariats pour générer plus de trafic.';
+
+  @override
+  String get funnel_insightRecommendAppReferrer =>
+      'Envisagez des stratégies de promotion croisée avec des apps complémentaires.';
+
+  @override
+  String get funnel_insightRecommendWebReferrer =>
+      'Optimisez votre site web et vos pages de destination pour les téléchargements.';
+
+  @override
+  String get funnel_insightRecommendDefault =>
+      'Analysez ce qui rend cette source performante et reproduisez-le.';
+
+  @override
+  String get funnel_trendTitle => 'Tendance du taux de conversion';
+
+  @override
+  String get funnel_connectStore => 'Connecter le store';
+
+  @override
   String get nav_chat => 'AI Assistant';
 
   @override
@@ -1525,6 +1627,75 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chat_suggestedQuestions => 'Suggested Questions';
+
+  @override
+  String get chatActionConfirm => 'Confirmer';
+
+  @override
+  String get chatActionCancel => 'Annuler';
+
+  @override
+  String get chatActionExecuting => 'Exécution...';
+
+  @override
+  String get chatActionExecuted => 'Terminé';
+
+  @override
+  String get chatActionFailed => 'Échec';
+
+  @override
+  String get chatActionCancelled => 'Annulé';
+
+  @override
+  String get chatActionDownload => 'Télécharger';
+
+  @override
+  String get chatActionReversible => 'Cette action peut être annulée';
+
+  @override
+  String get chatActionAddKeywords => 'Ajouter des mots-clés';
+
+  @override
+  String get chatActionRemoveKeywords => 'Supprimer des mots-clés';
+
+  @override
+  String get chatActionCreateAlert => 'Créer une alerte';
+
+  @override
+  String get chatActionAddCompetitor => 'Ajouter un concurrent';
+
+  @override
+  String get chatActionExportData => 'Exporter les données';
+
+  @override
+  String get chatActionKeywords => 'Mots-clés';
+
+  @override
+  String get chatActionCountry => 'Pays';
+
+  @override
+  String get chatActionAlertCondition => 'Condition';
+
+  @override
+  String get chatActionNotifyVia => 'Notifier via';
+
+  @override
+  String get chatActionCompetitor => 'Concurrent';
+
+  @override
+  String get chatActionExportType => 'Type d\'export';
+
+  @override
+  String get chatActionDateRange => 'Période';
+
+  @override
+  String get chatActionKeywordsLabel => 'Mots-clés';
+
+  @override
+  String get chatActionAnalyticsLabel => 'Statistiques';
+
+  @override
+  String get chatActionReviewsLabel => 'Avis';
 
   @override
   String get common_cancel => 'Cancel';
@@ -1671,4 +1842,271 @@ class AppLocalizationsFr extends AppLocalizations {
   String export_error(String error) {
     return 'Export failed: $error';
   }
+
+  @override
+  String get metadata_editor => 'Metadata Editor';
+
+  @override
+  String get metadata_selectLocale => 'Select a locale to edit';
+
+  @override
+  String get metadata_refreshed => 'Metadata refreshed from store';
+
+  @override
+  String get metadata_connectRequired => 'Connect to edit metadata';
+
+  @override
+  String get metadata_connectDescription =>
+      'Connect your App Store Connect account to edit your app\'s metadata directly from Keyrank.';
+
+  @override
+  String get metadata_connectStore => 'Connect App Store';
+
+  @override
+  String get metadata_publishTitle => 'Publish Metadata';
+
+  @override
+  String metadata_publishConfirm(String locale) {
+    return 'Publish changes to $locale? This will update your app\'s listing on the App Store.';
+  }
+
+  @override
+  String get metadata_publish => 'Publish';
+
+  @override
+  String get metadata_publishSuccess => 'Metadata published successfully';
+
+  @override
+  String get metadata_saveDraft => 'Save Draft';
+
+  @override
+  String get metadata_draftSaved => 'Draft saved';
+
+  @override
+  String get metadata_discardChanges => 'Discard Changes';
+
+  @override
+  String get metadata_title => 'Title';
+
+  @override
+  String metadata_titleHint(int limit) {
+    return 'App name (max $limit chars)';
+  }
+
+  @override
+  String get metadata_subtitle => 'Subtitle';
+
+  @override
+  String metadata_subtitleHint(int limit) {
+    return 'Brief tagline (max $limit chars)';
+  }
+
+  @override
+  String get metadata_keywords => 'Keywords';
+
+  @override
+  String metadata_keywordsHint(int limit) {
+    return 'Comma-separated keywords (max $limit chars)';
+  }
+
+  @override
+  String get metadata_description => 'Description';
+
+  @override
+  String metadata_descriptionHint(int limit) {
+    return 'Full app description (max $limit chars)';
+  }
+
+  @override
+  String get metadata_promotionalText => 'Promotional Text';
+
+  @override
+  String metadata_promotionalTextHint(int limit) {
+    return 'Short promotional message (max $limit chars)';
+  }
+
+  @override
+  String get metadata_whatsNew => 'What\'s New';
+
+  @override
+  String metadata_whatsNewHint(int limit) {
+    return 'Release notes (max $limit chars)';
+  }
+
+  @override
+  String metadata_charCount(int count, int limit) {
+    return '$count/$limit';
+  }
+
+  @override
+  String get metadata_hasChanges => 'Has unsaved changes';
+
+  @override
+  String get metadata_noChanges => 'No changes';
+
+  @override
+  String get metadata_keywordAnalysis => 'Keyword Analysis';
+
+  @override
+  String get metadata_keywordPresent => 'Present';
+
+  @override
+  String get metadata_keywordMissing => 'Missing';
+
+  @override
+  String get metadata_inTitle => 'In Title';
+
+  @override
+  String get metadata_inSubtitle => 'In Subtitle';
+
+  @override
+  String get metadata_inKeywords => 'In Keywords';
+
+  @override
+  String get metadata_inDescription => 'In Description';
+
+  @override
+  String get metadata_history => 'Change History';
+
+  @override
+  String get metadata_noHistory => 'No changes recorded';
+
+  @override
+  String get metadata_localeComplete => 'Complete';
+
+  @override
+  String get metadata_localeIncomplete => 'Incomplete';
+
+  @override
+  String get metadata_shortDescription => 'Short Description';
+
+  @override
+  String metadata_shortDescriptionHint(int limit) {
+    return 'Brief tagline shown in search (max $limit chars)';
+  }
+
+  @override
+  String get metadata_fullDescription => 'Full Description';
+
+  @override
+  String metadata_fullDescriptionHint(int limit) {
+    return 'Complete app description (max $limit chars)';
+  }
+
+  @override
+  String get metadata_releaseNotes => 'Release Notes';
+
+  @override
+  String metadata_releaseNotesHint(int limit) {
+    return 'What\'s new in this version (max $limit chars)';
+  }
+
+  @override
+  String get metadata_selectAppFirst => 'Sélectionnez une application';
+
+  @override
+  String get metadata_selectAppHint =>
+      'Utilisez le sélecteur d\'app dans la barre latérale ou connectez un store pour commencer.';
+
+  @override
+  String get metadata_noStoreConnection => 'Connexion au store requise';
+
+  @override
+  String metadata_noStoreConnectionDesc(String storeName) {
+    return 'Connectez votre compte $storeName pour récupérer et modifier les métadonnées de votre app.';
+  }
+
+  @override
+  String metadata_connectStoreButton(String storeName) {
+    return 'Connecter $storeName';
+  }
+
+  @override
+  String get metadataLocalization => 'Localisations';
+
+  @override
+  String get metadataLive => 'En ligne';
+
+  @override
+  String get metadataDraft => 'Brouillon';
+
+  @override
+  String get metadataEmpty => 'Vide';
+
+  @override
+  String metadataCoverageInsight(int count) {
+    return '$count locales nécessitent du contenu. Pensez à localiser pour vos marchés principaux.';
+  }
+
+  @override
+  String get metadataFilterAll => 'Tous';
+
+  @override
+  String get metadataFilterLive => 'En ligne';
+
+  @override
+  String get metadataFilterDraft => 'Brouillons';
+
+  @override
+  String get metadataFilterEmpty => 'Vides';
+
+  @override
+  String get metadataBulkActions => 'Actions groupées';
+
+  @override
+  String get metadataCopyTo => 'Copier vers la sélection';
+
+  @override
+  String get metadataTranslateTo => 'Traduire vers la sélection';
+
+  @override
+  String get metadataPublishSelected => 'Publier la sélection';
+
+  @override
+  String get metadataDeleteDrafts => 'Supprimer les brouillons';
+
+  @override
+  String get metadataSelectSource => 'Sélectionner la locale source';
+
+  @override
+  String get metadataSelectTarget => 'Sélectionner les locales cibles';
+
+  @override
+  String metadataCopySuccess(int count) {
+    return 'Contenu copié vers $count locales';
+  }
+
+  @override
+  String metadataTranslateSuccess(int count) {
+    return 'Traduit vers $count locales';
+  }
+
+  @override
+  String get metadataTranslating => 'Traduction en cours...';
+
+  @override
+  String get metadataNoSelection => 'Sélectionnez d\'abord des locales';
+
+  @override
+  String get metadataSelectAll => 'Tout sélectionner';
+
+  @override
+  String get metadataDeselectAll => 'Tout désélectionner';
+
+  @override
+  String metadataSelected(int count) {
+    return '$count sélectionnée(s)';
+  }
+
+  @override
+  String get metadataTableView => 'Vue tableau';
+
+  @override
+  String get metadataListView => 'Vue liste';
+
+  @override
+  String get metadataStatus => 'Statut';
+
+  @override
+  String get metadataCompletion => 'Complétion';
 }

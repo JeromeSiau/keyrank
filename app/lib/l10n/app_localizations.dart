@@ -1320,6 +1320,60 @@ abstract class AppLocalizations {
   /// **'Error adding keywords: {error}'**
   String keywordSuggestions_errorAdding(String error);
 
+  /// No description provided for @keywordSuggestions_categoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get keywordSuggestions_categoryAll;
+
+  /// No description provided for @keywordSuggestions_categoryHighOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'High Opportunity'**
+  String get keywordSuggestions_categoryHighOpportunity;
+
+  /// No description provided for @keywordSuggestions_categoryCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitor Keywords'**
+  String get keywordSuggestions_categoryCompetitor;
+
+  /// No description provided for @keywordSuggestions_categoryLongTail.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-tail'**
+  String get keywordSuggestions_categoryLongTail;
+
+  /// No description provided for @keywordSuggestions_categoryTrending.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending'**
+  String get keywordSuggestions_categoryTrending;
+
+  /// No description provided for @keywordSuggestions_categoryRelated.
+  ///
+  /// In en, this message translates to:
+  /// **'Related'**
+  String get keywordSuggestions_categoryRelated;
+
+  /// No description provided for @keywordSuggestions_generating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating suggestions...'**
+  String get keywordSuggestions_generating;
+
+  /// No description provided for @keywordSuggestions_generatingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This may take a few minutes. Please check back later.'**
+  String get keywordSuggestions_generatingSubtitle;
+
+  /// No description provided for @keywordSuggestions_checkAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get keywordSuggestions_checkAgain;
+
   /// No description provided for @sidebar_favorites.
   ///
   /// In en, this message translates to:
@@ -2796,6 +2850,131 @@ abstract class AppLocalizations {
   /// **'Export CSV'**
   String get analytics_export;
 
+  /// No description provided for @funnel_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Funnel'**
+  String get funnel_title;
+
+  /// No description provided for @funnel_impressions.
+  ///
+  /// In en, this message translates to:
+  /// **'Impressions'**
+  String get funnel_impressions;
+
+  /// No description provided for @funnel_pageViews.
+  ///
+  /// In en, this message translates to:
+  /// **'Page Views'**
+  String get funnel_pageViews;
+
+  /// No description provided for @funnel_downloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get funnel_downloads;
+
+  /// No description provided for @funnel_overallCvr.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall CVR'**
+  String get funnel_overallCvr;
+
+  /// No description provided for @funnel_categoryAvg.
+  ///
+  /// In en, this message translates to:
+  /// **'Category avg'**
+  String get funnel_categoryAvg;
+
+  /// No description provided for @funnel_vsCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'vs category'**
+  String get funnel_vsCategory;
+
+  /// No description provided for @funnel_bySource.
+  ///
+  /// In en, this message translates to:
+  /// **'By Source'**
+  String get funnel_bySource;
+
+  /// No description provided for @funnel_noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No funnel data available'**
+  String get funnel_noData;
+
+  /// No description provided for @funnel_noDataHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Funnel data will be synced automatically from App Store Connect or Google Play Console.'**
+  String get funnel_noDataHint;
+
+  /// No description provided for @funnel_insight.
+  ///
+  /// In en, this message translates to:
+  /// **'INSIGHT'**
+  String get funnel_insight;
+
+  /// No description provided for @funnel_insightText.
+  ///
+  /// In en, this message translates to:
+  /// **'{bestSource} traffic converts {ratio}x better than {worstSource}. {recommendation}'**
+  String funnel_insightText(
+    String bestSource,
+    String ratio,
+    String worstSource,
+    String recommendation,
+  );
+
+  /// No description provided for @funnel_insightRecommendSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus on keyword optimization to increase Search impressions.'**
+  String get funnel_insightRecommendSearch;
+
+  /// No description provided for @funnel_insightRecommendBrowse.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve your app\'s visibility in Browse by optimizing categories and featured placement.'**
+  String get funnel_insightRecommendBrowse;
+
+  /// No description provided for @funnel_insightRecommendReferral.
+  ///
+  /// In en, this message translates to:
+  /// **'Leverage referral programs and partnerships to drive more traffic.'**
+  String get funnel_insightRecommendReferral;
+
+  /// No description provided for @funnel_insightRecommendAppReferrer.
+  ///
+  /// In en, this message translates to:
+  /// **'Consider cross-promotion strategies with complementary apps.'**
+  String get funnel_insightRecommendAppReferrer;
+
+  /// No description provided for @funnel_insightRecommendWebReferrer.
+  ///
+  /// In en, this message translates to:
+  /// **'Optimize your website and landing pages for app downloads.'**
+  String get funnel_insightRecommendWebReferrer;
+
+  /// No description provided for @funnel_insightRecommendDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze what makes this source perform well and replicate it.'**
+  String get funnel_insightRecommendDefault;
+
+  /// No description provided for @funnel_trendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Rate Trend'**
+  String get funnel_trendTitle;
+
+  /// No description provided for @funnel_connectStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Store'**
+  String get funnel_connectStore;
+
   /// No description provided for @nav_chat.
   ///
   /// In en, this message translates to:
@@ -2879,6 +3058,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Suggested Questions'**
   String get chat_suggestedQuestions;
+
+  /// No description provided for @chatActionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get chatActionConfirm;
+
+  /// No description provided for @chatActionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get chatActionCancel;
+
+  /// No description provided for @chatActionExecuting.
+  ///
+  /// In en, this message translates to:
+  /// **'Executing...'**
+  String get chatActionExecuting;
+
+  /// No description provided for @chatActionExecuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get chatActionExecuted;
+
+  /// No description provided for @chatActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get chatActionFailed;
+
+  /// No description provided for @chatActionCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get chatActionCancelled;
+
+  /// No description provided for @chatActionDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get chatActionDownload;
+
+  /// No description provided for @chatActionReversible.
+  ///
+  /// In en, this message translates to:
+  /// **'This action can be undone'**
+  String get chatActionReversible;
+
+  /// No description provided for @chatActionAddKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Keywords to Tracking'**
+  String get chatActionAddKeywords;
+
+  /// No description provided for @chatActionRemoveKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Keywords'**
+  String get chatActionRemoveKeywords;
+
+  /// No description provided for @chatActionCreateAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Alert Rule'**
+  String get chatActionCreateAlert;
+
+  /// No description provided for @chatActionAddCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Competitor'**
+  String get chatActionAddCompetitor;
+
+  /// No description provided for @chatActionExportData.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Data'**
+  String get chatActionExportData;
+
+  /// No description provided for @chatActionKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get chatActionKeywords;
+
+  /// No description provided for @chatActionCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get chatActionCountry;
+
+  /// No description provided for @chatActionAlertCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Condition'**
+  String get chatActionAlertCondition;
+
+  /// No description provided for @chatActionNotifyVia.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify via'**
+  String get chatActionNotifyVia;
+
+  /// No description provided for @chatActionCompetitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitor'**
+  String get chatActionCompetitor;
+
+  /// No description provided for @chatActionExportType.
+  ///
+  /// In en, this message translates to:
+  /// **'Export type'**
+  String get chatActionExportType;
+
+  /// No description provided for @chatActionDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date range'**
+  String get chatActionDateRange;
+
+  /// No description provided for @chatActionKeywordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get chatActionKeywordsLabel;
+
+  /// No description provided for @chatActionAnalyticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get chatActionAnalyticsLabel;
+
+  /// No description provided for @chatActionReviewsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get chatActionReviewsLabel;
 
   /// No description provided for @common_cancel.
   ///
@@ -3155,6 +3472,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export failed: {error}'**
   String export_error(String error);
+
+  /// No description provided for @metadata_editor.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata Editor'**
+  String get metadata_editor;
+
+  /// No description provided for @metadata_selectLocale.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a locale to edit'**
+  String get metadata_selectLocale;
+
+  /// No description provided for @metadata_refreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata refreshed from store'**
+  String get metadata_refreshed;
+
+  /// No description provided for @metadata_connectRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to edit metadata'**
+  String get metadata_connectRequired;
+
+  /// No description provided for @metadata_connectDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your App Store Connect account to edit your app\'s metadata directly from Keyrank.'**
+  String get metadata_connectDescription;
+
+  /// No description provided for @metadata_connectStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect App Store'**
+  String get metadata_connectStore;
+
+  /// No description provided for @metadata_publishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish Metadata'**
+  String get metadata_publishTitle;
+
+  /// No description provided for @metadata_publishConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish changes to {locale}? This will update your app\'s listing on the App Store.'**
+  String metadata_publishConfirm(String locale);
+
+  /// No description provided for @metadata_publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get metadata_publish;
+
+  /// No description provided for @metadata_publishSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata published successfully'**
+  String get metadata_publishSuccess;
+
+  /// No description provided for @metadata_saveDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Draft'**
+  String get metadata_saveDraft;
+
+  /// No description provided for @metadata_draftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft saved'**
+  String get metadata_draftSaved;
+
+  /// No description provided for @metadata_discardChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get metadata_discardChanges;
+
+  /// No description provided for @metadata_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get metadata_title;
+
+  /// No description provided for @metadata_titleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'App name (max {limit} chars)'**
+  String metadata_titleHint(int limit);
+
+  /// No description provided for @metadata_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle'**
+  String get metadata_subtitle;
+
+  /// No description provided for @metadata_subtitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief tagline (max {limit} chars)'**
+  String metadata_subtitleHint(int limit);
+
+  /// No description provided for @metadata_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get metadata_keywords;
+
+  /// No description provided for @metadata_keywordsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Comma-separated keywords (max {limit} chars)'**
+  String metadata_keywordsHint(int limit);
+
+  /// No description provided for @metadata_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get metadata_description;
+
+  /// No description provided for @metadata_descriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Full app description (max {limit} chars)'**
+  String metadata_descriptionHint(int limit);
+
+  /// No description provided for @metadata_promotionalText.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotional Text'**
+  String get metadata_promotionalText;
+
+  /// No description provided for @metadata_promotionalTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Short promotional message (max {limit} chars)'**
+  String metadata_promotionalTextHint(int limit);
+
+  /// No description provided for @metadata_whatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s New'**
+  String get metadata_whatsNew;
+
+  /// No description provided for @metadata_whatsNewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Release notes (max {limit} chars)'**
+  String metadata_whatsNewHint(int limit);
+
+  /// No description provided for @metadata_charCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/{limit}'**
+  String metadata_charCount(int count, int limit);
+
+  /// No description provided for @metadata_hasChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Has unsaved changes'**
+  String get metadata_hasChanges;
+
+  /// No description provided for @metadata_noChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes'**
+  String get metadata_noChanges;
+
+  /// No description provided for @metadata_keywordAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword Analysis'**
+  String get metadata_keywordAnalysis;
+
+  /// No description provided for @metadata_keywordPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get metadata_keywordPresent;
+
+  /// No description provided for @metadata_keywordMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get metadata_keywordMissing;
+
+  /// No description provided for @metadata_inTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In Title'**
+  String get metadata_inTitle;
+
+  /// No description provided for @metadata_inSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In Subtitle'**
+  String get metadata_inSubtitle;
+
+  /// No description provided for @metadata_inKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'In Keywords'**
+  String get metadata_inKeywords;
+
+  /// No description provided for @metadata_inDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'In Description'**
+  String get metadata_inDescription;
+
+  /// No description provided for @metadata_history.
+  ///
+  /// In en, this message translates to:
+  /// **'Change History'**
+  String get metadata_history;
+
+  /// No description provided for @metadata_noHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes recorded'**
+  String get metadata_noHistory;
+
+  /// No description provided for @metadata_localeComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get metadata_localeComplete;
+
+  /// No description provided for @metadata_localeIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get metadata_localeIncomplete;
+
+  /// No description provided for @metadata_shortDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Short Description'**
+  String get metadata_shortDescription;
+
+  /// No description provided for @metadata_shortDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief tagline shown in search (max {limit} chars)'**
+  String metadata_shortDescriptionHint(int limit);
+
+  /// No description provided for @metadata_fullDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Description'**
+  String get metadata_fullDescription;
+
+  /// No description provided for @metadata_fullDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete app description (max {limit} chars)'**
+  String metadata_fullDescriptionHint(int limit);
+
+  /// No description provided for @metadata_releaseNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Release Notes'**
+  String get metadata_releaseNotes;
+
+  /// No description provided for @metadata_releaseNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in this version (max {limit} chars)'**
+  String metadata_releaseNotesHint(int limit);
+
+  /// No description provided for @metadata_selectAppFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an app to edit metadata'**
+  String get metadata_selectAppFirst;
+
+  /// No description provided for @metadata_selectAppHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the app selector in the sidebar to choose an app, or connect a store to get started.'**
+  String get metadata_selectAppHint;
+
+  /// No description provided for @metadata_noStoreConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Store connection required'**
+  String get metadata_noStoreConnection;
+
+  /// No description provided for @metadata_noStoreConnectionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your {storeName} account to fetch and edit your app\'s metadata.'**
+  String metadata_noStoreConnectionDesc(String storeName);
+
+  /// No description provided for @metadata_connectStoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect {storeName}'**
+  String metadata_connectStoreButton(String storeName);
+
+  /// No description provided for @metadataLocalization.
+  ///
+  /// In en, this message translates to:
+  /// **'Localizations'**
+  String get metadataLocalization;
+
+  /// No description provided for @metadataLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get metadataLive;
+
+  /// No description provided for @metadataDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get metadataDraft;
+
+  /// No description provided for @metadataEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get metadataEmpty;
+
+  /// No description provided for @metadataCoverageInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} locales need content. Consider localizing for your top markets.'**
+  String metadataCoverageInsight(int count);
+
+  /// No description provided for @metadataFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get metadataFilterAll;
+
+  /// No description provided for @metadataFilterLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get metadataFilterLive;
+
+  /// No description provided for @metadataFilterDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Drafts'**
+  String get metadataFilterDraft;
+
+  /// No description provided for @metadataFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get metadataFilterEmpty;
+
+  /// No description provided for @metadataBulkActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk Actions'**
+  String get metadataBulkActions;
+
+  /// No description provided for @metadataCopyTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to selected'**
+  String get metadataCopyTo;
+
+  /// No description provided for @metadataTranslateTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Translate to selected'**
+  String get metadataTranslateTo;
+
+  /// No description provided for @metadataPublishSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish selected'**
+  String get metadataPublishSelected;
+
+  /// No description provided for @metadataDeleteDrafts.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete drafts'**
+  String get metadataDeleteDrafts;
+
+  /// No description provided for @metadataSelectSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Select source locale'**
+  String get metadataSelectSource;
+
+  /// No description provided for @metadataSelectTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Select target locales'**
+  String get metadataSelectTarget;
+
+  /// No description provided for @metadataCopySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Content copied to {count} locales'**
+  String metadataCopySuccess(int count);
+
+  /// No description provided for @metadataTranslateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Translated to {count} locales'**
+  String metadataTranslateSuccess(int count);
+
+  /// No description provided for @metadataTranslating.
+  ///
+  /// In en, this message translates to:
+  /// **'Translating...'**
+  String get metadataTranslating;
+
+  /// No description provided for @metadataNoSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select locales first'**
+  String get metadataNoSelection;
+
+  /// No description provided for @metadataSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get metadataSelectAll;
+
+  /// No description provided for @metadataDeselectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Deselect all'**
+  String get metadataDeselectAll;
+
+  /// No description provided for @metadataSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String metadataSelected(int count);
+
+  /// No description provided for @metadataTableView.
+  ///
+  /// In en, this message translates to:
+  /// **'Table view'**
+  String get metadataTableView;
+
+  /// No description provided for @metadataListView.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get metadataListView;
+
+  /// No description provided for @metadataStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get metadataStatus;
+
+  /// No description provided for @metadataCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion'**
+  String get metadataCompletion;
 }
 
 class _AppLocalizationsDelegate

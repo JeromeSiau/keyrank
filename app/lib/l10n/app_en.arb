@@ -323,6 +323,15 @@
       "error": { "type": "String" }
     }
   },
+  "keywordSuggestions_categoryAll": "All",
+  "keywordSuggestions_categoryHighOpportunity": "High Opportunity",
+  "keywordSuggestions_categoryCompetitor": "Competitor Keywords",
+  "keywordSuggestions_categoryLongTail": "Long-tail",
+  "keywordSuggestions_categoryTrending": "Trending",
+  "keywordSuggestions_categoryRelated": "Related",
+  "keywordSuggestions_generating": "Generating suggestions...",
+  "keywordSuggestions_generatingSubtitle": "This may take a few minutes. Please check back later.",
+  "keywordSuggestions_checkAgain": "Check again",
 
   "sidebar_favorites": "FAVORITES",
   "sidebar_tooManyFavorites": "Consider keeping 5 or fewer favorites",
@@ -736,6 +745,35 @@
   },
   "analytics_export": "Export CSV",
 
+  "funnel_title": "Conversion Funnel",
+  "funnel_impressions": "Impressions",
+  "funnel_pageViews": "Page Views",
+  "funnel_downloads": "Downloads",
+  "funnel_overallCvr": "Overall CVR",
+  "funnel_categoryAvg": "Category avg",
+  "funnel_vsCategory": "vs category",
+  "funnel_bySource": "By Source",
+  "funnel_noData": "No funnel data available",
+  "funnel_noDataHint": "Funnel data will be synced automatically from App Store Connect or Google Play Console.",
+  "funnel_insight": "INSIGHT",
+  "funnel_insightText": "{bestSource} traffic converts {ratio}x better than {worstSource}. {recommendation}",
+  "@funnel_insightText": {
+    "placeholders": {
+      "bestSource": { "type": "String" },
+      "ratio": { "type": "String" },
+      "worstSource": { "type": "String" },
+      "recommendation": { "type": "String" }
+    }
+  },
+  "funnel_insightRecommendSearch": "Focus on keyword optimization to increase Search impressions.",
+  "funnel_insightRecommendBrowse": "Improve your app's visibility in Browse by optimizing categories and featured placement.",
+  "funnel_insightRecommendReferral": "Leverage referral programs and partnerships to drive more traffic.",
+  "funnel_insightRecommendAppReferrer": "Consider cross-promotion strategies with complementary apps.",
+  "funnel_insightRecommendWebReferrer": "Optimize your website and landing pages for app downloads.",
+  "funnel_insightRecommendDefault": "Analyze what makes this source perform well and replicate it.",
+  "funnel_trendTitle": "Conversion Rate Trend",
+  "funnel_connectStore": "Connect Store",
+
   "nav_chat": "AI Assistant",
 
   "chat_title": "AI Assistant",
@@ -751,6 +789,32 @@
   "chat_askAnythingDesc": "I can help you understand your app's reviews, rankings, and analytics",
   "chat_typeMessage": "Type your question...",
   "chat_suggestedQuestions": "Suggested Questions",
+
+  "chatActionConfirm": "Confirm",
+  "chatActionCancel": "Cancel",
+  "chatActionExecuting": "Executing...",
+  "chatActionExecuted": "Done",
+  "chatActionFailed": "Failed",
+  "chatActionCancelled": "Cancelled",
+  "chatActionDownload": "Download",
+  "chatActionReversible": "This action can be undone",
+
+  "chatActionAddKeywords": "Add Keywords to Tracking",
+  "chatActionRemoveKeywords": "Remove Keywords",
+  "chatActionCreateAlert": "Create Alert Rule",
+  "chatActionAddCompetitor": "Add Competitor",
+  "chatActionExportData": "Export Data",
+
+  "chatActionKeywords": "Keywords",
+  "chatActionCountry": "Country",
+  "chatActionAlertCondition": "Condition",
+  "chatActionNotifyVia": "Notify via",
+  "chatActionCompetitor": "Competitor",
+  "chatActionExportType": "Export type",
+  "chatActionDateRange": "Date range",
+  "chatActionKeywordsLabel": "Keywords",
+  "chatActionAnalyticsLabel": "Analytics",
+  "chatActionReviewsLabel": "Reviews",
 
   "common_cancel": "Cancel",
   "common_delete": "Delete",
@@ -820,5 +884,171 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+
+  "metadata_editor": "Metadata Editor",
+  "metadata_selectLocale": "Select a locale to edit",
+  "metadata_refreshed": "Metadata refreshed from store",
+  "metadata_connectRequired": "Connect to edit metadata",
+  "metadata_connectDescription": "Connect your App Store Connect account to edit your app's metadata directly from Keyrank.",
+  "metadata_connectStore": "Connect App Store",
+  "metadata_publishTitle": "Publish Metadata",
+  "metadata_publishConfirm": "Publish changes to {locale}? This will update your app's listing on the App Store.",
+  "@metadata_publishConfirm": {
+    "placeholders": {
+      "locale": { "type": "String" }
+    }
+  },
+  "metadata_publish": "Publish",
+  "metadata_publishSuccess": "Metadata published successfully",
+  "metadata_saveDraft": "Save Draft",
+  "metadata_draftSaved": "Draft saved",
+  "metadata_discardChanges": "Discard Changes",
+  "metadata_title": "Title",
+  "metadata_titleHint": "App name (max {limit} chars)",
+  "@metadata_titleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_subtitle": "Subtitle",
+  "metadata_subtitleHint": "Brief tagline (max {limit} chars)",
+  "@metadata_subtitleHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_keywords": "Keywords",
+  "metadata_keywordsHint": "Comma-separated keywords (max {limit} chars)",
+  "@metadata_keywordsHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_description": "Description",
+  "metadata_descriptionHint": "Full app description (max {limit} chars)",
+  "@metadata_descriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_promotionalText": "Promotional Text",
+  "metadata_promotionalTextHint": "Short promotional message (max {limit} chars)",
+  "@metadata_promotionalTextHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_whatsNew": "What's New",
+  "metadata_whatsNewHint": "Release notes (max {limit} chars)",
+  "@metadata_whatsNewHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_charCount": "{count}/{limit}",
+  "@metadata_charCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_hasChanges": "Has unsaved changes",
+  "metadata_noChanges": "No changes",
+  "metadata_keywordAnalysis": "Keyword Analysis",
+  "metadata_keywordPresent": "Present",
+  "metadata_keywordMissing": "Missing",
+  "metadata_inTitle": "In Title",
+  "metadata_inSubtitle": "In Subtitle",
+  "metadata_inKeywords": "In Keywords",
+  "metadata_inDescription": "In Description",
+  "metadata_history": "Change History",
+  "metadata_noHistory": "No changes recorded",
+  "metadata_localeComplete": "Complete",
+  "metadata_localeIncomplete": "Incomplete",
+
+  "metadata_shortDescription": "Short Description",
+  "metadata_shortDescriptionHint": "Brief tagline shown in search (max {limit} chars)",
+  "@metadata_shortDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_fullDescription": "Full Description",
+  "metadata_fullDescriptionHint": "Complete app description (max {limit} chars)",
+  "@metadata_fullDescriptionHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_releaseNotes": "Release Notes",
+  "metadata_releaseNotesHint": "What's new in this version (max {limit} chars)",
+  "@metadata_releaseNotesHint": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "metadata_selectAppFirst": "Select an app to edit metadata",
+  "metadata_selectAppHint": "Use the app selector in the sidebar to choose an app, or connect a store to get started.",
+  "metadata_noStoreConnection": "Store connection required",
+  "metadata_noStoreConnectionDesc": "Connect your {storeName} account to fetch and edit your app's metadata.",
+  "@metadata_noStoreConnectionDesc": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+  "metadata_connectStoreButton": "Connect {storeName}",
+  "@metadata_connectStoreButton": {
+    "placeholders": {
+      "storeName": { "type": "String" }
+    }
+  },
+
+  "metadataLocalization": "Localizations",
+  "metadataLive": "Live",
+  "metadataDraft": "Draft",
+  "metadataEmpty": "Empty",
+  "metadataCoverageInsight": "{count} locales need content. Consider localizing for your top markets.",
+  "@metadataCoverageInsight": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataFilterAll": "All",
+  "metadataFilterLive": "Live",
+  "metadataFilterDraft": "Drafts",
+  "metadataFilterEmpty": "Empty",
+  "metadataBulkActions": "Bulk Actions",
+  "metadataCopyTo": "Copy to selected",
+  "metadataTranslateTo": "Translate to selected",
+  "metadataPublishSelected": "Publish selected",
+  "metadataDeleteDrafts": "Delete drafts",
+  "metadataSelectSource": "Select source locale",
+  "metadataSelectTarget": "Select target locales",
+  "metadataCopySuccess": "Content copied to {count} locales",
+  "@metadataCopySuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslateSuccess": "Translated to {count} locales",
+  "@metadataTranslateSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTranslating": "Translating...",
+  "metadataNoSelection": "Select locales first",
+  "metadataSelectAll": "Select all",
+  "metadataDeselectAll": "Deselect all",
+  "metadataSelected": "{count} selected",
+  "@metadataSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "metadataTableView": "Table view",
+  "metadataListView": "List view",
+  "metadataStatus": "Status",
+  "metadataCompletion": "Completion"
 }
