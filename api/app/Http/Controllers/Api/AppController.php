@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\AuthorizesTeamActions;
 use App\Jobs\GenerateKeywordSuggestionsJob;
 use App\Models\App;
 use App\Models\AppCompetitor;
@@ -17,21 +18,23 @@ use Illuminate\Support\Facades\Http;
 
 class AppController extends Controller
 {
+    use AuthorizesTeamActions;
+
     public function __construct(
         private iTunesService $iTunesService,
         private GooglePlayService $googlePlayService
     ) {}
 
     /**
-     * List user's tracked apps
+     * List team's tracked apps
      */
     public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $userId = $user->id;
+        $team = $this->currentTeam();
+        $teamId = $team->id;
 
-        // Get all user's tracked keyword IDs (single query)
-        $trackedKeywordIds = TrackedKeyword::where('user_id', $userId)
+        // Get all team's tracked keyword IDs (single query)
+        $trackedKeywordIds = TrackedKeyword::where('team_id', $teamId)
             ->pluck('keyword_id')
             ->unique()
             ->values();
@@ -49,20 +52,20 @@ class AppController extends Controller
                 ->toArray();
         }
 
-        // Get competitor app IDs for this user
-        $competitorAppIds = AppCompetitor::where('user_id', $userId)
+        // Get competitor app IDs for this team
+        $competitorAppIds = AppCompetitor::where('team_id', $teamId)
             ->pluck('competitor_app_id')
             ->unique()
             ->toArray();
 
-        // Get apps with tracked keywords count for this user
-        $apps = $user
+        // Get apps with tracked keywords count for this team
+        $apps = $team
             ->apps()
-            ->withCount(['trackedKeywords' => fn($q) => $q->where('user_id', $userId)])
+            ->withCount(['trackedKeywords' => fn($q) => $q->where('team_id', $teamId)])
             ->get()
             ->map(function ($app) use ($bestRanks, $competitorAppIds) {
-                $app->is_favorite = (bool) $app->pivot->is_favorite;
-                $app->favorited_at = $app->pivot->favorited_at;
+                $app->is_favorite = (bool) ($app->pivot->is_favorite ?? false);
+                $app->favorited_at = $app->pivot->favorited_at ?? null;
                 $app->is_owner = (bool) ($app->pivot->is_owner ?? false);
                 $app->is_competitor = in_array($app->id, $competitorAppIds);
                 $app->best_rank = $bestRanks[$app->id] ?? null;
@@ -130,27 +133,29 @@ class AppController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $this->authorizeTeamAction('manage_apps');
+
         $validated = $request->validate([
             'platform' => 'required|string|in:ios,android',
             'store_id' => 'required|string',
             'country' => 'nullable|string|size:2',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
         $platform = $validated['platform'];
         $storeId = $validated['store_id'];
         $country = $validated['country'] ?? 'us';
 
-        // Check if user already follows this app
-        $existingForUser = $user->apps()
+        // Check if team already tracks this app
+        $existingForTeam = $team->apps()
             ->where('platform', $platform)
             ->where('store_id', $storeId)
             ->first();
 
-        if ($existingForUser) {
+        if ($existingForTeam) {
             return response()->json([
-                'message' => 'You are already tracking this app',
-                'data' => $existingForUser,
+                'message' => 'This app is already being tracked by your team',
+                'data' => $existingForTeam,
             ], 409);
         }
 
@@ -160,8 +165,8 @@ class AppController extends Controller
             ->first();
 
         if ($app) {
-            // App exists, attach user to it
-            $app->users()->attach($user->id);
+            // App exists, attach team to it
+            $team->addApp($app, auth()->user());
 
             // If app is missing details (description), refresh them
             if (empty($app->description)) {
@@ -266,8 +271,8 @@ class AppController extends Controller
             'secondary_category_id' => $secondaryCategoryId,
         ]);
 
-        // Attach user to newly created app
-        $app->users()->attach($user->id);
+        // Attach team to newly created app
+        $team->addApp($app, auth()->user());
 
         // Fetch initial ratings and reviews immediately
         $this->fetchInitialData($app);
@@ -286,17 +291,17 @@ class AppController extends Controller
      */
     public function show(Request $request, App $app): JsonResponse
     {
-        // Load only this user's tracked keywords for this app
-        $user = $request->user();
-        $app->load(['trackedKeywords' => function ($query) use ($user) {
-            $query->where('user_id', $user->id)->with('keyword');
+        // Load only this team's tracked keywords for this app
+        $team = $this->currentTeam();
+        $app->load(['trackedKeywords' => function ($query) use ($team) {
+            $query->where('team_id', $team->id)->with('keyword');
         }]);
         $app->tracked_keywords_count = $app->trackedKeywords->count();
 
-        // Get pivot data for the current user
-        $pivot = $user->apps()->where('app_id', $app->id)->first()?->pivot;
+        // Get pivot data for the current team
+        $pivot = $team->apps()->where('app_id', $app->id)->first()?->pivot;
         $app->is_owner = (bool) ($pivot->is_owner ?? false);
-        $app->is_competitor = AppCompetitor::where('user_id', $user->id)
+        $app->is_competitor = AppCompetitor::where('team_id', $team->id)
             ->where('competitor_app_id', $app->id)
             ->exists();
 
@@ -306,24 +311,26 @@ class AppController extends Controller
     }
 
     /**
-     * Stop tracking an app (detach user)
+     * Stop tracking an app (detach team)
      */
     public function destroy(Request $request, App $app): JsonResponse
     {
-        $user = $request->user();
+        $this->authorizeTeamAction('manage_apps');
 
-        // Detach user from app
-        $app->users()->detach($user->id);
+        $team = $this->currentTeam();
 
-        // Remove user's tracked keywords for this app
-        TrackedKeyword::where('user_id', $user->id)
+        // Detach team from app
+        $team->removeApp($app);
+
+        // Remove team's tracked keywords for this app
+        TrackedKeyword::where('team_id', $team->id)
             ->where('app_id', $app->id)
             ->delete();
 
-        // If no users left tracking this app, delete it entirely
-        if ($app->users()->count() === 0) {
-            $app->delete();
-        }
+        // Also remove team's competitors for this app
+        AppCompetitor::where('team_id', $team->id)
+            ->where('owner_app_id', $app->id)
+            ->delete();
 
         return response()->json([
             'message' => 'App removed successfully',
