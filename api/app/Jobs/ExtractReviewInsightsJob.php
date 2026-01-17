@@ -108,10 +108,10 @@ class ExtractReviewInsightsJob implements ShouldQueue
     {
         $since = $this->since ?? now()->subDays(7);
 
-        // Get enriched reviews from the time period
+        // Get enriched reviews that haven't been processed for insights yet
         $reviews = AppReview::where('app_id', $app->id)
             ->whereNotNull('enriched_at')
-            ->where('enriched_at', '>=', $since)
+            ->whereNull('insights_extracted_at')
             ->whereNotNull('content')
             ->where('content', '!=', '')
             ->orderByDesc('reviewed_at')

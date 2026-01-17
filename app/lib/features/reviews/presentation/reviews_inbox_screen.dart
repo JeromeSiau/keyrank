@@ -96,21 +96,31 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
               loading: () => _buildLoadingState(context),
               error: (e, _) => _buildErrorState(context, e, params),
               data: (paginatedReviews) {
-                return Column(
-                  children: [
+                return CustomScrollView(
+                  slivers: [
                     // Review Intelligence section (when app is selected)
                     if (selectedApp != null)
-                      _buildIntelligenceSection(context, selectedApp.id),
+                      SliverToBoxAdapter(
+                        child: _buildIntelligenceSection(context, selectedApp.id),
+                      ),
                     // Overview section
-                    _buildOverviewSection(context, paginatedReviews),
-                    // Filter chips
-                    _buildFilterChips(context),
-                    // Reviews list
-                    Expanded(
-                      child: paginatedReviews.reviews.isEmpty
-                          ? _buildEmptyState(context)
-                          : _buildReviewsList(context, paginatedReviews),
+                    SliverToBoxAdapter(
+                      child: _buildOverviewSection(context, paginatedReviews),
                     ),
+                    // Filter chips
+                    SliverToBoxAdapter(
+                      child: _buildFilterChips(context),
+                    ),
+                    // Reviews list or empty state
+                    if (paginatedReviews.reviews.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: _buildEmptyState(context),
+                      )
+                    else
+                      SliverToBoxAdapter(
+                        child: _buildReviewsList(context, paginatedReviews),
+                      ),
                   ],
                 );
               },
@@ -521,20 +531,18 @@ class _ReviewsInboxScreenState extends ConsumerState<ReviewsInboxScreen> {
 
     return Column(
       children: [
-        // Reviews list
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: reviews.length,
-            itemBuilder: (context, index) {
-              final review = reviews[index];
+        // Reviews list (no longer using Expanded since we're in a CustomScrollView)
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: reviews.map<Widget>((review) {
               return ReviewCard(
                 review: review,
                 onReply: review.canReply && !review.isAnswered
                     ? () => showReplyModal(context, review)
                     : null,
               );
-            },
+            }).toList(),
           ),
         ),
 

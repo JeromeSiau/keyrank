@@ -518,12 +518,6 @@ class _AppSidebar extends ConsumerWidget {
                         label: context.l10n.nav_intelligence,
                         items: [
                           _NavItemData(
-                            icon: Icons.search_outlined,
-                            selectedIcon: Icons.search,
-                            label: context.l10n.nav_keywordInspector,
-                            index: 2,
-                          ),
-                          _NavItemData(
                             icon: Icons.explore_outlined,
                             selectedIcon: Icons.explore,
                             label: context.l10n.nav_discover,
@@ -652,14 +646,17 @@ class _AppSidebar extends ConsumerWidget {
                       : (isDark ? AppColors.textMuted : AppColorsLight.textMuted),
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  item.label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected
-                        ? (isDark ? AppColors.textPrimary : AppColorsLight.textPrimary)
-                        : (isDark ? AppColors.textSecondary : AppColorsLight.textSecondary),
+                Expanded(
+                  child: Text(
+                    item.label,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected
+                          ? (isDark ? AppColors.textPrimary : AppColorsLight.textPrimary)
+                          : (isDark ? AppColors.textSecondary : AppColorsLight.textSecondary),
+                    ),
                   ),
                 ),
                 if (item.badge != null) ...[

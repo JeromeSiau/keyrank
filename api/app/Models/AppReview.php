@@ -24,6 +24,7 @@ class AppReview extends Model
         'themes',
         'language',
         'enriched_at',
+        'insights_extracted_at',
         'our_response',
         'responded_at',
         'store_response_id',
@@ -34,6 +35,7 @@ class AppReview extends Model
         'reviewed_at' => 'datetime',
         'responded_at' => 'datetime',
         'enriched_at' => 'datetime',
+        'insights_extracted_at' => 'datetime',
         'sentiment_score' => 'decimal:2',
         'themes' => 'array',
     ];

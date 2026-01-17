@@ -37,6 +37,10 @@ class ReviewIntelligenceService
             $stats['bugs_extracted'] = $this->extractBugReports($app, $bugReviews);
         }
 
+        // Mark all reviews as processed for insights
+        AppReview::whereIn('id', $reviews->pluck('id'))
+            ->update(['insights_extracted_at' => now()]);
+
         return $stats;
     }
 
