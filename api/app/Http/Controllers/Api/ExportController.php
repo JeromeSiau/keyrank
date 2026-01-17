@@ -24,12 +24,16 @@ class ExportController extends Controller
             'country' => 'nullable|string|size:2',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
+        if (!$team) {
+            abort(403, 'No team selected');
+        }
+
         $days = $request->input('days', 30);
         $country = $request->input('country');
 
         $trackedKeywordIds = TrackedKeyword::where('app_id', $app->id)
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->pluck('keyword_id');
 
         $query = AppRanking::where('app_id', $app->id)
@@ -240,13 +244,17 @@ class ExportController extends Controller
             'days' => 'nullable|integer|min:1|max:365',
         ]);
 
-        $user = $request->user();
+        $team = $this->currentTeam();
+        if (!$team) {
+            abort(403, 'No team selected');
+        }
+
         $days = $request->input('days', 30);
         $startDate = now()->subDays($days);
 
         // Get tracked keywords
         $trackedKeywords = TrackedKeyword::where('app_id', $app->id)
-            ->where('user_id', $user->id)
+            ->where('team_id', $team->id)
             ->with('keyword')
             ->get();
 
