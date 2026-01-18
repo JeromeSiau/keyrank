@@ -36,7 +36,11 @@ return [
     ],
 
     'gplay_scraper' => [
-        'url' => env('GPLAY_SCRAPER_URL', 'http://localhost:3001'),
+        'url' => env('GPLAY_SCRAPER_URL', 'http://localhost:8001'),
+    ],
+
+    'revenue_scraper' => [
+        'url' => env('REVENUE_SCRAPER_URL', 'http://localhost:8001'),
     ],
 
     'apple_search_ads' => [
