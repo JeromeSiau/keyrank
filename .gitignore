@@ -1,2 +1,5 @@
 .worktrees/
 .DS_Store
+.claude/
+.opencode/
+.vscode/
