@@ -75,29 +75,32 @@ Les collectors existants (RatingsCollector, ReviewsCollector, RankingsCollector)
 
 ### Stack scraping
 
+**Approche LLM-first** : Utilisation de LiteLLM + OpenRouter (GPT-5-nano) pour l'extraction structurée.
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    SCRAPING LAYER                        │
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │  Crawl4AI    │  │  Playwright  │  │   HTTPX      │  │
-│  │  (HTML+LLM)  │  │  (SPA+API)   │  │  (Simple)    │  │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  │
-│         │                 │                  │          │
-│         └────────────┬────┴──────────────────┘          │
-│                      │                                   │
-│              ┌───────▼───────┐                          │
-│              │ Proxy Router  │                          │
-│              │ (rotation)    │                          │
-│              └───────┬───────┘                          │
-│                      │                                   │
-│              ┌───────▼───────┐                          │
-│              │   Pydantic    │                          │
-│              │  Validation   │                          │
-│              └───────┬───────┘                          │
-│                      │                                   │
-└──────────────────────┼───────────────────────────────────┘
+│  ┌──────────────────────────────────────────────────┐  │
+│  │                    HTTPX                           │  │
+│  │            (fetch HTML pages)                      │  │
+│  └──────────────────────┬───────────────────────────┘  │
+│                         │                               │
+│  ┌──────────────────────▼───────────────────────────┐  │
+│  │              LLMExtractor                          │  │
+│  │   (LiteLLM + OpenRouter/GPT-5-nano)               │  │
+│  │   - Clean HTML (remove scripts/styles)             │  │
+│  │   - Extract structured data via LLM               │  │
+│  │   - Pydantic schema validation                    │  │
+│  └──────────────────────┬───────────────────────────┘  │
+│                         │                               │
+│              ┌──────────▼──────────┐                   │
+│              │   ExtractedApp      │                   │
+│              │   (Pydantic model)  │                   │
+│              └──────────┬──────────┘                   │
+│                         │                               │
+└─────────────────────────┼───────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────┐
@@ -550,11 +553,14 @@ Approche :
 
 ### Phase 2 : Scrapers Marketplaces (en cours)
 
-- [x] Scraper whatsthe.app (~50 apps, RevenueCat verified)
-- [ ] Scraper Flippa (~1000 apps, API intercept)
+**Approche LLM** : Extraction via GPT-5-nano (OpenRouter) au lieu de regex.
+Coût estimé : ~$0.04 pour 100 pages.
+
+- [x] Scraper whatsthe.app (~430 apps, RevenueCat verified) - **LLM + sitemap**
+- [x] Scraper AppBusinessBrokers (~60 apps) - **LLM + sitemap**
+- [x] Scraper Flippa (~350 apps) - **LLM + Turbo Frame pagination**
+- [x] Scraper Microns (~410 listings, ~20 mobile apps) - **LLM + sitemap**
 - [ ] Scraper Acquire.com (~200 apps, auth + SPA)
-- [ ] Scraper AppBusinessBrokers (~50 apps, HTML simple)
-- [ ] Scraper Microns (~100 apps, HTML simple)
 
 ### Phase 3 : Pipeline ✅
 
@@ -562,7 +568,12 @@ Approche :
 - [x] Extraction des Apple IDs depuis URLs
 - [x] Auto-création des apps dans `apps` si matchées (`MatchRevenueAppsJob`)
 - [x] Linking `revenue_apps.matched_app_id` → `apps.id`
-- [ ] (optionnel) Table `revenue_scrape_logs` pour monitoring
+- [x] **URL Skip Optimization** : éviter de retraiter les pages déjà scrappées
+  - `source_url` ajouté à `revenue_apps` pour tracker les pages traitées
+  - Table `revenue_skipped_urls` pour les pages non-mobile (SaaS, web apps, etc.)
+  - Laravel envoie `skip_urls` au scraper Python (POST body)
+  - Scrapers filtrent les URLs déjà connues avant l'extraction LLM
+- [x] Table `revenue_scrape_logs` pour monitoring des runs de scraping
 
 ### Phase 4 : Analyse (future)
 
@@ -595,3 +606,5 @@ Approche :
 | Scope platform | **iOS + Android** - Les deux dès le début |
 | Stack | **Python** - Unifier avec migration du scraper Node existant |
 | Proxies | **Oui** - Rotation avec support geo-targeting |
+| Extraction | **LLM-first** - GPT-5-nano via OpenRouter (~$0.04/100 pages) |
+| Provider LLM | **OpenRouter** - Accès unifié aux modèles, même clé que Laravel |

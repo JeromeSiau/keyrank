@@ -1,172 +1,290 @@
-"""Scraper for whatsthe.app revenue data."""
+"""Scraper for whatsthe.app revenue data using LLM extraction."""
 
+import asyncio
 import re
+import xml.etree.ElementTree as ET
 from typing import Any
 
 import httpx
 
-from .models import RevenueApp
+from ..core.config import settings
+from ..core.llm_extractor import LLMExtractor
+from ..core.proxy import ProxyRouter
+from .models import (
+    BusinessModel,
+    CredentialType,
+    Platform,
+    RevenueApp,
+)
+from .schemas import ExtractedApp
 
 
 class WhatsTheAppScraper:
     """Scraper for whatsthe.app marketplace.
 
     whatsthe.app displays RevenueCat-verified revenue data for mobile apps.
-    Data is rendered in HTML tables, parsed from the DOM structure.
+    Uses sitemap to discover apps and LLM extraction for individual pages.
     """
 
     BASE_URL = "https://whatsthe.app"
+    SITEMAP_URL = "https://whatsthe.app/sitemap.xml"
     DEFAULT_HEADERS = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
     }
 
-    def __init__(self, timeout: float = 30.0):
-        self.timeout = timeout
+    # URLs to exclude (not app pages)
+    EXCLUDED_PATTERNS = [
+        r"^https://whatsthe\.app$",
+        r"/apps-for-sale",
+        r"/looking-for-cofounder",
+        r"/leaderboard",
+        r"/blogs",
+        r"/recent$",
+        r"/search$",
+        r"/statistics",
+        r"/categories$",
+        r"/hall-of-shame",
+        r"/docs/",
+        r"/privacy$",
+        r"/terms$",
+        r"/founder/",
+        r"/category/",
+        r"/games$",
+    ]
 
-    async def scrape_all(self) -> list[RevenueApp]:
-        """Scrape all apps from whatsthe.app homepage."""
-        async with httpx.AsyncClient(
+    EXTRACTION_INSTRUCTION = """
+Extract app metrics from this individual app page on whatsthe.app.
+
+This page shows detailed RevenueCat-verified revenue data for a mobile app.
+
+Extract the following metrics (convert values to numbers):
+- name: The app name
+- mrr: Monthly Recurring Revenue (e.g., "$381K" = 381000)
+- annual_revenue: ARR - Annual Recurring Revenue (e.g., "$4.572M" = 4572000)
+- monthly_revenue: Last 28 days revenue if shown
+- active_subscribers: Number of active subscriptions
+- active_trials: Number of active trials
+- active_users: Total active customers
+- new_customers: New customers in last 28 days
+- monthly_downloads: Downloads shown (may be total Android downloads)
+- ltv: Customer Lifetime Value (e.g., "$642" = 642)
+- arpu: Average Revenue Per User (e.g., "$5" = 5)
+- churn_rate: Monthly churn rate percentage (e.g., "0.85%" = 0.85)
+- mrr_growth: MRR growth percentage (e.g., "-0.6%" = -0.6)
+- ios_rating: iOS App Store rating (0-5)
+- android_rating: Android Play Store rating (0-5)
+- app_store_url: Apple App Store URL (apps.apple.com/...)
+- play_store_url: Google Play Store URL (play.google.com/...)
+- platform: "ios" if only App Store, "android" if only Play Store, "both" if both
+- description: Short app description if available
+- category: App category if shown
+
+Convert:
+- "$381K" -> 381000
+- "$4.572M" -> 4572000
+- "$1,234" -> 1234
+- "0.85%" -> 0.85
+- "-0.6%" -> -0.6
+
+Return a single object (not an array) since this is a single app page.
+"""
+
+    def __init__(self, timeout: float = 30.0, max_concurrent: int = 5):
+        self.timeout = timeout
+        self.max_concurrent = max_concurrent
+        self._extractor = LLMExtractor()
+        self._proxy = ProxyRouter.from_env(settings.proxy_list)
+        if self._proxy.has_proxies:
+            print("WhatsTheAppScraper: Using proxy rotation")
+
+    async def get_app_urls(self) -> list[str]:
+        """Fetch sitemap and extract app URLs."""
+        async with self._proxy.get_httpx_client(
             timeout=self.timeout,
             headers=self.DEFAULT_HEADERS,
             follow_redirects=True,
         ) as client:
-            response = await client.get(self.BASE_URL)
+            response = await client.get(self.SITEMAP_URL)
             response.raise_for_status()
 
-            apps_data = self._extract_apps_from_html(response.text)
-            return [RevenueApp.from_whatstheapp(app) for app in apps_data]
+        # Parse XML
+        root = ET.fromstring(response.text)
+        namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
-    def _extract_apps_from_html(self, html: str) -> list[dict[str, Any]]:
-        """Extract app data from HTML table rows.
+        urls = []
+        for url_elem in root.findall(".//ns:loc", namespace):
+            url = url_elem.text
+            if url and not self._is_excluded(url):
+                urls.append(url)
 
-        The page structure has table rows with:
-        - icon + name + store links + description
-        - revenue, mrr, subscriptions, downloads in cells
-        """
-        apps = []
+        return urls
 
-        # Find all table rows with app data
-        # Rows with cursor-pointer class contain app data
-        row_pattern = re.compile(
-            r'<tr[^>]*class="[^"]*cursor-pointer[^"]*"[^>]*>(.*?)</tr>',
-            re.DOTALL
-        )
+    def _is_excluded(self, url: str) -> bool:
+        """Check if URL should be excluded (not an app page)."""
+        for pattern in self.EXCLUDED_PATTERNS:
+            if re.search(pattern, url):
+                return True
+        return False
 
-        for row_match in row_pattern.finditer(html):
-            row_html = row_match.group(1)
-            app_data = self._parse_table_row(row_html)
-            if app_data and app_data.get("name"):
-                apps.append(app_data)
-
-        return apps
-
-    def _parse_table_row(self, row_html: str) -> dict[str, Any] | None:
-        """Parse a single table row to extract app data."""
-        app = {}
-
-        # Extract app name - in a div with font-medium class followed by text
-        name_match = re.search(
-            r'<div[^>]*class="[^"]*font-medium[^"]*"[^>]*>([^<]+)',
-            row_html
-        )
-        if name_match:
-            app["name"] = name_match.group(1).strip()
-
-        # Extract App Store URL and Apple ID
-        appstore_match = re.search(
-            r'href="(https://apps\.apple\.com/[^"]+)"',
-            row_html
-        )
-        if appstore_match:
-            app["appStoreUrl"] = appstore_match.group(1)
-            # Extract Apple ID
-            id_match = re.search(r'/id(\d+)', app["appStoreUrl"])
-            if id_match:
-                app["apple_id"] = id_match.group(1)
-
-        # Extract Play Store URL and bundle ID
-        playstore_match = re.search(
-            r'href="(https://play\.google\.com/store/apps/details\?id=[^"]+)"',
-            row_html
-        )
-        if playstore_match:
-            app["googlePlayUrl"] = playstore_match.group(1)
-            # Extract bundle ID
-            id_match = re.search(r'id=([^&"]+)', app["googlePlayUrl"])
-            if id_match:
-                app["bundle_id"] = id_match.group(1)
-
-        # Extract description
-        desc_match = re.search(
-            r'<div[^>]*class="[^"]*text-xs[^"]*text-gray[^"]*"[^>]*>([^<]+)',
-            row_html
-        )
-        if desc_match:
-            app["description"] = desc_match.group(1).strip()
-
-        # Extract icon/logo URL
-        icon_match = re.search(
-            r'<img[^>]*alt="[^"]*icon"[^>]*src="([^"]+)"',
-            row_html
-        )
-        if icon_match:
-            app["logo"] = icon_match.group(1)
-
-        # Extract all td cells with their content
-        cells = re.findall(r'<td[^>]*>(.*?)</td>', row_html, re.DOTALL)
-
-        # Parse numeric values from cells
-        # Look for patterns like $123,456 or 123,456
-        numeric_values = []
-        for cell in cells:
-            # Find dollar amounts
-            money_match = re.search(r'\$([0-9,]+)', cell)
-            if money_match:
-                numeric_values.append(("money", self._parse_number(money_match.group(1))))
-            else:
-                # Find plain numbers
-                num_match = re.search(r'>([0-9,]+)<', cell)
-                if num_match:
-                    numeric_values.append(("number", self._parse_number(num_match.group(1))))
-
-        # Assign values based on position
-        # Typically: [rank], [app_info], [founder], [revenue], [mrr], [subs], [downloads]
-        money_idx = 0
-        number_idx = 0
-        for val_type, val in numeric_values:
-            if val_type == "money":
-                if money_idx == 0:
-                    app["revenue"] = val
-                elif money_idx == 1:
-                    app["mrr"] = val
-                money_idx += 1
-            elif val_type == "number" and val > 100:  # Skip small numbers (likely rank)
-                if number_idx == 0:
-                    app["active_subscriptions"] = val
-                elif number_idx == 1:
-                    app["downloads_28d"] = val
-                number_idx += 1
-
-        # Generate a unique ID from name
-        if app.get("name"):
-            app["id"] = re.sub(r'[^a-z0-9]+', '-', app["name"].lower()).strip('-')
-
-        # Mark as RevenueCat verified (whatsthe.app only shows RevenueCat data)
-        app["credential_type"] = "revenuecat-verified"
-
-        return app if app.get("name") else None
-
-    def _parse_number(self, value: str) -> int:
-        """Parse a number string like '123,456' to int."""
+    async def scrape_app_page(
+        self,
+        client: httpx.AsyncClient,
+        url: str,
+    ) -> RevenueApp | None:
+        """Scrape a single app page."""
         try:
-            return int(value.replace(",", "").replace("$", ""))
-        except (ValueError, AttributeError):
-            return 0
+            response = await client.get(url)
+            response.raise_for_status()
+            html = response.text
+
+            # Extract app slug from URL for source_id
+            slug = url.replace(self.BASE_URL, "").strip("/")
+
+            # Use LLM to extract data
+            extracted_list = await self._extractor.extract_from_html(
+                html=html,
+                schema=ExtractedApp,
+                instruction=self.EXTRACTION_INSTRUCTION,
+            )
+
+            if not extracted_list:
+                return None
+
+            extracted = extracted_list[0]
+            return self._to_revenue_app(extracted, slug, url)
+
+        except Exception as e:
+            print(f"Error scraping {url}: {e}")
+            return None
+
+    async def scrape_all(
+        self,
+        limit: int | None = None,
+        skip_urls: set[str] | None = None,
+    ) -> tuple[list[RevenueApp], list[str]]:
+        """Scrape all apps from whatsthe.app using sitemap.
+
+        Args:
+            limit: Optional limit on number of apps to scrape (for testing)
+            skip_urls: Set of URLs to skip (already processed)
+
+        Returns:
+            Tuple of (apps, skipped_urls) where skipped_urls are non-mobile-app URLs
+        """
+        skip_urls = skip_urls or set()
+
+        # Get app URLs from sitemap
+        app_urls = await self.get_app_urls()
+        print(f"Found {len(app_urls)} app URLs in sitemap")
+
+        # Filter out already processed URLs
+        urls_to_process = [url for url in app_urls if url not in skip_urls]
+        skipped_count = len(app_urls) - len(urls_to_process)
+        if skipped_count > 0:
+            print(f"Skipping {skipped_count} already processed URLs")
+
+        if limit:
+            urls_to_process = urls_to_process[:limit]
+            print(f"Limiting to {limit} apps for this run")
+
+        # Scrape apps with concurrency limit
+        semaphore = asyncio.Semaphore(self.max_concurrent)
+        apps: list[RevenueApp] = []
+
+        async def scrape_with_semaphore(url: str) -> RevenueApp | None:
+            async with semaphore:
+                async with self._proxy.get_httpx_client(
+                    timeout=self.timeout,
+                    headers=self.DEFAULT_HEADERS,
+                    follow_redirects=True,
+                ) as client:
+                    return await self.scrape_app_page(client, url)
+
+        tasks = [scrape_with_semaphore(url) for url in urls_to_process]
+
+        for i, coro in enumerate(asyncio.as_completed(tasks)):
+            result = await coro
+            if result:
+                apps.append(result)
+            if (i + 1) % 10 == 0:
+                print(f"Progress: {i + 1}/{len(urls_to_process)} pages scraped, {len(apps)} apps found")
+
+        print(f"Completed: {len(apps)} apps extracted from {len(urls_to_process)} pages")
+        # whatsthe.app is all mobile apps (RevenueCat), no skipped URLs
+        return apps, []
+
+    def _to_revenue_app(self, extracted: ExtractedApp, slug: str, url: str) -> RevenueApp:
+        """Convert ExtractedApp to RevenueApp."""
+        # Extract Apple ID from URL
+        apple_id = None
+        if extracted.app_store_url:
+            match = re.search(r"/id(\d+)", extracted.app_store_url)
+            if match:
+                apple_id = match.group(1)
+
+        # Extract bundle ID from Play Store URL
+        bundle_id = None
+        if extracted.play_store_url:
+            match = re.search(r"id=([^&]+)", extracted.play_store_url)
+            if match:
+                bundle_id = match.group(1)
+
+        # Determine platform
+        platform = Platform.IOS
+        if extracted.platform == "android":
+            platform = Platform.ANDROID
+        elif extracted.platform == "both":
+            platform = Platform.BOTH
+        elif extracted.app_store_url and extracted.play_store_url:
+            platform = Platform.BOTH
+        elif extracted.play_store_url and not extracted.app_store_url:
+            platform = Platform.ANDROID
+
+        return RevenueApp(
+            source="whatstheapp",
+            source_id=slug,
+            source_url=url,
+            app_name=extracted.name,
+            app_store_url=extracted.app_store_url,
+            play_store_url=extracted.play_store_url,
+            apple_id=apple_id,
+            bundle_id=bundle_id,
+            platform=platform,
+            mrr_cents=int(extracted.mrr * 100) if extracted.mrr else None,
+            monthly_revenue_cents=int(extracted.monthly_revenue * 100) if extracted.monthly_revenue else None,
+            annual_revenue_cents=int(extracted.annual_revenue * 100) if extracted.annual_revenue else None,
+            currency="USD",
+            revenue_verified=True,  # whatsthe.app is RevenueCat verified
+            credential_type=CredentialType.REVENUECAT_VERIFIED,
+            monthly_downloads=extracted.monthly_downloads,
+            total_downloads=extracted.total_downloads,
+            active_subscribers=extracted.active_subscribers,
+            active_trials=extracted.active_trials,
+            active_users=extracted.active_users,
+            new_customers=extracted.new_customers,
+            churn_rate=extracted.churn_rate,
+            growth_rate_mom=extracted.mrr_growth,
+            ltv_cents=int(extracted.ltv * 100) if extracted.ltv else None,
+            arpu_cents=int(extracted.arpu * 100) if extracted.arpu else None,
+            ios_rating=extracted.ios_rating,
+            android_rating=extracted.android_rating,
+            description=extracted.description,
+            category=extracted.category,
+            business_model=BusinessModel.SUBSCRIPTION,
+        )
 
 
-async def scrape_whatstheapp() -> list[RevenueApp]:
-    """Convenience function to scrape whatsthe.app."""
+async def scrape_whatstheapp(
+    limit: int | None = None,
+    skip_urls: set[str] | None = None,
+) -> tuple[list[RevenueApp], list[str]]:
+    """Convenience function to scrape whatsthe.app.
+
+    Args:
+        limit: Optional limit on number of apps to scrape (for testing)
+        skip_urls: Set of URLs to skip (already processed)
+    """
     scraper = WhatsTheAppScraper()
-    return await scraper.scrape_all()
+    return await scraper.scrape_all(limit=limit, skip_urls=skip_urls)

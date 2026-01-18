@@ -34,6 +34,7 @@ class RevenueApp(BaseModel):
     # Identification
     source: str = Field(description="Source platform: whatstheapp, flippa, etc.")
     source_id: str = Field(description="Unique ID on the source platform")
+    source_url: str | None = Field(default=None, description="Full URL of the scraped page")
     app_name: str
     app_store_url: str | None = None
     play_store_url: str | None = None
@@ -60,6 +61,10 @@ class RevenueApp(BaseModel):
     new_customers: int | None = None
     churn_rate: float | None = None
     growth_rate_mom: float | None = None
+
+    # Unit Economics (in cents for precision)
+    ltv_cents: int | None = None
+    arpu_cents: int | None = None
 
     # Metadata
     category: str | None = None
@@ -143,6 +148,64 @@ class RevenueApp(BaseModel):
             ios_rating=data.get("ios_rating"),
             android_rating=data.get("android_rating"),
             business_model=BusinessModel.SUBSCRIPTION,  # whatsthe.app is RevenueCat focused
+            raw_data=data,
+        )
+
+    @classmethod
+    def from_appbusinessbrokers(cls, data: dict[str, Any]) -> "RevenueApp":
+        """Create RevenueApp from appbusinessbrokers.com data."""
+        # Determine platform
+        platform_str = data.get("platform", "ios")
+        if platform_str == "both":
+            platform = Platform.BOTH
+        elif platform_str == "android":
+            platform = Platform.ANDROID
+        else:
+            platform = Platform.IOS
+
+        # Map business model
+        biz_model = None
+        raw_biz = data.get("business_model", "")
+        if raw_biz == "subscription":
+            biz_model = BusinessModel.SUBSCRIPTION
+        elif raw_biz == "freemium":
+            biz_model = BusinessModel.FREEMIUM
+        elif raw_biz == "paid":
+            biz_model = BusinessModel.PAID
+        elif raw_biz == "ads":
+            biz_model = BusinessModel.ADS
+
+        # Convert dollars to cents
+        mrr = data.get("mrr")
+        annual_revenue = data.get("annual_revenue")
+        annual_profit = data.get("annual_profit")
+        asking_price = data.get("asking_price")
+
+        return cls(
+            source="appbusinessbrokers",
+            source_id=data.get("source_id", ""),
+            app_name=data.get("name", ""),
+            app_store_url=data.get("app_store_url"),
+            play_store_url=data.get("play_store_url"),
+            apple_id=data.get("apple_id"),
+            bundle_id=data.get("bundle_id"),
+            platform=platform,
+            mrr_cents=int(mrr * 100) if mrr else None,
+            annual_revenue_cents=int(annual_revenue * 100) if annual_revenue else None,
+            monthly_profit_cents=int(annual_profit / 12 * 100) if annual_profit else None,
+            asking_price_cents=int(asking_price * 100) if asking_price else None,
+            currency="USD",
+            revenue_verified=False,  # Self-reported data
+            credential_type=CredentialType.SELF_REPORTED,
+            total_downloads=data.get("total_downloads"),
+            monthly_downloads=data.get("monthly_downloads"),
+            active_subscribers=data.get("active_subscribers"),
+            category=data.get("category"),
+            business_model=biz_model,
+            description=data.get("description"),
+            is_for_sale=True,  # All listings are for sale
+            ios_rating=data.get("rating") if platform != Platform.ANDROID else None,
+            android_rating=data.get("rating") if platform == Platform.ANDROID else None,
             raw_data=data,
         )
 

@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     # Rate limiting
     rate_limit_delay_ms: int = 200  # Delay between requests in ms
 
+    # LLM Configuration (OpenRouter)
+    openrouter_api_key: str = ""
+    llm_model: str = "openrouter/openai/gpt-5-nano"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

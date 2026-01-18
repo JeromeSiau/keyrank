@@ -10,11 +10,12 @@ dependencies = [
     "pydantic>=2.5.0",
     "pydantic-settings>=2.1.0",
     "python-dotenv>=1.0.0",
+    "litellm>=1.0.0",
+    "crawl4ai>=0.3.0",
 ]
 
 [project.optional-dependencies]
 scraping = [
-    "crawl4ai>=0.3.0",
     "playwright>=1.41.0",
 ]
 dev = [

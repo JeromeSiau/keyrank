@@ -9,14 +9,24 @@ class RevenueApp extends Model
     protected $fillable = [
         'source',
         'source_id',
+        'source_url',
         'app_name',
+        'matched_app_id',
         'mrr_cents',
         'monthly_revenue_cents',
         'arr_cents',
+        'annual_revenue_cents',
+        'monthly_profit_cents',
         'active_subscribers',
         'active_trials',
+        'active_users',
         'monthly_downloads',
+        'total_downloads',
         'new_customers',
+        'ltv_cents',
+        'arpu_cents',
+        'churn_rate',
+        'growth_rate_mom',
         'apple_id',
         'bundle_id',
         'app_store_url',
@@ -24,6 +34,7 @@ class RevenueApp extends Model
         'platform',
         'credential_type',
         'business_model',
+        'category',
         'is_for_sale',
         'asking_price_cents',
         'revenue_verified',
@@ -38,16 +49,25 @@ class RevenueApp extends Model
         'mrr_cents' => 'integer',
         'monthly_revenue_cents' => 'integer',
         'arr_cents' => 'integer',
+        'annual_revenue_cents' => 'integer',
+        'monthly_profit_cents' => 'integer',
         'active_subscribers' => 'integer',
         'active_trials' => 'integer',
+        'active_users' => 'integer',
         'monthly_downloads' => 'integer',
+        'total_downloads' => 'integer',
         'new_customers' => 'integer',
+        'ltv_cents' => 'integer',
+        'arpu_cents' => 'integer',
+        'churn_rate' => 'decimal:2',
+        'growth_rate_mom' => 'decimal:2',
         'is_for_sale' => 'boolean',
         'asking_price_cents' => 'integer',
         'revenue_verified' => 'boolean',
         'ios_rating' => 'decimal:1',
         'android_rating' => 'decimal:1',
         'scraped_at' => 'datetime',
+        'matched_app_id' => 'integer',
     ];
 
     /**
@@ -75,16 +95,24 @@ class RevenueApp extends Model
     }
 
     /**
-     * Find linked App model by Apple ID or Bundle ID
+     * Get the matched app (explicit foreign key relation)
      */
-    public function linkedApp(): ?\Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function matchedApp(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(App::class, 'matched_app_id');
+    }
+
+    /**
+     * Find linked App model by Apple ID or Bundle ID (for matching)
+     */
+    public function findMatchingApp(): ?App
     {
         if ($this->apple_id) {
             $app = App::where('store_id', $this->apple_id)
                 ->where('platform', 'ios')
                 ->first();
             if ($app) {
-                return $this->belongsTo(App::class)->withDefault($app);
+                return $app;
             }
         }
 
@@ -93,11 +121,51 @@ class RevenueApp extends Model
                 ->where('platform', 'android')
                 ->first();
             if ($app) {
-                return $this->belongsTo(App::class)->withDefault($app);
+                return $app;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get LTV in dollars
+     */
+    public function getLtvAttribute(): ?float
+    {
+        return $this->ltv_cents ? $this->ltv_cents / 100 : null;
+    }
+
+    /**
+     * Get ARPU in dollars
+     */
+    public function getArpuAttribute(): ?float
+    {
+        return $this->arpu_cents ? $this->arpu_cents / 100 : null;
+    }
+
+    /**
+     * Get annual revenue in dollars
+     */
+    public function getAnnualRevenueAttribute(): ?float
+    {
+        return $this->annual_revenue_cents ? $this->annual_revenue_cents / 100 : null;
+    }
+
+    /**
+     * Get monthly profit in dollars
+     */
+    public function getMonthlyProfitAttribute(): ?float
+    {
+        return $this->monthly_profit_cents ? $this->monthly_profit_cents / 100 : null;
+    }
+
+    /**
+     * Get asking price in dollars
+     */
+    public function getAskingPriceAttribute(): ?float
+    {
+        return $this->asking_price_cents ? $this->asking_price_cents / 100 : null;
     }
 
     /**

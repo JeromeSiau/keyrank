@@ -97,10 +97,10 @@ Schedule::command('revenue:sync')
     ->withoutOverlapping()
     ->runInBackground();
 
-// Match revenue apps to our apps table - daily at 6:45 AM (after revenue sync)
+// Match revenue apps to our apps table - daily at 7:30 AM (after revenue sync)
 // Creates apps in our DB if they don't exist, links matched_app_id
 Schedule::job(new \App\Jobs\MatchRevenueAppsJob())
-    ->dailyAt('06:45')
+    ->dailyAt('07:30')
     ->withoutOverlapping();
 
 // =============================================================================
