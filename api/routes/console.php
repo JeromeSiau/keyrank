@@ -90,17 +90,17 @@ Schedule::job(new FeaturedAppsCollector())
     ->dailyAt('06:00')
     ->withoutOverlapping();
 
-// Revenue data collector - daily at 6:30 AM
-// Scrapes revenue data from whatsthe.app (RevenueCat verified)
+// Revenue data collector - weekly on Monday at 6:30 AM
+// Scrapes revenue data from marketplace sites (Playwright + stealth)
 Schedule::command('revenue:sync')
-    ->dailyAt('06:30')
+    ->weeklyOn(1, '06:30')
     ->withoutOverlapping()
     ->runInBackground();
 
-// Match revenue apps to our apps table - daily at 7:30 AM (after revenue sync)
+// Match revenue apps to our apps table - weekly on Monday at 7:30 AM (after revenue sync)
 // Creates apps in our DB if they don't exist, links matched_app_id
 Schedule::job(new \App\Jobs\MatchRevenueAppsJob())
-    ->dailyAt('07:30')
+    ->weeklyOn(1, '07:30')
     ->withoutOverlapping();
 
 // =============================================================================
