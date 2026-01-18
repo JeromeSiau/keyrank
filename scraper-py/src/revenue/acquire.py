@@ -1,6 +1,5 @@
 """Scraper for Acquire.com mobile app listings with login support."""
 
-import asyncio
 import re
 
 from ..core.config import settings
@@ -23,40 +22,50 @@ class AcquireScraper(PlaywrightScraper):
     - Individual page extraction
     """
 
-    BASE_URL = "https://acquire.com"
-    LOGIN_URL = "https://acquire.com/login"
-    LISTINGS_URL = "https://acquire.com/all-listings"
+    BASE_URL = "https://app.acquire.com"
+    LOGIN_URL = "https://app.acquire.com/signin"
+    LISTINGS_URL = "https://app.acquire.com/all-listing"
 
     EXTRACTION_INSTRUCTION = """
 Extract mobile app listing data from this Acquire.com sale page.
 
-Extract the following (only if explicitly stated, don't guess):
+ACQUIRE.COM FIELD MAPPING (look for these exact labels):
+- "ASKING PRICE" → asking_price
+- "LAST MONTHS REVENUE" or "LAST MONTH REVENUE" → mrr (Monthly Recurring Revenue)
+- "ANNUAL RECURRING REVENUE" or "ARR" → annual_revenue (use this value)
+- "TTM REVENUE" → annual_revenue (if ARR not present)
+- "LAST MONTHS PROFIT" or "LAST MONTH PROFIT" → monthly_profit
+- "TTM PROFIT" → annual_profit (divide by 12 for monthly_profit if monthly not shown)
+- "CUSTOMERS" → active_subscribers (use the number, e.g., "10-50" → 30)
+- "CHURN RATE" → churn_rate (e.g., "3-5%" → 4)
+- "ANNUAL GROWTH RATE" → mrr_growth
+
+Extract the following:
 - name: App name or listing title
-- platform: 'ios', 'android', or 'both' - look for iOS, Android, iPhone, iPad mentions
-- app_store_url: Apple App Store URL if present
-- play_store_url: Google Play Store URL if present
+- platform: 'ios', 'android', or 'both' - look for iOS, Android, iPhone, iPad, App Store, Play Store mentions
+- app_store_url: Apple App Store URL if present (apps.apple.com/...)
+- play_store_url: Google Play Store URL if present (play.google.com/...)
 - asking_price: The asking/sale price in USD
-- mrr: Monthly Recurring Revenue if stated
-- arr: Annual Recurring Revenue if stated
-- annual_revenue: Yearly revenue/TTM if stated
-- monthly_profit: Monthly profit/net income if stated
-- total_downloads: Total lifetime downloads
-- monthly_downloads: Monthly downloads if stated
-- active_subscribers: Number of paying subscribers
-- active_users: Active users/MAU if stated
-- churn_rate: Monthly churn rate percentage
-- growth_rate: Revenue growth rate percentage
-- category: App category
+- mrr: Monthly Recurring Revenue (from "LAST MONTHS REVENUE")
+- annual_revenue: Annual revenue (from "ANNUAL RECURRING REVENUE" or "TTM REVENUE")
+- monthly_profit: Monthly profit (from "LAST MONTHS PROFIT")
+- total_downloads: Total installs if mentioned
+- active_subscribers: Number of customers/subscribers
+- active_users: Active users if stated
+- churn_rate: Churn rate as number (e.g., "3-5%" → 4)
+- mrr_growth: Growth rate as number (e.g., "0%" → 0, "10%" → 10)
+- category: App category if shown
 - business_model: 'subscription', 'freemium', 'paid', or 'ads'
-- description: Brief description of the app
-- is_mobile_app: TRUE if this is a mobile app (iOS/Android), FALSE otherwise
+- description: Brief description from the listing
+- is_mobile_app: TRUE if iOS/Android mobile app, FALSE for SaaS/web apps
 
 Convert currency values to numbers:
-- "$300,000" -> 300000
-- "$1.5M" -> 1500000
-- "$50K" -> 50000
+- "$7k" or "$7K" → 7000
+- "$534" → 534
+- "$1.5M" → 1500000
+- "$52" → 52
 
-IMPORTANT: Only extract what is visible. Acquire often has confidential listings.
+IMPORTANT: Extract ALL visible financial metrics. Don't skip any revenue/profit numbers.
 """
 
     async def login(self, page) -> bool:
@@ -70,17 +79,23 @@ IMPORTANT: Only extract what is visible. Acquire often has confidential listings
 
         try:
             await page.goto(self.LOGIN_URL)
-            await asyncio.sleep(1)
+            await self.page_delay()
 
-            # Fill login form
-            await page.fill('input[type="email"]', email)
-            await page.fill('input[type="password"]', password)
+            # Fill login form (email field is type=text with placeholder)
+            email_input = page.locator('input[type="text"]')
+            await email_input.fill(email)
+            await self.short_delay()
 
-            # Click login button
-            await page.click('button[type="submit"]')
+            password_input = page.locator('input[type="password"]')
+            await password_input.fill(password)
+            await self.medium_delay()  # Wait for button to enable
 
-            # Wait for redirect to dashboard
-            await page.wait_for_url("**/dashboard**", timeout=10000)
+            # Click login button (uses "Log in" text, not type=submit)
+            login_button = page.locator('button:has-text("Log in")')
+            await login_button.click()
+
+            # Wait for redirect (goes to /browse after login)
+            await page.wait_for_url("**/browse**", timeout=15000)
             print("Successfully logged in to Acquire.com")
             return True
 
@@ -91,25 +106,41 @@ IMPORTANT: Only extract what is visible. Acquire often has confidential listings
     async def get_listing_urls(self, page) -> list[str]:
         """Get all mobile app listing URLs via infinite scroll."""
         await page.goto(self.LISTINGS_URL)
-        await asyncio.sleep(2)
+        await self.page_delay()
 
-        # Filter for mobile apps if filter available
+        # Filter for mobile apps using the dropdown filter
         try:
-            # Look for category/type filter
-            filter_button = page.locator('text=Mobile App')
-            if await filter_button.count() > 0:
-                await filter_button.click()
-                await asyncio.sleep(1)
-        except Exception:
-            pass
+            # Get the first filter dropdown
+            filter_dropdown = page.locator(".dropdown-sort-wrapper.startup-list-filter").first
 
-        # Scroll to load all listings
-        await self.scroll_to_bottom(page, max_scrolls=100, scroll_delay=1.5)
+            # Check if "Mobile app" filter is already selected by looking at dropdown text
+            dropdown_text = await filter_dropdown.inner_text()
 
-        # Extract listing URLs
+            if "Mobile app" in dropdown_text:
+                print("'Mobile app' filter already active")
+            else:
+                # Open dropdown and select Mobile app
+                await filter_dropdown.click()
+                await self.short_delay()
+
+                # Select "Mobile app" option
+                mobile_option = page.locator('text="Mobile app"')
+                if await mobile_option.count() > 0:
+                    await mobile_option.click()
+                    await self.medium_delay()
+                    print("Applied 'Mobile app' filter")
+        except Exception as e:
+            print(f"Could not apply mobile app filter: {e}")
+
+        # Scroll to load all listings (with random delays between scrolls)
+        await self.scroll_to_bottom(page, max_scrolls=100, scroll_delay=(1.5, 3.0))
+
+        # Extract listing URLs (preserve order from page, dedupe while keeping order)
         html = await page.content()
-        urls = re.findall(r'href="(/startup/[^"]+)"', html)
-        urls = list(set(f"{self.BASE_URL}{url}" for url in urls))
+        raw_urls = re.findall(r'href="(/startup/[^"]+)"', html)
+        # Use dict.fromkeys() to deduplicate while preserving insertion order
+        full_urls = [f"{self.BASE_URL}{url}" for url in raw_urls]
+        urls = list(dict.fromkeys(full_urls))
 
         return urls
 
@@ -188,7 +219,8 @@ IMPORTANT: Only extract what is visible. Acquire often has confidential listings
                     if (i + 1) % 10 == 0:
                         print(f"Progress: {i + 1}/{len(urls_to_process)}, {len(apps)} apps")
 
-                    await asyncio.sleep(0.5)
+                    # Random delay between pages to avoid detection
+                    await self.long_delay()
 
         print(f"Completed: {len(apps)} apps, {len(skipped_urls_list)} skipped")
         return apps, skipped_urls_list
@@ -249,7 +281,7 @@ IMPORTANT: Only extract what is visible. Acquire often has confidential listings
             active_subscribers=extracted.active_subscribers,
             active_users=extracted.active_users,
             churn_rate=extracted.churn_rate,
-            growth_rate_mom=extracted.growth_rate,
+            growth_rate_mom=extracted.mrr_growth,
             category=extracted.category,
             business_model=biz_model,
             description=extracted.description,

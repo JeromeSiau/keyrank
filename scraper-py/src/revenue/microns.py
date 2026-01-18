@@ -1,6 +1,5 @@
 """Scraper for microns.io revenue data using Playwright + LLM extraction."""
 
-import asyncio
 import re
 import xml.etree.ElementTree as ET
 
@@ -141,7 +140,8 @@ IMPORTANT:
                     if (i + 1) % 20 == 0:
                         print(f"Progress: {i + 1}/{len(urls_to_process)} pages, {len(apps)} apps")
 
-                    await asyncio.sleep(0.3)
+                    # Random delay between pages to avoid detection
+                    await self.medium_delay()
 
         print(f"Completed: {len(apps)} apps, {len(skipped_urls_list)} skipped")
         return apps, skipped_urls_list

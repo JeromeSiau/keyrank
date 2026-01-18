@@ -1,10 +1,7 @@
 """Scraper for whatsthe.app revenue data using Playwright + LLM extraction."""
 
-import asyncio
 import re
 import xml.etree.ElementTree as ET
-
-import httpx
 
 from ..core.config import settings
 from ..core.playwright_scraper import PlaywrightScraper
@@ -162,7 +159,8 @@ Return a single object (not an array) since this is a single app page.
                     if (i + 1) % 10 == 0:
                         print(f"Progress: {i + 1}/{len(urls_to_process)} pages, {len(apps)} apps")
 
-                    await asyncio.sleep(0.3)
+                    # Random delay between pages to avoid detection
+                    await self.medium_delay()
 
         print(f"Completed: {len(apps)} apps from {len(urls_to_process)} pages")
         return apps, []

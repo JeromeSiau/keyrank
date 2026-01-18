@@ -1,6 +1,5 @@
 """Scraper for Flippa mobile app listings using Playwright + LLM extraction."""
 
-import asyncio
 import re
 
 from ..core.playwright_scraper import PlaywrightScraper
@@ -59,7 +58,7 @@ IMPORTANT: Many Flippa listings are confidential with limited data. Only extract
 
         # Navigate to search page
         await page.goto(f"{self.SEARCH_URL}?filter[property_type]=ios_app,android_app")
-        await asyncio.sleep(1)
+        await self.page_delay()
 
         page_num = 1
         consecutive_empty = 0
@@ -92,7 +91,7 @@ IMPORTANT: Many Flippa listings are confidential with limited data. Only extract
                 if await next_button.count() == 0:
                     break
                 await next_button.click()
-                await asyncio.sleep(1)
+                await self.medium_delay()
             except Exception:
                 break
 
@@ -173,7 +172,8 @@ IMPORTANT: Many Flippa listings are confidential with limited data. Only extract
                     if (i + 1) % 10 == 0:
                         print(f"Progress: {i + 1}/{len(ids_to_process)}, {len(apps)} apps")
 
-                    await asyncio.sleep(0.5)
+                    # Random delay between pages to avoid detection
+                    await self.long_delay()
 
         print(f"Completed: {len(apps)} apps, {len(skipped_urls_list)} skipped")
         return apps, skipped_urls_list

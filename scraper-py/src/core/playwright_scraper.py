@@ -1,6 +1,7 @@
 """Base class for Playwright-based scrapers with stealth support."""
 
 import asyncio
+import random
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
@@ -21,11 +22,18 @@ class PlaywrightScraper(ABC):
     - Proxy rotation support
     - LLM-based extraction
     - Cookie/session management for login-based scrapers
+    - Human-like random delays to avoid detection
     """
 
     DEFAULT_HEADERS = {
         "Accept-Language": "en-US,en;q=0.9",
     }
+
+    # Delay ranges for human-like behavior (in seconds)
+    DELAY_SHORT = (0.3, 0.8)  # Quick actions (clicks, typing)
+    DELAY_MEDIUM = (1.0, 2.5)  # Between page actions
+    DELAY_LONG = (2.0, 5.0)  # Between page navigations
+    DELAY_PAGE = (1.5, 4.0)  # After loading a new page
 
     def __init__(
         self,
@@ -78,6 +86,41 @@ class PlaywrightScraper(ABC):
             await self._playwright.stop()
             self._playwright = None
 
+    # -------------------------------------------------------------------------
+    # Human-like delay methods
+    # -------------------------------------------------------------------------
+
+    async def random_delay(self, delay_range: tuple[float, float] | None = None) -> None:
+        """Sleep for a random duration to appear human-like.
+
+        Args:
+            delay_range: Tuple of (min, max) seconds. Defaults to DELAY_MEDIUM.
+        """
+        if delay_range is None:
+            delay_range = self.DELAY_MEDIUM
+        delay = random.uniform(delay_range[0], delay_range[1])
+        await asyncio.sleep(delay)
+
+    async def short_delay(self) -> None:
+        """Short delay for quick actions like clicks."""
+        await self.random_delay(self.DELAY_SHORT)
+
+    async def medium_delay(self) -> None:
+        """Medium delay between page actions."""
+        await self.random_delay(self.DELAY_MEDIUM)
+
+    async def long_delay(self) -> None:
+        """Long delay between page navigations."""
+        await self.random_delay(self.DELAY_LONG)
+
+    async def page_delay(self) -> None:
+        """Delay after loading a new page."""
+        await self.random_delay(self.DELAY_PAGE)
+
+    # -------------------------------------------------------------------------
+    # Browser context and page management
+    # -------------------------------------------------------------------------
+
     @asynccontextmanager
     async def new_context(
         self,
@@ -124,39 +167,48 @@ class PlaywrightScraper(ABC):
         finally:
             await page.close()
 
-    async def get_page_html(self, page: Page, url: str, wait_until: str = "domcontentloaded") -> str:
+    async def get_page_html(
+        self,
+        page: Page,
+        url: str,
+        wait_until: str = "domcontentloaded",
+        add_delay: bool = True,
+    ) -> str:
         """Navigate to URL and return page HTML.
 
         Args:
             page: Playwright page
             url: URL to navigate to
             wait_until: Wait strategy - "domcontentloaded", "load", or "networkidle"
+            add_delay: Whether to add a random delay after loading (default: True)
 
         Returns:
             Page HTML content
         """
         await page.goto(url, wait_until=wait_until)
+        if add_delay:
+            await self.page_delay()
         return await page.content()
 
     async def scroll_to_bottom(
         self,
         page: Page,
         max_scrolls: int = 50,
-        scroll_delay: float = 1.0,
+        scroll_delay: tuple[float, float] = (1.0, 2.5),
     ) -> None:
-        """Scroll page to load infinite scroll content.
+        """Scroll page to load infinite scroll content with random delays.
 
         Args:
             page: Playwright page
             max_scrolls: Maximum number of scroll iterations
-            scroll_delay: Delay between scrolls in seconds
+            scroll_delay: Tuple of (min, max) delay between scrolls in seconds
         """
         last_height = 0
 
         for _ in range(max_scrolls):
             # Scroll to bottom
             await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-            await asyncio.sleep(scroll_delay)
+            await self.random_delay(scroll_delay)
 
             # Check if we've reached the bottom
             new_height = await page.evaluate("document.body.scrollHeight")
