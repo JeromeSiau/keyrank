@@ -29,7 +29,7 @@ class PlaywrightScraper(ABC):
 
     def __init__(
         self,
-        timeout: float = 30.0,
+        timeout: float = 60.0,
         max_concurrent: int = 3,
         headless: bool = True,
     ):
@@ -124,17 +124,18 @@ class PlaywrightScraper(ABC):
         finally:
             await page.close()
 
-    async def get_page_html(self, page: Page, url: str) -> str:
+    async def get_page_html(self, page: Page, url: str, wait_until: str = "domcontentloaded") -> str:
         """Navigate to URL and return page HTML.
 
         Args:
             page: Playwright page
             url: URL to navigate to
+            wait_until: Wait strategy - "domcontentloaded", "load", or "networkidle"
 
         Returns:
             Page HTML content
         """
-        await page.goto(url, wait_until="networkidle")
+        await page.goto(url, wait_until=wait_until)
         return await page.content()
 
     async def scroll_to_bottom(

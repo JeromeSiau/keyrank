@@ -1,14 +1,13 @@
-"""Scraper for whatsthe.app revenue data using LLM extraction."""
+"""Scraper for whatsthe.app revenue data using Playwright + LLM extraction."""
 
 import asyncio
 import re
 import xml.etree.ElementTree as ET
-from typing import Any
 
 import httpx
 
 from ..core.config import settings
-from ..core.llm_extractor import LLMExtractor
+from ..core.playwright_scraper import PlaywrightScraper
 from ..core.proxy import ProxyRouter
 from .models import (
     BusinessModel,
@@ -19,22 +18,16 @@ from .models import (
 from .schemas import ExtractedApp
 
 
-class WhatsTheAppScraper:
+class WhatsTheAppScraper(PlaywrightScraper):
     """Scraper for whatsthe.app marketplace.
 
     whatsthe.app displays RevenueCat-verified revenue data for mobile apps.
-    Uses sitemap to discover apps and LLM extraction for individual pages.
+    Uses sitemap to discover apps and Playwright + LLM for extraction.
     """
 
     BASE_URL = "https://whatsthe.app"
     SITEMAP_URL = "https://whatsthe.app/sitemap.xml"
-    DEFAULT_HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-    }
 
-    # URLs to exclude (not app pages)
     EXCLUDED_PATTERNS = [
         r"^https://whatsthe\.app$",
         r"/apps-for-sale",
@@ -91,25 +84,13 @@ Convert:
 Return a single object (not an array) since this is a single app page.
 """
 
-    def __init__(self, timeout: float = 30.0, max_concurrent: int = 5):
-        self.timeout = timeout
-        self.max_concurrent = max_concurrent
-        self._extractor = LLMExtractor()
-        self._proxy = ProxyRouter.from_env(settings.proxy_list)
-        if self._proxy.has_proxies:
-            print("WhatsTheAppScraper: Using proxy rotation")
-
     async def get_app_urls(self) -> list[str]:
-        """Fetch sitemap and extract app URLs."""
-        async with self._proxy.get_httpx_client(
-            timeout=self.timeout,
-            headers=self.DEFAULT_HEADERS,
-            follow_redirects=True,
-        ) as client:
+        """Fetch sitemap and extract app URLs (uses httpx - no JS needed)."""
+        proxy = ProxyRouter.from_env(settings.proxy_list)
+        async with proxy.get_httpx_client(timeout=30.0, follow_redirects=True) as client:
             response = await client.get(self.SITEMAP_URL)
             response.raise_for_status()
 
-        # Parse XML
         root = ET.fromstring(response.text)
         namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
@@ -128,21 +109,12 @@ Return a single object (not an array) since this is a single app page.
                 return True
         return False
 
-    async def scrape_app_page(
-        self,
-        client: httpx.AsyncClient,
-        url: str,
-    ) -> RevenueApp | None:
-        """Scrape a single app page."""
+    async def scrape_app_page(self, page, url: str) -> RevenueApp | None:
+        """Scrape a single app page using Playwright."""
         try:
-            response = await client.get(url)
-            response.raise_for_status()
-            html = response.text
-
-            # Extract app slug from URL for source_id
+            html = await self.get_page_html(page, url)
             slug = url.replace(self.BASE_URL, "").strip("/")
 
-            # Use LLM to extract data
             extracted_list = await self._extractor.extract_from_html(
                 html=html,
                 schema=ExtractedApp,
@@ -152,8 +124,7 @@ Return a single object (not an array) since this is a single app page.
             if not extracted_list:
                 return None
 
-            extracted = extracted_list[0]
-            return self._to_revenue_app(extracted, slug, url)
+            return self._to_revenue_app(extracted_list[0], slug, url)
 
         except Exception as e:
             print(f"Error scraping {url}: {e}")
@@ -164,22 +135,12 @@ Return a single object (not an array) since this is a single app page.
         limit: int | None = None,
         skip_urls: set[str] | None = None,
     ) -> tuple[list[RevenueApp], list[str]]:
-        """Scrape all apps from whatsthe.app using sitemap.
-
-        Args:
-            limit: Optional limit on number of apps to scrape (for testing)
-            skip_urls: Set of URLs to skip (already processed)
-
-        Returns:
-            Tuple of (apps, skipped_urls) where skipped_urls are non-mobile-app URLs
-        """
+        """Scrape all apps from whatsthe.app using Playwright."""
         skip_urls = skip_urls or set()
 
-        # Get app URLs from sitemap
         app_urls = await self.get_app_urls()
         print(f"Found {len(app_urls)} app URLs in sitemap")
 
-        # Filter out already processed URLs
         urls_to_process = [url for url in app_urls if url not in skip_urls]
         skipped_count = len(app_urls) - len(urls_to_process)
         if skipped_count > 0:
@@ -189,49 +150,37 @@ Return a single object (not an array) since this is a single app page.
             urls_to_process = urls_to_process[:limit]
             print(f"Limiting to {limit} apps for this run")
 
-        # Scrape apps with concurrency limit
-        semaphore = asyncio.Semaphore(self.max_concurrent)
         apps: list[RevenueApp] = []
 
-        async def scrape_with_semaphore(url: str) -> RevenueApp | None:
-            async with semaphore:
-                async with self._proxy.get_httpx_client(
-                    timeout=self.timeout,
-                    headers=self.DEFAULT_HEADERS,
-                    follow_redirects=True,
-                ) as client:
-                    return await self.scrape_app_page(client, url)
+        async with self.new_context() as context:
+            async with self.new_page(context) as page:
+                for i, url in enumerate(urls_to_process):
+                    app = await self.scrape_app_page(page, url)
+                    if app:
+                        apps.append(app)
 
-        tasks = [scrape_with_semaphore(url) for url in urls_to_process]
+                    if (i + 1) % 10 == 0:
+                        print(f"Progress: {i + 1}/{len(urls_to_process)} pages, {len(apps)} apps")
 
-        for i, coro in enumerate(asyncio.as_completed(tasks)):
-            result = await coro
-            if result:
-                apps.append(result)
-            if (i + 1) % 10 == 0:
-                print(f"Progress: {i + 1}/{len(urls_to_process)} pages scraped, {len(apps)} apps found")
+                    await asyncio.sleep(0.3)
 
-        print(f"Completed: {len(apps)} apps extracted from {len(urls_to_process)} pages")
-        # whatsthe.app is all mobile apps (RevenueCat), no skipped URLs
+        print(f"Completed: {len(apps)} apps from {len(urls_to_process)} pages")
         return apps, []
 
     def _to_revenue_app(self, extracted: ExtractedApp, slug: str, url: str) -> RevenueApp:
         """Convert ExtractedApp to RevenueApp."""
-        # Extract Apple ID from URL
         apple_id = None
         if extracted.app_store_url:
             match = re.search(r"/id(\d+)", extracted.app_store_url)
             if match:
                 apple_id = match.group(1)
 
-        # Extract bundle ID from Play Store URL
         bundle_id = None
         if extracted.play_store_url:
             match = re.search(r"id=([^&]+)", extracted.play_store_url)
             if match:
                 bundle_id = match.group(1)
 
-        # Determine platform
         platform = Platform.IOS
         if extracted.platform == "android":
             platform = Platform.ANDROID
@@ -256,7 +205,7 @@ Return a single object (not an array) since this is a single app page.
             monthly_revenue_cents=int(extracted.monthly_revenue * 100) if extracted.monthly_revenue else None,
             annual_revenue_cents=int(extracted.annual_revenue * 100) if extracted.annual_revenue else None,
             currency="USD",
-            revenue_verified=True,  # whatsthe.app is RevenueCat verified
+            revenue_verified=True,
             credential_type=CredentialType.REVENUECAT_VERIFIED,
             monthly_downloads=extracted.monthly_downloads,
             total_downloads=extracted.total_downloads,
@@ -280,11 +229,6 @@ async def scrape_whatstheapp(
     limit: int | None = None,
     skip_urls: set[str] | None = None,
 ) -> tuple[list[RevenueApp], list[str]]:
-    """Convenience function to scrape whatsthe.app.
-
-    Args:
-        limit: Optional limit on number of apps to scrape (for testing)
-        skip_urls: Set of URLs to skip (already processed)
-    """
-    scraper = WhatsTheAppScraper()
-    return await scraper.scrape_all(limit=limit, skip_urls=skip_urls)
+    """Convenience function to scrape whatsthe.app."""
+    async with WhatsTheAppScraper() as scraper:
+        return await scraper.scrape_all(limit=limit, skip_urls=skip_urls)
