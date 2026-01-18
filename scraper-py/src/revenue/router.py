@@ -5,6 +5,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+from .acquire import AcquireScraper
 from .appbusinessbrokers import AppBusinessBrokersScraper
 from .flippa import FlippaScraper
 from .microns import MicronsScraper
@@ -269,6 +270,58 @@ async def scrape_microns_raw(limit: int | None = None):
             "count": len(apps),
             "apps": [app.model_dump() for app in apps],
         }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
+@router.post("/acquire")
+async def scrape_acquire_endpoint(request: ScrapeRequest = ScrapeRequest()):
+    """Scrape mobile apps from Acquire.com.
+
+    Requires login credentials configured in environment.
+    Returns a list of mobile apps for sale with their revenue metrics.
+    Note: Data is self-reported by sellers.
+    """
+    started_at = datetime.utcnow()
+
+    try:
+        async with AcquireScraper() as scraper:
+            apps, skipped_urls = await scraper.scrape_all(
+                limit=request.limit,
+                skip_urls=set(request.skip_urls),
+            )
+
+        result = ScrapeResult(
+            source="acquire",
+            success=True,
+            apps_found=len(apps),
+            started_at=started_at,
+            completed_at=datetime.utcnow(),
+            apps=apps,
+        )
+
+        return {
+            "success": True,
+            "source": "acquire",
+            "count": len(apps),
+            "apps": [serialize_app(app) for app in apps],
+            "skipped_urls": skipped_urls,
+            "scraped_at": result.completed_at.isoformat() if result.completed_at else None,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
+@router.get("/acquire/raw")
+async def scrape_acquire_raw(limit: int | None = None):
+    """Scrape Acquire.com and return raw Pydantic models."""
+    try:
+        async with AcquireScraper() as scraper:
+            apps, skipped = await scraper.scrape_all(limit=limit)
+
+        return {"apps": [app.model_dump() for app in apps], "skipped_urls": skipped}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
