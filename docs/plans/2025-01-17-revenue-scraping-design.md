@@ -59,17 +59,15 @@ METADATA
 └── scraped_at         # Date du scraping
 ```
 
-### Données enrichies (depuis nos APIs)
+### Enrichissement automatique
 
-```
-ASO METRICS (via iTunes API / nos données)
-├── current_rating         # Note actuelle
-├── rating_count           # Nombre d'avis
-├── keyword_rankings[]     # Positions sur keywords principaux
-├── category_rank          # Rang dans sa catégorie
-├── top_charts_history[]   # Historique top charts
-└── review_sentiment       # Score sentiment moyen
-```
+Quand on matche un `apple_id` ou `bundle_id` :
+
+1. **Vérifier** si l'app existe dans notre table `apps`
+2. **Créer l'app** si elle n'existe pas (via iTunes/Play Store lookup)
+3. **Linker** `revenue_apps.matched_app_id` → `apps.id`
+
+Les collectors existants (RatingsCollector, ReviewsCollector, RankingsCollector) enrichissent automatiquement l'app liée. Pas besoin de pipeline d'enrichissement custom.
 
 ---
 
@@ -372,10 +370,10 @@ async def scrape_acquire(email: str, password: str):
 
 ## Schéma base de données
 
-### Table `revenue_benchmarks`
+### Table `revenue_apps` ✅ (implémentée)
 
 ```sql
-CREATE TABLE revenue_benchmarks (
+CREATE TABLE revenue_apps (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     -- Identification
@@ -391,50 +389,47 @@ CREATE TABLE revenue_benchmarks (
     platform ENUM('ios', 'android', 'both') DEFAULT 'ios',
 
     -- Financials (stockés en cents pour précision)
+    mrr_cents BIGINT NULL,
     monthly_revenue_cents BIGINT NULL,
-    annual_revenue_cents BIGINT NULL,
-    monthly_profit_cents BIGINT NULL,
-    annual_profit_cents BIGINT NULL,
+    arr_cents BIGINT NULL,
     asking_price_cents BIGINT NULL,
-    currency VARCHAR(3) DEFAULT 'USD',
     revenue_verified BOOLEAN DEFAULT FALSE,
+    credential_type VARCHAR(50) DEFAULT 'unknown',
 
     -- Users & Growth
     monthly_downloads INT NULL,
-    total_downloads BIGINT NULL,
-    active_users INT NULL,
-    paid_subscribers INT NULL,
-    churn_rate DECIMAL(5,2) NULL,
-    growth_rate DECIMAL(5,2) NULL,
+    active_subscribers INT NULL,
+    active_trials INT NULL,
+    new_customers INT NULL,
 
     -- Metadata
-    category VARCHAR(100) NULL,
-    business_model ENUM('subscription', 'freemium', 'paid', 'ads', 'hybrid') NULL,
-    app_age_months INT NULL,
-    listing_date DATE NULL,
+    business_model ENUM('subscription', 'one_time', 'freemium', 'free', 'unknown') NULL,
+    is_for_sale BOOLEAN DEFAULT FALSE,
+    description TEXT NULL,
+    logo_url VARCHAR(500) NULL,
 
-    -- ASO Enrichment (from our data)
-    current_rating DECIMAL(2,1) NULL,
-    rating_count INT NULL,
-    category_rank INT NULL,
+    -- Linking (enrichissement via apps liée)
     matched_app_id BIGINT NULL,            -- FK vers notre table apps
 
     -- Timestamps
-    scraped_at TIMESTAMP NOT NULL,
-    enriched_at TIMESTAMP NULL,
+    scraped_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     -- Indexes
     UNIQUE KEY unique_source_listing (source, source_id),
     INDEX idx_apple_id (apple_id),
-    INDEX idx_category (category),
-    INDEX idx_revenue (monthly_revenue_cents),
+    INDEX idx_bundle_id (bundle_id),
+    INDEX idx_mrr (mrr_cents),
     INDEX idx_matched_app (matched_app_id)
 );
 ```
 
-### Table `revenue_scrape_logs`
+> **Note:** Les données ASO (rating, reviews, rankings) viennent de l'app liée via `matched_app_id`. Pas de duplication.
+
+### Table `revenue_scrape_logs` (optionnel, future)
+
+Pour le monitoring des runs de scraping. Pas prioritaire.
 
 ```sql
 CREATE TABLE revenue_scrape_logs (
@@ -453,9 +448,9 @@ CREATE TABLE revenue_scrape_logs (
 
 ---
 
-## Pipeline d'enrichissement
+## Pipeline de matching
 
-### Étape 1 : Extraction App Store ID
+### Extraction App Store ID
 
 ```python
 def extract_apple_id(url: str) -> str | None:
@@ -465,55 +460,17 @@ def extract_apple_id(url: str) -> str | None:
     return match.group(1) if match else None
 ```
 
-### Étape 2 : Matching avec notre DB
+### Auto-création et linking
 
-```sql
--- Matcher par apple_id
-UPDATE revenue_benchmarks rb
-JOIN apps a ON rb.apple_id = a.apple_id
-SET rb.matched_app_id = a.id,
-    rb.current_rating = a.rating,
-    rb.rating_count = a.rating_count,
-    rb.enriched_at = NOW()
-WHERE rb.matched_app_id IS NULL AND rb.apple_id IS NOT NULL;
-```
+Après chaque sync, un job Laravel :
 
-### Étape 3 : Enrichissement iTunes API + Play Store
+1. Cherche les `revenue_apps` sans `matched_app_id`
+2. Pour chaque app avec `apple_id` ou `bundle_id` :
+   - Vérifie si l'app existe dans `apps`
+   - Si non, la crée via iTunes/Play Store lookup
+   - Met à jour `matched_app_id`
 
-Pour les apps non matchées :
-
-```php
-// App\Jobs\EnrichRevenueBenchmark.php
-public function handle()
-{
-    $benchmark = $this->benchmark;
-
-    // iOS - iTunes API
-    if ($benchmark->apple_id && !$benchmark->matched_app_id) {
-        $data = $this->itunesApi->lookup($benchmark->apple_id);
-
-        $benchmark->update([
-            'current_rating' => $data['averageUserRating'] ?? null,
-            'rating_count' => $data['userRatingCount'] ?? null,
-            'category' => $data['primaryGenreName'] ?? $benchmark->category,
-            'enriched_at' => now(),
-        ]);
-    }
-
-    // Android - Play Store scraping (pas d'API officielle)
-    if ($benchmark->bundle_id && $benchmark->platform !== 'ios') {
-        $data = $this->playStoreScraper->lookup($benchmark->bundle_id);
-
-        $benchmark->update([
-            'current_rating' => $data['rating'] ?? null,
-            'rating_count' => $data['ratingCount'] ?? null,
-            'total_downloads' => $data['installs'] ?? $benchmark->total_downloads,
-            'category' => $data['category'] ?? $benchmark->category,
-            'enriched_at' => now(),
-        ]);
-    }
-}
-```
+Les collectors existants enrichissent automatiquement les apps liées.
 
 ---
 
@@ -574,39 +531,38 @@ Approche :
 
 ## Plan d'implémentation
 
-### Phase 0 : Migration Google Play Scraper (2-4h)
+### Phase 0 : Migration Google Play Scraper ✅
 
-- [ ] Créer projet Python `scraper-py/` avec FastAPI
-- [ ] Installer `google-play-scraper` + dépendances
-- [ ] Migrer les 7 routes existantes
-- [ ] Tester la parité avec le scraper Node
-- [ ] Mettre à jour les appels depuis Laravel
-- [ ] Archiver `scraper/` (Node)
+- [x] Créer projet Python `scraper-py/` avec FastAPI
+- [x] Custom batchexecute parser (pas de lib externe)
+- [x] Migrer les 7 routes existantes
+- [x] Tester la parité avec le scraper Node
+- [x] Mettre à jour les appels depuis Laravel
+- [x] Archiver `scraper/` (Node)
 
-### Phase 1 : Infrastructure (1-2 jours)
+### Phase 1 : Infrastructure ✅
 
-- [ ] Créer les migrations Laravel pour les tables
-- [ ] Setup proxy router avec rotation
-- [ ] Installer Crawl4AI + Playwright
-- [ ] Créer les modèles Pydantic de validation
-- [ ] Configurer .env avec proxies
+- [x] Créer migration Laravel `revenue_apps`
+- [x] Setup proxy router avec rotation (`src/core/proxy.py`)
+- [x] Créer les modèles Pydantic de validation
+- [x] Configurer .env avec proxies
+- [x] CRON `revenue:sync` dans Laravel scheduler
 
-### Phase 2 : Scrapers Marketplaces (4-6 jours)
+### Phase 2 : Scrapers Marketplaces (en cours)
 
-- [ ] Scraper whatsthe.app (plus simple, valider le flow)
-- [ ] Scraper AppBusinessBrokers
-- [ ] Scraper Microns
-- [ ] Scraper Flippa (API intercept)
-- [ ] Scraper Acquire.com (auth + SPA)
-- [ ] Tests et validation des données
+- [x] Scraper whatsthe.app (~50 apps, RevenueCat verified)
+- [ ] Scraper Flippa (~1000 apps, API intercept)
+- [ ] Scraper Acquire.com (~200 apps, auth + SPA)
+- [ ] Scraper AppBusinessBrokers (~50 apps, HTML simple)
+- [ ] Scraper Microns (~100 apps, HTML simple)
 
-### Phase 3 : Pipeline (2-3 jours)
+### Phase 3 : Pipeline ✅
 
-- [ ] Job d'import des données scrapées vers Laravel
-- [ ] Extraction des Apple IDs depuis URLs
-- [ ] Matching avec notre table apps
-- [ ] Enrichissement via iTunes API
-- [ ] Dashboard admin pour monitoring
+- [x] Job d'import des données scrapées vers Laravel
+- [x] Extraction des Apple IDs depuis URLs
+- [x] Auto-création des apps dans `apps` si matchées (`MatchRevenueAppsJob`)
+- [x] Linking `revenue_apps.matched_app_id` → `apps.id`
+- [ ] (optionnel) Table `revenue_scrape_logs` pour monitoring
 
 ### Phase 4 : Analyse (future)
 

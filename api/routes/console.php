@@ -90,6 +90,19 @@ Schedule::job(new FeaturedAppsCollector())
     ->dailyAt('06:00')
     ->withoutOverlapping();
 
+// Revenue data collector - daily at 6:30 AM
+// Scrapes revenue data from whatsthe.app (RevenueCat verified)
+Schedule::command('revenue:sync')
+    ->dailyAt('06:30')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Match revenue apps to our apps table - daily at 6:45 AM (after revenue sync)
+// Creates apps in our DB if they don't exist, links matched_app_id
+Schedule::job(new \App\Jobs\MatchRevenueAppsJob())
+    ->dailyAt('06:45')
+    ->withoutOverlapping();
+
 // =============================================================================
 // V2 AI & Intelligence Jobs
 // =============================================================================
