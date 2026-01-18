@@ -3,9 +3,7 @@
 import re
 import xml.etree.ElementTree as ET
 
-from ..core.config import settings
 from ..core.playwright_scraper import PlaywrightScraper
-from ..core.proxy import ProxyRouter
 from .models import (
     BusinessModel,
     CredentialType,
@@ -49,14 +47,22 @@ IMPORTANT: Only extract data that is explicitly stated. Don't guess or infer val
 Convert all revenue/price values to numbers (e.g., "$80K" = 80000, "$1.5M" = 1500000).
 """
 
-    async def get_listing_urls(self) -> list[str]:
-        """Fetch sitemap and extract listing URLs (uses httpx - no JS needed)."""
-        proxy = ProxyRouter.from_env(settings.proxy_list)
-        async with proxy.get_httpx_client(timeout=30.0, follow_redirects=True) as client:
-            response = await client.get(self.SITEMAP_URL)
-            response.raise_for_status()
+    async def get_listing_urls(self, page) -> list[str]:
+        """Fetch sitemap and extract listing URLs using Playwright."""
+        response = await page.goto(self.SITEMAP_URL)
+        if not response or response.status != 200:
+            raise Exception(f"Failed to fetch sitemap: {response.status if response else 'no response'}")
 
-        root = ET.fromstring(response.text)
+        content = await page.content()
+        # Extract XML from page (browser may wrap it in HTML)
+        xml_match = re.search(r'<\?xml.*?</urlset>', content, re.DOTALL)
+        if xml_match:
+            xml_content = xml_match.group(0)
+        else:
+            # Try to get raw body text
+            xml_content = await page.locator('body').inner_text()
+
+        root = ET.fromstring(xml_content)
         namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
         urls = []
@@ -105,24 +111,24 @@ Convert all revenue/price values to numbers (e.g., "$80K" = 80000, "$1.5M" = 150
     ) -> tuple[list[RevenueApp], list[str]]:
         """Scrape all app listings from appbusinessbrokers.com using Playwright."""
         skip_urls = skip_urls or set()
-
-        listing_urls = await self.get_listing_urls()
-        print(f"Found {len(listing_urls)} listings in sitemap")
-
-        urls_to_process = [url for url in listing_urls if url not in skip_urls]
-        skipped_count = len(listing_urls) - len(urls_to_process)
-        if skipped_count > 0:
-            print(f"Skipping {skipped_count} already processed URLs")
-
-        if limit:
-            urls_to_process = urls_to_process[:limit]
-            print(f"Limiting to {limit} listings for this run")
-
         apps: list[RevenueApp] = []
         skipped_urls_list: list[str] = []
 
         async with self.new_context() as context:
             async with self.new_page(context) as page:
+                # Fetch sitemap using Playwright (with stealth)
+                listing_urls = await self.get_listing_urls(page)
+                print(f"Found {len(listing_urls)} listings in sitemap")
+
+                urls_to_process = [url for url in listing_urls if url not in skip_urls]
+                skipped_count = len(listing_urls) - len(urls_to_process)
+                if skipped_count > 0:
+                    print(f"Skipping {skipped_count} already processed URLs")
+
+                if limit:
+                    urls_to_process = urls_to_process[:limit]
+                    print(f"Limiting to {limit} listings for this run")
+
                 for i, url in enumerate(urls_to_process):
                     app, is_skipped = await self.scrape_listing_page(page, url)
                     if app:
