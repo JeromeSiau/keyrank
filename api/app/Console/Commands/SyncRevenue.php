@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 class SyncRevenue extends Command
 {
     protected $signature = 'revenue:sync
-        {--source=all : Source to sync (whatstheapp, appbusinessbrokers, flippa, microns, all)}
+        {--source=all : Source to sync (whatstheapp, appbusinessbrokers, flippa, microns, acquire, all)}
         {--limit= : Limit number of apps to scrape per source (for testing)}
         {--dry-run : Show what would be synced without saving}';
 
@@ -61,6 +61,11 @@ class SyncRevenue extends Command
         // Sync microns.io
         if ($source === 'all' || $source === 'microns') {
             $this->syncSource($service, 'microns', 'syncMicrons', $dryRun, $limit, $totalSynced, $totalCreated, $totalUpdated, $allErrors);
+        }
+
+        // Sync acquire.com
+        if ($source === 'all' || $source === 'acquire') {
+            $this->syncSource($service, 'acquire', 'syncAcquire', $dryRun, $limit, $totalSynced, $totalCreated, $totalUpdated, $allErrors);
         }
 
         $this->newLine();

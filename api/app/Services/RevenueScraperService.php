@@ -58,6 +58,16 @@ class RevenueScraperService
     }
 
     /**
+     * Sync revenue data from Acquire.com
+     *
+     * @return array{synced: int, created: int, updated: int, errors: array}
+     */
+    public function syncAcquire(?int $limit = null): array
+    {
+        return $this->syncFromEndpoint('acquire', '/revenue/acquire', $limit);
+    }
+
+    /**
      * Get all existing URLs for a source (from both apps and skipped)
      */
     private function getExistingUrls(string $source): array
