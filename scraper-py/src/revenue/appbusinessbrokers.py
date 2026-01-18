@@ -3,6 +3,8 @@
 import re
 import xml.etree.ElementTree as ET
 
+import httpx
+
 from ..core.playwright_scraper import PlaywrightScraper
 from .models import (
     BusinessModel,
@@ -47,17 +49,13 @@ IMPORTANT: Only extract data that is explicitly stated. Don't guess or infer val
 Convert all revenue/price values to numbers (e.g., "$80K" = 80000, "$1.5M" = 1500000).
 """
 
-    async def get_listing_urls(self, page) -> list[str]:
-        """Fetch sitemap and extract listing URLs using Playwright."""
-        response = await page.goto(self.SITEMAP_URL)
-        if not response or response.status != 200:
-            raise Exception(f"Failed to fetch sitemap: {response.status if response else 'no response'}")
+    async def get_listing_urls(self) -> list[str]:
+        """Fetch sitemap and extract listing URLs (httpx - no XSLT transformation)."""
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+            response = await client.get(self.SITEMAP_URL)
+            response.raise_for_status()
 
-        # Get raw body from response (not page.content() which is rendered HTML)
-        body = await response.body()
-        xml_content = body.decode("utf-8")
-
-        root = ET.fromstring(xml_content)
+        root = ET.fromstring(response.text)
         namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
         urls = []
@@ -109,11 +107,12 @@ Convert all revenue/price values to numbers (e.g., "$80K" = 80000, "$1.5M" = 150
         apps: list[RevenueApp] = []
         skipped_urls_list: list[str] = []
 
+        # Fetch sitemap with httpx (site doesn't block, and Playwright applies XSLT)
+        listing_urls = await self.get_listing_urls()
+        print(f"Found {len(listing_urls)} listings in sitemap")
+
         async with self.new_context() as context:
             async with self.new_page(context) as page:
-                # Fetch sitemap using Playwright (with stealth)
-                listing_urls = await self.get_listing_urls(page)
-                print(f"Found {len(listing_urls)} listings in sitemap")
 
                 urls_to_process = [url for url in listing_urls if url not in skip_urls]
                 skipped_count = len(listing_urls) - len(urls_to_process)
