@@ -85,14 +85,9 @@ Return a single object (not an array) since this is a single app page.
         if not response or response.status != 200:
             raise Exception(f"Failed to fetch sitemap: {response.status if response else 'no response'}")
 
-        content = await page.content()
-        # Extract XML from page (browser may wrap it in HTML)
-        xml_match = re.search(r'<\?xml.*?</urlset>', content, re.DOTALL)
-        if xml_match:
-            xml_content = xml_match.group(0)
-        else:
-            # Try to get raw body text
-            xml_content = await page.locator('body').inner_text()
+        # Get raw body from response (not page.content() which is rendered HTML)
+        body = await response.body()
+        xml_content = body.decode("utf-8")
 
         root = ET.fromstring(xml_content)
         namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
