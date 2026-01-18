@@ -1,0 +1,27 @@
+[Unit]
+Description=Keyrank Scraper API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/keyrank/scraper-py
+Environment="PATH=/var/www/keyrank/scraper-py/.venv/bin"
+ExecStart=/var/www/keyrank/scraper-py/.venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8001
+Restart=always
+RestartSec=5
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=keyrank-scraper
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/keyrank/scraper-py
+
+[Install]
+WantedBy=multi-user.target
