@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     openrouter_api_key: str = ""
     llm_model: str = "openrouter/openai/gpt-5-nano"
 
+    # Acquire.com credentials (for login-based scraping)
+    acquire_email: str = ""
+    acquire_password: str = ""
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
