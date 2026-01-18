@@ -9,7 +9,7 @@ from .acquire import AcquireScraper
 from .appbusinessbrokers import AppBusinessBrokersScraper
 from .flippa import FlippaScraper
 from .microns import MicronsScraper
-from .models import RevenueApp, ScrapeResult
+from .models import RevenueApp
 from .whatstheapp import WhatsTheAppScraper
 
 router = APIRouter(prefix="/revenue", tags=["Revenue"])
@@ -69,20 +69,11 @@ async def scrape_whatstheapp(request: ScrapeRequest = ScrapeRequest()):
     started_at = datetime.utcnow()
 
     try:
-        scraper = WhatsTheAppScraper()
-        apps, skipped_urls = await scraper.scrape_all(
-            limit=request.limit,
-            skip_urls=set(request.skip_urls),
-        )
-
-        result = ScrapeResult(
-            source="whatstheapp",
-            success=True,
-            apps_found=len(apps),
-            started_at=started_at,
-            completed_at=datetime.utcnow(),
-            apps=apps,
-        )
+        async with WhatsTheAppScraper() as scraper:
+            apps, skipped_urls = await scraper.scrape_all(
+                limit=request.limit,
+                skip_urls=set(request.skip_urls),
+            )
 
         return {
             "success": True,
@@ -90,7 +81,7 @@ async def scrape_whatstheapp(request: ScrapeRequest = ScrapeRequest()):
             "count": len(apps),
             "apps": [serialize_app(app) for app in apps],
             "skipped_urls": skipped_urls,
-            "scraped_at": result.completed_at.isoformat() if result.completed_at else None,
+            "scraped_at": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
@@ -101,8 +92,8 @@ async def scrape_whatstheapp(request: ScrapeRequest = ScrapeRequest()):
 async def scrape_whatstheapp_raw(limit: int | None = None):
     """Scrape whatsthe.app and return raw data for debugging."""
     try:
-        scraper = WhatsTheAppScraper()
-        apps, _ = await scraper.scrape_all(limit=limit)
+        async with WhatsTheAppScraper() as scraper:
+            apps, _ = await scraper.scrape_all(limit=limit)
 
         return {
             "count": len(apps),
@@ -120,23 +111,12 @@ async def scrape_appbusinessbrokers(request: ScrapeRequest = ScrapeRequest()):
     Returns a list of apps for sale with their revenue metrics.
     Note: Data is self-reported by sellers.
     """
-    started_at = datetime.utcnow()
-
     try:
-        scraper = AppBusinessBrokersScraper()
-        apps, skipped_urls = await scraper.scrape_all(
-            limit=request.limit,
-            skip_urls=set(request.skip_urls),
-        )
-
-        result = ScrapeResult(
-            source="appbusinessbrokers",
-            success=True,
-            apps_found=len(apps),
-            started_at=started_at,
-            completed_at=datetime.utcnow(),
-            apps=apps,
-        )
+        async with AppBusinessBrokersScraper() as scraper:
+            apps, skipped_urls = await scraper.scrape_all(
+                limit=request.limit,
+                skip_urls=set(request.skip_urls),
+            )
 
         return {
             "success": True,
@@ -144,7 +124,7 @@ async def scrape_appbusinessbrokers(request: ScrapeRequest = ScrapeRequest()):
             "count": len(apps),
             "apps": [serialize_app(app) for app in apps],
             "skipped_urls": skipped_urls,
-            "scraped_at": result.completed_at.isoformat() if result.completed_at else None,
+            "scraped_at": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
@@ -155,8 +135,8 @@ async def scrape_appbusinessbrokers(request: ScrapeRequest = ScrapeRequest()):
 async def scrape_appbusinessbrokers_raw(limit: int | None = None):
     """Scrape appbusinessbrokers.com and return raw data for debugging."""
     try:
-        scraper = AppBusinessBrokersScraper()
-        apps, _ = await scraper.scrape_all(limit=limit)
+        async with AppBusinessBrokersScraper() as scraper:
+            apps, _ = await scraper.scrape_all(limit=limit)
 
         return {
             "count": len(apps),
@@ -174,23 +154,12 @@ async def scrape_flippa(request: ScrapeRequest = ScrapeRequest()):
     Returns a list of mobile apps for sale with their revenue metrics.
     Note: Data is self-reported by sellers.
     """
-    started_at = datetime.utcnow()
-
     try:
-        scraper = FlippaScraper()
-        apps, skipped_urls = await scraper.scrape_all(
-            limit=request.limit,
-            skip_urls=set(request.skip_urls),
-        )
-
-        result = ScrapeResult(
-            source="flippa",
-            success=True,
-            apps_found=len(apps),
-            started_at=started_at,
-            completed_at=datetime.utcnow(),
-            apps=apps,
-        )
+        async with FlippaScraper() as scraper:
+            apps, skipped_urls = await scraper.scrape_all(
+                limit=request.limit,
+                skip_urls=set(request.skip_urls),
+            )
 
         return {
             "success": True,
@@ -198,7 +167,7 @@ async def scrape_flippa(request: ScrapeRequest = ScrapeRequest()):
             "count": len(apps),
             "apps": [serialize_app(app) for app in apps],
             "skipped_urls": skipped_urls,
-            "scraped_at": result.completed_at.isoformat() if result.completed_at else None,
+            "scraped_at": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
@@ -209,8 +178,8 @@ async def scrape_flippa(request: ScrapeRequest = ScrapeRequest()):
 async def scrape_flippa_raw(limit: int | None = None):
     """Scrape flippa.com and return raw data for debugging."""
     try:
-        scraper = FlippaScraper()
-        apps, _ = await scraper.scrape_all(limit=limit)
+        async with FlippaScraper() as scraper:
+            apps, _ = await scraper.scrape_all(limit=limit)
 
         return {
             "count": len(apps),
@@ -228,23 +197,12 @@ async def scrape_microns(request: ScrapeRequest = ScrapeRequest()):
     Returns a list of mobile apps for sale with their revenue metrics.
     Note: Data is self-reported by sellers.
     """
-    started_at = datetime.utcnow()
-
     try:
-        scraper = MicronsScraper()
-        apps, skipped_urls = await scraper.scrape_all(
-            limit=request.limit,
-            skip_urls=set(request.skip_urls),
-        )
-
-        result = ScrapeResult(
-            source="microns",
-            success=True,
-            apps_found=len(apps),
-            started_at=started_at,
-            completed_at=datetime.utcnow(),
-            apps=apps,
-        )
+        async with MicronsScraper() as scraper:
+            apps, skipped_urls = await scraper.scrape_all(
+                limit=request.limit,
+                skip_urls=set(request.skip_urls),
+            )
 
         return {
             "success": True,
@@ -252,7 +210,7 @@ async def scrape_microns(request: ScrapeRequest = ScrapeRequest()):
             "count": len(apps),
             "apps": [serialize_app(app) for app in apps],
             "skipped_urls": skipped_urls,
-            "scraped_at": result.completed_at.isoformat() if result.completed_at else None,
+            "scraped_at": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
@@ -263,8 +221,8 @@ async def scrape_microns(request: ScrapeRequest = ScrapeRequest()):
 async def scrape_microns_raw(limit: int | None = None):
     """Scrape microns.io and return raw data for debugging."""
     try:
-        scraper = MicronsScraper()
-        apps, _ = await scraper.scrape_all(limit=limit)
+        async with MicronsScraper() as scraper:
+            apps, _ = await scraper.scrape_all(limit=limit)
 
         return {
             "count": len(apps),
